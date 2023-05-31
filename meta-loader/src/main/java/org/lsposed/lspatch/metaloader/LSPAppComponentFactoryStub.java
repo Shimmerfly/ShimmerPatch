@@ -2,6 +2,7 @@ package org.lsposed.lspatch.metaloader;
 
 import android.annotation.SuppressLint;
 import android.app.AppComponentFactory;
+import android.app.ActivityThread;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.IPackageManager;
 import android.os.Build;
@@ -34,6 +35,15 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
     public static byte[] dex;
 
     static {
+        final boolean appZygote = ActivityThread.currentActivityThread() == null;
+        if (appZygote) {
+            Log.i(TAG, "Skip loading liblspatch.so for appZygote");
+        } else {
+            bootstrap();
+        }
+    }
+
+    private static void bootstrap() {
         try {
             archToLib.put("arm", "armeabi-v7a");
             archToLib.put("arm64", "arm64-v8a");

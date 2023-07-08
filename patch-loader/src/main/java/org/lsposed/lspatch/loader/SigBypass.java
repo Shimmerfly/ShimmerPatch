@@ -12,12 +12,12 @@ import android.os.Parcelable;
 import android.util.Base64;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import org.lsposed.lspatch.loader.util.XLog;
 import org.lsposed.lspatch.share.Constants;
-import org.lsposed.lspatch.share.PatchConfig;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -46,8 +46,12 @@ public class SigBypass {
                     if (metaData != null) encoded = metaData.getString("lspatch");
                     if (encoded != null) {
                         var json = new String(Base64.decode(encoded, Base64.DEFAULT), StandardCharsets.UTF_8);
-                        var patchConfig = new Gson().fromJson(json, PatchConfig.class);
-                        replacement = patchConfig.originalSignature;
+                        try {
+                            var patchConfig = new JSONObject(json);
+                            replacement = patchConfig.getString("originalSignature");
+                        } catch (JSONException e) {
+                            Log.w(TAG, "fail to get originalSignature", e);
+                        }
                     }
                 } catch (PackageManager.NameNotFoundException | JsonSyntaxException ignored) {
                 }

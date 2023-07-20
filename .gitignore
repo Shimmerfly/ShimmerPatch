@@ -1,3 +1,6 @@
+.project
+.settings
+libxposed
 *.iml
 .gradle
 /local.properties

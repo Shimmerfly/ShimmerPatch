@@ -38,13 +38,13 @@ jobs:
         fi
 
     - name: Checkout libxposed/api
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: libxposed/api
         path: libxposed/api
 
     - name: Checkout libxposed/service
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: libxposed/service
         path: libxposed/service
@@ -52,7 +52,7 @@ jobs:
     - name: Setup Java
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
+        java-version: '21'
         distribution: 'temurin'
 
     - name: Setup Gradle

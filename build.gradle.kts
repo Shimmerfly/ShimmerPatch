@@ -4,6 +4,7 @@ import com.android.build.gradle.BaseExtension
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.internal.storage.file.FileRepository
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+import com.android.build.gradle.LibraryExtension
 
 plugins {
     alias(libs.plugins.agp.lib) apply false
@@ -54,11 +55,11 @@ val androidTargetSdkVersion by extra(34)
 val androidCompileSdkVersion by extra(34)
 val androidCompileNdkVersion by extra("25.2.9519653")
 val androidBuildToolsVersion by extra("34.0.0")
-val androidSourceCompatibility by extra(JavaVersion.VERSION_17)
-val androidTargetCompatibility by extra(JavaVersion.VERSION_17)
+val androidSourceCompatibility by extra(JavaVersion.VERSION_21)
+val androidTargetCompatibility by extra(JavaVersion.VERSION_21)
 
 tasks.register<Delete>("clean") {
-    delete(rootProject.buildDir)
+    delete(layout.buildDirectory)
 }
 
 listOf("Debug", "Release").forEach { variant ->
@@ -80,7 +81,7 @@ fun Project.configureBaseExtension() {
         buildToolsVersion = androidBuildToolsVersion
 
         externalNativeBuild.cmake {
-            version = "3.22.1+"
+            version = "3.28.1+"
         }
 
         defaultConfig {
@@ -201,6 +202,7 @@ fun Project.configureBaseExtension() {
                 "intermediates",
                 "optimized_processed_res",
                 "release",
+                "optimizeReleaseResources",
                 "resources-release-optimize.ap_"
             )
             val optimized = File("${zip}.opt")
@@ -234,5 +236,19 @@ subprojects {
     }
     plugins.withId("com.android.library") {
         configureBaseExtension()
+    }
+}
+
+
+project(":core") {
+    afterEvaluate {
+        if (property("android") is LibraryExtension) {
+            val android = property("android") as LibraryExtension
+            android.run {
+                buildTypes {
+                    release { proguardFiles(rootProject.file("share/lspatch-rules.pro")) }
+                }
+            }
+        }
     }
 }

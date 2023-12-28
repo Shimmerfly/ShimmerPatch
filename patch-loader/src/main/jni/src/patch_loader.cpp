@@ -91,7 +91,7 @@ namespace lspd {
     }
 
     void PatchLoader::Load(JNIEnv* env) {
-        InitSymbolCache(nullptr);
+        /* InitSymbolCache(nullptr); */
         lsplant::InitInfo initInfo {
                 .inline_hooker = [](auto t, auto r) {
                     void* bk = nullptr;

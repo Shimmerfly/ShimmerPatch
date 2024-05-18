@@ -342,7 +342,7 @@ public class LSPatch {
         if (overrideVersionCode)
             property.addManifestAttribute(new AttributeItem(NodeValue.Manifest.VERSION_CODE, 1));
         if (minSdkVersion < 28)
-            property.addUsesSdkAttribute(new AttributeItem(NodeValue.UsesSDK.MIN_SDK_VERSION, "28"));
+            property.addUsesSdkAttribute(new AttributeItem(NodeValue.UsesSDK.MIN_SDK_VERSION, 28));
         property.addApplicationAttribute(new AttributeItem(NodeValue.Application.DEBUGGABLE, debuggableFlag));
         property.addApplicationAttribute(new AttributeItem("appComponentFactory", PROXY_APP_COMPONENT_FACTORY));
         property.addMetaData(new ModificationProperty.MetaData("lspatch", metadata));

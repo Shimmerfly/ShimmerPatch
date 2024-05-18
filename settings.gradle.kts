@@ -33,6 +33,7 @@ rootProject.name = "LSPatch"
 include(
     ":apkzlib",
     ":core",
+    ":axml",
     ":hiddenapi:bridge",
     ":hiddenapi:stubs",
     ":jar",
@@ -48,6 +49,7 @@ include(
 )
 
 project(":core").projectDir = file("core/core")
+project(":axml").projectDir = file("core/axml")
 project(":hiddenapi:bridge").projectDir = file("core/hiddenapi/bridge")
 project(":hiddenapi:stubs").projectDir = file("core/hiddenapi/stubs")
 project(":services:daemon-service").projectDir = file("core/services/daemon-service")

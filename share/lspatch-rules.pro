@@ -5,5 +5,6 @@
 -keepnames class org.lsposed.lspd.impl.LSPosedHookCallback
 -keepnames class org.lsposed.lspd.util.Hookers
 -keepnames class org.lsposed.lspd.util.LspModuleClassLoader
+-keepnames class org.lsposed.lspd.util.MetaDataReader
 
 -keepattributes SourceFile,LineNumberTable

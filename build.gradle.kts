@@ -82,6 +82,7 @@ fun Project.configureBaseExtension() {
 
         externalNativeBuild.cmake {
             version = "3.28.1+"
+            buildStagingDirectory = layout.buildDirectory.get().asFile
         }
 
         defaultConfig {
@@ -122,6 +123,7 @@ fun Project.configureBaseExtension() {
                     cppFlags("-std=c++20", *flags)
                     cFlags("-std=c18", *flags)
                     arguments(
+                        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
                         "-DANDROID_STL=none",
                         "-DVERSION_CODE=$verCode",
                         "-DVERSION_NAME=$verName",

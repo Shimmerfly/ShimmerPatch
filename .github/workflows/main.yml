@@ -35,13 +35,14 @@ jobs:
         fi
 
     - name: Checkout libxposed/api
-      uses: actions/checkout@v4
+      uses: actions/checkout@main
       with:
         repository: libxposed/api
         path: libxposed/api
+        ref: 54582730315ba4a3d7cfaf9baf9d23c419e07006
 
     - name: Checkout libxposed/service
-      uses: actions/checkout@v4
+      uses: actions/checkout@main
       with:
         repository: libxposed/service
         path: libxposed/service
@@ -64,6 +65,18 @@ jobs:
         key: lsp
         restore-keys: lsp
         save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Setup ninja
+      uses: seanmiddleditch/gha-setup-ninja@master
+      with:
+        version: 1.12.0
+
+    - name: Remove Android's cmake
+      shell: bash
+      run: rm -rf $ANDROID_HOME/cmake
 
     - name: Build dependencies with Gradle
       working-directory: libxposed

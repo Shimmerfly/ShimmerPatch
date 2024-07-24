@@ -1,6 +1,6 @@
 # LSPatch Framework
 
-[![Build](https://img.shields.io/github/actions/workflow/status/JingMatrix/LSPatch/main.yml?branch=master&logo=github&label=Build&event=push)](https://github.com/JingMatrix/LSPatch/actions/workflows/main.yml?query=event%3Apush+is%3Acompleted+branch%3Amaster) [![Crowdin](https://img.shields.io/badge/Localization-Crowdin-blueviolet?logo=Crowdin)](https://lsposed.crowdin.com/lspatch) [![Download](https://img.shields.io/github/v/release/JingMatrix/LSPatch?color=orange&logoColor=orange&label=Download&logo=DocuSign)](https://github.com/JingMatrix/LSPatch/releases/latest) [![Total](https://shields.io/github/downloads/JingMatrix/LSPatch/total?logo=Bookmeter&label=Counts&logoColor=yellow&color=yellow)](https://github.com/JingMatrix/LSPatch/releases)
+[![Build](https://img.shields.io/github/actions/workflow/status/JingMatrix/LSPatch/main.yml?branch=master&logo=github&label=Build&event=push)](https://github.com/JingMatrix/LSPatch/actions/workflows/main.yml?query=event%3Apush+is%3Acompleted+branch%3Amaster) [![Crowdin](https://img.shields.io/badge/Localization-Crowdin-blueviolet?logo=Crowdin)](https://crowdin.com/project/lspatch_jingmatrix) [![Download](https://img.shields.io/github/v/release/JingMatrix/LSPatch?color=orange&logoColor=orange&label=Download&logo=DocuSign)](https://github.com/JingMatrix/LSPatch/releases/latest) [![Total](https://shields.io/github/downloads/JingMatrix/LSPatch/total?logo=Bookmeter&label=Counts&logoColor=yellow&color=yellow)](https://github.com/JingMatrix/LSPatch/releases)
 
 ## Introduction 
 
@@ -29,7 +29,7 @@ Note: debug builds are only available in Github Actions
 
 ## Translation Contributing
 
-You can contribute translation [here](https://lsposed.crowdin.com/lspatch).
+You can contribute translation [here](https://crowdin.com/project/lspatch_jingmatrix).
 
 ## Credits
 

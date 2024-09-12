@@ -2,6 +2,7 @@
 // Created by VIP on 2021/4/25.
 //
 
+#include "../src/native_api.h"
 #include "bypass_sig.h"
 #include "elf_util.h"
 #include "logging.h"
@@ -12,40 +13,46 @@
 
 namespace lspd {
 
-    std::string apkPath;
-    std::string redirectPath;
+std::string apkPath;
+std::string redirectPath;
 
-    CREATE_HOOK_STUB_ENTRY(
-            "__openat",
-            int, __openat,
-            (int fd, const char* pathname, int flag, int mode), {
-                if (pathname == apkPath) {
-                    LOGD("redirect openat");
-                    return backup(fd, redirectPath.c_str(), flag, mode);
-                }
-                return backup(fd, pathname, flag, mode);
-            });
-
-    LSP_DEF_NATIVE_METHOD(void, SigBypass, enableOpenatHook, jstring origApkPath, jstring cacheApkPath) {
-        auto sym_openat = SandHook::ElfImg("libc.so").getSymbAddress<void *>("__openat");
-        auto r = HookSymNoHandle(handler, sym_openat, __openat);
-        if (!r) {
-            LOGE("Hook __openat fail");
-            return;
+inline static lsplant::Hooker<"__openat", int(int, const char*, int flag, int)> __openat_ =
+    +[](int fd, const char* pathname, int flag, int mode) {
+        if (pathname == apkPath) {
+            LOGD("redirect openat");
+            return __openat_(fd, redirectPath.c_str(), flag, mode);
         }
-        lsplant::JUTFString str1(env, origApkPath);
-        lsplant::JUTFString str2(env, cacheApkPath);
-        apkPath = str1.get();
-        redirectPath = str2.get();
-        LOGD("apkPath %s", apkPath.c_str());
-        LOGD("redirectPath %s", redirectPath.c_str());
-    }
-
-    static JNINativeMethod gMethods[] = {
-            LSP_NATIVE_METHOD(SigBypass, enableOpenatHook, "(Ljava/lang/String;Ljava/lang/String;)V")
+        return __openat_(fd, pathname, flag, mode);
     };
 
-    void RegisterBypass(JNIEnv* env) {
-        REGISTER_LSP_NATIVE_METHODS(SigBypass);
+bool HookOpenat(const lsplant::HookHandler& handler) { return handler.hook(__openat_); }
+
+LSP_DEF_NATIVE_METHOD(void, SigBypass, enableOpenatHook, jstring origApkPath,
+                      jstring cacheApkPath) {
+    auto r = HookOpenat(lsplant::InitInfo{
+        .inline_hooker =
+            [](auto t, auto r) {
+                void* bk = nullptr;
+                return HookInline(t, r, &bk) == 0 ? bk : nullptr;
+            },
+        .art_symbol_resolver =
+            [](auto symbol) { return SandHook::ElfImg("libc.so").getSymbAddress(symbol); },
+    });
+    if (!r) {
+        LOGE("Hook __openat fail");
+        return;
     }
+    lsplant::JUTFString str1(env, origApkPath);
+    lsplant::JUTFString str2(env, cacheApkPath);
+    apkPath = str1.get();
+    redirectPath = str2.get();
+    LOGD("apkPath %s", apkPath.c_str());
+    LOGD("redirectPath %s", redirectPath.c_str());
 }
+
+static JNINativeMethod gMethods[] = {
+    LSP_NATIVE_METHOD(SigBypass, enableOpenatHook, "(Ljava/lang/String;Ljava/lang/String;)V")};
+
+void RegisterBypass(JNIEnv* env) { REGISTER_LSP_NATIVE_METHODS(SigBypass); }
+
+}  // namespace lspd

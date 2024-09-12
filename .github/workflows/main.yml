@@ -58,17 +58,6 @@ jobs:
       with:
         gradle-home-cache-cleanup: true
 
-    - name: Setup ccache
-      uses: hendrikmuhs/ccache-action@v1
-      with:
-        max-size: 2G
-        key: lsp
-        restore-keys: lsp
-        save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-
     - name: Setup ninja
       uses: seanmiddleditch/gha-setup-ninja@master
       with:

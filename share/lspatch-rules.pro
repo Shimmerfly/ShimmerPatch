@@ -7,4 +7,5 @@
 -keepnames class org.lsposed.lspd.util.LspModuleClassLoader
 -keepnames class org.lsposed.lspd.util.MetaDataReader
 
+-repackageclasses org.lsposed.external
 -keepattributes SourceFile,LineNumberTable

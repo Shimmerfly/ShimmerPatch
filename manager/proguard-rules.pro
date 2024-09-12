@@ -10,6 +10,7 @@
 }
 
 -keep class com.beust.jcommander.** { *; }
+-keep class org.lsposed.lspatch.database.** { *; }
 -keep class org.lsposed.lspatch.Patcher$Options { *; }
 -keep class org.lsposed.lspatch.share.LSPConfig { *; }
 -keep class org.lsposed.lspatch.share.PatchConfig { *; }

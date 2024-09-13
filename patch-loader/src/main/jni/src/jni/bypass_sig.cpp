@@ -2,8 +2,9 @@
 // Created by VIP on 2021/4/25.
 //
 
-#include "../src/native_api.h"
 #include "bypass_sig.h"
+
+#include "../src/native_api.h"
 #include "elf_util.h"
 #include "logging.h"
 #include "native_util.h"
@@ -16,10 +17,22 @@ namespace lspd {
 std::string apkPath;
 std::string redirectPath;
 
-inline static lsplant::Hooker<"__openat", int(int, const char*, int flag, int)> __openat_ =
+inline static constexpr auto kLibCName = "libc.so";
+
+std::unique_ptr<const SandHook::ElfImg>& GetC(bool release = false) {
+    static std::unique_ptr<const SandHook::ElfImg> kImg = nullptr;
+    if (release) {
+        kImg.reset();
+    } else if (!kImg) {
+        kImg = std::make_unique<SandHook::ElfImg>(kLibCName);
+    }
+    return kImg;
+}
+
+inline static lsplant::Hooker<"__openat", int(int, const char*, int, int)> __openat_ =
     +[](int fd, const char* pathname, int flag, int mode) {
         if (pathname == apkPath) {
-            LOGD("redirect openat");
+            LOGD("Redirect openat from {} to {}", pathname, redirectPath);
             return __openat_(fd, redirectPath.c_str(), flag, mode);
         }
         return __openat_(fd, pathname, flag, mode);
@@ -35,8 +48,7 @@ LSP_DEF_NATIVE_METHOD(void, SigBypass, enableOpenatHook, jstring origApkPath,
                 void* bk = nullptr;
                 return HookInline(t, r, &bk) == 0 ? bk : nullptr;
             },
-        .art_symbol_resolver =
-            [](auto symbol) { return SandHook::ElfImg("libc.so").getSymbAddress(symbol); },
+        .art_symbol_resolver = [](auto symbol) { return GetC()->getSymbAddress(symbol); },
     });
     if (!r) {
         LOGE("Hook __openat fail");
@@ -46,8 +58,9 @@ LSP_DEF_NATIVE_METHOD(void, SigBypass, enableOpenatHook, jstring origApkPath,
     lsplant::JUTFString str2(env, cacheApkPath);
     apkPath = str1.get();
     redirectPath = str2.get();
-    LOGD("apkPath %s", apkPath.c_str());
-    LOGD("redirectPath %s", redirectPath.c_str());
+    LOGD("apkPath {}", apkPath.c_str());
+    LOGD("redirectPath {}", redirectPath.c_str());
+    GetC(true);
 }
 
 static JNINativeMethod gMethods[] = {

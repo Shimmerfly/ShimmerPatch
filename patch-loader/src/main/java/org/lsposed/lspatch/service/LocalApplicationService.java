@@ -58,6 +58,11 @@ public class LocalApplicationService extends ILSPApplicationService.Stub {
     }
 
     @Override
+    public boolean isLogMuted() throws RemoteException {
+        return false;
+    }
+
+    @Override
     public List<Module> getLegacyModulesList() {
         return modules;
     }

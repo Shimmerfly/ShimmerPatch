@@ -84,6 +84,11 @@ public class RemoteApplicationService implements ILSPApplicationService {
     }
 
     @Override
+    public boolean isLogMuted() throws RemoteException {
+        return false;
+    }
+
+    @Override
     public List<Module> getLegacyModulesList() throws RemoteException {
         return service == null ? new ArrayList<>() : service.getLegacyModulesList();
     }

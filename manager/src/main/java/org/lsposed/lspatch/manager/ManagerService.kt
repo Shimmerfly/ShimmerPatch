@@ -15,6 +15,10 @@ object ManagerService : ILSPApplicationService.Stub() {
 
     private const val TAG = "ManagerService"
 
+    override fun isLogMuted(): Boolean {
+        return false
+    }
+
     override fun getLegacyModulesList(): List<Module> {
         val app = lspApp.packageManager.getNameForUid(Binder.getCallingUid())
         val list = app?.let {

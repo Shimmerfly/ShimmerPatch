@@ -124,7 +124,6 @@ fun Project.configureBaseExtension() {
                     cFlags("-std=c18", *flags)
                     arguments(
                         "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
-                        "-DANDROID_STL=none",
                         "-DVERSION_CODE=$verCode",
                         "-DVERSION_NAME=$verName",
                     )

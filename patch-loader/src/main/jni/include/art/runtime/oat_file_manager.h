@@ -20,6 +20,8 @@
 #ifndef LSPATCH_OAT_FILE_MANAGER_H
 #define LSPATCH_OAT_FILE_MANAGER_H
 
+#include <vector>
+
 #include "context.h"
 #include "utils/hook_helper.hpp"
 
@@ -28,41 +30,40 @@ using namespace lsplant;
 namespace art {
 class FileManager {
 public:
-    inline static MemberHooker<
-        "_ZN3art14OatFileManager25RunBackgroundVerificationERKNSt3__"
-        "16vectorIPKNS_7DexFileENS1_9allocatorIS5_EEEEP8_jobjectPKc",
-        FileManager, void(const std::vector<const void *> &, jobject, const char *)>
-        RunBackgroundVerificationWithContext_ =
-            +[](FileManager *thiz, const std::vector<const void *> &dex_files, jobject class_loader,
-                const char *class_loader_context) {
-                if (lspd::Context::GetInstance()->GetCurrentClassLoader() == nullptr) {
-                    LOGD("Disabled background verification");
-                    return;
-                }
-                RunBackgroundVerificationWithContext_(thiz, dex_files, class_loader,
-                                                      class_loader_context);
-            };
+    inline static auto RunBackgroundVerificationWithContext_ =
+        ("_ZN3art14OatFileManager25RunBackgroundVerificationERKNSt3__"_sym |
+         "16vectorIPKNS_7DexFileENS1_9allocatorIS5_EEEEP8_jobjectPKc"_sym)
+            .hook
+            ->*[]<MemBackup auto backup>(
+                   FileManager *thiz, const std::vector<const void *> &dex_files,
+                   jobject class_loader, const char *class_loader_context) static -> void {
+        if (lspd::Context::GetInstance()->GetCurrentClassLoader() == nullptr) {
+            LOGD("Disabled background verification");
+            return;
+        }
+        backup(thiz, dex_files, class_loader, class_loader_context);
+    };
 
-    inline static MemberHooker<
-        "_ZN3art14OatFileManager25RunBackgroundVerificationERKNSt3__"
-        "16vectorIPKNS_7DexFileENS1_9allocatorIS5_EEEEP8_jobject",
-        FileManager, void(const std::vector<const void *> &, jobject)>
-        RunBackgroundVerification_ =
-            +[](FileManager *thiz, const std::vector<const void *> &dex_files,
-                jobject class_loader) {
-                if (lspd::Context::GetInstance()->GetCurrentClassLoader() == nullptr) {
-                    LOGD("Disabled background verification");
-                    return;
-                }
-                RunBackgroundVerification_(thiz, dex_files, class_loader);
-            };
+    inline static auto RunBackgroundVerification_ =
+        ("_ZN3art14OatFileManager25RunBackgroundVerificationERKNSt3__"_sym |
+         "16vectorIPKNS_7DexFileENS1_9allocatorIS5_EEEEP8_jobject"_sym)
+            .hook
+            ->*
+        []<MemBackup auto backup>(FileManager *thiz, const std::vector<const void *> &dex_files,
+                                  jobject class_loader) static -> void {
+        if (lspd::Context::GetInstance()->GetCurrentClassLoader() == nullptr) {
+            LOGD("Disabled background verification");
+            return;
+        }
+        backup(thiz, dex_files, class_loader);
+    };
 
 public:
     static void DisableBackgroundVerification(const lsplant::HookHandler &handler) {
         const int api_level = lspd::GetAndroidApiLevel();
         if (api_level >= __ANDROID_API_Q__) {
-            handler.hook(RunBackgroundVerificationWithContext_);
-            handler.hook(RunBackgroundVerification_);
+            handler(RunBackgroundVerificationWithContext_);
+            handler(RunBackgroundVerification_);
         }
     }
 };

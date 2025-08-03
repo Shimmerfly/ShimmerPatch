@@ -1,25 +1,25 @@
 [versions]
-room = "2.6.1"
-accompanist = "0.27.0"
-compose-destinations = "1.9.42-beta"
-shizuku = "13.1.2"
-hiddenapi-refine = "4.3.0"
-hiddenapi-stub = "4.2.0"
-compose-bom = "2024.05.00"
-kotlin = "1.9.23"
-ksp = "1.9.23-1.0.20"
-commons-io = "2.13.0"
+room = "2.7.2"
+accompanist = "0.36.0"
+compose-destinations = "1.11.7"
+shizuku = "13.1.5"
+hiddenapi = "4.4.0"
+compose-bom = "2025.07.00"
+kotlin = "2.2.0"
+ksp = "2.2.0-2.0.2"
+commons-io = "2.20.0"
 beust-jcommander = "1.82"
-google-gson = "2.10.1"
+google-gson = "2.13.1"
 
 [plugins]
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-rikka-tools-refine = { id = "dev.rikka.tools.refine", version.ref = "hiddenapi-refine" }
+rikka-tools-refine = { id = "dev.rikka.tools.refine", version.ref = "hiddenapi" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 [libraries]
-androidx-customview = "androidx.customview:customview:1.2.0-alpha02"
-androidx-customview-poolingcontainer = "androidx.customview:customview-poolingcontainer:1.0.0"
+androidx-customview = "androidx.customview:customview:1.2.0"
+androidx-customview-poolingcontainer = "androidx.customview:customview-poolingcontainer:1.1.0"
 
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }
@@ -28,13 +28,13 @@ androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 
-androidx-navigation-compose = "androidx.navigation:navigation-compose:2.6.0"
+androidx-navigation-compose = "androidx.navigation:navigation-compose:2.9.3"
 
-androidx-lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
+androidx-lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2"
 
-androidx-activity-compose = "androidx.activity:activity-compose:1.7.2"
+androidx-activity-compose = "androidx.activity:activity-compose:1.10.1"
 
-androidx-core-ktx = "androidx.core:core-ktx:1.10.1"
+androidx-core-ktx = "androidx.core:core-ktx:1.16.0"
 
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
@@ -47,9 +47,9 @@ google-accompanist-swiperefresh = { module = "com.google.accompanist:accompanist
 rikka-shizuku-api = { module = "dev.rikka.shizuku:api", version.ref = "shizuku" }
 rikka-shizuku-provider = { module = "dev.rikka.shizuku:provider", version.ref = "shizuku" }
 
-rikka-refine = { module = "dev.rikka.tools.refine:runtime", version.ref = "hiddenapi-refine" }
+rikka-refine = { module = "dev.rikka.tools.refine:runtime", version.ref = "hiddenapi" }
 
-rikka-hidden-stub = { module = "dev.rikka.hidden:stub", version.ref = "hiddenapi-stub" }
+rikka-hidden-stub = { module = "dev.rikka.hidden:stub", version.ref = "hiddenapi" }
 
 raamcosta-compose-destinations = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "compose-destinations" }
 raamcosta-compose-destinations-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "compose-destinations" }

@@ -129,7 +129,7 @@ fun NewPatchScreen(
                     }
 
                     ACTION_APPLIST -> {
-                        navigator.navigate(SelectAppsScreenDestination(false))
+                        navigator.navigate(SelectAppsScreenDestination(false, null))
                         viewModel.dispatch(ViewAction.DoneInit)
                     }
 

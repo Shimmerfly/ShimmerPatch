@@ -44,7 +44,7 @@ sealed class SelectAppsResult : Parcelable {
 fun SelectAppsScreen(
     navigator: ResultBackNavigator<SelectAppsResult>,
     multiSelect: Boolean,
-    initialSelected: ArrayList<String>? = null
+    initialSelected: ArrayList<String>?,
 ) {
     val viewModel = viewModel<SelectAppsViewModel>()
 
@@ -126,7 +126,7 @@ private fun SingleSelect(onSelect: (AppInfo) -> Unit) {
         ) {
             AppItem(
                 modifier = Modifier
-                    .animateItemPlacement(spring(stiffness = Spring.StiffnessLow))
+                    .animateItem(spring(stiffness = Spring.StiffnessLow))
                     .clickable { onSelect(it) },
                 icon = LSPPackageManager.getIcon(it),
                 label = it.label,
@@ -148,7 +148,7 @@ private fun MultiSelect() {
             val checked = viewModel.multiSelected.contains(it)
             AppItem(
                 modifier = Modifier
-                    .animateItemPlacement(spring(stiffness = Spring.StiffnessLow))
+                    .animateItem(spring(stiffness = Spring.StiffnessLow))
                     .clickable {
                         if (checked) viewModel.multiSelected.remove(it)
                         else viewModel.multiSelected.add(it)

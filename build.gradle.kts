@@ -9,6 +9,7 @@ import com.android.build.gradle.LibraryExtension
 plugins {
     alias(libs.plugins.agp.lib) apply false
     alias(libs.plugins.agp.app) apply false
+    alias(lspatch.plugins.compose.compiler) apply false
     alias(lspatch.plugins.kotlin.android) apply false
 }
 
@@ -18,7 +19,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.eclipse.jgit:org.eclipse.jgit:6.3.0.202209071007-r")
+        classpath("org.eclipse.jgit:org.eclipse.jgit:7.3.0.202506031305-r")
     }
 }
 
@@ -51,10 +52,10 @@ val verName by extra("0.7")
 val coreVerCode by extra(coreCommitCount)
 val coreVerName by extra(coreLatestTag)
 val androidMinSdkVersion by extra(28)
-val androidTargetSdkVersion by extra(35)
-val androidCompileSdkVersion by extra(35)
+val androidTargetSdkVersion by extra(36)
+val androidCompileSdkVersion by extra(36)
 val androidCompileNdkVersion by extra("29.0.13113456")
-val androidBuildToolsVersion by extra("35.0.0")
+val androidBuildToolsVersion by extra("36.0.0")
 val androidSourceCompatibility by extra(JavaVersion.VERSION_21)
 val androidTargetCompatibility by extra(JavaVersion.VERSION_21)
 

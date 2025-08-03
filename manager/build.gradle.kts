@@ -9,6 +9,7 @@ val coreVerName: String by rootProject.extra
 
 plugins {
     alias(libs.plugins.agp.app)
+    alias(lspatch.plugins.compose.compiler)
     alias(lspatch.plugins.google.devtools.ksp)
     alias(lspatch.plugins.rikka.tools.refine)
     alias(lspatch.plugins.kotlin.android)

@@ -42,6 +42,7 @@
     <string name="manage_no_modules">還沒有模組</string>
     <string name="manage_module_settings">模組設定</string>
     <string name="manage_app_info">程式資訊</string>
+    <string name="manage_check_manager_package_name">該程式由 %1$s 管理\n在本管理器中修改作用域 %2$s 不會生效\n重新修補以解決此問題</string>
     <!-- New Patch Screen -->
     <string name="screen_new_patch">新增打包程式</string>
     <string name="patch_select_dir_title">選擇儲存資料夾</string>

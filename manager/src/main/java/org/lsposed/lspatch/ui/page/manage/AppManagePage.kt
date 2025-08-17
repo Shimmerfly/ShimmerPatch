@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -85,6 +87,7 @@ fun AppManageBody(
         }
     } else {
         var scopeApp by rememberSaveable { mutableStateOf("") }
+        var afterCheckManager by remember { mutableStateOf<(() -> Unit)?>(null) }
         resultRecipient.onNavResult {
             if (it is NavResult.Value) {
                 scope.launch {

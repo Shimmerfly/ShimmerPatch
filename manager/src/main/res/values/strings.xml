@@ -43,6 +43,7 @@
     <string name="manage_no_modules">No modules yet</string>
     <string name="manage_module_settings">Module settings</string>
     <string name="manage_app_info">App info</string>
+    <string name="manage_check_manager_package_name">This program is managed by %1s\nModifying the scope %2s within this manager will not take effect\nPlease re-patch to resolve this issue</string>
 
     <!-- New Patch Screen -->
     <string name="screen_new_patch">New Patch</string>

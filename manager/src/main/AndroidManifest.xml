@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+
+    <uses-permission android:name="com.rosan.dhizuku.permission.API"/>
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
@@ -27,6 +29,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity-alias
+            android:name=".ui.activity.InstallActivity"
+            android:enabled="false"
+            android:exported="true"
+            android:targetActivity=".ui.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -35,15 +43,18 @@
                 <data android:scheme="content" />
                 <data android:mimeType="application/vnd.android.package-archive" />
             </intent-filter>
-        </activity>
+        </activity-alias>
+
 
         <service
             android:name=".manager.ModuleService"
-            android:exported="true" />
+            android:exported="true"
+            tools:ignore="ExportedService" />
+
 
         <provider
             android:name="rikka.shizuku.ShizukuProvider"
-            android:authorities="org.lsposed.lspatch.shizuku"
+            android:authorities="${applicationId}.shizuku"
             android:enabled="true"
             android:exported="true"
             android:multiprocess="false"

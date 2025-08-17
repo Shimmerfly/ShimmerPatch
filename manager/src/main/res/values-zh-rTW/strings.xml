@@ -48,7 +48,7 @@
     <string name="patch_select_dir_title">選擇儲存資料夾</string>
     <string name="patch_select_dir_text">選擇一個資料夾儲存打包好的 apk</string>
     <string name="patch_select_dir_error">設定儲存資料夾出錯</string>
-    <string name="patch_from_storage">從儲存空間中選取 apk</string>
+    <string name="patch_from_storage">從儲存空間中選取 (多个) apk</string>
     <string name="patch_from_applist">選取已安裝的應用程式</string>
     <string name="patch_mode">打包模式</string>
     <string name="patch_local">本機</string>

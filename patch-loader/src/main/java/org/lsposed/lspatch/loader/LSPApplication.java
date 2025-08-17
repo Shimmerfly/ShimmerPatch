@@ -138,7 +138,6 @@ public class LSPApplication {
                 }
             }
             cacheApkPath.toFile().setWritable(false);
-
             var mPackages = (Map<?, ?>) XposedHelpers.getObjectField(activityThread, "mPackages");
             mPackages.remove(appInfo.packageName);
             appLoadedApk = activityThread.getPackageInfoNoCheck(appInfo, compatInfo);
@@ -169,8 +168,8 @@ public class LSPApplication {
             if (config.has("appComponentFactory")) {
                 try {
                     context.getClassLoader().loadClass(appInfo.appComponentFactory);
-                } catch (ClassNotFoundException e) { // This will happen on some strange shells like 360
-                    Log.w(TAG, "Original AppComponentFactory not found: " + appInfo.appComponentFactory);
+                } catch (Throwable e) { // 捕捉更廣泛的類載入錯誤, 可能可以兼容部分加固如 360
+                    Log.w(TAG, "Original AppComponentFactory not found: " + appInfo.appComponentFactory, e);
                     appInfo.appComponentFactory = null;
                 }
             }
@@ -179,7 +178,6 @@ public class LSPApplication {
             Log.e(TAG, "createLoadedApk", e);
             return null;
         }
-    }
 
     public static void disableProfile(Context context) {
         final ArrayList<String> codePaths = new ArrayList<>();

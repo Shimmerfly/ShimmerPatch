@@ -1,5 +1,7 @@
 package org.lsposed.lspatch.ui.page
 
+import android.content.ComponentName
+import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -28,6 +30,7 @@ import kotlinx.coroutines.launch
 import org.lsposed.lspatch.R
 import org.lsposed.lspatch.config.Configs
 import org.lsposed.lspatch.config.MyKeyStore
+import org.lsposed.lspatch.lspApp
 import org.lsposed.lspatch.ui.component.AnywhereDropdown
 import org.lsposed.lspatch.ui.component.CenterTopBar
 import org.lsposed.lspatch.ui.component.settings.SettingsItem
@@ -50,6 +53,7 @@ fun SettingsScreen() {
         ) {
             KeyStore()
             DetailPatchLogs()
+            SwitchInstallPackage()
         }
     }
 }
@@ -238,5 +242,30 @@ private fun DetailPatchLogs() {
         checked = Configs.detailPatchLogs,
         icon = Icons.Outlined.BugReport,
         title = stringResource(R.string.settings_detail_patch_logs)
+    )
+}
+
+@Composable
+private fun SwitchInstallPackage() {
+    val context = LocalContext.current
+    val packageName = context.packageName
+    val componentName = ComponentName(packageName, "$packageName.InstallPackageActivity")
+    val checked = remember { mutableStateOf(Configs.installPackage) }
+
+    SettingsSwitch(
+        modifier = Modifier.clickable {
+            val isEnabled = !checked.value
+            context.packageManager.setComponentEnabledSetting(
+                componentName,
+                if (isEnabled) PackageManager.COMPONENT_ENABLED_STATE_ENABLED else PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP
+            )
+            Configs.installPackage = isEnabled
+            checked.value = isEnabled
+        },
+        checked = checked.value,
+        icon = Icons.Outlined.Ballot,
+        title = stringResource(R.string.settings_switch_install_package),
+        desc = stringResource(if (checked.value) R.string.settings_switch_install_package_enabled else R.string.settings_switch_install_package_disabled)
     )
 }

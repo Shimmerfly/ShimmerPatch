@@ -17,14 +17,14 @@
     <!-- Home Screen -->
     <string name="home_shizuku_warning">Unele funcții nu sunt disponibile</string>
     <string name="home_api_version">Versiunea API</string>
-    <string name="home_lspatch_version">Versiunea LSPatch</string>
+    <string name="home_lspatch_version">Versiunea NPatch</string>
     <string name="home_framework_version">Versiunea cadru</string>
     <string name="home_system_version">Versiunea de sistem</string>
     <string name="home_device">Dispozitiv</string>
     <string name="home_system_abi">Sistem ABI</string>
     <string name="home_info_copied">Copiat în clipboard</string>
     <string name="home_support">A sustine</string>
-    <string name="home_description">LSPatch este un cadru Xposed gratuit non-root, bazat pe nucleul LSPosed.</string>
+    <string name="home_description">NPatch este un cadru Xposed gratuit non-root, bazat pe nucleul LSPosed.</string>
     <string name="home_view_source_code"><![CDATA[Vizualizați codul sursă la %1$s<br/>Alăturați-vă canalului nostru %2$s]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">Gestionați</string>
@@ -53,7 +53,7 @@
     <string name="patch_local">Local</string>
     <string name="patch_local_desc">Remediați o aplicație fără module încorporate.\nDomeniul de aplicare Xposed poate fi modificat în mod dinamic fără a fi nevoie de re-patch.\nAplicațiile patch-uite local pot rula numai pe dispozitivul local.</string>
     <string name="patch_integrated">Integrat</string>
-    <string name="patch_integrated_desc">Corectați o aplicație cu module încorporate.\nAplicația corectată poate rula fără manager, dar nu poate fi gestionată dinamic.\nAplicațiile integrate cu corecții pot fi utilizate pe dispozitivele care nu au LSPatch Manager instalat.</string>
+    <string name="patch_integrated_desc">Corectați o aplicație cu module încorporate.\nAplicația corectată poate rula fără manager, dar nu poate fi gestionată dinamic.\nAplicațiile integrate cu corecții pot fi utilizate pe dispozitivele care nu au NPatch Manager instalat.</string>
     <string name="patch_embed_modules">Încorporați module</string>
     <string name="patch_debuggable">Depanabil</string>
     <string name="patch_sigbypass">Ocolire semnătură</string>

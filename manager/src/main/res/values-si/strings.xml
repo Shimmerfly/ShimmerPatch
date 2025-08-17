@@ -17,14 +17,14 @@
     <!-- Home Screen -->
     <string name="home_shizuku_warning">සමහර කාර්යයන් නොමැත</string>
     <string name="home_api_version">API අනුවාදය</string>
-    <string name="home_lspatch_version">LSPatch අනුවාදය</string>
+    <string name="home_lspatch_version">NPatch අනුවාදය</string>
     <string name="home_framework_version">රාමු අනුවාදය</string>
     <string name="home_system_version">පද්ධති අනුවාදය</string>
     <string name="home_device">උපාංගය</string>
     <string name="home_system_abi">පද්ධතිය ABI</string>
     <string name="home_info_copied">පසුරු පුවරුවට පිටපත් කර ඇත</string>
     <string name="home_support">සහාය</string>
-    <string name="home_description">LSPatch යනු LSPosed core මත පදනම් වූ නොමිලේ Root නොවන Xposed රාමුවකි.</string>
+    <string name="home_description">NPatch යනු LSPosed core මත පදනම් වූ නොමිලේ Root නොවන Xposed රාමුවකි.</string>
     <string name="home_view_source_code"><![CDATA[මූල කේතය %1$s<br/>ට බලන්න අපගේ %2$s නාලිකාවට සම්බන්ධ වන්න]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">කළමනාකරණය කරන්න</string>
@@ -53,7 +53,7 @@
     <string name="patch_local">දේශීය</string>
     <string name="patch_local_desc">කාවැද්දූ මොඩියුල නොමැති යෙදුමක් පැච් කරන්න.\nXposed විෂය පථය නැවත පැච් කිරීමකින් තොරව ගතිකව වෙනස් කළ හැක.\nදේශීය පැච් කළ යෙදුම් ධාවනය කළ හැක්කේ දේශීය උපාංගයේ පමණි.</string>
     <string name="patch_integrated">ඒකාබද්ධ</string>
-    <string name="patch_integrated_desc">කාවැද්දූ මොඩියුල සහිත යෙදුමක් පැච් කරන්න.\nපැච් කළ යෙදුම කළමනාකරු නොමැතිව ධාවනය කළ හැකි නමුත් ගතිකව කළමනාකරණය කළ නොහැක.\nLSPatch Manager ස්ථාපනය කර නොමැති උපාංග මත ඒකාබද්ධ පැච් යෙදුම් භාවිතා කළ හැක.</string>
+    <string name="patch_integrated_desc">කාවැද්දූ මොඩියුල සහිත යෙදුමක් පැච් කරන්න.\nපැච් කළ යෙදුම කළමනාකරු නොමැතිව ධාවනය කළ හැකි නමුත් ගතිකව කළමනාකරණය කළ නොහැක.\nNPatch Manager ස්ථාපනය කර නොමැති උපාංග මත ඒකාබද්ධ පැච් යෙදුම් භාවිතා කළ හැක.</string>
     <string name="patch_embed_modules">මොඩියුල තැන්පත් කරන්න</string>
     <string name="patch_debuggable">නිදොස් කළ හැකි</string>
     <string name="patch_sigbypass">අත්සන බයිපාස්</string>

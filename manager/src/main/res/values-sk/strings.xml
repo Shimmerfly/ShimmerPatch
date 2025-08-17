@@ -17,14 +17,14 @@
     <!-- Home Screen -->
     <string name="home_shizuku_warning">Niektoré funkcie sú nedostupné</string>
     <string name="home_api_version">Verzia API</string>
-    <string name="home_lspatch_version">Verzia LSPatch</string>
+    <string name="home_lspatch_version">Verzia NPatch</string>
     <string name="home_framework_version">Verzia rámca</string>
     <string name="home_system_version">Verzia systému</string>
     <string name="home_device">Zariadenie</string>
     <string name="home_system_abi">Systém ABI</string>
     <string name="home_info_copied">Skopírované do schránky</string>
     <string name="home_support">podpora</string>
-    <string name="home_description">LSPatch je bezplatný rámec Xposed bez rootov založený na jadre LSPosed.</string>
+    <string name="home_description">NPatch je bezplatný rámec Xposed bez rootov založený na jadre LSPosed.</string>
     <string name="home_view_source_code"><![CDATA[Zobraziť zdrojový kód na %1$s<br/>Pripojte sa k nášmu %2$s kanálu]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">Spravovať</string>
@@ -53,7 +53,7 @@
     <string name="patch_local">Miestne</string>
     <string name="patch_local_desc">Oprava aplikácie bez vložených modulov.\nRozsah Xposed možno dynamicky meniť bez opätovného záplatovania.\nLokálne opravené aplikácie môžu byť spustené len na lokálnom zariadení.</string>
     <string name="patch_integrated">Integrovaný</string>
-    <string name="patch_integrated_desc">Opravte aplikáciu so vstavanými modulmi.\nOpravená aplikácia môže bežať bez správcu, ale nedá sa spravovať dynamicky.\nIntegrované opravené aplikácie možno použiť na zariadeniach, ktoré nemajú nainštalovaný LSPatch Manager.</string>
+    <string name="patch_integrated_desc">Opravte aplikáciu so vstavanými modulmi.\nOpravená aplikácia môže bežať bez správcu, ale nedá sa spravovať dynamicky.\nIntegrované opravené aplikácie možno použiť na zariadeniach, ktoré nemajú nainštalovaný NPatch Manager.</string>
     <string name="patch_embed_modules">Vložiť moduly</string>
     <string name="patch_debuggable">Laditeľné</string>
     <string name="patch_sigbypass">Obídenie podpisu</string>

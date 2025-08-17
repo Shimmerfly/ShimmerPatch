@@ -17,14 +17,14 @@
     <!-- Home Screen -->
     <string name="home_shizuku_warning">Деякі функції недоступні</string>
     <string name="home_api_version">Версія API</string>
-    <string name="home_lspatch_version">Версія LSPatch</string>
+    <string name="home_lspatch_version">Версія NPatch</string>
     <string name="home_framework_version">Версія Framework</string>
     <string name="home_system_version">Версія системи</string>
     <string name="home_device">Пристрій</string>
     <string name="home_system_abi">Система ABI</string>
     <string name="home_info_copied">Скопійовано в буфер обміну</string>
     <string name="home_support">Підтримка</string>
-    <string name="home_description">LSPatch — це безкоштовний некорневий фреймворк Xposed, заснований на ядрі LSPosed.</string>
+    <string name="home_description">NPatch — це безкоштовний некорневий фреймворк Xposed, заснований на ядрі LSPosed.</string>
     <string name="home_view_source_code"><![CDATA[Перегляньте вихідний код на %1$s<br/>Приєднуйтесь до нашого %2$s каналу]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">Керування</string>
@@ -53,7 +53,7 @@
     <string name="patch_local">Місцеві</string>
     <string name="patch_local_desc">Виправлення програми без вбудованих модулів.\nОбласть застосування можна динамічно змінювати без перевстановлення патчу.\nЛокальні виправлені програми можна запускати лише на локальному пристрої.</string>
     <string name="patch_integrated">Інтегрований</string>
-    <string name="patch_integrated_desc">Виправте додаток із вбудованими модулями.\nВиправлена програма може працювати без диспетчера, але нею не можна керувати динамічно.\nІнтегровані виправлені програми можна використовувати на пристроях, на яких не встановлено LSPatch Manager.</string>
+    <string name="patch_integrated_desc">Виправте додаток із вбудованими модулями.\nВиправлена програма може працювати без диспетчера, але нею не можна керувати динамічно.\nІнтегровані виправлені програми можна використовувати на пристроях, на яких не встановлено NPatch Manager.</string>
     <string name="patch_embed_modules">Вставляти модулі</string>
     <string name="patch_debuggable">Налагоджується</string>
     <string name="patch_sigbypass">Обхід підпису</string>

@@ -17,14 +17,14 @@
     <!-- Home Screen -->
     <string name="home_shizuku_warning">Некоторые функции недоступны</string>
     <string name="home_api_version">Версия API</string>
-    <string name="home_lspatch_version">Версия LSPatch</string>
+    <string name="home_lspatch_version">Версия NPatch</string>
     <string name="home_framework_version">Версия framework</string>
     <string name="home_system_version">Версия системы</string>
     <string name="home_device">Устройство</string>
     <string name="home_system_abi">Разрядность системы (ABI)</string>
     <string name="home_info_copied">Скопировано в буфер обмена</string>
     <string name="home_support">Поддержка</string>
-    <string name="home_description">LSPatch — это бесплатный без-рута-фреймворк Xposed, основанный на ядре LSPosed.</string>
+    <string name="home_description">NPatch — это бесплатный без-рута-фреймворк Xposed, основанный на ядре LSPosed.</string>
     <string name="home_view_source_code"><![CDATA[Посмотрите исходный код на %1$s<br/><br/>Заходите на наш %2$s-канал]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">Управление</string>
@@ -53,7 +53,7 @@
     <string name="patch_local">Локальный</string>
     <string name="patch_local_desc">Патч приложения без встроенных модулей.\n«Охват» Xposed может быть изменён динамически без перепатчивания.\nЛокально пропатченные приложения могут работать только на локальном устройстве.</string>
     <string name="patch_integrated">Интегрированный</string>
-    <string name="patch_integrated_desc">Патч приложения со встроенными модулями.\nПропатченное приложение может работать без менеджера, но не может управляться динамически.\nИнтегрированно пропатченные приложения могут быть использованы на устройствах и без установленного LSPatch Менеджера.</string>
+    <string name="patch_integrated_desc">Патч приложения со встроенными модулями.\nПропатченное приложение может работать без менеджера, но не может управляться динамически.\nИнтегрированно пропатченные приложения могут быть использованы на устройствах и без установленного NPatch Менеджера.</string>
     <string name="patch_embed_modules">Встроенные модули</string>
     <string name="patch_debuggable">Отладка</string>
     <string name="patch_sigbypass">Обход подписи</string>

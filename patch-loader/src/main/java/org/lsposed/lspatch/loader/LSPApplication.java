@@ -178,6 +178,7 @@ public class LSPApplication {
             Log.e(TAG, "createLoadedApk", e);
             return null;
         }
+    }
 
     public static void disableProfile(Context context) {
         final ArrayList<String> codePaths = new ArrayList<>();

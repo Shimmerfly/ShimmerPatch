@@ -44,7 +44,7 @@ androidComponents.onVariants { variant ->
         val libDir = variant.name + "/strip${variantCapped}DebugSymbols"
         from(
             fileTree(
-                "dir" to "$buildDir/intermediates/stripped_native_libs/$libDir/out/lib",
+                "dir" to "$buildDir/intermediates/stripped_native_libs/${variant.name}/strip${variantCapped}DebugSymbols/out/lib",
                 "include" to listOf("**/liblspatch.so")
             )
         )

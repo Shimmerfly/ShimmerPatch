@@ -30,8 +30,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
-import kotlinx.coroutines.launch
 import org.lsposed.lspatch.R
+import kotlinx.coroutines.launch
 import org.lsposed.lspatch.config.Configs
 import org.lsposed.lspatch.config.MyKeyStore
 import org.lsposed.lspatch.lspApp
@@ -61,7 +61,7 @@ fun SettingsScreen() {
             KeyStore()
             DetailPatchLogs()
             StorageDirectory()
-            SwitchInstallPackage()
+            InstallActivity()
         }
     }
 }
@@ -251,7 +251,6 @@ private fun DetailPatchLogs() {
         icon = Icons.Outlined.BugReport,
         title = stringResource(R.string.settings_detail_patch_logs)
     )
-    )
 }
 
 @Composable
@@ -261,54 +260,48 @@ private fun StorageDirectory() {
     val scope = rememberCoroutineScope()
     val errorText = stringResource(R.string.patch_select_dir_error)
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-                try {
-                            if (it.resultCode == Activity.RESULT_CANCELED) return@rememberLauncherForActivityResult
-                    val uri = it.data?.data ?: throw IOException("No data")
-                    val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                            context.contentResolver.takePersistableUriPermission(uri, takeFlags)
-                            Configs.storageDirectory = uri.toString()
-                            Log.i(TAG, "Storage directory: ${uri.path}")
-                } catch (e: Exception) {
-                            Log.e(TAG, "Error when requesting saving directory", e)
-                            scope.launch { snackbarHost.showSnackbar(errorText) }
-                }
+        try {
+            if (it.resultCode == Activity.RESULT_CANCELED) return@rememberLauncherForActivityResult
+            val uri = it.data?.data ?: throw IOException("No data")
+            val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            context.contentResolver.takePersistableUriPermission(uri, takeFlags)
+            Configs.storageDirectory = uri.toString()
+            Log.i(TAG, "Storage directory: ${uri.path}")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error when requesting saving directory", e)
+            scope.launch { snackbarHost.showSnackbar(errorText) }
+        }
     }
-            AnywhereDropdown(
-                        expanded = false,
-                        onDismissRequest = { },
-                        onClick = {
-                            launcher.launch(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE))
-                },
-                        surface = {
-                            SettingsItem(
-                                        title = stringResource(R.string.settings_storage_directory),
-                                        desc = Configs.storageDirectory ?: "undefined",
-                                        icon = Icons.Outlined.Folder
-                            )
-                }) {}
+    SettingsItem(
+        title = stringResource(R.string.settings_storage_directory),
+        desc = Configs.storageDirectory ?: "undefined",
+        icon = Icons.Outlined.Folder,
+        modifier = Modifier.clickable { launcher.launch(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)) }
+    )
 }
 
 @Composable
-private fun SwitchInstallPackage() {
-    val context = LocalContext.current
-    val packageName = context.packageName
-    val componentName = ComponentName(packageName, "$packageName.InstallPackageActivity")
-    val checked = remember { mutableStateOf(Configs.installPackage) }
+private fun InstallActivity() {
+    val pm = lspApp.packageManager
+    val componentName = ComponentName(lspApp, "org.lsposed.lspatch.ui.activity.InstallActivity")
+    var enabled by remember {
+        mutableStateOf(pm.getComponentEnabledSetting(componentName) == PackageManager.COMPONENT_ENABLED_STATE_ENABLED)
+    }
+    val titleText = stringResource(id = R.string.enable_install_activity_title)
 
     SettingsSwitch(
+        checked = enabled,
+        title = titleText,
         modifier = Modifier.clickable {
-            val isEnabled = !checked.value
-            context.packageManager.setComponentEnabledSetting(
+            pm.setComponentEnabledSetting(
                 componentName,
-                if (isEnabled) PackageManager.COMPONENT_ENABLED_STATE_ENABLED else PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                if (enabled)
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+                else
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP
             )
-            Configs.installPackage = isEnabled
-            checked.value = isEnabled
-        },
-        checked = checked.value,
-        icon = Icons.Outlined.Ballot,
-        title = stringResource(R.string.settings_switch_install_package),
-        desc = stringResource(if (checked.value) R.string.settings_switch_install_package_enabled else R.string.settings_switch_install_package_disabled)
+            enabled = !enabled
+        }
     )
 }

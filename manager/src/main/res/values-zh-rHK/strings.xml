@@ -1,10 +1,94 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <resources>
+    <string name="add">添加</string>
     <string name="install">安裝</string>
     <string name="installing">安裝中</string>
-    <string name="uninstall">卸载</string>
-    <string name="shizuku_available">Shizuku 服務可用</string>
-    <string name="shizuku_unavailable">Shizuku 服務未連接</string>
-    <string name="screen_repo">Repo</string>
+    <string name="uninstall">解除安裝</string>
+    <string name="uninstalling">解除安裝中</string>
+    <string name="copy_error">複製錯誤信息</string>
+    <string name="apps">應用程式</string>
+    <string name="modules">模組</string>
+    <string name="shizuku_available">Shizuku 服务可用</string>
+    <string name="shizuku_unavailable">Shizuku 服务未连接</string>
+    <string name="screen_repo">倉庫</string>
     <string name="screen_logs">日誌</string>
+    <string name="off">關閉</string>
+    <string name="error_unknown">未知錯誤</string>
+    <!-- Home Screen -->
+    <string name="home_shizuku_warning">部分功能不可用</string>
+    <string name="home_api_version">API 版本</string>
+    <string name="home_lspatch_version">NPatch 版本</string>
+    <string name="home_framework_version">框架版本</string>
+    <string name="home_system_version">系統版本</string>
+    <string name="home_device">裝置</string>
+    <string name="home_system_abi">系統架构</string>
+    <string name="home_info_copied">已複製到剪贴板</string>
+    <string name="home_support">支持</string>
+    <string name="home_description">NPatch 是一款免费的复刻于 LSPatch 的，基于 LSPosed 核心的免 Root 的 Xposed 框架。</string>
+    <string name="home_view_source_code">查看源代码 %1$s&lt;br/&gt;加入我们的 %2$s 频道</string>
+    <!-- Manage Screen -->
+    <string name="screen_manage">管理</string>
+    <string name="manage_loading">載入中</string>
+    <string name="manage_no_apps">尚无已修补的應用程式</string>
+    <string name="manage_rolling">滚动</string>
+    <string name="manage_update_loader">更新載入器</string>
+    <string name="manage_update_loader_successfully">更新成功</string>
+    <string name="manage_update_loader_failed">更新失敗</string>
+    <string name="manage_module_scope">模組作用域</string>
+    <string name="manage_optimize">優化</string>
+    <string name="manage_optimize_successfully">優化成功</string>
+    <string name="manage_optimize_failed">優化失敗</string>
+    <string name="manage_uninstall_successfully">解除安裝成功</string>
+    <string name="manage_no_modules">尚无模組</string>
+    <string name="manage_module_settings">模組設定</string>
+    <string name="manage_app_info">應用程式信息</string>
+    <string name="manage_check_manager_package_name">该應用程式由 %1$s 管理\n在本管理器中修改作用域 %2$s 不会生效\n重新修补以解决</string>
+    <!-- New Patch Screen -->
+    <string name="screen_new_patch">新建修补</string>
+    <string name="patch_select_dir_title">選擇儲存目錄</string>
+    <string name="patch_select_dir_text">選擇一个目錄来儲存已修补的 apk</string>
+    <string name="patch_select_dir_error">設定儲存目錄时出错</string>
+    <string name="patch_from_storage">从儲存目錄中選擇 (多个) apk</string>
+    <string name="patch_from_applist">選擇已安裝的應用程式程序</string>
+    <string name="patch_mode">修补模式</string>
+    <string name="patch_local">本地模式</string>
+    <string name="patch_local_desc">为未嵌入模組的應用程式程序打补丁。\nXposed 范围可动态更改，无需重新打补丁。\n打了本地补丁的應用程式程序只能在本地裝置上运行。</string>
+    <string name="patch_integrated">集成模式</string>
+    <string name="patch_integrated_desc">修补 App 并内置模組。\n经修补的應用程式可以在没有管理器的情况下运行，但不能动态管理配置。\n以集成模式修补的應用程式可在未安裝 NPatch 管理器的裝置上运行。</string>
+    <string name="patch_embed_modules">嵌入模組</string>
+    <string name="patch_debuggable">可调试</string>
+    <string name="patch_sigbypass">破解簽名校验</string>
+    <string name="patch_sigbypasslv0">lv0: 關閉</string>
+    <string name="patch_sigbypasslv1">lv1: 绕过 PM</string>
+    <string name="patch_sigbypasslv2">lv2: 绕过 PM + openat (libc)</string>
+    <string name="patch_override_version_code">覆写版本号</string>
+    <string name="patch_override_version_code_desc">将修补的 App 版本号重写为 1\n这将允许后续降级安裝，并且通常来说这不会影响應用程式实际感知到的版本号</string>
+    <string name="patch_start">开始修补</string>
+    <string name="patch_return">返回</string>
+    <string name="patch_uninstall_text">由于簽名不同，安裝修补的應用程式前需要先解除安裝原應用程式。\n确保您已备份好个人数据。</string>
+    <string name="patch_install_successfully">安裝成功</string>
+    <string name="patch_install_failed">安裝失敗</string>
+    <string name="patch_no_xposed_module">未找到 Xposed 模組</string>
+    <!-- Select Apps Screen -->
+    <string name="screen_select_apps">選擇應用程式程序</string>
+    <!-- Settings Screen -->
+    <string name="screen_settings">設定</string>
+    <string name="settings_keystore">簽名密钥库</string>
+    <string name="settings_keystore_default">内置</string>
+    <string name="settings_keystore_custom">自定义</string>
+    <string name="settings_keystore_dialog_title">自定义密钥库</string>
+    <string name="settings_keystore_file">密钥库文件</string>
+    <string name="settings_keystore_password">密碼</string>
+    <string name="settings_keystore_alias">別名</string>
+    <string name="settings_keystore_alias_password">別名密碼</string>
+    <string name="settings_keystore_desc">設定密钥库（BKS）</string>
+    <string name="settings_keystore_wrong_keystore">密钥库类型錯誤</string>
+    <string name="settings_keystore_wrong_password">密钥库密碼錯誤</string>
+    <string name="settings_keystore_wrong_alias">別名錯誤</string>
+    <string name="settings_keystore_wrong_alias_password">別名密碼錯誤</string>
+    <string name="settings_detail_patch_logs">详细修补日誌</string>
+    <string name="settings_storage_directory">变更儲存目錄</string>
+    <string name="enable_install_activity_title">启用 install activity</string>
+    <string name="patch_inject_dex">注入載入器 Dex</string>
+    <string name="patch_inject_dex_desc">对那些需要孤立服务进程的應用程式程序，譬如说浏览器的渲染引擎，请勾选此选项以确保他们正常运行</string>
 </resources>

@@ -199,7 +199,7 @@ public class LSPatch {
                 }
                 var entry = (KeyStore.PrivateKeyEntry) keyStore.getEntry(keystoreArgs.get(2), new KeyStore.PasswordProtection(keystoreArgs.get(3).toCharArray()));
                 new SigningExtension(SigningOptions.builder()
-                        .setMinSdkVersion(28)
+                        .setMinSdkVersion(27)
                         .setV2SigningEnabled(true)
                         .setCertificates((X509Certificate[]) entry.getCertificateChain())
                         .setKey(entry.getPrivateKey())
@@ -350,7 +350,7 @@ public class LSPatch {
         if (overrideVersionCode)
             property.addManifestAttribute(new AttributeItem(NodeValue.Manifest.VERSION_CODE, 1));
         if (minSdkVersion < 28)
-            property.addUsesSdkAttribute(new AttributeItem(NodeValue.UsesSDK.MIN_SDK_VERSION, 28));
+            property.addUsesSdkAttribute(new AttributeItem(NodeValue.UsesSDK.MIN_SDK_VERSION, 27));
         property.addApplicationAttribute(new AttributeItem(NodeValue.Application.DEBUGGABLE, debuggableFlag));
         property.addApplicationAttribute(new AttributeItem("appComponentFactory", PROXY_APP_COMPONENT_FACTORY));
         property.addMetaData(new ModificationProperty.MetaData("lspatch", metadata));

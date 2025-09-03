@@ -1,0 +1,17 @@
+name: Clean Gradle Cache
+
+on:
+  workflow_dispatch:
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 删除 Gradle 缓存
+        run: rm -rf ~/.gradle/caches/
+
+      - name: 删除 m2 缓存
+        run: rm -rf ~/.m2/repository/
+
+      - name: 删除 ccache 缓存
+        run: rm -rf ~/.ccache/

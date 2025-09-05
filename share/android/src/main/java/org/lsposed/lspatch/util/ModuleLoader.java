@@ -17,7 +17,7 @@ import java.util.zip.ZipFile;
 
 public class ModuleLoader {
 
-    private static final String TAG = "LSPatch";
+    private static final String TAG = "NPatch";
 
     private static void readDexes(ZipFile apkFile, List<SharedMemory> preLoadedDexes) {
         int secondary = 2;

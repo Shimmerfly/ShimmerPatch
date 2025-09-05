@@ -49,7 +49,7 @@ import hidden.HiddenApiBridge;
 @SuppressWarnings("unused")
 public class LSPApplication {
 
-    private static final String TAG = "LSPatch";
+    private static final String TAG = "NPatch";
     private static final int FIRST_APP_ZYGOTE_ISOLATED_UID = 90000;
     private static final int PER_USER_RANGE = 100000;
 

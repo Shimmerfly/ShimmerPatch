@@ -23,7 +23,7 @@ import java.util.zip.ZipFile;
 
 public class LocalApplicationService extends ILSPApplicationService.Stub {
 
-    private static final String TAG = "LSPatch";
+    private static final String TAG = "NPatch";
 
     private final List<Module> modules = new ArrayList<>();
 

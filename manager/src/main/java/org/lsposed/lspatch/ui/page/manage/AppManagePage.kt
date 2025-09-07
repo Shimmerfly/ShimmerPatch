@@ -195,7 +195,7 @@ fun AppManageBody(
                     }
                 ) {
                     DropdownMenuItem(
-                        text = { Text(text = it.first.label, color = MaterialTheme.colorScheme.primary) },
+                        text = { Text(text = appInfo.label, color = MaterialTheme.colorScheme.primary) },
                         onClick = {}, enabled = false
                     )
                     val shizukuUnavailable = stringResource(R.string.shizuku_unavailable)
@@ -205,18 +205,18 @@ fun AppManageBody(
                             onClick = {
                                 expanded = false
                                 scope.launch {
-                                    viewModel.dispatch(AppManageViewModel.ViewAction.UpdateLoader(it.first, it.second))
+                                    viewModel.dispatch(AppManageViewModel.ViewAction.UpdateLoader(appInfo, patchConfig))
                                 }
                             }
                         )
                     }
-                    if (it.second.useManager) {
+                    if (patchConfig.useManager) {
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.manage_module_scope)) },
                             onClick = {
                                 expanded = false
                                 scope.launch {
-                                    scopeApp = it.first.app.packageName
+                                    scopeApp = appInfo.app.packageName
                                     val activated = ConfigManager.getModulesForApp(scopeApp).map { it.pkgName }.toSet()
                                     val initialSelected = LSPPackageManager.appList.mapNotNullTo(ArrayList()) {
                                         if (activated.contains(it.app.packageName)) it.app.packageName else null
@@ -234,7 +234,7 @@ fun AppManageBody(
                                 if (!ShizukuApi.isPermissionGranted) {
                                     snackbarHost.showSnackbar(shizukuUnavailable)
                                 } else {
-                                    viewModel.dispatch(AppManageViewModel.ViewAction.PerformOptimize(it.first))
+                                    viewModel.dispatch(AppManageViewModel.ViewAction.PerformOptimize(appInfo))
                                 }
                             }
                         }
@@ -252,7 +252,7 @@ fun AppManageBody(
                         onClick = {
                             expanded = false
                             val intent = Intent(Intent.ACTION_DELETE).apply {
-                                data = Uri.parse("package:${it.first.app.packageName}")
+                                data = Uri.parse("package:${appInfo.app.packageName}")
                                 putExtra(Intent.EXTRA_RETURN_RESULT, true)
                             }
                             launcher.launch(intent)

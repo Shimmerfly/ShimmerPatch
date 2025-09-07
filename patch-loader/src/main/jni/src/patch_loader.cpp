@@ -35,95 +35,91 @@ using namespace lsplant;
 
 namespace lspd {
 
-void PatchLoader::LoadDex(JNIEnv* env, Context::PreloadedDex&& dex) {
-    auto class_activity_thread = JNI_FindClass(env, "android/app/ActivityThread");
-    auto class_activity_thread_app_bind_data =
-        JNI_FindClass(env, "android/app/ActivityThread$AppBindData");
-    auto class_loaded_apk = JNI_FindClass(env, "android/app/LoadedApk");
+    void PatchLoader::LoadDex(JNIEnv* env, Context::PreloadedDex&& dex) {
+        auto class_activity_thread = JNI_FindClass(env, "android/app/ActivityThread");
+        auto class_activity_thread_app_bind_data = JNI_FindClass(env, "android/app/ActivityThread$AppBindData");
+        auto class_loaded_apk = JNI_FindClass(env, "android/app/LoadedApk");
 
-    auto mid_current_activity_thread = JNI_GetStaticMethodID(
-        env, class_activity_thread, "currentActivityThread", "()Landroid/app/ActivityThread;");
-    auto mid_get_classloader =
-        JNI_GetMethodID(env, class_loaded_apk, "getClassLoader", "()Ljava/lang/ClassLoader;");
-    auto fid_m_bound_application = JNI_GetFieldID(env, class_activity_thread, "mBoundApplication",
-                                                  "Landroid/app/ActivityThread$AppBindData;");
-    auto fid_info =
-        JNI_GetFieldID(env, class_activity_thread_app_bind_data, "info", "Landroid/app/LoadedApk;");
+        auto mid_current_activity_thread = JNI_GetStaticMethodID(env, class_activity_thread, "currentActivityThread", "()Landroid/app/ActivityThread;");
+        auto mid_get_classloader = JNI_GetMethodID(env, class_loaded_apk, "getClassLoader", "()Ljava/lang/ClassLoader;");
+        auto fid_m_bound_application = JNI_GetFieldID(env, class_activity_thread, "mBoundApplication", "Landroid/app/ActivityThread$AppBindData;");
+        auto fid_info = JNI_GetFieldID(env, class_activity_thread_app_bind_data, "info", "Landroid/app/LoadedApk;");
 
-    auto activity_thread =
-        JNI_CallStaticObjectMethod(env, class_activity_thread, mid_current_activity_thread);
-    auto m_bound_application = JNI_GetObjectField(env, activity_thread, fid_m_bound_application);
-    auto info = JNI_GetObjectField(env, m_bound_application, fid_info);
-    auto stub_classloader = JNI_CallObjectMethod(env, info, mid_get_classloader);
+        auto activity_thread = JNI_CallStaticObjectMethod(env, class_activity_thread, mid_current_activity_thread);
+        auto m_bound_application = JNI_GetObjectField(env, activity_thread, fid_m_bound_application);
+        auto info = JNI_GetObjectField(env, m_bound_application, fid_info);
+        auto stub_classloader = JNI_CallObjectMethod(env, info, mid_get_classloader);
 
-    if (!stub_classloader) [[unlikely]] {
-        LOGE("getStubClassLoader failed!!!");
-        return;
+        if (!stub_classloader) {
+            LOGE("getStubClassLoader failed!!!");
+            return;
+        }
+
+        auto in_memory_classloader = JNI_FindClass(env, "dalvik/system/InMemoryDexClassLoader");
+        auto mid_init = JNI_GetMethodID(env, in_memory_classloader, "<init>", "(Ljava/nio/ByteBuffer;Ljava/lang/ClassLoader;)V");
+        auto dex_buffer = env->NewDirectByteBuffer(dex.data(), dex.size());
+
+        ScopedLocalRef<jobject> my_cl(JNI_NewObject(env, in_memory_classloader, mid_init, dex_buffer, stub_classloader));
+        if (!my_cl) {
+            LOGE("InMemoryDexClassLoader creation failed!!!");
+            return;
+        }
+
+        inject_class_loader_ = JNI_NewGlobalRef(env, my_cl.get());
     }
 
-    auto in_memory_classloader = JNI_FindClass(env, "dalvik/system/InMemoryDexClassLoader");
-    auto mid_init = JNI_GetMethodID(env, in_memory_classloader, "<init>",
-                                    "(Ljava/nio/ByteBuffer;Ljava/lang/ClassLoader;)V");
-    auto byte_buffer_class = JNI_FindClass(env, "java/nio/ByteBuffer");
-    auto dex_buffer = env->NewDirectByteBuffer(dex.data(), dex.size());
-    if (auto my_cl =
-            JNI_NewObject(env, in_memory_classloader, mid_init, dex_buffer, stub_classloader)) {
-        inject_class_loader_ = JNI_NewGlobalRef(env, my_cl);
-    } else {
-        LOGE("InMemoryDexClassLoader creation failed!!!");
-        return;
+    void PatchLoader::InitArtHooker(JNIEnv* env, const InitInfo& initInfo) {
+        Context::InitArtHooker(env, initInfo);
+        handler = initInfo;
+        art::ProfileSaver::DisableInline(initInfo);
+        art::FileManager::DisableBackgroundVerification(initInfo);
     }
 
-    env->DeleteLocalRef(dex_buffer);
-}
-
-void PatchLoader::InitArtHooker(JNIEnv* env, const InitInfo& initInfo) {
-    Context::InitArtHooker(env, initInfo);
-    handler = initInfo;
-    art::ProfileSaver::DisableInline(initInfo);
-    art::FileManager::DisableBackgroundVerification(initInfo);
-}
-
-void PatchLoader::InitHooks(JNIEnv* env) {
-    Context::InitHooks(env);
-    RegisterBypass(env);
-}
-
-void PatchLoader::SetupEntryClass(JNIEnv* env) {
-    if (auto entry_class = FindClassFromLoader(env, GetCurrentClassLoader(),
-                                               "org.lsposed.lspatch.loader.LSPApplication")) {
-        entry_class_ = JNI_NewGlobalRef(env, entry_class);
+    void PatchLoader::InitHooks(JNIEnv* env) {
+        Context::InitHooks(env);
+        RegisterBypass(env);
     }
-}
 
-void PatchLoader::Load(JNIEnv* env) {
-    /* InitSymbolCache(nullptr); */
-    lsplant::InitInfo initInfo{
-        .inline_hooker =
-            [](auto t, auto r) {
-                void* bk = nullptr;
-                return HookInline(t, r, &bk) == 0 ? bk : nullptr;
-            },
-        .inline_unhooker = [](auto t) { return UnhookInline(t) == 0; },
-        .art_symbol_resolver = [](auto symbol) { return GetArt()->getSymbAddress(symbol); },
-        .art_symbol_prefix_resolver =
-            [](auto symbol) { return GetArt()->getSymbPrefixFirstAddress(symbol); },
-    };
+    void PatchLoader::SetupEntryClass(JNIEnv* env) {
+        ScopedLocalRef<jclass> entry_class(FindClassFromLoader(env, GetCurrentClassLoader(), "org.lsposed.lspatch.loader.LSPApplication"));
+        if (entry_class) {
+            entry_class_ = JNI_NewGlobalRef(env, entry_class.get());
+        } else {
+            LOGE("Failed to find entry class.");
+        }
+    }
 
-    auto stub = JNI_FindClass(env, "org/lsposed/lspatch/metaloader/LSPAppComponentFactoryStub");
-    auto dex_field = JNI_GetStaticFieldID(env, stub, "dex", "[B");
+    void PatchLoader::Load(JNIEnv* env) {
+        lsplant::InitInfo initInfo{
+                .inline_hooker =
+                [](auto t, auto r) {
+                    void* bk = nullptr;
+                    return HookInline(t, r, &bk) == 0 ? bk : nullptr;
+                },
+                .inline_unhooker = [](auto t) { return UnhookInline(t) == 0; },
+                .art_symbol_resolver = [](auto symbol) { return GetArt()->getSymbAddress(symbol); },
+                .art_symbol_prefix_resolver =
+                [](auto symbol) { return GetArt()->getSymbPrefixFirstAddress(symbol); },
+        };
 
-    ScopedLocalRef<jbyteArray> array = JNI_GetStaticObjectField(env, stub, dex_field);
-    auto dex = PreloadedDex{env->GetByteArrayElements(array.get(), nullptr),
-                            static_cast<size_t>(JNI_GetArrayLength(env, array))};
+        auto stub = JNI_FindClass(env, "org/lsposed/lspatch/metaloader/LSPAppComponentFactoryStub");
+        auto dex_field = JNI_GetStaticFieldID(env, stub, "dex", "[B");
+        ScopedLocalRef<jbyteArray> array = JNI_GetStaticObjectField(env, stub, dex_field);
 
-    InitArtHooker(env, initInfo);
-    LoadDex(env, std::move(dex));
-    InitHooks(env);
+        if (!array) {
+            LOGE("Failed to get dex byte array from stub.");
+            return;
+        }
 
-    GetArt(true);
+        auto dex = PreloadedDex{env->GetByteArrayElements(array.get(), nullptr), static_cast<size_t>(JNI_GetArrayLength(env, array.get()))};
 
-    SetupEntryClass(env);
-    FindAndCall(env, "onLoad", "()V");
-}
+        InitArtHooker(env, initInfo);
+        LoadDex(env, std::move(dex));
+        InitHooks(env);
+
+        GetArt(true);
+
+        SetupEntryClass(env);
+        FindAndCall(env, "onLoad", "()V");
+    }
 }  // namespace lspd

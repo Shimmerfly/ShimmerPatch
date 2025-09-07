@@ -1,5 +1,6 @@
 //
 // Created by VIP on 2021/4/25.
+// Update by HSSkyBoy on 2025/9/7
 //
 
 #include "bypass_sig.h"
@@ -19,14 +20,14 @@ namespace lspd {
 std::string apkPath;
 std::string redirectPath;
 
-inline static constexpr auto kLibCName = "libc.so";
+inline static constexpr const char* kLibCName = "libc.so";
 
-std::unique_ptr<const SandHook::ElfImg> &GetC(bool release = false) {
-    static std::unique_ptr<const SandHook::ElfImg> kImg = nullptr;
+// 修改回傳型別以匹配 kImg 的實際型別
+std::unique_ptr<SandHook::ElfImg> &GetC(bool release = false) {
+    static auto kImg = std::make_unique<SandHook::ElfImg>(kLibCName);
     if (release) {
         kImg.reset();
-    } else if (!kImg) {
-        kImg = std::make_unique<SandHook::ElfImg>(kLibCName);
+        kImg = nullptr;
     }
     return kImg;
 }
@@ -34,17 +35,21 @@ std::unique_ptr<const SandHook::ElfImg> &GetC(bool release = false) {
 inline static auto __openat_ =
     "__openat"_sym.hook->*[]<lsplant::Backup auto backup>(int fd, const char *pathname, int flag,
                                                           int mode) static -> int {
-    if (pathname == apkPath) {
-        LOGD("Redirect openat from {} to {}", pathname, redirectPath);
+    if (pathname && strcmp(pathname, apkPath.c_str()) == 0) {
         return backup(fd, redirectPath.c_str(), flag, mode);
     }
     return backup(fd, pathname, flag, mode);
 };
 
-bool HookOpenat(const lsplant::HookHandler &handler) { return handler(__openat_); }
+    static bool HookOpenat(const lsplant::HookHandler &handler) { return handler(__openat_); }
 
-LSP_DEF_NATIVE_METHOD(void, SigBypass, enableOpenatHook, jstring origApkPath,
-                      jstring cacheApkPath) {
+    LSP_DEF_NATIVE_METHOD(void, SigBypass, enableOpenatHook, jstring origApkPath,
+                          jstring cacheApkPath) {
+        lsplant::JUTFString str1(env, origApkPath);
+        lsplant::JUTFString str2(env, cacheApkPath);
+        apkPath = str1.get();
+        redirectPath = str2.get();
+
     auto r = HookOpenat(lsplant::InitInfo{
         .inline_hooker =
             [](auto t, auto r) {
@@ -55,16 +60,10 @@ LSP_DEF_NATIVE_METHOD(void, SigBypass, enableOpenatHook, jstring origApkPath,
     });
     if (!r) {
         LOGE("Hook __openat fail");
-        return;
+        }
+        // 无论 Hook 成功与否，都确保清除 libc.so 的 ElfImg
+        GetC(true);
     }
-    lsplant::JUTFString str1(env, origApkPath);
-    lsplant::JUTFString str2(env, cacheApkPath);
-    apkPath = str1.get();
-    redirectPath = str2.get();
-    LOGD("apkPath {}", apkPath.c_str());
-    LOGD("redirectPath {}", redirectPath.c_str());
-    GetC(true);
-}
 
 static JNINativeMethod gMethods[] = {
     LSP_NATIVE_METHOD(SigBypass, enableOpenatHook, "(Ljava/lang/String;Ljava/lang/String;)V")};

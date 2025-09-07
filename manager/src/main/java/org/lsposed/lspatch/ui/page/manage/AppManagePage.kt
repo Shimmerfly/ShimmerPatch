@@ -197,7 +197,6 @@ fun AppManageBody(
                                 scope.launch {
                                     viewModel.dispatch(AppManageViewModel.ViewAction.UpdateLoader(it.first, it.second))
                                 }
-                                }
                             }
                         )
                     }

@@ -479,13 +479,6 @@ private fun DoPatchBody(modifier: Modifier, navigator: DestinationsNavigator) {
                         Button(
                             modifier = Modifier.weight(1f),
                             onClick = {
-                                if (!ShizukuApi.isPermissionGranted) {
-                                    scope.launch {
-                                        snackbarHost.showSnackbar(shizukuUnavailable)
-                                    }
-                                } else {
-                                    installing = true
-                                }
                                 installation = if (!ShizukuApi.isPermissionGranted) NewPatchViewModel.InstallMethod.SYSTEM else NewPatchViewModel.InstallMethod.SHIZUKU
                                 Log.d(TAG, "Installation method: $installation")
                             },

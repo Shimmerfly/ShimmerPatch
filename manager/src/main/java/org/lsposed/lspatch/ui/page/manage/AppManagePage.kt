@@ -143,10 +143,11 @@ fun AppManageBody(
             items(
                 items = viewModel.appList,
                 key = { it.first.app.packageName }
-            ) {
-                val isRolling = it.second.useManager && it.second.lspConfig.VERSION_CODE >= Constants.MIN_ROLLING_VERSION_CODE
-                val canUpdateLoader = !isRolling && it.second.lspConfig.VERSION_CODE < LSPConfig.instance.VERSION_CODE
+            ) { (appInfo, patchConfig) ->
+                val isRolling = patchConfig.useManager && patchConfig.lspConfig.VERSION_CODE >= Constants.MIN_ROLLING_VERSION_CODE
+                val canUpdateLoader = !isRolling && (patchConfig.lspConfig.VERSION_CODE < LSPConfig.instance.VERSION_CODE || patchConfig.managerPackageName != BuildConfig.APPLICATION_ID)
                 var expanded by remember { mutableStateOf(false) }
+
                 AnywhereDropdown(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
@@ -154,21 +155,30 @@ fun AppManageBody(
                     onLongClick = { expanded = true },
                     surface = {
                         AppItem(
-                            icon = LSPPackageManager.getIcon(it.first),
-                            label = it.first.label,
-                            packageName = it.first.app.packageName,
+                            icon = LSPPackageManager.getIcon(appInfo),
+                            label = appInfo.label,
+                            packageName = appInfo.app.packageName,
                             additionalContent = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
+                                    val patchText = if (patchConfig.useManager) {
+                                        stringResource(R.string.patch_local)
+                                    } else {
+                                        stringResource(R.string.patch_integrated)
+                                    }
+                                    val patchColor = if (patchConfig.useManager) {
+                                        MaterialTheme.colorScheme.secondary
+                                    } else {
+                                        MaterialTheme.colorScheme.tertiary
+                                    }
+                                    val versionText = if (isRolling) {
+                                        stringResource(R.string.manage_rolling)
+                                    } else {
+                                        patchConfig.lspConfig.VERSION_CODE.toString()
+                                    }
+
                                     Text(
-                                        text = buildAnnotatedString {
-                                            val (text, color) =
-                                                if (it.second.useManager) stringResource(R.string.patch_local) to MaterialTheme.colorScheme.secondary
-                                                else stringResource(R.string.patch_integrated) to MaterialTheme.colorScheme.tertiary
-                                            append(AnnotatedString(text, SpanStyle(color = color)))
-                                            append("  ")
-                                            if (isRolling) append(stringResource(R.string.manage_rolling))
-                                            else append(it.second.lspConfig.VERSION_CODE.toString())
-                                        },
+                                        text = "$patchText  $versionText",
+                                        color = patchColor,
                                         fontWeight = FontWeight.SemiBold,
                                         fontFamily = FontFamily.Serif,
                                         style = MaterialTheme.typography.bodySmall

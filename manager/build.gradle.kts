@@ -76,7 +76,7 @@ afterEvaluate {
             dependsOn(tasks["assemble$variantCapped"])
             from(variant.outputs.map { it.outputFile })
             into("${rootProject.projectDir}/out/$variantLowered")
-            rename(".*.apk", "manager-v$verName-$verCode-$variantLowered.apk")
+            rename(".*.apk", "NPatch-v$verName-$verCode-$variantLowered.apk")
         }
     }
 }

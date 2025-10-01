@@ -37,27 +37,27 @@ public class RemoteApplicationService implements ILSPApplicationService {
 
     @SuppressLint("DiscouragedPrivateApi")
     public RemoteApplicationService(Context context) throws RemoteException {
-        try {
-            var intent = new Intent()
-                    .setComponent(new ComponentName(Constants.MANAGER_PACKAGE_NAME, MODULE_SERVICE))
-                    .putExtra("packageName", context.getPackageName());
-            // TODO: Authentication
-            var latch = new CountDownLatch(1);
-            var conn = new ServiceConnection() {
-                @Override
-                public void onServiceConnected(ComponentName name, IBinder binder) {
-                    Log.i(TAG, "Manager binder received");
-                    service = ILSPApplicationService.Stub.asInterface(binder);
-                    latch.countDown();
-                }
+        var intent = new Intent()
+                .setComponent(new ComponentName(Constants.MANAGER_PACKAGE_NAME, MODULE_SERVICE))
+                .putExtra("packageName", context.getPackageName());
+        // TODO: Authentication
+        var latch = new CountDownLatch(1);
+        var conn = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder binder) {
+                Log.i(TAG, "Manager binder received");
+                service = ILSPApplicationService.Stub.asInterface(binder);
+                latch.countDown();
+            }
 
-                @Override
-                public void onServiceDisconnected(ComponentName name) {
-                    Log.e(TAG, "Manager service died");
-                    service = null;
-                }
-            };
-            Log.i(TAG, "Request manager binder");
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                Log.e(TAG, "Manager service died");
+                service = null;
+            }
+        };
+        Log.i(TAG, "Request manager binder");
+        try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 context.bindService(intent, Context.BIND_AUTO_CREATE, Executors.newSingleThreadExecutor(), conn);
             } else {
@@ -72,7 +72,16 @@ public class RemoteApplicationService implements ILSPApplicationService {
                 bindServiceAsUserMethod.invoke(context, intent, conn, Context.BIND_AUTO_CREATE, handler, userHandle);
             }
             boolean success = latch.await(1, TimeUnit.SECONDS);
-            if (!success) throw new TimeoutException("Bind service timeout");
+
+            if (!success) {
+                // Attempt to unbind the service before throwing a timeout for cleanup
+                try {
+                    context.unbindService(conn);
+                } catch (IllegalArgumentException | IllegalStateException ignored) {
+                    // Ignored
+                }
+                throw new TimeoutException("Bind service timeout");
+            }
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                  InterruptedException | TimeoutException e) {
             var r = new RemoteException("Failed to get manager binder");

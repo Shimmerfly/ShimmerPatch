@@ -83,6 +83,7 @@ public class LSPApplication {
 
         Log.d(TAG, "Initialize service client");
         ILSPApplicationService service;
+
         if (config.useManager) {
             try {
                 service = new RemoteApplicationService(context);
@@ -95,14 +96,14 @@ public class LSPApplication {
                     moduleArr.put(moduleObj);
                 }
                 SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
-                shared.edit().putString("modules",moduleArr.toString()).commit();
-                Log.e(TAG, "Success update module scope");
+                shared.edit().putString("modules",moduleArr.toString()).apply();
+                Log.i(TAG, "Success update module scope from Manager");
             }catch (Exception e){
-                Log.e(TAG, "Failed to connect to manager, fallback to fixed local service");
+                Log.e(TAG, "Failed to connect to manager, fallback to fixed local service (NLAS)");
                 service = new NeoLocalApplicationService(context);
             }
-
         } else {
+            Log.i(TAG, "Manager is disabled, using remote service (NLAS)");
             service = new NeoLocalApplicationService(context);
         }
 

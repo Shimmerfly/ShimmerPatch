@@ -17,39 +17,50 @@ import org.lsposed.lspd.service.ILSPApplicationService;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class NeoLocalApplicationService extends ILSPApplicationService.Stub {
     private static final String TAG = "NPatch";
     private final List<Module> cachedModule;
-    public NeoLocalApplicationService(Context context){
-        SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
-        cachedModule = new ArrayList<>();
+    public NeoLocalApplicationService(Context context) {
+        cachedModule = Collections.synchronizedList(new ArrayList<>());
+        loadModulesFromSharedPreferences(context);
+    }
+
+    private void loadModulesFromSharedPreferences(Context context) {
+        var shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
         try {
-            JSONArray mArr = new JSONArray(shared.getString("modules", "{}"));
-            Log.i(TAG,"use fixed local application service:"+shared.getString("modules", "{}"));
+            String modulesJsonString = shared.getString("modules", "[]");
+            Log.i(TAG, "using local application service with modules:" + modulesJsonString);
+
+            if (modulesJsonString.equals("{}")) {
+                modulesJsonString = "[]";
+            }
+
+            var mArr = new JSONArray(modulesJsonString);
             for (int i = 0; i < mArr.length(); i++) {
-                JSONObject mObj = mArr.getJSONObject(i);
-                Module m = new Module();
-                String path = mObj.getString("path");
-                String packageName = mObj.getString("packageName");
-                m.apkPath = path;
-                m.packageName = packageName;
-                if (!new File(m.apkPath).exists()){
-                    Log.i("NPatch","Module:" + m.packageName + " path not available, reset.");
+                var mObj = mArr.getJSONObject(i);
+                var m = new Module();
+                m.apkPath = mObj.getString("path");
+                m.packageName = mObj.getString("packageName");
+
+                if (m.apkPath == null || !new File(m.apkPath).exists()) {
+                    Log.w(TAG, "Module:" + m.packageName + " path not available, attempting reset.");
                     try {
                         ApplicationInfo info = context.getPackageManager().getApplicationInfo(m.packageName, 0);
                         m.apkPath = info.sourceDir;
-                        Log.i("NPatch","Module:" + m.packageName + " path reset to " + m.apkPath);
-                    }catch (Exception e){
-                        Log.e("NPatch",Log.getStackTraceString(e));
+                        Log.i(TAG, "Module:" + m.packageName + " path reset to " + m.apkPath);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Failed to get ApplicationInfo for module: " + m.packageName, e);
+                        continue;
                     }
                 }
                 m.file = ModuleLoader.loadModule(m.apkPath);
                 cachedModule.add(m);
             }
-        }catch (Exception e){
-            Log.e(TAG,Log.getStackTraceString(e));
+        } catch (Throwable e) {
+            Log.e(TAG, "Error loading modules from SharedPreferences.", e);
         }
     }
 

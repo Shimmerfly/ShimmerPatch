@@ -1,4 +1,4 @@
-name: Clean Gradle Cache
+name: Clean Build
 
 on:
   workflow_dispatch:
@@ -15,3 +15,17 @@ jobs:
 
       - name: 删除 ccache 缓存
         run: rm -rf ~/.ccache/
+
+  cleanup-runs:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: 清理所有失敗的 Workflows
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 1
+          delete_run_by_conclusion_pattern: 'failure,skipped'

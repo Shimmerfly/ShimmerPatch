@@ -109,6 +109,9 @@ jobs:
           echo 'android.native.buildOutput=verbose'
         } >> gradle.properties
 
+    - name: Grant execution permission to gradlew
+      run: chmod +x gradlew
+
     - name: Build dependencies with Gradle
       working-directory: libxposed
       run: |

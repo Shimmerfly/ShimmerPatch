@@ -12,6 +12,7 @@
 #include "patch_loader.h"
 #include "utils/hook_helper.hpp"
 #include "utils/jni_helper.hpp"
+#include <unistd.h>
 
 using lsplant::operator""_sym;
 
@@ -56,6 +57,9 @@ namespace lspd {
         apkPath = str1.get();
         redirectPath = str2.get();
 
+        LOGI("Attempting to hook __openat (libc). Original: %s, Redirect: %s",
+             apkPath.c_str(), redirectPath.c_str());
+             
         auto r = HookOpenat(lsplant::InitInfo{
                 .inline_hooker =
                 [](auto t, auto r) {
@@ -67,7 +71,7 @@ namespace lspd {
                 },
         });
         if (!r) {
-            LOGE("Hook __openat fail");
+            LOGE("Hook __openat (libc) fail");
         }
         // 无论 Hook 成功与否，都确保清除 libc.so 的 ElfImg
         GetC(true);

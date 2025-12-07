@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
@@ -68,191 +70,199 @@ fun AppManageBody(
     val snackbarHost = LocalSnackbarHost.current
     val scope = rememberCoroutineScope()
 
-    if (viewModel.appList.isEmpty()) {
-        Box(Modifier.fillMaxSize()) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = run {
-                    if (NPackageManager.appList.isEmpty()) stringResource(R.string.manage_loading)
-                    else stringResource(R.string.manage_no_apps)
-                },
-                fontFamily = FontFamily.Serif,
-                style = MaterialTheme.typography.headlineSmall
-            )
-        }
-    } else {
-        var scopeApp by rememberSaveable { mutableStateOf("") }
-        var afterCheckManager by remember { mutableStateOf<(() -> Unit)?>(null) }
-        resultRecipient.onNavResult {
-            if (it is NavResult.Value) {
-                scope.launch {
-                    val result = it.value as SelectAppsResult.MultipleApps
-                    ConfigManager.getModulesForApp(scopeApp).forEach {
-                        ConfigManager.deactivateModule(scopeApp, it)
-                    }
-                    result.selected.forEach {
-                        Log.d(TAG, "Activate ${it.app.packageName} for $scopeApp")
-                        ConfigManager.activateModule(scopeApp, Module(it.app.packageName, it.app.sourceDir))
-                    }
+    var scopeApp by rememberSaveable { mutableStateOf("") }
+    var afterCheckManager by remember { mutableStateOf<(() -> Unit)?>(null) }
+    
+    resultRecipient.onNavResult {
+        if (it is NavResult.Value) {
+            scope.launch {
+                val result = it.value as SelectAppsResult.MultipleApps
+                ConfigManager.getModulesForApp(scopeApp).forEach {
+                    ConfigManager.deactivateModule(scopeApp, it)
+                }
+                result.selected.forEach {
+                    Log.d(TAG, "Activate ${it.app.packageName} for $scopeApp")
+                    ConfigManager.activateModule(scopeApp, Module(it.app.packageName, it.app.sourceDir))
                 }
             }
         }
+    }
 
-        when (viewModel.updateLoaderState) {
-            is ProcessingState.Idle -> Unit
-            is ProcessingState.Processing -> LoadingDialog()
-            is ProcessingState.Done -> {
-                val it = viewModel.updateLoaderState as ProcessingState.Done
-                val updateSuccessfully = stringResource(R.string.manage_update_loader_successfully)
-                val updateFailed = stringResource(R.string.manage_update_loader_failed)
-                val copyError = stringResource(R.string.copy_error)
-                LaunchedEffect(Unit) {
-                    it.result.onSuccess {
-                        snackbarHost.showSnackbar(updateSuccessfully)
-                    }.onFailure {
-                        val result = snackbarHost.showSnackbar(updateFailed, copyError)
-                        if (result == SnackbarResult.ActionPerformed) {
-                            val cm = lspApp.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            cm.setPrimaryClip(ClipData.newPlainText("NPatch", it.toString()))
-                        }
+    when (viewModel.updateLoaderState) {
+        is ProcessingState.Idle -> Unit
+        is ProcessingState.Processing -> LoadingDialog()
+        is ProcessingState.Done -> {
+            val it = viewModel.updateLoaderState as ProcessingState.Done
+            val updateSuccessfully = stringResource(R.string.manage_update_loader_successfully)
+            val updateFailed = stringResource(R.string.manage_update_loader_failed)
+            val copyError = stringResource(R.string.copy_error)
+            LaunchedEffect(Unit) {
+                it.result.onSuccess {
+                    snackbarHost.showSnackbar(updateSuccessfully)
+                }.onFailure {
+                    val result = snackbarHost.showSnackbar(updateFailed, copyError)
+                    if (result == SnackbarResult.ActionPerformed) {
+                        val cm = lspApp.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        cm.setPrimaryClip(ClipData.newPlainText("NPatch", it.toString()))
                     }
-                    viewModel.dispatch(AppManageViewModel.ViewAction.ClearUpdateLoaderResult)
                 }
+                viewModel.dispatch(AppManageViewModel.ViewAction.ClearUpdateLoaderResult)
             }
         }
-        when (viewModel.optimizeState) {
-            is ProcessingState.Idle -> Unit
-            is ProcessingState.Processing -> LoadingDialog()
-            is ProcessingState.Done -> {
-                val it = viewModel.optimizeState as ProcessingState.Done
-                val optimizeSucceed = stringResource(R.string.manage_optimize_successfully)
-                val optimizeFailed = stringResource(R.string.manage_optimize_failed)
-                LaunchedEffect(Unit) {
-                    snackbarHost.showSnackbar(if (it.result) optimizeSucceed else optimizeFailed)
-                    viewModel.dispatch(AppManageViewModel.ViewAction.ClearOptimizeResult)
-                }
+    }
+    when (viewModel.optimizeState) {
+        is ProcessingState.Idle -> Unit
+        is ProcessingState.Processing -> LoadingDialog()
+        is ProcessingState.Done -> {
+            val it = viewModel.optimizeState as ProcessingState.Done
+            val optimizeSucceed = stringResource(R.string.manage_optimize_successfully)
+            val optimizeFailed = stringResource(R.string.manage_optimize_failed)
+            LaunchedEffect(Unit) {
+                snackbarHost.showSnackbar(if (it.result) optimizeSucceed else optimizeFailed)
+                viewModel.dispatch(AppManageViewModel.ViewAction.ClearOptimizeResult)
             }
         }
+    }
+    // 下拉刷新
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(viewModel.isRefreshing),
+        onRefresh = { viewModel.dispatch(AppManageViewModel.ViewAction.Refresh) },
+        modifier = Modifier.fillMaxSize()
+    ) {
+        if (viewModel.appList.isEmpty()) {
+            Box(Modifier.fillMaxSize()) {
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = run {
+                        if (NPackageManager.appList.isEmpty()) stringResource(R.string.manage_loading)
+                        else stringResource(R.string.manage_no_apps)
+                    },
+                    fontFamily = FontFamily.Serif,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            }
+        } else {
+            LazyColumn(Modifier.fillMaxSize()) {
+                items(
+                    items = viewModel.appList,
+                    key = { it.first.app.packageName }
+                ) { (appInfo, patchConfig) ->
+                    val isRolling = patchConfig.useManager && patchConfig.lspConfig.VERSION_CODE >= Constants.MIN_ROLLING_VERSION_CODE
+                    val canUpdateLoader = !isRolling && (patchConfig.lspConfig.VERSION_CODE < LSPConfig.instance.VERSION_CODE || patchConfig.managerPackageName != BuildConfig.APPLICATION_ID)
+                    var expanded by remember { mutableStateOf(false) }
 
-        LazyColumn(Modifier.fillMaxHeight()) {
-            items(
-                items = viewModel.appList,
-                key = { it.first.app.packageName }
-            ) { (appInfo, patchConfig) ->
-                val isRolling = patchConfig.useManager && patchConfig.lspConfig.VERSION_CODE >= Constants.MIN_ROLLING_VERSION_CODE
-                val canUpdateLoader = !isRolling && (patchConfig.lspConfig.VERSION_CODE < LSPConfig.instance.VERSION_CODE || patchConfig.managerPackageName != BuildConfig.APPLICATION_ID)
-                var expanded by remember { mutableStateOf(false) }
+                    AnywhereDropdown(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        onClick = { expanded = true },
+                        onLongClick = { expanded = true },
+                        surface = {
+                            AppItem(
+                                icon = NPackageManager.getIcon(appInfo),
+                                label = appInfo.label,
+                                packageName = appInfo.app.packageName,
+                                additionalContent = {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        val patchText = if (patchConfig.useManager) {
+                                            stringResource(R.string.patch_local)
+                                        } else {
+                                            stringResource(R.string.patch_integrated)
+                                        }
+                                        val patchColor = if (patchConfig.useManager) {
+                                            MaterialTheme.colorScheme.secondary
+                                        } else {
+                                            MaterialTheme.colorScheme.tertiary
+                                        }
+                                        val versionText = if (isRolling) {
+                                            stringResource(R.string.manage_rolling)
+                                        } else {
+                                            patchConfig.lspConfig.VERSION_CODE.toString()
+                                        }
 
-                AnywhereDropdown(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    onClick = { expanded = true },
-                    onLongClick = { expanded = true },
-                    surface = {
-                        AppItem(
-                            icon = NPackageManager.getIcon(appInfo),
-                            label = appInfo.label,
-                            packageName = appInfo.app.packageName,
-                            additionalContent = {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    val patchText = if (patchConfig.useManager) {
-                                        stringResource(R.string.patch_local)
-                                    } else {
-                                        stringResource(R.string.patch_integrated)
-                                    }
-                                    val patchColor = if (patchConfig.useManager) {
-                                        MaterialTheme.colorScheme.secondary
-                                    } else {
-                                        MaterialTheme.colorScheme.tertiary
-                                    }
-                                    val versionText = if (isRolling) {
-                                        stringResource(R.string.manage_rolling)
-                                    } else {
-                                        patchConfig.lspConfig.VERSION_CODE.toString()
-                                    }
-
-                                    Text(
-                                        text = "$patchText  $versionText",
-                                        color = patchColor,
-                                        fontWeight = FontWeight.SemiBold,
-                                        fontFamily = FontFamily.Serif,
-                                        style = MaterialTheme.typography.bodySmall
-                                    )
-                                    if (canUpdateLoader) {
-                                        with(LocalDensity.current) {
-                                            val size = MaterialTheme.typography.bodySmall.fontSize * 1.2
-                                            Icon(Icons.Filled.KeyboardCapslock, null, Modifier.size(size.toDp()))
+                                        Text(
+                                            text = "$patchText  $versionText",
+                                            color = patchColor,
+                                            fontWeight = FontWeight.SemiBold,
+                                            fontFamily = FontFamily.Serif,
+                                            style = MaterialTheme.typography.bodySmall
+                                        )
+                                        if (canUpdateLoader) {
+                                            with(LocalDensity.current) {
+                                                val size = MaterialTheme.typography.bodySmall.fontSize * 1.2
+                                                Icon(Icons.Filled.KeyboardCapslock, null, Modifier.size(size.toDp()))
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        )
-                    }
-                ) {
-                    DropdownMenuItem(
-                        text = { Text(text = appInfo.label, color = MaterialTheme.colorScheme.primary) },
-                        onClick = {}, enabled = false
-                    )
-                    val shizukuUnavailable = stringResource(R.string.shizuku_unavailable)
-                    if (canUpdateLoader || BuildConfig.DEBUG) {
+                            )
+                        }
+                    ) {
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.manage_update_loader)) },
-                            onClick = {
-                                expanded = false
-                                scope.launch {
-                                    viewModel.dispatch(AppManageViewModel.ViewAction.UpdateLoader(appInfo, patchConfig))
-                                }
-                            }
+                            text = { Text(text = appInfo.label, color = MaterialTheme.colorScheme.primary) },
+                            onClick = {}, enabled = false
                         )
-                    }
-                    if (patchConfig.useManager) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.manage_module_scope)) },
-                            onClick = {
-                                expanded = false
-                                scope.launch {
-                                    scopeApp = appInfo.app.packageName
-                                    val activated = ConfigManager.getModulesForApp(scopeApp).map { it.pkgName }.toSet()
-                                    val initialSelected = NPackageManager.appList.mapNotNullTo(ArrayList()) {
-                                        if (activated.contains(it.app.packageName)) it.app.packageName else null
+                        val shizukuUnavailable = stringResource(R.string.shizuku_unavailable)
+                        if (canUpdateLoader || BuildConfig.DEBUG) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.manage_update_loader)) },
+                                onClick = {
+                                    expanded = false
+                                    scope.launch {
+                                        viewModel.dispatch(AppManageViewModel.ViewAction.UpdateLoader(appInfo, patchConfig))
                                     }
-                                    navigator.navigate(SelectAppsScreenDestination(true, initialSelected))
+                                }
+                            )
+                        }
+                        if (patchConfig.useManager) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.manage_module_scope)) },
+                                onClick = {
+                                    expanded = false
+                                    scope.launch {
+                                        scopeApp = appInfo.app.packageName
+                                        val activated = ConfigManager.getModulesForApp(scopeApp).map { it.pkgName }.toSet()
+                                        val initialSelected = NPackageManager.appList.mapNotNullTo(ArrayList()) {
+                                            if (activated.contains(it.app.packageName)) it.app.packageName else null
+                                        }
+                                        navigator.navigate(SelectAppsScreenDestination(true, initialSelected))
+                                    }
+                                }
+                            )
+                        }
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.manage_optimize)) },
+                            onClick = {
+                                expanded = false
+                                scope.launch {
+                                    if (!ShizukuApi.isPermissionGranted) {
+                                        snackbarHost.showSnackbar(shizukuUnavailable)
+                                    } else {
+                                        viewModel.dispatch(AppManageViewModel.ViewAction.PerformOptimize(appInfo))
+                                    }
                                 }
                             }
                         )
-                    }
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.manage_optimize)) },
-                        onClick = {
-                            expanded = false
-                            scope.launch {
-                                if (!ShizukuApi.isPermissionGranted) {
-                                    snackbarHost.showSnackbar(shizukuUnavailable)
-                                } else {
-                                    viewModel.dispatch(AppManageViewModel.ViewAction.PerformOptimize(appInfo))
+                        val uninstallSuccessfully = stringResource(R.string.manage_uninstall_successfully)
+                        val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                            if (result.resultCode == Activity.RESULT_OK) {
+                                scope.launch {
+                                    snackbarHost.showSnackbar(uninstallSuccessfully)
+                                    viewModel.dispatch(AppManageViewModel.ViewAction.Refresh)
                                 }
                             }
                         }
-                    )
-                    val uninstallSuccessfully = stringResource(R.string.manage_uninstall_successfully)
-                    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                        if (result.resultCode == Activity.RESULT_OK) {
-                            scope.launch {
-                                snackbarHost.showSnackbar(uninstallSuccessfully)
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.uninstall)) },
+                            onClick = {
+                                expanded = false
+                                val intent = Intent(Intent.ACTION_DELETE).apply {
+                                    data = Uri.parse("package:${appInfo.app.packageName}")
+                                    putExtra(Intent.EXTRA_RETURN_RESULT, true)
+                                }
+                                launcher.launch(intent)
                             }
-                        }
+                        )
                     }
-                    DropdownMenuItem(
-                        text = { Text(stringResource(R.string.uninstall)) },
-                        onClick = {
-                            expanded = false
-                            val intent = Intent(Intent.ACTION_DELETE).apply {
-                                data = Uri.parse("package:${appInfo.app.packageName}")
-                                putExtra(Intent.EXTRA_RETURN_RESULT, true)
-                            }
-                            launcher.launch(intent)
-                        }
-                    )
                 }
             }
         }

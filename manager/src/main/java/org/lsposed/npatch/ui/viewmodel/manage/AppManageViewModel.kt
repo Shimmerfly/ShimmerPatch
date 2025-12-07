@@ -42,7 +42,7 @@ class AppManageViewModel : ViewModel() {
         object ClearUpdateLoaderResult : ViewAction()
         data class PerformOptimize(val appInfo: AppInfo) : ViewAction()
         object ClearOptimizeResult : ViewAction()
-        object RefreshList : ViewAction()
+        object Refresh : ViewAction()
     }
 
     // 手動管理狀態，避免實時響應系統廣播導致列表跳動
@@ -98,7 +98,16 @@ class AppManageViewModel : ViewModel() {
                 is ViewAction.ClearUpdateLoaderResult -> updateLoaderState = ProcessingState.Idle
                 is ViewAction.PerformOptimize -> performOptimize(action.appInfo)
                 is ViewAction.ClearOptimizeResult -> optimizeState = ProcessingState.Idle
-                is ViewAction.RefreshList -> loadData(silent = false)
+                is ViewAction.Refresh -> {
+                    if (!isRefreshing) {
+                        isRefreshing = true
+                        withContext(Dispatchers.IO) {
+                            NPackageManager.fetchAppList()
+                        }
+                        loadData(silent = true)
+                        isRefreshing = false
+                    }
+                }
             }
         }
     }

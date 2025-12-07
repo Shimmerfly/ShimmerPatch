@@ -24,22 +24,12 @@ class LSPApplication : Application() {
     var targetApkFiles: ArrayList<File>? = null
     val globalScope = CoroutineScope(Dispatchers.Default)
 
-    companion object {
-        init {
-            try {
-                System.loadLibrary("verify")
-            } catch (e: UnsatisfiedLinkError) {
-                e.printStackTrace()
-            }
-        }
-    }
 
     override fun onCreate() {
         super.onCreate()
-
         verifySignature()
+
         try {
-            nativeVerify()
         } catch (e: UnsatisfiedLinkError) {
             e.printStackTrace()
         } catch (e: Exception) {
@@ -74,5 +64,9 @@ class LSPApplication : Application() {
         } catch (e: Exception) {
             killApp()
         }
+    }
+
+    private fun killApp() {
+        Process.killProcess(Process.myPid())
     }
 }

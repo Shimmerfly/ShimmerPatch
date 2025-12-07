@@ -19,15 +19,15 @@ import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.lsposed.lspd.core.Startup;
+import org.lsposed.lspd.models.Module;
+import org.lsposed.lspd.service.ILSPApplicationService;
 import org.lsposed.npatch.loader.util.FileUtils;
 import org.lsposed.npatch.loader.util.XLog;
 import org.lsposed.npatch.service.IntegrApplicationService;
 import org.lsposed.npatch.service.NeoLocalApplicationService;
 import org.lsposed.npatch.service.RemoteApplicationService;
 import org.lsposed.npatch.share.PatchConfig;
-import org.lsposed.lspd.core.Startup;
-import org.lsposed.lspd.models.Module;
-import org.lsposed.lspd.service.ILSPApplicationService;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -47,6 +47,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import dalvik.system.DexFile;
@@ -56,6 +57,7 @@ import hidden.HiddenApiBridge;
 
 /**
  * Created by Windysha
+ * Updated by NkBe
  */
 @SuppressWarnings("unused")
 public class LSPApplication {
@@ -109,8 +111,8 @@ public class LSPApplication {
                     moduleObj.put("packageName", module.packageName);
                     moduleArr.put(moduleObj);
                 }
-                SharedPreferences shared = context.getSharedPreferences("opatch", Context.MODE_PRIVATE);
-                shared.edit().putString("modules",moduleArr.toString()).commit();
+                SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
+                shared.edit().putString("modules", moduleArr.toString()).commit();
                 Log.e(TAG, "Success update module scope");
             }catch (Exception e){
                 Log.e(TAG, "Failed to connect to manager, fallback to fixed local service");
@@ -123,7 +125,7 @@ public class LSPApplication {
         disableProfile(context);
         Startup.initXposed(false, ActivityThread.currentProcessName(), context.getApplicationInfo().dataDir, service);
         Startup.bootstrapXposed();
-        
+
         // WARN: Since it uses `XResource`, the following class should not be initialized
         // before forkPostCommon is invoke. Otherwise, you will get failure of XResources
 
@@ -161,11 +163,13 @@ public class LSPApplication {
             Log.i(TAG, "Signature bypass level: " + config.sigBypassLevel);
 
             Path originPath = Paths.get(appInfo.dataDir, "cache/npatch/origin/");
-            Path cacheApkPath;
-            try (ZipFile sourceFile = new ZipFile(appInfo.sourceDir)) {
-                cacheApkPath = originPath.resolve(sourceFile.getEntry(ORIGINAL_APK_ASSET_PATH).getCrc() + ".apk");
+            String originalSourceDir = appInfo.sourceDir;
+
+            long sourceCrc;
+            try (ZipFile sourceFile = new ZipFile(originalSourceDir)) {
+                sourceCrc = sourceFile.getEntry(ORIGINAL_APK_ASSET_PATH).getCrc();
             }
-            String sourceFileaa = appInfo.sourceDir;
+            Path cacheApkPath = originPath.resolve(sourceCrc + ".apk");
 
             appInfo.sourceDir = cacheApkPath.toString();
             appInfo.publicSourceDir = cacheApkPath.toString();
@@ -181,17 +185,16 @@ public class LSPApplication {
             }
             Path providerPath = null;
             if (config.injectProvider) {
-                try (ZipFile sourceFile = new ZipFile(sourceFileaa)) {
-                    providerPath = Paths.get(appInfo.dataDir, "cache/npatch/origin/p_" + sourceFile.getEntry(ORIGINAL_APK_ASSET_PATH).getCrc() + ".dex");
+                providerPath = originPath.resolve("p_" + sourceCrc + ".dex");
+                try {
                     Files.deleteIfExists(providerPath);
                     try (InputStream is = baseClassLoader.getResourceAsStream(PROVIDER_DEX_ASSET_PATH)) {
                         Files.copy(is, providerPath);
                     }
-                    if (providerPath != null) {
-                        providerPath.toFile().setWritable(false);
-                    }
+                    providerPath.toFile().setWritable(false);
                 } catch (Exception e) {
                     Log.e(TAG, "Failed to inject provider:" + Log.getStackTraceString(e));
+                    providerPath = null;
                 }
             }
 
@@ -260,48 +263,31 @@ public class LSPApplication {
     }
 
     public static void disableProfile(Context context) {
-        final ArrayList<String> codePaths = new ArrayList<>();
         var appInfo = context.getApplicationInfo();
-        var pkgName = context.getPackageName();
         if (appInfo == null) return;
-        if ((appInfo.flags & ApplicationInfo.FLAG_HAS_CODE) != 0) {
-            codePaths.add(appInfo.sourceDir);
-        }
-        if (appInfo.splitSourceDirs != null) {
-            Collections.addAll(codePaths, appInfo.splitSourceDirs);
-        }
 
-        if (codePaths.isEmpty()) {
-            // If there are no code paths there's no need to setup a profile file and register with
-            // the runtime,
-            return;
-        }
+        var codePaths = new ArrayList<String>();
+        if ((appInfo.flags & ApplicationInfo.FLAG_HAS_CODE) != 0) codePaths.add(appInfo.sourceDir);
+        if (appInfo.splitSourceDirs != null) Collections.addAll(codePaths, appInfo.splitSourceDirs);
+        if (codePaths.isEmpty()) return;
 
-        var profileDir = HiddenApiBridge.Environment_getDataProfilesDePackageDirectory(appInfo.uid / PER_USER_RANGE, pkgName);
-
-        var attrs = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("r--------"));
+        var profileDir = HiddenApiBridge.Environment_getDataProfilesDePackageDirectory(appInfo.uid / PER_USER_RANGE, context.getPackageName());
 
         for (int i = codePaths.size() - 1; i >= 0; i--) {
             String splitName = i == 0 ? null : appInfo.splitNames[i - 1];
-            File curProfileFile = new File(profileDir, splitName == null ? "primary.prof" : splitName + ".split.prof").getAbsoluteFile();
-            Log.d(TAG, "Processing " + curProfileFile.getAbsolutePath());
+            File profile = new File(profileDir, splitName == null ? "primary.prof" : splitName + ".split.prof");
+
             try {
-                if (!curProfileFile.canWrite() && Files.size(curProfileFile.toPath()) == 0) {
-                    Log.d(TAG, "Skip profile " + curProfileFile.getAbsolutePath());
-                    continue;
+                // 如果已是 0 字節且唯讀，直接跳過
+                if (profile.exists() && profile.length() == 0 && !profile.canWrite()) continue;
+                // 自動將已存在的檔案內容清空或建立新檔
+                try (var ignored = new FileOutputStream(profile)) {
                 }
-                if (curProfileFile.exists() && !curProfileFile.delete()) {
-                    try (var writer = new FileOutputStream(curProfileFile)) {
-                        Log.d(TAG, "Failed to delete, try to clear content " + curProfileFile.getAbsolutePath());
-                    } catch (Throwable e) {
-                        Log.e(TAG, "Failed to delete and clear profile file " + curProfileFile.getAbsolutePath(), e);
-                    }
-                    Os.chmod(curProfileFile.getAbsolutePath(), 00400);
-                } else {
-                    Files.createFile(curProfileFile.toPath(), attrs);
-                }
+                // 設定檔案只讀
+                Os.chmod(profile.getAbsolutePath(), 00444);
+
             } catch (Throwable e) {
-                Log.e(TAG, "Failed to disable profile file " + curProfileFile.getAbsolutePath(), e);
+                Log.e(TAG, "Failed to disable profile: " + profile.getName(), e);
             }
         }
     }

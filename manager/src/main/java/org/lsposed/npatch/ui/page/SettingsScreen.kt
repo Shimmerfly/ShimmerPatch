@@ -8,9 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -52,7 +50,9 @@ fun SettingsScreen() {
         Column(
             modifier = Modifier
                 .padding(innerPadding)
+                .fillMaxSize()
                 .verticalScroll(rememberScrollState())
+                .padding(vertical = 16.dp)
         ) {
             KeyStore()
             DetailPatchLogs()
@@ -122,7 +122,6 @@ private fun KeyStore() {
             onDismissRequest = { expanded = false; showDialog = false },
             confirmButton = {
                 TextButton(
-                    content = { Text(stringResource(android.R.string.ok)) },
                     onClick = {
                         wrongKeystore = false
                         wrongPassword = false
@@ -159,25 +158,31 @@ private fun KeyStore() {
                         scope.launch { MyKeyStore.setCustom(password, alias, aliasPassword) }
                         expanded = false
                         showDialog = false
-                    })
+                    }
+                ) {
+                    Text(stringResource(android.R.string.ok))
+                }
             },
             dismissButton = {
-                TextButton(
-                    content = { Text(stringResource(android.R.string.cancel)) },
-                    onClick = { expanded = false; showDialog = false }
-                )
+                TextButton(onClick = { expanded = false; showDialog = false }) {
+                    Text(stringResource(android.R.string.cancel))
+                }
             },
             title = {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(R.string.settings_keystore_dialog_title),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleLarge
                 )
             },
             text = {
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     val interactionSource = remember { MutableInteractionSource() }
                     LaunchedEffect(interactionSource) {
@@ -188,6 +193,7 @@ private fun KeyStore() {
                         }
                     }
 
+                    // Error Message Handling
                     val wrongText = when {
                         wrongAliasPassword -> stringResource(R.string.settings_keystore_wrong_alias_password)
                         wrongAliasName -> stringResource(R.string.settings_keystore_wrong_alias)
@@ -195,10 +201,13 @@ private fun KeyStore() {
                         wrongKeystore -> stringResource(R.string.settings_keystore_wrong_keystore)
                         else -> null
                     }
+
                     Text(
                         modifier = Modifier.padding(bottom = 8.dp),
                         text = wrongText ?: stringResource(R.string.settings_keystore_desc),
-                        color = if (wrongText != null) MaterialTheme.colorScheme.error else Color.Unspecified
+                        color = if (wrongText != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center
                     )
 
                     OutlinedTextField(
@@ -209,28 +218,32 @@ private fun KeyStore() {
                         placeholder = { Text(stringResource(R.string.settings_keystore_file)) },
                         singleLine = true,
                         isError = wrongKeystore,
-                        interactionSource = interactionSource
+                        interactionSource = interactionSource,
+                        modifier = Modifier.fillMaxWidth()
                     )
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
                         label = { Text(stringResource(R.string.settings_keystore_password)) },
                         singleLine = true,
-                        isError = wrongPassword
+                        isError = wrongPassword,
+                        modifier = Modifier.fillMaxWidth()
                     )
                     OutlinedTextField(
                         value = alias,
                         onValueChange = { alias = it },
                         label = { Text(stringResource(R.string.settings_keystore_alias)) },
                         singleLine = true,
-                        isError = wrongAliasName
+                        isError = wrongAliasName,
+                        modifier = Modifier.fillMaxWidth()
                     )
                     OutlinedTextField(
                         value = aliasPassword,
                         onValueChange = { aliasPassword = it },
                         label = { Text(stringResource(R.string.settings_keystore_alias_password)) },
                         singleLine = true,
-                        isError = wrongAliasPassword
+                        isError = wrongAliasPassword,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
             }

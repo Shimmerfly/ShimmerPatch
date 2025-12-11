@@ -10,6 +10,7 @@
     <string name="modules">模組</string>
     <string name="shizuku_available">Shizuku 服務可用</string>
     <string name="shizuku_unavailable">Shizuku 服務未連線</string>
+    <string name="screen_home">首頁</string>
     <string name="screen_repo">倉庫</string>
     <string name="screen_logs">日誌</string>
     <string name="off">關閉</string>
@@ -21,6 +22,8 @@
     <string name="home_framework_version">框架版本</string>
     <string name="home_system_version">系統版本</string>
     <string name="home_device">裝置</string>
+    <string name="home_device_info">設備資訊</string>
+    <string name="coming_soon">敬請期待</string>
     <string name="home_system_abi">系統架構</string>
     <string name="home_info_copied">已複製到剪貼簿</string>
     <string name="home_support">支援</string>

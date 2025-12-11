@@ -12,19 +12,19 @@ import androidx.compose.ui.text.style.TextAlign
 import com.ramcosta.composedestinations.annotation.Destination
 import org.lsposed.npatch.ui.component.CenterTopBar
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Destination
-@Composable
-fun LogsScreen() {
-    Scaffold(
-        topBar = { CenterTopBar(stringResource(BottomBarDestination.Logs.label)) }
-    ) { innerPadding ->
-        Text(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            text = "This page is not yet implemented",
-            textAlign = TextAlign.Center
-        )
-    }
-}
+// @OptIn(ExperimentalMaterial3Api::class)
+// @Destination
+// @Composable
+// fun LogsScreen() {
+//     Scaffold(
+//         topBar = { CenterTopBar(stringResource(BottomBarDestination.Logs.label)) }
+//     ) { innerPadding ->
+//         Text(
+//             modifier = Modifier
+//                 .padding(innerPadding)
+//                 .fillMaxSize(),
+//             text = "This page is not yet implemented",
+//             textAlign = TextAlign.Center
+//         )
+//     }
+// }

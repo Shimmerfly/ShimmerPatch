@@ -441,38 +441,34 @@ public class NPatch {
     private byte[] modifyManifestFile(InputStream is, String metadata, int minSdkVersion, String originPackage, String newPackage, List<String> permissions, List<String> uses_permissions, List<String> authorities) throws IOException {
         ModificationProperty property = new ModificationProperty();
 
+        String targetPackage = (newPackage != null && !newPackage.isEmpty()) ? newPackage : originPackage;
+
         if (overrideVersionCode)
             property.addManifestAttribute(new AttributeItem(NodeValue.Manifest.VERSION_CODE, 1));
         if (minSdkVersion < 28)
             property.addUsesSdkAttribute(new AttributeItem(NodeValue.UsesSDK.MIN_SDK_VERSION, 27));
         property.addApplicationAttribute(new AttributeItem(NodeValue.Application.DEBUGGABLE, debuggableFlag));
         property.addApplicationAttribute(new AttributeItem("appComponentFactory", PROXY_APP_COMPONENT_FACTORY));
-        if (newPackage != null && !newPackage.isEmpty()){
-            property.addManifestAttribute(new AttributeItem(NodeValue.Manifest.PACKAGE, newPackage).setNamespace(null));
+        if (!targetPackage.equals(originPackage)) {
+            property.addManifestAttribute(new AttributeItem(NodeValue.Manifest.PACKAGE, targetPackage).setNamespace(null));
         }
-        property.setPermissionMapper(new PermissionMapper() {
-            @Override
-            public String map(PermissionType type, String permission) {
-                if (permission.startsWith(originPackage)){
-                    assert newPackage != null;
-                    return permission.replaceFirst(originPackage, newPackage);
-                }
-                if (permission.startsWith("android")
-                        || permission.startsWith("com.android")){
-                    return permission;
-                }
-                return newPackage + "_" + permission;
+        property.setPermissionMapper((type, permission) -> {
+            if (permission.startsWith(originPackage)) {
+                return permission.replaceFirst(originPackage, targetPackage);
             }
+            if (permission.startsWith("android")
+                    || permission.startsWith("com.android")
+                    || permission.startsWith("com.google.android")) {
+                return permission;
+            }
+            return targetPackage + "_" + permission;
         });
-        property.setAuthorityMapper(new AttributeMapper<String>() {
-            @Override
-            public String map(String value) {
-                if (value.startsWith(originPackage)){
-                    assert newPackage != null;
-                    return value.replaceFirst(originPackage, newPackage);
-                }
-                return newPackage + "_" + value;
+
+        property.setAuthorityMapper(value -> {
+            if (value.startsWith(originPackage)) {
+                return value.replaceFirst(originPackage, targetPackage);
             }
+            return targetPackage + "_" + value;
         });
 
         property.addMetaData(new ModificationProperty.MetaData("npatch", metadata));
@@ -491,11 +487,11 @@ public class NPatch {
 
         }
 
-        var os = new ByteArrayOutputStream();
-        (new ManifestEditor(is, os, property)).processManifest();
-        is.close();
-        os.flush();
-        os.close();
-        return os.toByteArray();
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            new ManifestEditor(is, os, property).processManifest();
+            return os.toByteArray();
+        } finally {
+            if (is != null) is.close();
+        }
     }
 }

@@ -9,6 +9,7 @@ public class LSPConfig {
     public String VERSION_NAME;
     public int CORE_VERSION_CODE;
     public String CORE_VERSION_NAME;
+    public int sigBypassLevel;
 
     private LSPConfig() {
     }

@@ -60,7 +60,7 @@ jobs:
       uses: actions/setup-java@v5
       with:
         java-version: '21'
-        distribution: 'adopt'
+        distribution: 'zulu'
 
     - name: 設定 Gradle
       uses: gradle/actions/setup-gradle@v5
@@ -76,7 +76,7 @@ jobs:
     - name: 設定 CMake
       uses: jwlawson/actions-setup-cmake@v2
       with:
-        cmake-version: '4.0.3' 
+        cmake-version: '4.1.1'
 
     - name: 移除 Android 的 cmake
       shell: bash

@@ -3,6 +3,6 @@
 
 namespace lspd {
 
-    void RegisterBypass(JNIEnv* env);
+    void RegisterSvcBypass(JNIEnv* env);
 
 } // namespace lspd

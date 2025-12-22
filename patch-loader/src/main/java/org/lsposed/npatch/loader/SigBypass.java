@@ -15,15 +15,21 @@ import android.util.Log;
 
 import com.google.gson.JsonSyntaxException;
 
-import org.lsposed.npatch.loader.util.XLog;
-import org.lsposed.npatch.share.Constants;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.lsposed.lspd.nativebridge.SvcBypass;
+import org.lsposed.npatch.loader.util.XLog;
+import org.lsposed.npatch.share.Constants;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import de.robv.android.xposed.XC_MethodHook;
@@ -34,6 +40,7 @@ public class SigBypass {
 
     private static final String TAG = "NPatch-SigBypass";
     private static final Map<String, String> signatures = new HashMap<>();
+    private static String cachedOriginalApkPath;
 
     private static void replaceSignature(Context context, PackageInfo packageInfo) {
         boolean hasSignature = (packageInfo.signatures != null && packageInfo.signatures.length != 0) || packageInfo.signingInfo != null;
@@ -145,17 +152,96 @@ public class SigBypass {
         }
     }
 
+    private static String extractOriginalApk(Context context) {
+        File cacheDir = new File(context.getCacheDir(), "npatch/origin");
+        if (!cacheDir.exists()) cacheDir.mkdirs();
+
+        try (ZipFile sourceFile = new ZipFile(context.getPackageResourcePath())) {
+            ZipEntry entry = sourceFile.getEntry(ORIGINAL_APK_ASSET_PATH);
+            if (entry == null) {
+                Log.e(TAG, "Original APK not found in assets!");
+                return null;
+            }
+
+            File targetFile = new File(cacheDir, entry.getCrc() + ".apk");
+            if (targetFile.exists() && targetFile.length() == entry.getSize()) {
+                return targetFile.getAbsolutePath();
+            }
+
+            try (InputStream is = sourceFile.getInputStream(entry);
+                 FileOutputStream fos = new FileOutputStream(targetFile)) {
+                byte[] buffer = new byte[8192];
+                int length;
+                while ((length = is.read(buffer)) > 0) {
+                    fos.write(buffer, 0, length);
+                }
+            }
+            return targetFile.getAbsolutePath();
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to extract original APK", e);
+            return null;
+        }
+    }
+
+    private static void hookJavaIO(String currentApkPath, String originalApkPath) {
+        XC_MethodHook redirectHook = new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) {
+                if (param.args.length > 0) {
+                    if (param.args[0] instanceof String) {
+                        String path = (String) param.args[0];
+                        if (path.equals(currentApkPath)) {
+                            param.args[0] = originalApkPath;
+                        }
+                    } else if (param.args[0] instanceof File) {
+                        File file = (File) param.args[0];
+                        if (file.getPath().equals(currentApkPath)) {
+                            param.args[0] = new File(originalApkPath);
+                        }
+                    }
+                }
+            }
+        };
+        XposedBridge.hookAllConstructors(ZipFile.class, redirectHook);
+        try {
+            XposedBridge.hookAllConstructors(FileInputStream.class, redirectHook);
+        } catch (Throwable ignored) {}
+    }
+
     static void doSigBypass(Context context, int sigBypassLevel) throws IOException {
+        // Level 1: Java PMS Hook
         if (sigBypassLevel >= Constants.SIGBYPASS_LV_PM) {
             hookPackageParser(context);
             proxyPackageInfoCreator(context);
         }
         if (sigBypassLevel >= Constants.SIGBYPASS_LV_PM_OPENAT) {
-            String cacheApkPath;
-            try (ZipFile sourceFile = new ZipFile(context.getPackageResourcePath())) {
-                cacheApkPath = context.getCacheDir() + "/npatch/origin/" + sourceFile.getEntry(ORIGINAL_APK_ASSET_PATH).getCrc() + ".apk";
+            String currentApkPath = context.getPackageResourcePath();
+            cachedOriginalApkPath = extractOriginalApk(context);
+
+            if (cachedOriginalApkPath != null) {
+                // 1. Java Core stability
+                hookJavaIO(currentApkPath, cachedOriginalApkPath);
+                // 2. Native OpenAt Hook
+                org.lsposed.lspd.nativebridge.SigBypass.enableOpenatHook(
+                        currentApkPath,
+                        cachedOriginalApkPath,
+                        context.getPackageName()
+                );
+
+                // Level 3: SVC (Seccomp) Hook
+                if (sigBypassLevel >= Constants.SIGBYPASS_LV_SVC) {
+                    if (SvcBypass.initSvcHook()) {
+                        SvcBypass.enableSvcRedirect(
+                                currentApkPath,
+                                cachedOriginalApkPath,
+                                context.getPackageName()
+                        );
+                        XLog.i(TAG, "SVC Hook enabled");
+                    } else {
+                        XLog.w(TAG, "SVC Hook failed to init");
+                    }
+                }
             }
-            org.lsposed.lspd.nativebridge.SigBypass.enableOpenatHook(context.getPackageResourcePath(), cacheApkPath);
         }
     }
 }

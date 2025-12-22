@@ -27,6 +27,7 @@
 #include "art/runtime/oat_file_manager.h"
 #include "elf_util.h"
 #include "jni/bypass_sig.h"
+#include "jni/bypass_svc.h"
 #include "native_util.h"
 #include "symbol_cache.h"
 #include "utils/jni_helper.hpp"
@@ -78,6 +79,7 @@ namespace lspd {
     void PatchLoader::InitHooks(JNIEnv* env) {
         Context::InitHooks(env);
         RegisterBypass(env);
+        RegisterSvcBypass(env);
     }
 
     void PatchLoader::SetupEntryClass(JNIEnv* env) {

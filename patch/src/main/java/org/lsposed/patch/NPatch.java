@@ -313,6 +313,14 @@ public class NPatch {
             } catch (Throwable e) {
                 throw new PatchError("Error when adding dex", e);
             }
+            if (sigbypassLevel >= Constants.SIGBYPASS_LV_PM_OPENAT) {
+                logger.i("Embedding original apk for SigBypass...");
+                try (var is = new FileInputStream(srcApkFile)) {
+                    dstZFile.add(Constants.ORIGINAL_APK_ASSET_PATH, is);
+                } catch (Throwable e) {
+                    throw new PatchError("Error when embedding original apk", e);
+                }
+            }
 
             if (isInjectProvider){
                 try (var is = getClass().getClassLoader().getResourceAsStream("assets/mtprovider.dex")) {
@@ -360,7 +368,16 @@ public class NPatch {
                 if (!injectDex && name.startsWith("classes") && name.endsWith(".dex")) continue;
                 if (name.equals("AndroidManifest.xml")) continue;
                 if (name.startsWith("META-INF") && (name.endsWith(".SF") || name.endsWith(".MF") || name.endsWith(".RSA"))) continue;
-                srcZFile.addFileLink(name, name);
+
+                try (InputStream is = entry.open()) {
+                    if (name.endsWith(".so")) {
+                        dstZFile.add(name, is, false);
+                    } else {
+                        dstZFile.add(name, is);
+                    }
+                } catch (IOException e) {
+                    throw new PatchError("Failed to copy entry: " + name, e);
+                }
             }
 
             dstZFile.realign();

@@ -7,6 +7,8 @@ add_subdirectory(${CORE_ROOT} core)
 aux_source_directory(src SRC_LIST)
 aux_source_directory(src/jni SRC_LIST)
 set(SRC_LIST ${SRC_LIST} api/patch_main.cpp)
+set(SRC_LIST ${SRC_LIST} src/jni/bypass_sig.cpp)
+set(SRC_LIST ${SRC_LIST} src/jni/bypass_svc.cpp)
 
 add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
 

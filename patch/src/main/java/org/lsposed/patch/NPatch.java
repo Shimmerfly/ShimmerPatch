@@ -118,11 +118,13 @@ public class NPatch {
             "x86_64"
     ));
 
-    private static final ZFileOptions Z_FILE_OPTIONS = new ZFileOptions().setAlignmentRule(AlignmentRules.compose(
-            AlignmentRules.constantForSuffix(".so", 4096),
-            AlignmentRules.constantForSuffix(ORIGINAL_APK_ASSET_PATH, 4096),
-            AlignmentRules.constantForSuffix(".arsc", 4)
-    ));
+    private static final ZFileOptions Z_FILE_OPTIONS = new ZFileOptions()
+            .setNoTimestamps(true)
+            .setAlignmentRule(AlignmentRules.compose(
+                    AlignmentRules.constantForSuffix(".so", 4096),
+                    AlignmentRules.constantForSuffix(ORIGINAL_APK_ASSET_PATH, 4096),
+                    AlignmentRules.constantForSuffix(".arsc", 4)
+            ));
 
     private final JCommander jCommander;
 
@@ -196,7 +198,7 @@ public class NPatch {
         logger.i("Parsing original apk...");
 
         try (var dstZFile = ZFile.openReadWrite(outputFile, Z_FILE_OPTIONS);
-             var srcZFile = dstZFile.addNestedZip((ignore) -> ORIGINAL_APK_ASSET_PATH, srcApkFile, false)) {
+             var srcZFile = ZFile.openReadOnly(srcApkFile)) {
 
             // sign apk
             try {

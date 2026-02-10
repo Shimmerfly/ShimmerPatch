@@ -195,8 +195,12 @@ public class NPatch {
 
         logger.i("Parsing original apk...");
 
+        boolean embedOriginal = sigbypassLevel >= Constants.SIGBYPASS_LV_PM_OPENAT;
+
         try (ZFile dstZFile = ZFile.openReadWrite(outputFile, Z_FILE_OPTIONS);
-             NestedZip srcZFile = dstZFile.addNestedZip((ignore) -> ORIGINAL_APK_ASSET_PATH, srcApkFile, false)) {
+             ZFile srcZFile = embedOriginal
+                     ? dstZFile.addNestedZip((ignore) -> Constants.ORIGINAL_APK_ASSET_PATH, srcApkFile, false)
+                     : ZFile.openReadOnly(srcApkFile)) {
 
             // sign apk
             try {
@@ -239,9 +243,9 @@ public class NPatch {
 
             String newPackage = newPackageName;
 
+            int minSdkVersion;
             // parse the app appComponentFactory full name from the manifest file
             final String appComponentFactory;
-            int minSdkVersion;
             ManifestParser.Pair pair;
             try (var is = manifestEntry.open()) {
                 pair = ManifestParser.parseManifestFile(is);
@@ -253,7 +257,7 @@ public class NPatch {
                 logger.d("original appComponentFactory class: " + appComponentFactory);
                 logger.d("original minSdkVersion: " + minSdkVersion);
 
-                if (newPackage == null || newPackage.isEmpty()){
+                if (newPackage == null || newPackage.isEmpty()) {
                     newPackage = pair.packageName;
                 }
 
@@ -270,7 +274,13 @@ public class NPatch {
                     if (dstZFile.get(name) != null) continue;
                     if (name.startsWith("META-INF") && (name.endsWith(".SF") || name.endsWith(".MF") || name.endsWith(".RSA")))
                         continue;
-                    srcZFile.addFileLink(name, name);
+                    if (srcZFile instanceof NestedZip) {
+                        ((NestedZip) srcZFile).addFileLink(name, name);
+                    } else {
+                        try (InputStream is = entry.open()) {
+                            dstZFile.add(name, is);
+                        }
+                    }
                 }
                 return;
             }
@@ -308,14 +318,6 @@ public class NPatch {
                 }
             } catch (Throwable e) {
                 throw new PatchError("Error when adding dex", e);
-            }
-            if (sigbypassLevel >= Constants.SIGBYPASS_LV_PM_OPENAT) {
-                logger.i("Embedding original apk for SigBypass...");
-                try (var is = new FileInputStream(srcApkFile)) {
-                    dstZFile.add(Constants.ORIGINAL_APK_ASSET_PATH, is);
-                } catch (Throwable e) {
-                    throw new PatchError("Error when embedding original apk", e);
-                }
             }
 
             if (isInjectProvider){
@@ -371,14 +373,25 @@ public class NPatch {
                 if (name.startsWith("META-INF") && (name.endsWith(".SF") || name.endsWith(".MF") || name.endsWith(".RSA")))
                     continue;
 
-                try (InputStream is = entry.open()) {
-                    if (name.endsWith(".so") || name.equals("resources.arsc")) {
-                        dstZFile.add(name, is, false);
-                    } else {
-                        dstZFile.add(name, is);
+                boolean linked = false;
+                if (srcZFile instanceof NestedZip) {
+                    try {
+                        linked = ((NestedZip) srcZFile).addFileLink(name, name);
+                    } catch (IOException e) {
+                        logger.e("Failed to link entry: " + name + ", falling back to copy.");
                     }
-                } catch (IOException e) {
-                    throw new PatchError("Failed to copy entry: " + name, e);
+                }
+
+                if (!linked) {
+                    try (InputStream is = entry.open()) {
+                        if (name.endsWith(".so") || name.equals("resources.arsc")) {
+                            dstZFile.add(name, is, false);
+                        } else {
+                            dstZFile.add(name, is);
+                        }
+                    } catch (IOException e) {
+                        throw new PatchError("Failed to copy entry: " + name, e);
+                    }
                 }
             }
 

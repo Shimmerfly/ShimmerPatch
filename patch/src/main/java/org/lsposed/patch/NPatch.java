@@ -9,6 +9,7 @@ import static org.lsposed.npatch.share.Constants.PROXY_APP_COMPONENT_FACTORY;
 import com.android.tools.build.apkzlib.sign.SigningExtension;
 import com.android.tools.build.apkzlib.sign.SigningOptions;
 import com.android.tools.build.apkzlib.zip.AlignmentRules;
+import com.android.tools.build.apkzlib.zip.NestedZip;
 import com.android.tools.build.apkzlib.zip.StoredEntry;
 import com.android.tools.build.apkzlib.zip.ZFile;
 import com.android.tools.build.apkzlib.zip.ZFileOptions;
@@ -18,11 +19,8 @@ import com.beust.jcommander.ParameterException;
 import com.google.gson.Gson;
 import com.wind.meditor.core.ManifestEditor;
 import com.wind.meditor.property.AttributeItem;
-import com.wind.meditor.property.AttributeMapper;
 import com.wind.meditor.property.ModificationProperty;
-import com.wind.meditor.property.PermissionMapper;
 import com.wind.meditor.utils.NodeValue;
-import com.wind.meditor.utils.PermissionType;
 
 import org.apache.commons.io.FilenameUtils;
 import org.lsposed.npatch.share.Constants;
@@ -47,7 +45,6 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -86,7 +83,7 @@ public class NPatch {
     @Parameter(names = {"-l", "--sigbypasslv"}, description = "Signature bypass level. 0 (disable), 1 (pm), 2 (pm+openat). default 0")
     private int sigbypassLevel = 0;
 
-    @Parameter(names = {"--injectdex"}, description = "Inject directly the loder dex file into the original application package")
+    @Parameter(names = {"--injectdex"}, description = "Inject directly the loader dex file into the original application package")
     private boolean injectDex = false;
 
     @Parameter(names = {"--provider"}, description = "Inject Provider to manager data files")
@@ -127,7 +124,6 @@ public class NPatch {
             ));
 
     private final JCommander jCommander;
-
     private final Logger logger;
 
     public NPatch(Logger logger, String... args) {
@@ -171,6 +167,7 @@ public class NPatch {
             String apkFileName = srcApkFile.getName();
 
             var outputDir = new File(outputPath);
+            //noinspection ResultOfMethodCallIgnored
             outputDir.mkdirs();
 
             File outputFile = new File(outputDir, String.format(
@@ -180,7 +177,7 @@ public class NPatch {
             ).getAbsoluteFile();
 
             if (outputFile.exists() && !forceOverwrite)
-                throw new PatchError(outputPath + " exists. Use --force to overwrite");
+                throw new PatchError(outputFile.getAbsolutePath() + " exists. Use --force to overwrite");
             logger.i("Processing " + srcApkFile + " -> " + outputFile);
 
             patch(srcApkFile, outputFile);
@@ -191,14 +188,15 @@ public class NPatch {
         if (!srcApkFile.exists())
             throw new PatchError("The source apk file does not exit. Please provide a correct path.");
 
+        //noinspection ResultOfMethodCallIgnored
         outputFile.delete();
 
         logger.d("apk path: " + srcApkFile);
 
         logger.i("Parsing original apk...");
 
-        try (var dstZFile = ZFile.openReadWrite(outputFile, Z_FILE_OPTIONS);
-             var srcZFile = ZFile.openReadOnly(srcApkFile)) {
+        try (ZFile dstZFile = ZFile.openReadWrite(outputFile, Z_FILE_OPTIONS);
+             NestedZip srcZFile = dstZFile.addNestedZip((ignore) -> ORIGINAL_APK_ASSET_PATH, srcApkFile, false)) {
 
             // sign apk
             try {
@@ -259,10 +257,6 @@ public class NPatch {
                     newPackage = pair.packageName;
                 }
 
-                logger.i("permissions: " + pair.permissions);
-                logger.i("use-permissions: " +pair.use_permissions);
-                logger.i("provider.authorities: " + pair.authorities);
-
                 logger.i("permissions size: " + (pair.permissions == null ? 0 : pair.permissions.size()));
                 logger.i("use-permissions size: " + (pair.use_permissions == null ? 0 : pair.use_permissions.size()));
                 logger.i("authorities size: " + (pair.authorities == null ? 0 : pair.authorities.size()));
@@ -286,7 +280,7 @@ public class NPatch {
             final var config = new PatchConfig(useManager, debuggableFlag, overrideVersionCode, sigbypassLevel, originalSignature, appComponentFactory, isInjectProvider, outputLog, newPackage);
             final var configBytes = new Gson().toJson(config).getBytes(StandardCharsets.UTF_8);
             final var metadata = Base64.getEncoder().encodeToString(configBytes);
-            try (var is = new ByteArrayInputStream(modifyManifestFile(manifestEntry.open(), metadata, minSdkVersion, pair.packageName, newPackage, pair.permissions, pair.use_permissions, pair.authorities))) {
+            try (var is = new ByteArrayInputStream(modifyManifestFile(manifestEntry.open(), metadata, minSdkVersion, pair.packageName, newPackage))) {
                 dstZFile.add(ANDROID_MANIFEST_XML, is);
             } catch (Throwable e) {
                 throw new PatchError("Error when modifying manifest", e);
@@ -302,13 +296,14 @@ public class NPatch {
 
             logger.i("Adding metaloader dex...");
             try (var is = getClass().getClassLoader().getResourceAsStream(Constants.META_LOADER_DEX_ASSET_PATH)) {
+                if (is == null) throw new PatchError("Meta loader dex not found");
                 if (!injectDex) {
                     dstZFile.add("classes.dex", is);
                 } else {
                     var dexCount = srcZFile.entries().stream().filter(entry -> {
                         var name = entry.getCentralDirectoryHeader().getName();
                         return name.startsWith("classes") && name.endsWith(".dex");
-                    }).collect(Collectors.toList()).size() + 1;
+                    }).count() + 1; // Used .count() instead of .collect().size() for efficiency
                     dstZFile.add("classes" + dexCount + ".dex", is);
                 }
             } catch (Throwable e) {
@@ -348,7 +343,12 @@ public class NPatch {
                 for (String arch : ARCHES) {
                     String entryName = "assets/npatch/so/" + arch + "/libnpatch.so";
                     try (var is = getClass().getClassLoader().getResourceAsStream(entryName)) {
-                        dstZFile.add(entryName, is, false); // no compress for so
+                        if (is != null) {
+                            dstZFile.add(entryName, is, false); // no compress for so
+                            logger.d("added " + entryName);
+                        } else {
+                            logger.e("Native lib not found: " + entryName);
+                        }
                     } catch (Throwable e) {
                         // More exception info
                         throw new PatchError("Error when adding native lib", e);
@@ -368,7 +368,8 @@ public class NPatch {
                 if (dstZFile.get(name) != null) continue;
                 if (!injectDex && name.startsWith("classes") && name.endsWith(".dex")) continue;
                 if (name.equals("AndroidManifest.xml")) continue;
-                if (name.startsWith("META-INF") && (name.endsWith(".SF") || name.endsWith(".MF") || name.endsWith(".RSA"))) continue;
+                if (name.startsWith("META-INF") && (name.endsWith(".SF") || name.endsWith(".MF") || name.endsWith(".RSA")))
+                    continue;
 
                 try (InputStream is = entry.open()) {
                     if (name.endsWith(".so") || name.equals("resources.arsc")) {
@@ -382,81 +383,33 @@ public class NPatch {
             }
 
             dstZFile.realign();
-
             logger.i("Writing apk...");
         }
         logger.i("Done. Output APK: " + outputFile.getAbsolutePath());
-    }
-
-    private List<String> replacePermissionWithNewPackage(List<String> list, String pkg, String newPackage){
-        List<String> res = new LinkedList<>();
-        if (list != null && !list.isEmpty()){
-            for (String next : list) {
-                if (next != null && !next.isEmpty()) {
-                    if (next.startsWith(pkg)){
-                        String s = next.replaceAll(pkg, newPackage);
-                        res.add(s);
-                    }else {
-                        res.add(newPackage + "_" + next);
-                    }
-                }
-            }
-        }
-        return res;
-    }
-
-    private List<String> replaceUsesPermissionWithNewPackage(List<String> list, String pkg, String newPackage){
-        List<String> res = new LinkedList<>();
-        if (list != null && !list.isEmpty()){
-            for (String next : list) {
-                if (next != null && !next.isEmpty()) {
-                    if (next.startsWith(pkg)){
-                        String s = next.replaceAll(pkg, newPackage);
-                        res.add(s);
-                    }else {
-                        res.add(newPackage + "_" + next);
-                    }
-                }
-            }
-        }
-        return res;
-    }
-
-    private List<String> replaceProviderWithNewPackage(List<String> list, String pkg, String newPackage){
-        List<String> res = new LinkedList<>();
-        if (list != null && !list.isEmpty()){
-            for (String next : list) {
-                if (next != null && !next.isEmpty()) {
-                    if (next.startsWith(pkg)){
-                        String s = next.replaceAll(pkg, newPackage);
-                        res.add(s);
-                    }else {
-                        res.add(newPackage + "_" + next);
-                    }
-                }
-            }
-        }
-        return res;
     }
 
     private void embedModules(ZFile zFile) {
         for (var module : modules) {
             File file = new File(module);
             try (var apk = ZFile.openReadOnly(new File(module));
-                 var fileIs = new FileInputStream(file);
-                 var xmlIs = Objects.requireNonNull(apk.get(ANDROID_MANIFEST_XML)).open()
-            ) {
-                var manifest = Objects.requireNonNull(ManifestParser.parseManifestFile(xmlIs));
-                var packageName = manifest.packageName;
-                logger.i("  - " + packageName);
-                zFile.add(EMBEDDED_MODULES_ASSET_PATH + packageName + ".apk", fileIs);
-            } catch (NullPointerException | IOException e) {
+                 var fileIs = new FileInputStream(file)) {
+
+                var manifestEntry = apk.get(ANDROID_MANIFEST_XML);
+                if (manifestEntry == null) throw new IOException("Manifest not found in module");
+
+                try (var xmlIs = manifestEntry.open()) {
+                    var manifest = Objects.requireNonNull(ManifestParser.parseManifestFile(xmlIs));
+                    var packageName = manifest.packageName;
+                    logger.i("  - " + packageName);
+                    zFile.add(EMBEDDED_MODULES_ASSET_PATH + packageName + ".apk", fileIs);
+                }
+            } catch (Exception e) {
                 logger.e(module + " does not exist or is not a valid apk file. error:" + e);
             }
         }
     }
 
-    private byte[] modifyManifestFile(InputStream is, String metadata, int minSdkVersion, String originPackage, String newPackage, List<String> permissions, List<String> uses_permissions, List<String> authorities) throws IOException {
+    private byte[] modifyManifestFile(InputStream is, String metadata, int minSdkVersion, String originPackage, String newPackage) throws IOException {
         ModificationProperty property = new ModificationProperty();
 
         String targetPackage = (newPackage != null && !newPackage.isEmpty()) ? newPackage : originPackage;
@@ -493,12 +446,13 @@ public class NPatch {
         // TODO: replace query_all with queries -> manager
         if (useManager)
             property.addUsesPermission("android.permission.QUERY_ALL_PACKAGES");
+
         if (isInjectProvider){
             HashMap<String,String> providerMap = new HashMap<>();
             providerMap.put("name","bin.mt.file.content.MTDataFilesProvider");
             providerMap.put("permission","android.permission.MANAGE_DOCUMENTS");
             providerMap.put("exported","true");
-            providerMap.put("authorities",packageName + ".MTDataFilesProvider");
+            providerMap.put("authorities", targetPackage + ".MTDataFilesProvider");
             providerMap.put("grantUriPermissions","true");
 
             property.addProvider(providerMap,"android.content.action.DOCUMENTS_PROVIDER");

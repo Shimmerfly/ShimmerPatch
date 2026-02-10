@@ -41,13 +41,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import dalvik.system.DexFile;
@@ -65,6 +63,8 @@ public class LSPApplication {
     private static final String TAG = "NPatch";
     private static final int FIRST_APP_ZYGOTE_ISOLATED_UID = 90000;
     private static final int PER_USER_RANGE = 100000;
+
+    private static final Gson GSON = new Gson();
 
     private static ActivityThread activityThread;
     private static LoadedApk stubLoadedApk;
@@ -105,16 +105,18 @@ public class LSPApplication {
                 service = new RemoteApplicationService(context);
                 List<Module> m = service.getLegacyModulesList();
                 JSONArray moduleArr = new JSONArray();
-                for (Module module : m) {
-                    JSONObject moduleObj = new JSONObject();
-                    moduleObj.put("path", module.apkPath);
-                    moduleObj.put("packageName", module.packageName);
-                    moduleArr.put(moduleObj);
+                if (m != null) {
+                    for (Module module : m) {
+                        JSONObject moduleObj = new JSONObject();
+                        moduleObj.put("path", module.apkPath);
+                        moduleObj.put("packageName", module.packageName);
+                        moduleArr.put(moduleObj);
+                    }
                 }
                 SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
-                shared.edit().putString("modules", moduleArr.toString()).commit();
+                shared.edit().putString("modules", moduleArr.toString()).apply();
                 Log.e(TAG, "Success update module scope");
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.e(TAG, "Failed to connect to manager, fallback to fixed local service");
                 service = new NeoLocalApplicationService(context);
             }
@@ -153,8 +155,9 @@ public class LSPApplication {
             var baseClassLoader = stubLoadedApk.getClassLoader();
 
             try (var is = baseClassLoader.getResourceAsStream(CONFIG_ASSET_PATH)) {
+                if (is == null) throw new IOException("Config file not found in assets");
                 BufferedReader streamReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-                config = new Gson().fromJson(streamReader, PatchConfig.class);
+                config = GSON.fromJson(streamReader, PatchConfig.class);
             } catch (IOException e) {
                 Log.e(TAG, "Failed to load config file", e);
                 return null;
@@ -180,7 +183,7 @@ public class LSPApplication {
                 FileUtils.deleteFolderIfExists(originPath);
                 Files.createDirectories(originPath);
                 try (InputStream is = baseClassLoader.getResourceAsStream(ORIGINAL_APK_ASSET_PATH)) {
-                    Files.copy(is, cacheApkPath);
+                    if (is != null) Files.copy(is, cacheApkPath);
                 }
             }
             Path providerPath = null;
@@ -189,9 +192,13 @@ public class LSPApplication {
                 try {
                     Files.deleteIfExists(providerPath);
                     try (InputStream is = baseClassLoader.getResourceAsStream(PROVIDER_DEX_ASSET_PATH)) {
-                        Files.copy(is, providerPath);
+                        if (is != null) Files.copy(is, providerPath);
                     }
-                    providerPath.toFile().setWritable(false);
+                    if (Files.exists(providerPath)) {
+                        providerPath.toFile().setWritable(false);
+                    } else {
+                        providerPath = null;
+                    }
                 } catch (Exception e) {
                     Log.e(TAG, "Failed to inject provider:" + Log.getStackTraceString(e));
                     providerPath = null;

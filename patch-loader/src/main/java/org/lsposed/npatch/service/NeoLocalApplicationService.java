@@ -1,12 +1,15 @@
 package org.lsposed.npatch.service;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.os.ParcelFileDescriptor;
+import android.os.RemoteException;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.lsposed.npatch.util.ModuleLoader;
 import org.lsposed.lspd.models.Module;
 import org.lsposed.lspd.service.ILSPApplicationService;
@@ -18,64 +21,55 @@ import java.util.List;
 
 public class NeoLocalApplicationService extends ILSPApplicationService.Stub {
     private static final String TAG = "NPatch";
+    private static final String AUTHORITY = "org.lsposed.npatch.manager.provider.config";
+    private static final Uri PROVIDER_URI = Uri.parse("content://" + AUTHORITY + "/config");
+
     private final List<Module> cachedModule;
 
     public NeoLocalApplicationService(Context context) {
         cachedModule = Collections.synchronizedList(new ArrayList<>());
-        loadModulesFromSharedPreferences(context);
+        loadModulesFromProvider(context);
     }
 
-    private void loadModulesFromSharedPreferences(Context context) {
-        var shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
+    private void loadModulesFromProvider(Context context) {
+        PackageManager pm = context.getPackageManager();
+        String myPackageName = context.getPackageName();
+
+        Uri queryUri = PROVIDER_URI.buildUpon()
+                .appendQueryParameter("package", myPackageName)
+                .build();
+
+        try (Cursor cursor = context.getContentResolver().query(queryUri, null, null, null, null)) {
+            if (cursor == null) {
+                Log.w(TAG, "NeoLocal: Cannot reach Manager Provider.");
+                return;
+            }
+
+            while (cursor.moveToNext()) {
+                int colIndex = cursor.getColumnIndex("packageName");
+                if (colIndex != -1) {
+                    loadSingleModule(pm, cursor.getString(colIndex));
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "NeoLocal: Provider query failed", e);
+        }
+    }
+
+    private void loadSingleModule(PackageManager pm, String pkgName) {
         try {
-            var modulesJsonString = shared.getString("modules", "[]");
-            Log.i(TAG, "Loading modules from local SharedPreferences...");
+            ApplicationInfo appInfo = pm.getApplicationInfo(pkgName, 0);
+            Module m = new Module();
+            m.packageName = pkgName;
+            m.apkPath = appInfo.sourceDir;
 
-            if (modulesJsonString.equals("{}")) {
-                modulesJsonString = "[]";
-            }
-
-            var mArr = new JSONArray(modulesJsonString);
-            if (mArr.length() > 0) {
-                Log.i(TAG, "Found " + mArr.length() + " modules.");
-            }
-
-            for (int i = 0; i < mArr.length(); i++) {
-                var mObj = mArr.getJSONObject(i);
-                var m = new Module();
-
-                m.packageName = mObj.optString("packageName", null);
-                var apkPath = mObj.optString("path", null);
-
-                if (m.packageName == null) {
-                    Log.w(TAG, "Module at index " + i + " has no package name, skipping.");
-                    continue;
-                }
-
-                // 如果路徑為 null 或文件不存在，嘗試從 PackageManager 恢復
-                if (apkPath == null || !new File(apkPath).exists()) {
-                    Log.w(TAG, "Module:" + m.packageName + " path not available, attempting reset.");
-                    try {
-                        var info = context.getPackageManager().getApplicationInfo(m.packageName, 0);
-                        m.apkPath = info.sourceDir;
-                        Log.i(TAG, "Module:" + m.packageName + " path reset to " + m.apkPath);
-                    } catch (Exception e) {
-                        Log.e(TAG, "Failed to get ApplicationInfo for module: " + m.packageName, e);
-                        continue;
-                    }
-                } else {
-                    m.apkPath = apkPath;
-                }
-
-                if (m.apkPath != null) {
-                    m.file = ModuleLoader.loadModule(m.apkPath);
-                    cachedModule.add(m);
-                } else {
-                    Log.w(TAG, "Could not load module " + m.packageName + ": final path is null.");
-                }
+            if (m.apkPath != null && new File(m.apkPath).exists()) {
+                m.file = ModuleLoader.loadModule(m.apkPath);
+                cachedModule.add(m);
+                Log.i(TAG, "NeoLocal: Loaded module " + pkgName);
             }
         } catch (Throwable e) {
-            Log.e(TAG, "Error loading modules from SharedPreferences.", e);
+            Log.e(TAG, "NeoLocal: Failed to load " + pkgName, e);
         }
     }
 
@@ -90,15 +84,9 @@ public class NeoLocalApplicationService extends ILSPApplicationService.Stub {
     }
 
     @Override
-    public String getPrefsPath(String packageName) throws RemoteException {
-        return "/data/data/" + packageName + "/shared_prefs/";
-    }
-
+    public String getPrefsPath(String packageName) throws RemoteException { return "/data/data/" + packageName + "/shared_prefs/"; }
     @Override
-    public ParcelFileDescriptor requestInjectedManagerBinder(List<IBinder> binder) throws RemoteException {
-        return null;
-    }
-
+    public ParcelFileDescriptor requestInjectedManagerBinder(List<IBinder> binder) throws RemoteException { return null; }
     @Override
     public IBinder asBinder() {
         return this;

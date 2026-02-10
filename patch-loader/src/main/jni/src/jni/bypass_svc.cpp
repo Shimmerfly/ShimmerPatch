@@ -21,6 +21,11 @@
 namespace lspd {
 
     // --- 共用結構與變數 ---
+    // 將此變數移出 #if 區塊，確保 IDE 和編譯器在任何架構下都能識別，避免未定義錯誤。
+    static bool g_is_hook_active = false;
+
+#if defined(__aarch64__)
+
     struct SyscallRequest {
         long sys_no;
         long args[6];
@@ -31,7 +36,6 @@ namespace lspd {
     };
 
     static pthread_t g_trusted_thread;
-    static bool g_is_hook_active = false;
     static std::queue<SyscallRequest*> g_request_queue;
     static std::mutex g_queue_mtx;
     static std::condition_variable g_queue_cv;
@@ -53,8 +57,8 @@ namespace lspd {
             if (req) {
                 // 執行真正的 syscall
                 req->result = syscall(req->sys_no,
-                                      req->args[0], req->args[1], req->args[2],
-                                      req->args[3], req->args[4], req->args[5]);
+                        req->args[0], req->args[1], req->args[2],
+                        req->args[3], req->args[4], req->args[5]);
 
                 {
                     std::lock_guard<std::mutex> lock(req->mtx);
@@ -74,7 +78,6 @@ namespace lspd {
         SyscallRequest req;
 
         // ARM64: 從 regs 讀取 (x8=sys_no, x0-x5=args)
-        // 直接存取 ARM64 特有的 regs 結構
         req.sys_no = ctx->uc_mcontext.regs[8];
         for (int i = 0; i < 6; ++i) {
             req.args[i] = ctx->uc_mcontext.regs[i];
@@ -98,12 +101,17 @@ namespace lspd {
         ctx->uc_mcontext.regs[0] = req.result;
     }
 
-    // --- JNI 接口層 ---
+#endif // 結束 __aarch64__ 專用區塊
+
+
+    // -------------------------------------------------------------------------
+    // JNI 接口層 (處理架構差異)
+    // -------------------------------------------------------------------------
 
     LSP_DEF_NATIVE_METHOD(jboolean, SvcBypass, initSvcHook) {
-        // 如果已經激活，直接返回成功
         if (g_is_hook_active) return JNI_TRUE;
 
+#if defined(__aarch64__)
         int ret = pthread_create(&g_trusted_thread, nullptr, trusted_thread_loop, nullptr);
         if (ret != 0) {
             LOGE("SvcBypass: Failed to create trusted thread");
@@ -122,16 +130,22 @@ namespace lspd {
         g_is_hook_active = true;
         LOGI("SvcBypass: Initialized successfully (ARM64)");
         return JNI_TRUE;
+#else
+        // x86/x86_64: 僅標記為激活，但不做實際 Hook
+        g_is_hook_active = true;
+        LOGI("SvcBypass: Skipped on non-ARM64 architecture");
+        return JNI_TRUE;
+#endif
     }
 
     LSP_DEF_NATIVE_METHOD(void, SvcBypass, enableSvcRedirect,
-                          jstring path, jstring orig, jstring pkg) {
+            jstring path, jstring orig, jstring pkg) {
         if (!g_is_hook_active) {
             LOGW("SvcBypass: Hook not initialized.");
             return;
         }
 
-        // ARM64 BPF 規則
+#if defined(__aarch64__)
         struct sock_filter filter[] = {
                 BPF_STMT(BPF_LD + BPF_W + BPF_ABS, (offsetof(struct seccomp_data, nr))),
                 BPF_JUMP(BPF_JMP + BPF_JEQ + BPF_K, __NR_openat, 0, 1),
@@ -154,6 +168,7 @@ namespace lspd {
         } else {
             LOGI("SvcBypass: Seccomp filter applied (ARM64)");
         }
+#endif
     }
 
     LSP_DEF_NATIVE_METHOD(void, SvcBypass, disableSvcRedirect) {
@@ -165,7 +180,11 @@ namespace lspd {
     }
 
     LSP_DEF_NATIVE_METHOD(jstring, SvcBypass, getDebugInfo) {
+#if defined(__aarch64__)
         return env->NewStringUTF("SvcBypass: Active (ARM64)");
+#else
+        return env->NewStringUTF("SvcBypass: Stub (Non-ARM64)");
+#endif
     }
 
     LSP_DEF_NATIVE_METHOD(jint, SvcBypass, getCurrentPid) {

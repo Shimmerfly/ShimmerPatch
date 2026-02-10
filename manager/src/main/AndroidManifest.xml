@@ -89,5 +89,12 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <provider
+            android:name=".manager.ConfigProvider"
+            android:authorities="org.lsposed.npatch.manager.provider.config"
+            android:exported="true"
+            android:enabled="true" />
+
     </application>
 </manifest>

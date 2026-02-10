@@ -17,9 +17,9 @@ java {
 }
 
 dependencies {
-    implementation(projects.axml)
     implementation(projects.apkzlib)
     implementation(projects.share.java)
+    implementation(projects.external.axml)
 
     implementation(npatch.commons.io)
     implementation(npatch.beust.jcommander)

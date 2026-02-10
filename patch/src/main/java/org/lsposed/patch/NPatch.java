@@ -120,7 +120,8 @@ public class NPatch {
 
     private static final ZFileOptions Z_FILE_OPTIONS = new ZFileOptions().setAlignmentRule(AlignmentRules.compose(
             AlignmentRules.constantForSuffix(".so", 4096),
-            AlignmentRules.constantForSuffix(ORIGINAL_APK_ASSET_PATH, 4096)
+            AlignmentRules.constantForSuffix(ORIGINAL_APK_ASSET_PATH, 4096),
+            AlignmentRules.constantForSuffix(".arsc", 4)
     ));
 
     private final JCommander jCommander;
@@ -368,7 +369,7 @@ public class NPatch {
                 if (name.startsWith("META-INF") && (name.endsWith(".SF") || name.endsWith(".MF") || name.endsWith(".RSA"))) continue;
 
                 try (InputStream is = entry.open()) {
-                    if (name.endsWith(".so")) {
+                    if (name.endsWith(".so") || name.equals("resources.arsc")) {
                         dstZFile.add(name, is, false);
                     } else {
                         dstZFile.add(name, is);

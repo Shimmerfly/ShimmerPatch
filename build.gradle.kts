@@ -108,7 +108,7 @@ fun Project.configureBaseExtension() {
                     arguments += "-DEXTERNAL_ROOT=${File(rootDir.absolutePath, "core/external")}"
                     arguments += "-DCORE_ROOT=${File(rootDir.absolutePath, 
                     "core/core/src/main/jni")}"
-                    abiFilters("arm64-v8a")
+                    abiFilters("arm64-v8a", "x86_64")
                     val flags = arrayOf(
                         "-Wall",
                         "-Qunused-arguments",

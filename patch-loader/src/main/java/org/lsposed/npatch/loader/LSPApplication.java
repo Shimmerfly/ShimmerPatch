@@ -1,7 +1,6 @@
 package org.lsposed.npatch.loader;
 
 import static org.lsposed.npatch.share.Constants.CONFIG_ASSET_PATH;
-import static org.lsposed.npatch.share.Constants.ORIGINAL_APK_ASSET_PATH;
 import static org.lsposed.npatch.share.Constants.PROVIDER_DEX_ASSET_PATH;
 
 import android.app.ActivityThread;
@@ -12,6 +11,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.res.CompatibilityInfo;
 import android.os.Build;
 import android.os.RemoteException;
+import android.os.Process;
 import android.system.Os;
 import android.util.Log;
 
@@ -22,7 +22,6 @@ import org.json.JSONObject;
 import org.lsposed.lspd.core.Startup;
 import org.lsposed.lspd.models.Module;
 import org.lsposed.lspd.service.ILSPApplicationService;
-import org.lsposed.npatch.loader.util.FileUtils;
 import org.lsposed.npatch.loader.util.XLog;
 import org.lsposed.npatch.service.IntegrApplicationService;
 import org.lsposed.npatch.service.NeoLocalApplicationService;
@@ -40,13 +39,11 @@ import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.zip.ZipFile;
 
 import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
@@ -73,7 +70,7 @@ public class LSPApplication {
     private static PatchConfig config;
 
     public static boolean isIsolated() {
-        return (android.os.Process.myUid() % PER_USER_RANGE) >= FIRST_APP_ZYGOTE_ISOLATED_UID;
+        return (Process.myUid() % PER_USER_RANGE) >= FIRST_APP_ZYGOTE_ISOLATED_UID;
     }
 
     private static boolean hasEmbeddedModules(Context context) {
@@ -173,30 +170,16 @@ public class LSPApplication {
             Log.i(TAG, "Use manager: " + config.useManager);
             Log.i(TAG, "Signature bypass level: " + config.sigBypassLevel);
 
-            Path originPath = Paths.get(appInfo.dataDir, "cache/npatch/origin/");
-            String originalSourceDir = appInfo.sourceDir;
-
-            long sourceCrc;
-            try (ZipFile sourceFile = new ZipFile(originalSourceDir)) {
-                sourceCrc = sourceFile.getEntry(ORIGINAL_APK_ASSET_PATH).getCrc();
-            }
-            Path cacheApkPath = originPath.resolve(sourceCrc + ".apk");
+            Path cacheApkPath = OriginApkHelper.prepareOriginApk(appInfo, baseClassLoader);
+            long sourceCrc = OriginApkHelper.getOriginalApkCrc(appInfo.sourceDir);
 
             appInfo.sourceDir = cacheApkPath.toString();
             appInfo.publicSourceDir = cacheApkPath.toString();
             appInfo.appComponentFactory = config.appComponentFactory;
 
-            if (!Files.exists(cacheApkPath)) {
-                Log.i(TAG, "Extract original apk");
-                FileUtils.deleteFolderIfExists(originPath);
-                Files.createDirectories(originPath);
-                try (InputStream is = baseClassLoader.getResourceAsStream(ORIGINAL_APK_ASSET_PATH)) {
-                    if (is != null) Files.copy(is, cacheApkPath);
-                }
-            }
             Path providerPath = null;
             if (config.injectProvider) {
-                providerPath = originPath.resolve("p_" + sourceCrc + ".dex");
+                providerPath = cacheApkPath.getParent().resolve("p_" + sourceCrc + ".dex");
                 try {
                     Files.deleteIfExists(providerPath);
                     try (InputStream is = baseClassLoader.getResourceAsStream(PROVIDER_DEX_ASSET_PATH)) {
@@ -212,8 +195,6 @@ public class LSPApplication {
                     providerPath = null;
                 }
             }
-
-            cacheApkPath.toFile().setWritable(false);
 
             var mPackages = (Map<?, ?>) XposedHelpers.getObjectField(activityThread, "mPackages");
             mPackages.remove(appInfo.packageName);

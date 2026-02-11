@@ -115,13 +115,21 @@ public class LSPApplication {
                 }
                 SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
                 shared.edit().putString("modules", moduleArr.toString()).apply();
-                Log.e(TAG, "Success update module scope");
-            } catch (Exception e) {
-                Log.e(TAG, "Failed to connect to manager, fallback to fixed local service");
+                Log.i(TAG, "Success update module scope from Manager");
+            } catch (Throwable e) {
+                Log.w(TAG, "Failed to connect to manager: " + e.getMessage());
+                service = null;
+            }
+        }
+
+        if (service == null) {
+            if (hasEmbeddedModules(context)) {
+                Log.i(TAG, "Using Integrated Service (Embedded Modules Found)");
+                service = new IntegrApplicationService(context);
+            } else {
+                Log.i(TAG, "Using NeoLocal Service (Cached Config)");
                 service = new NeoLocalApplicationService(context);
             }
-        } else {
-            service = new IntegrApplicationService(context);
         }
 
         disableProfile(context);

@@ -1,6 +1,7 @@
 package org.lsposed.npatch.service;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -10,6 +11,8 @@ import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.lsposed.npatch.util.ModuleLoader;
 import org.lsposed.lspd.models.Module;
 import org.lsposed.lspd.service.ILSPApplicationService;
@@ -29,6 +32,49 @@ public class NeoLocalApplicationService extends ILSPApplicationService.Stub {
     public NeoLocalApplicationService(Context context) {
         cachedModule = Collections.synchronizedList(new ArrayList<>());
         loadModulesFromProvider(context);
+
+        if (cachedModule.isEmpty()) {
+            Log.w(TAG, "NeoLocal: Provider returned empty, falling back to local cache.");
+            loadModulesFromCache(context);
+        }
+    }
+
+    private void loadModulesFromCache(Context context) {
+        try {
+            SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
+            String jsonStr = shared.getString("modules", "[]");
+            JSONArray jsonArray = new JSONArray(jsonStr);
+            PackageManager pm = context.getPackageManager();
+
+            Log.i(TAG, "NeoLocal: Loading from cache: " + jsonStr);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject obj = jsonArray.getJSONObject(i);
+                String packageName = obj.optString("packageName");
+                String path = obj.optString("path");
+
+                if (path != null && !path.isEmpty() && new File(path).exists()) {
+                    loadModuleByPath(packageName, path);
+                } else if (packageName != null) {
+                    loadSingleModule(pm, packageName);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "NeoLocal: Failed to load from cache", e);
+        }
+    }
+
+    private void loadModuleByPath(String pkgName, String path) {
+        try {
+            Module m = new Module();
+            m.packageName = pkgName;
+            m.apkPath = path;
+            m.file = ModuleLoader.loadModule(m.apkPath);
+            cachedModule.add(m);
+            Log.i(TAG, "Loaded cached module " + pkgName);
+        } catch (Throwable e) {
+            Log.e(TAG, "Failed to load cached module " + pkgName, e);
+        }
     }
 
     private void loadModulesFromProvider(Context context) {

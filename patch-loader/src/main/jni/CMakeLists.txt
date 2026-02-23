@@ -1,5 +1,5 @@
 project(npatch)
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.31.1)
 
 set(CMAKE_CXX_STANDARD 23)
 add_subdirectory(${CORE_ROOT} core)

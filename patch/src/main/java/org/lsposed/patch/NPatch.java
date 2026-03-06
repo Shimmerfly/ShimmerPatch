@@ -118,7 +118,7 @@ public class NPatch {
     private static final ZFileOptions Z_FILE_OPTIONS = new ZFileOptions()
             .setNoTimestamps(true)
             .setAlignmentRule(AlignmentRules.compose(
-                    AlignmentRules.constantForSuffix(".so", 4096),
+                    AlignmentRules.constantForSuffix(".so", 16384),
                     AlignmentRules.constantForSuffix(ORIGINAL_APK_ASSET_PATH, 4096),
                     AlignmentRules.constantForSuffix(".arsc", 4)
             ));

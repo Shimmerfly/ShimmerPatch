@@ -20,12 +20,15 @@ object ConfigManager {
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = Dispatchers.Default.limitedParallelism(1)
 
-    private val db: LSPDatabase = Room.databaseBuilder(
-        lspApp, LSPDatabase::class.java, "modules_config.db"
-    ).build()
+    private val db: LSPDatabase by lazy {
+        Room.databaseBuilder(
+            lspApp, LSPDatabase::class.java, "modules_config.db"
+        ).build()
+    }
 
-    private val moduleDao = db.moduleDao()
-    private val scopeDao = db.scopeDao()
+
+    private val moduleDao get() = db.moduleDao()
+    private val scopeDao get() = db.scopeDao()
 
     private val loadedModules = mutableMapOf<Module, org.lsposed.lspd.models.Module>()
 

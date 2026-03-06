@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import dalvik.system.DexFile;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import hidden.HiddenApiBridge;
@@ -201,19 +200,24 @@ public class LSPApplication {
             appLoadedApk = activityThread.getPackageInfoNoCheck(appInfo, compatInfo);
 
             if (config.injectProvider && providerPath != null) {
-                ClassLoader loader = appLoadedApk.getClassLoader();
-                Object dexPathList = XposedHelpers.getObjectField(loader, "pathList");
-                Object dexElements = XposedHelpers.getObjectField(dexPathList, "dexElements");
-                int length = Array.getLength(dexElements);
-                Object newElements = Array.newInstance(dexElements.getClass().getComponentType(), length + 1);
-                System.arraycopy(dexElements, 0, newElements, 0, length);
+                try {
+                    ClassLoader loader = appLoadedApk.getClassLoader();
+                    Object dexPathList = XposedHelpers.getObjectField(loader, "pathList");
+                    Object dexElements = XposedHelpers.getObjectField(dexPathList, "dexElements");
+                    int length = Array.getLength(dexElements);
+                    Object newElements = Array.newInstance(dexElements.getClass().getComponentType(), length + 1);
+                    System.arraycopy(dexElements, 0, newElements, 0, length);
 
-                DexFile dexFile = new DexFile(providerPath.toString());
-                Object element = XposedHelpers.newInstance(XposedHelpers.findClass("dalvik.system.DexPathList$Element", loader), new Class[]{
-                        DexFile.class
-                }, dexFile);
-                Array.set(newElements, length, element);
-                XposedHelpers.setObjectField(dexPathList, "dexElements", newElements);
+                    // Use reflection for DexFile to handle deprecation on Android 14+
+                    Class<?> dexFileClass = Class.forName("dalvik.system.DexFile");
+                    Object dexFile = dexFileClass.getConstructor(String.class).newInstance(providerPath.toString());
+                    Class<?> elementClass = Class.forName("dalvik.system.DexPathList$Element");
+                    Object element = elementClass.getConstructor(dexFileClass).newInstance(dexFile);
+                    Array.set(newElements, length, element);
+                    XposedHelpers.setObjectField(dexPathList, "dexElements", newElements);
+                } catch (Throwable e) {
+                    Log.e(TAG, "Failed to inject provider dex: " + e.getMessage(), e);
+                }
             }
 
             XposedHelpers.setObjectField(mBoundApplication, "info", appLoadedApk);

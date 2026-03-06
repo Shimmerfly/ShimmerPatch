@@ -37,13 +37,13 @@ val (coreCommitCount, coreLatestTag) = FileRepositoryBuilder().setGitDir(rootPro
             val coreCommitCount =
                 git.log()
                     .add(repo.refDatabase.exactRef("HEAD").objectId)
-                    .call().count() + 4200
+                    .call().count()
             val ver = git.describe()
                 .setTags(true)
                 .setAbbrev(0).call().removePrefix("v")
             coreCommitCount to ver
         }
-    }.getOrNull() ?: (1 to "1.0")
+    }.getOrNull() ?: (1145 to "1.0")
 
 // sync from https://github.com/JingMartix/LSPosed/blob/master/build.gradle.kts
 val defaultManagerPackageName by extra("org.lsposed.npatch")

@@ -12,6 +12,7 @@ public class Constants {
     final static public String PATCH_FILE_SUFFIX = "-npatched.apk";
     final static public String PROXY_APP_COMPONENT_FACTORY = "org.lsposed.npatch.metaloader.LSPAppComponentFactoryStub";
     final static public String MANAGER_PACKAGE_NAME = "org.lsposed.npatch";
+    final static public String REAL_GMS_PACKAGE_NAME = "com.google.android.gms";
     final static public int MIN_ROLLING_VERSION_CODE = 400;
 
     final static public int SIGBYPASS_LV_DISABLE = 0;

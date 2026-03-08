@@ -145,6 +145,11 @@ public class LSPApplication {
         switchAllClassLoader();
         SigBypass.doSigBypass(context, config.sigBypassLevel);
 
+        if (config.useMicroG) {
+            Log.i(TAG, "Activating MicroG redirect via NPatch");
+            GmsRedirector.activate(context, config.originalSignature);
+        }
+
         Log.i(TAG, "NPatch bootstrap completed");
     }
 

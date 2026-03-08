@@ -13,6 +13,7 @@ public class PatchConfig {
     public final LSPConfig lspConfig;
     public final String managerPackageName;
     public final String newPackage;
+    public final boolean useMicroG;
 
     public PatchConfig(
             boolean useManager,
@@ -23,7 +24,8 @@ public class PatchConfig {
             String appComponentFactory,
             boolean injectProvider,
             boolean outputLog,
-            String newPackage
+            String newPackage,
+            boolean useMicroG
     ) {
         this.useManager = useManager;
         this.debuggable = debuggable;
@@ -36,5 +38,6 @@ public class PatchConfig {
         this.managerPackageName = Constants.MANAGER_PACKAGE_NAME;
         this.newPackage = newPackage;
         this.outputLog = outputLog;
+        this.useMicroG = useMicroG;
     }
 }

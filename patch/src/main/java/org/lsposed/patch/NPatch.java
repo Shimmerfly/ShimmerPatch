@@ -89,6 +89,12 @@ public class NPatch {
     @Parameter(names = {"--provider"}, description = "Inject Provider to manager data files")
     private boolean isInjectProvider = false;
 
+    @Parameter(names = {"--installerSource"}, description = "Original app installer source")
+    private String installerSource = "";
+
+    @Parameter(names = {"--useMicroG"}, description = "Redirect GMS calls to community MicroG")
+    private boolean useMicroG = false;
+
     @Parameter(names = {"--outputLog"}, description = "Output Log to Media")
     private boolean outputLog = true;
 
@@ -287,10 +293,10 @@ public class NPatch {
 
             logger.i("Patching apk...");
             // modify manifest
-            final var config = new PatchConfig(useManager, debuggableFlag, overrideVersionCode, sigbypassLevel, originalSignature, appComponentFactory, isInjectProvider, outputLog, newPackage);
+            final var config = new PatchConfig(useManager, debuggableFlag, overrideVersionCode, sigbypassLevel, originalSignature, appComponentFactory, isInjectProvider, outputLog, newPackage, useMicroG);
             final var configBytes = new Gson().toJson(config).getBytes(StandardCharsets.UTF_8);
             final var metadata = Base64.getEncoder().encodeToString(configBytes);
-            try (var is = new ByteArrayInputStream(modifyManifestFile(manifestEntry.open(), metadata, minSdkVersion, pair.packageName, newPackage))) {
+            try (var is = new ByteArrayInputStream(modifyManifestFile(manifestEntry.open(), metadata, minSdkVersion, pair.packageName, newPackage, originalSignature))) {
                 dstZFile.add(ANDROID_MANIFEST_XML, is);
             } catch (Throwable e) {
                 throw new PatchError("Error when modifying manifest", e);
@@ -422,44 +428,52 @@ public class NPatch {
         }
     }
 
-    private byte[] modifyManifestFile(InputStream is, String metadata, int minSdkVersion, String originPackage, String newPackage) throws IOException {
+    private byte[] modifyManifestFile(InputStream is, String metadata, int minSdkVersion, String originPackage, String newPackage, String originalSignature) throws IOException {
         ModificationProperty property = new ModificationProperty();
 
         String targetPackage = (newPackage != null && !newPackage.isEmpty()) ? newPackage : originPackage;
 
-        if (overrideVersionCode)
-            property.addManifestAttribute(new AttributeItem(NodeValue.Manifest.VERSION_CODE, 1));
-        if (minSdkVersion < 28)
+        if (minSdkVersion > 0)
+            property.addUsesSdkAttribute(new AttributeItem(NodeValue.UsesSDK.MIN_SDK_VERSION, minSdkVersion));
+        else
             property.addUsesSdkAttribute(new AttributeItem(NodeValue.UsesSDK.MIN_SDK_VERSION, 27));
         property.addApplicationAttribute(new AttributeItem(NodeValue.Application.DEBUGGABLE, debuggableFlag));
         property.addApplicationAttribute(new AttributeItem("appComponentFactory", PROXY_APP_COMPONENT_FACTORY));
+        property.addApplicationAttribute(new AttributeItem("isSplitRequired", false));
+
         if (!targetPackage.equals(originPackage)) {
             property.addManifestAttribute(new AttributeItem(NodeValue.Manifest.PACKAGE, targetPackage).setNamespace(null));
         }
-        property.setPermissionMapper((type, permission) -> {
-            if (permission.startsWith(originPackage)) {
-                return permission.replaceFirst(originPackage, targetPackage);
-            }
-            if (permission.startsWith("android")
-                    || permission.startsWith("com.android")
-                    || permission.startsWith("com.google.android")) {
-                return permission;
-            }
-            return targetPackage + "_" + permission;
-        });
 
-        property.setAuthorityMapper(value -> {
-            if (value.startsWith(originPackage)) {
-                return value.replaceFirst(originPackage, targetPackage);
-            }
-            return targetPackage + "_" + value;
+        modules.forEach(module -> {
+            property.addMetaData(new ModificationProperty.MetaData("xposedmodule", "true"));
+            property.addMetaData(new ModificationProperty.MetaData("xposeddescription", "NPatch Embed Module"));
+            property.addMetaData(new ModificationProperty.MetaData("xposedminversion", "93"));
         });
 
         property.addMetaData(new ModificationProperty.MetaData("npatch", metadata));
+
+        // 注入 MicroG 偽裝簽名與權限
+        if (useMicroG && originalSignature != null && !originalSignature.isEmpty()) {
+            try {
+                byte[] sigBytes = Base64.getDecoder().decode(originalSignature);
+                StringBuilder hex = new StringBuilder();
+                for (byte b : sigBytes) {
+                    hex.append(String.format("%02x", b));
+                }
+                property.addMetaData(new ModificationProperty.MetaData("fake-signature", hex.toString()));
+                property.addUsesPermission("android.permission.FAKE_PACKAGE_SIGNATURE");
+                logger.d("Added fake-signature metadata for MicroG compatibility");
+            } catch (Exception e) {
+                logger.e("Failed to add fake-signature: " + e.getMessage());
+            }
+        }
+
         // TODO: replace query_all with queries -> manager
         if (useManager)
             property.addUsesPermission("android.permission.QUERY_ALL_PACKAGES");
 
+        // 處理注入 Provider 的邏輯
         if (isInjectProvider){
             HashMap<String,String> providerMap = new HashMap<>();
             providerMap.put("name","bin.mt.file.content.MTDataFilesProvider");

@@ -366,6 +366,13 @@ private fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit) {
             desc = stringResource(R.string.patch_inject_mt_provider_desc)
         )
         SettingsCheckBox(
+            modifier = Modifier.clickable { viewModel.useMicroG = !viewModel.useMicroG },
+            checked = viewModel.useMicroG,
+            icon = Icons.Outlined.CloudSync,
+            title = stringResource(R.string.patch_use_microg),
+            desc = stringResource(R.string.patch_use_microg_desc)
+        )
+        SettingsCheckBox(
             modifier = Modifier.clickable { viewModel.outputLog = !viewModel.outputLog },
             checked = viewModel.outputLog,
             icon = Icons.Outlined.AddCard,

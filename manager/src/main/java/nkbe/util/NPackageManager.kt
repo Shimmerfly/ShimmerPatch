@@ -201,9 +201,7 @@ object NPackageManager {
                         splits.add(dst.absolutePath)
                         return@mapNotNull null
                     }
-                    if (primary == null) {
-                        primary = appInfo
-                    }
+                    if (primary == null) primary = appInfo
                     val label = lspApp.packageManager.getApplicationLabel(appInfo).toString()
                     AppInfo(appInfo, label)
                 }

@@ -23,6 +23,7 @@ android {
     externalNativeBuild {
         cmake {
             path("src/main/jni/CMakeLists.txt")
+            version = "3.31.6"
         }
     }
     namespace = "org.lsposed.npatch.loader"

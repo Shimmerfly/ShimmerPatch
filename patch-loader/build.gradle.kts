@@ -26,6 +26,12 @@ android {
             version = "3.31.6"
         }
     }
+
+    packaging {
+        dex {
+            useLegacyPackaging = true
+        }
+    }
     namespace = "org.lsposed.npatch.loader"
 }
 

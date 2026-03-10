@@ -41,6 +41,7 @@ public class SigBypass {
     private static final String TAG = "NPatch-SigBypass";
     private static final Map<String, String> signatures = new HashMap<>();
     private static String cachedOriginalApkPath;
+    private static String cachedOriginalFactory = null;
 
     private static void replaceSignature(Context context, PackageInfo packageInfo) {
         boolean hasSignature = (packageInfo.signatures != null && packageInfo.signatures.length != 0) || packageInfo.signingInfo != null;
@@ -57,8 +58,11 @@ public class SigBypass {
                         try {
                             var patchConfig = new JSONObject(json);
                             replacement = patchConfig.getString("originalSignature");
+                            if (patchConfig.has("appComponentFactory")) {
+                                cachedOriginalFactory = patchConfig.optString("appComponentFactory", null);
+                            }
                         } catch (JSONException e) {
-                            Log.w(TAG, "fail to get originalSignature", e);
+                            Log.w(TAG, "fail to get originalSignature or factory", e);
                         }
                     }
                 } catch (PackageManager.NameNotFoundException | JsonSyntaxException ignored) {
@@ -114,6 +118,14 @@ public class SigBypass {
         }
     }
 
+    private static void spoofApplicationInfo(ApplicationInfo appInfo) {
+        if (appInfo != null) {
+            if (cachedOriginalFactory != null && !cachedOriginalFactory.isEmpty()) {
+                appInfo.appComponentFactory = cachedOriginalFactory;
+            }
+        }
+    }
+
     private static void replacePackageInfoPath(PackageInfo packageInfo, String fakeApkPath) {
         if (packageInfo != null && packageInfo.applicationInfo != null && fakeApkPath != null) {
             packageInfo.applicationInfo.sourceDir = fakeApkPath;
@@ -144,7 +156,12 @@ public class SigBypass {
                 PackageInfo packageInfo = originalCreator.createFromParcel(source);
                 replaceSignature(context, packageInfo);
 
-                if (sigBypassLevel >= 3 && cachedOriginalApkPath != null) {
+                // 還原 appComponentFactory
+                if (packageInfo.applicationInfo != null) {
+                    spoofApplicationInfo(packageInfo.applicationInfo);
+                }
+
+                if (sigBypassLevel >= Constants.SIGBYPASS_LV_PATH_REDIR && cachedOriginalApkPath != null) {
                     replacePackageInfoPath(packageInfo, cachedOriginalApkPath);
                 }
                 return packageInfo;

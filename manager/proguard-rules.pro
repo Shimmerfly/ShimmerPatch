@@ -14,8 +14,8 @@
     @com.beust.jcommander.Parameter *;
 }
 
--keep class com.beust.jcommander.** { *; }
--keep class org.lsposed.npatch.database.** { *; }
+-keepclassmembers class org.lsposed.npatch.database.dao.** { *; }
+-keep class org.lsposed.npatch.database.entity.** { *; }
 -keep class org.lsposed.npatch.manager.ConfigProvider { *; }
 -keep class org.lsposed.npatch.Patcher$Options { *; }
 -keep class org.lsposed.npatch.share.LSPConfig { *; }

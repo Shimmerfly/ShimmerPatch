@@ -81,24 +81,72 @@ public class SigBypass {
         }
     }
 
-    private static void hookPackageParser(Context context) {
+    // 移植自 SRPatch
+    private static void spoofContextInternalFields(Context context, String fakeApkPath) {
+        try {
+            Context baseContext = context;
+            while (baseContext instanceof android.content.ContextWrapper) {
+                baseContext = ((android.content.ContextWrapper) baseContext).getBaseContext();
+            }
+            java.lang.reflect.Field packageInfoField = baseContext.getClass().getDeclaredField("mPackageInfo");
+            packageInfoField.setAccessible(true);
+            Object packageInfoObject = packageInfoField.get(baseContext);
+
+            if (packageInfoObject != null) {
+                // mAppDir
+                java.lang.reflect.Field appDirField = packageInfoObject.getClass().getDeclaredField("mAppDir");
+                appDirField.setAccessible(true);
+                appDirField.set(packageInfoObject, fakeApkPath);
+
+                // mResDir
+                java.lang.reflect.Field resDirField = packageInfoObject.getClass().getDeclaredField("mResDir");
+                resDirField.setAccessible(true);
+                resDirField.set(packageInfoObject, fakeApkPath);
+            }
+
+            // 同步修改當前 Context 的 ApplicationInfo
+            ApplicationInfo currentAppInfo = context.getApplicationInfo();
+            currentAppInfo.sourceDir = fakeApkPath;
+            currentAppInfo.publicSourceDir = fakeApkPath;
+
+        } catch (Throwable t) {
+            Log.w(TAG, "Failed to spoof Context internal fields", t);
+        }
+    }
+
+    private static void replacePackageInfoPath(PackageInfo packageInfo, String fakeApkPath) {
+        if (packageInfo != null && packageInfo.applicationInfo != null && fakeApkPath != null) {
+            packageInfo.applicationInfo.sourceDir = fakeApkPath;
+            packageInfo.applicationInfo.publicSourceDir = fakeApkPath;
+        }
+    }
+
+    private static void hookPackageParser(Context context, int sigBypassLevel) {
         XposedBridge.hookAllMethods(PackageParser.class, "generatePackageInfo", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) {
                 var packageInfo = (PackageInfo) param.getResult();
                 if (packageInfo == null) return;
                 replaceSignature(context, packageInfo);
+
+                if (sigBypassLevel >= 3 && cachedOriginalApkPath != null) {
+                    replacePackageInfoPath(packageInfo, cachedOriginalApkPath);
+                }
             }
         });
     }
 
-    private static void proxyPackageInfoCreator(Context context) {
+    private static void proxyPackageInfoCreator(Context context, int sigBypassLevel) {
         Parcelable.Creator<PackageInfo> originalCreator = PackageInfo.CREATOR;
         Parcelable.Creator<PackageInfo> proxiedCreator = new Parcelable.Creator<>() {
             @Override
             public PackageInfo createFromParcel(Parcel source) {
                 PackageInfo packageInfo = originalCreator.createFromParcel(source);
                 replaceSignature(context, packageInfo);
+
+                if (sigBypassLevel >= 3 && cachedOriginalApkPath != null) {
+                    replacePackageInfoPath(packageInfo, cachedOriginalApkPath);
+                }
                 return packageInfo;
             }
 
@@ -209,37 +257,50 @@ public class SigBypass {
     }
 
     static void doSigBypass(Context context, int sigBypassLevel) throws IOException {
-        // Level 1: Java PMS Hook
-        if (sigBypassLevel >= Constants.SIGBYPASS_LV_PM) {
-            hookPackageParser(context);
-            proxyPackageInfoCreator(context);
-        }
-        if (sigBypassLevel >= Constants.SIGBYPASS_LV_PM_OPENAT) {
-            String currentApkPath = context.getPackageResourcePath();
+        String currentApkPath = context.getPackageResourcePath();
+        if (sigBypassLevel >= 2) {
             cachedOriginalApkPath = extractOriginalApk(context);
+        }
 
-            if (cachedOriginalApkPath != null) {
-                // 1. Java Core stability
-                hookJavaIO(currentApkPath, cachedOriginalApkPath);
-                // 2. Native OpenAt Hook
-                org.lsposed.lspd.nativebridge.SigBypass.enableOpenatHook(
-                        currentApkPath,
-                        cachedOriginalApkPath,
-                        context.getPackageName()
-                );
+        // Java PMS Hook
+        if (sigBypassLevel >= 1) {
+            hookPackageParser(context, sigBypassLevel);
+            proxyPackageInfoCreator(context, sigBypassLevel);
+        }
 
-                // Level 3: SVC (Seccomp) Hook
-                if (sigBypassLevel >= Constants.SIGBYPASS_LV_SVC) {
-                    if (SvcBypass.initSvcHook()) {
-                        SvcBypass.enableSvcRedirect(
-                                currentApkPath,
-                                cachedOriginalApkPath,
-                                context.getPackageName()
-                        );
-                        XLog.i(TAG, "SVC Hook enabled");
-                    } else {
-                        XLog.w(TAG, "SVC Hook failed to init");
-                    }
+        if (sigBypassLevel >= 2 && cachedOriginalApkPath != null) {
+            // 1. Java Core IO stability
+            hookJavaIO(currentApkPath, cachedOriginalApkPath);
+            // 2. Native OpenAt Hook
+            org.lsposed.lspd.nativebridge.SigBypass.enableOpenatHook(
+                    currentApkPath,
+                    cachedOriginalApkPath,
+                    context.getPackageName()
+            );
+
+            // 路徑重定向 (Path Redirection)
+            if (sigBypassLevel >= 3) {
+                try {
+                    replaceApplication(context.getPackageName(), cachedOriginalApkPath, cachedOriginalApkPath);
+
+                    spoofContextInternalFields(context, cachedOriginalApkPath);
+                    XLog.i(TAG, "Path Redirection (LV3) enabled");
+                } catch (Throwable t) {
+                    Log.w(TAG, "Failed to apply path redirection", t);
+                }
+            }
+
+            // SVC (Seccomp) Hook
+            if (sigBypassLevel >= 4) {
+                if (SvcBypass.initSvcHook()) {
+                    SvcBypass.enableSvcRedirect(
+                            currentApkPath,
+                            cachedOriginalApkPath,
+                            context.getPackageName()
+                    );
+                    XLog.i(TAG, "SVC Hook enabled");
+                } else {
+                    XLog.w(TAG, "SVC Hook failed to init");
                 }
             }
         }

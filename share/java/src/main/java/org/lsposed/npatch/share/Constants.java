@@ -16,7 +16,8 @@ public class Constants {
     final static public int MIN_ROLLING_VERSION_CODE = 400;
 
     final static public int SIGBYPASS_LV_DISABLE = 0;
-    final static public int SIGBYPASS_LV_PM = 1;
-    final static public int SIGBYPASS_LV_PM_OPENAT = 2;
-    final static public int SIGBYPASS_LV_SVC = 3;
+    public static final int SIGBYPASS_LV_PM = 1;
+    public static final int SIGBYPASS_LV_PM_OPENAT = 2;
+    public static final int SIGBYPASS_LV_PATH_REDIR = 3;
+    public static final int SIGBYPASS_LV_SVC = 4;
 }

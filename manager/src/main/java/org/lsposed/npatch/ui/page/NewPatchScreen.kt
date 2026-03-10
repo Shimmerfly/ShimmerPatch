@@ -282,6 +282,7 @@ private fun sigBypassLvStr(level: Int) = when (level) {
     1 -> stringResource(R.string.patch_sigbypasslv1)
     2 -> stringResource(R.string.patch_sigbypasslv2)
     3 -> stringResource(R.string.patch_sigbypasslv3)
+    4 -> stringResource(R.string.patch_sigbypasslv4)
     else -> throw IllegalArgumentException("Invalid sigBypassLv: $level")
 }
 
@@ -392,7 +393,7 @@ private fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit) {
                 )
             }
         ) {
-            repeat(4) {
+            repeat(5) {
                 DropdownMenuItem(
                     text = {
                         Row(verticalAlignment = Alignment.CenterVertically) {

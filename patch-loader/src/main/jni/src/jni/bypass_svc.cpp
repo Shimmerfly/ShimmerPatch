@@ -203,9 +203,13 @@ namespace lspd {
     }
 
     LSP_DEF_NATIVE_METHOD(jstring, SvcBypass, checkFd, jint fd) {
-        char path[512];
+        if (fd < 0) return nullptr;
+        char path[PATH_MAX];
         char link[64];
-        snprintf(link, sizeof(link), "/proc/self/fd/%d", fd);
+        if (snprintf(link, sizeof(link), "/proc/self/fd/%d", fd) >= (int)sizeof(link)) {
+            return nullptr;
+        }
+
         ssize_t len = readlink(link, path, sizeof(path) - 1);
         if (len != -1) {
             path[len] = '\0';

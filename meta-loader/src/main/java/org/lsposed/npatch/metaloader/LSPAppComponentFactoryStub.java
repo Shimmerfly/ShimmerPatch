@@ -16,6 +16,7 @@ import org.lsposed.npatch.share.Constants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -118,7 +119,46 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
                 Log.i(TAG, "Loading native lib from: " + soPath);
             }
 
-            System.load(soPath);
+            if (soPath.contains("!/")) {
+                String[] parts = soPath.split("!/");
+                String apkPath = parts[0];
+                String entryPath = parts[1];
+
+                File outDir = new File(System.getProperty("java.io.tmpdir"));
+
+                try {
+                    ActivityThread at = ActivityThread.currentActivityThread();
+                    java.lang.reflect.Field boundAppField = at.getClass().getDeclaredField("mBoundApplication");
+                    boundAppField.setAccessible(true);
+                    Object mBoundApp = boundAppField.get(at);
+                    if (mBoundApp != null) {
+                        java.lang.reflect.Field appInfoField = mBoundApp.getClass().getDeclaredField("appInfo");
+                        appInfoField.setAccessible(true);
+                        ApplicationInfo appInfo = (ApplicationInfo) appInfoField.get(mBoundApp);
+                        outDir = new File(appInfo.dataDir, "code_cache");
+                    }
+                } catch (Throwable ignored) {
+                    Log.w(TAG, "Failed to reflect dataDir, using fallback tmpdir");
+                }
+
+                if (!outDir.exists()) {
+                    outDir.mkdirs();
+                }
+
+                File extractedSo = new File(outDir, "libnpatch_" + arch + ".so");
+
+                try (ZipFile zipFile = new ZipFile(apkPath);
+                     InputStream is = zipFile.getInputStream(zipFile.getEntry(entryPath));
+                     OutputStream os = new FileOutputStream(extractedSo)) {
+                    transfer(is, os);
+                }
+
+                Log.i(TAG, "Successfully extracted native lib to: " + extractedSo.getAbsolutePath());
+                System.load(extractedSo.getAbsolutePath());
+            } else {
+                System.load(soPath);
+            }
+
         } catch (Throwable e) {
             throw new ExceptionInInitializerError(e);
         }

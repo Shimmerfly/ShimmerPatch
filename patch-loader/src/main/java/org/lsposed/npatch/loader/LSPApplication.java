@@ -217,7 +217,8 @@ public class LSPApplication {
                     Class<?> dexFileClass = Class.forName("dalvik.system.DexFile");
                     Object dexFile = dexFileClass.getConstructor(String.class).newInstance(providerPath.toString());
                     Class<?> elementClass = Class.forName("dalvik.system.DexPathList$Element");
-                    Object element = elementClass.getConstructor(dexFileClass).newInstance(dexFile);
+                    Object element = elementClass.getConstructor(dexFileClass, File.class).newInstance(dexFile, null);
+
                     Array.set(newElements, length, element);
                     XposedHelpers.setObjectField(dexPathList, "dexElements", newElements);
                 } catch (Throwable e) {
@@ -248,7 +249,7 @@ public class LSPApplication {
             }
             Log.i(TAG, "hooked app initialized: " + appLoadedApk);
 
-            var context = (Context) XposedHelpers.callStaticMethod(Class.forName("android.app.ContextImpl"), "createAppContext", activityThread, stubLoadedApk);
+            var context = (Context) XposedHelpers.callStaticMethod(Class.forName("android.app.ContextImpl"), "createAppContext", activityThread, appLoadedApk);
             if (config.appComponentFactory != null) {
                 try {
                     context.getClassLoader().loadClass(config.appComponentFactory);

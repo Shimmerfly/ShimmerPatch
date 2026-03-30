@@ -26,7 +26,7 @@ buildscript {
 
 val commitCount = run {
     val repo = FileRepository(rootProject.file(".git"))
-    val refId = repo.refDatabase.exactRef("refs/remotes/origin/master").objectId!!
+    val refId = repo.refDatabase.exactRef("refs/remotes/origin/main").objectId!!
     Git(repo).log().add(refId).call().count()
 }
 
@@ -49,7 +49,7 @@ val (coreCommitCount, coreLatestTag) = FileRepositoryBuilder().setGitDir(rootPro
 val defaultManagerPackageName by extra("org.lsposed.npatch")
 val apiCode by extra(100)
 val verCode by extra(commitCount)
-val verName by extra("0.7.4")
+val verName by extra("0.8.0")
 val coreVerCode by extra(coreCommitCount)
 val coreVerName by extra(coreLatestTag)
 val androidMinSdkVersion by extra(28)

@@ -14,6 +14,7 @@ import dev.rikka.tools.refine.Refine
 import rikka.shizuku.Shizuku
 import rikka.shizuku.ShizukuBinderWrapper
 import rikka.shizuku.SystemServiceHelper
+import org.lsposed.npatch.lspApp
 
 object ShizukuApi {
 
@@ -30,10 +31,18 @@ object ShizukuApi {
 
     private val packageInstaller: PackageInstaller by lazy {
         val userId = Process.myUserHandle().hashCode()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            Refine.unsafeCast(PackageInstallerHidden(iPackageInstaller, "com.android.shell", null, userId))
+
+        // 參考 JingMatrix (2ac407dc50) 修正不同 Android 版本下的 installerPackageName 行為
+        val installerPackageName = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            "com.android.shell"
         } else {
-            Refine.unsafeCast(PackageInstallerHidden(iPackageInstaller, "com.android.shell", userId))
+            lspApp.packageName
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Refine.unsafeCast(PackageInstallerHidden(iPackageInstaller, installerPackageName, null, userId))
+        } else {
+            Refine.unsafeCast(PackageInstallerHidden(iPackageInstaller, installerPackageName, userId))
         }
     }
 
@@ -50,14 +59,10 @@ object ShizukuApi {
             isPermissionGranted = false
         }
     }
-    
+
     fun getInstalledApplications(): List<ApplicationInfo> {
         val userId = Process.myUserHandle().hashCode()
-        val flags: Long = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            PackageManager.GET_META_DATA.toLong()
-        }else {
-            PackageManager.GET_META_DATA.toLong()
-        }
+        val flags: Long = PackageManager.GET_META_DATA.toLong()
         return iPackageManager.getInstalledApplications(flags, userId).list
     }
 

@@ -110,41 +110,66 @@ object NPackageManager {
         withContext(Dispatchers.IO) {
             runCatching {
                 val params = PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL)
-                var flags = Refine.unsafeCast<SessionParamsHidden>(params).installFlags
-                flags = flags or PackageManagerHidden.INSTALL_ALLOW_TEST or PackageManagerHidden.INSTALL_REPLACE_EXISTING
-                Refine.unsafeCast<SessionParamsHidden>(params).installFlags = flags
-                ShizukuApi.createPackageInstallerSession(params).use { session ->
-                    val uri = Configs.storageDirectory?.toUri() ?: throw IOException("Uri is null")
+                val isShizukuAvailable = ShizukuApi.isPermissionGranted
+
+                if (isShizukuAvailable) {
+                    var flags = Refine.unsafeCast<SessionParamsHidden>(params).installFlags
+                    flags = flags or PackageManagerHidden.INSTALL_ALLOW_TEST or PackageManagerHidden.INSTALL_REPLACE_EXISTING
+                    Refine.unsafeCast<SessionParamsHidden>(params).installFlags = flags
+                }
+
+                val session = if (isShizukuAvailable) {
+                    Log.i(TAG, "Creating session via Shizuku")
+                    ShizukuApi.createPackageInstallerSession(params)
+                } else {
+                    Log.i(TAG, "Creating session via system PackageInstaller (Rootless)")
+                    val pmInstaller = lspApp.packageManager.packageInstaller
+                    val sessionId = pmInstaller.createSession(params)
+                    pmInstaller.openSession(sessionId)
+                }
+
+                session.use { s ->
+                    val uri = Configs.storageDirectory?.toUri() ?: throw IOException("Storage Uri is null")
                     val root = DocumentFile.fromTreeUri(lspApp, uri) ?: throw IOException("DocumentFile is null")
                     root.listFiles().forEach { file ->
                         if (file.name?.endsWith(Constants.PATCH_FILE_SUFFIX) != true) return@forEach
-                        Log.d(TAG, "Add ${file.name}")
+                        Log.d(TAG, "Streaming to session: ${file.name}")
                         val input = lspApp.contentResolver.openInputStream(file.uri)
-                            ?: throw IOException("Cannot open input stream")
+                            ?: throw IOException("Cannot open input stream for ${file.name}")
                         input.use {
-                            session.openWrite(file.name!!, 0, input.available().toLong()).use { output ->
+                            s.openWrite(file.name!!, 0, input.available().toLong()).use { output ->
                                 input.copyTo(output)
-                                session.fsync(output)
+                                s.fsync(output)
                             }
                         }
                     }
-                    var result: Intent? = null
+
+                    var resultIntent: Intent? = null
                     suspendCoroutine { cont ->
                         val adapter = IntentSenderHelper.IIntentSenderAdaptor { intent ->
-                            result = intent
+                            resultIntent = intent
                             cont.resume(Unit)
                         }
                         val intentSender = IntentSenderHelper.newIntentSender(adapter)
-                        session.commit(intentSender)
+                        s.commit(intentSender)
                     }
-                    result?.let {
-                        status = it.getIntExtra(PackageInstaller.EXTRA_STATUS, PackageInstaller.STATUS_FAILURE)
-                        message = it.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE)
-                    } ?: throw IOException("Intent is null")
+
+                    resultIntent?.let { intent ->
+                        status = intent.getIntExtra(PackageInstaller.EXTRA_STATUS, PackageInstaller.STATUS_FAILURE)
+                        message = intent.getStringExtra(PackageInstaller.EXTRA_STATUS_MESSAGE)
+
+                        if (status == PackageInstaller.STATUS_PENDING_USER_ACTION) {
+                            Log.i(TAG, "Status: PENDING_USER_ACTION. Requesting user confirmation.")
+                            val confirmIntent = intent.getParcelableExtra<Intent>(Intent.EXTRA_INTENT)
+                            confirmIntent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            lspApp.startActivity(confirmIntent)
+                        }
+                    } ?: throw IOException("Install result Intent is null")
                 }
             }.onFailure {
                 status = PackageInstaller.STATUS_FAILURE
                 message = it.message + "\n" + it.stackTraceToString()
+                Log.e(TAG, "Installation failed", it)
             }
         }
         return Pair(status, message)
@@ -155,6 +180,9 @@ object NPackageManager {
         var message: String? = null
         withContext(Dispatchers.IO) {
             runCatching {
+                if (!ShizukuApi.isPermissionGranted) {
+                    throw IllegalStateException("Uninstall currently requires Shizuku permission")
+                }
                 var result: Intent? = null
                 suspendCoroutine { cont ->
                     val adapter = IntentSenderHelper.IIntentSenderAdaptor { intent ->
@@ -181,23 +209,21 @@ object NPackageManager {
             runCatching {
                 var primary: ApplicationInfo? = null
                 val splits = mutableListOf<String>()
+
                 val appInfos = apks.mapNotNull { uri ->
                     val src = DocumentFile.fromSingleUri(lspApp, uri)
                         ?: throw IOException("DocumentFile is null")
                     val dst = lspApp.tmpApkDir.resolve(src.name!!)
-                    val input = lspApp.contentResolver.openInputStream(uri)
-                        ?: throw IOException("InputStream is null")
-                    input.use {
-                        dst.outputStream().use { output ->
-                            input.copyTo(output)
-                        }
-                    }
+
+                    lspApp.contentResolver.openInputStream(uri)?.use { input ->
+                        dst.outputStream().use { output -> input.copyTo(output) }
+                    } ?: throw IOException("InputStream is null")
 
                     val appInfo = lspApp.packageManager.getPackageArchiveInfo(
                         dst.absolutePath, PackageManager.GET_META_DATA
                     )?.applicationInfo
                     appInfo?.sourceDir = dst.absolutePath
-                    if (appInfo == null) {
+                    if (appInfo == null || appInfo.packageName == null) {
                         splits.add(dst.absolutePath)
                         return@mapNotNull null
                     }
@@ -207,7 +233,7 @@ object NPackageManager {
                 }
                 // TODO: Check selected apks are from the same app
                 primary?.splitSourceDirs = splits.toTypedArray()
-                if (appInfos.isEmpty()) throw IOException("No apks")
+                if (appInfos.isEmpty()) throw IOException("No valid apks found")
                 appInfos
             }.recoverCatching { t ->
                 cleanTmpApkDir()
@@ -218,19 +244,19 @@ object NPackageManager {
     }
 
     fun getLaunchIntentForPackage(packageName: String): Intent? {
-        val intentToResolve = Intent(Intent.ACTION_MAIN)
-        intentToResolve.addCategory(Intent.CATEGORY_INFO)
-        intentToResolve.setPackage(packageName)
+        val intentToResolve = Intent(Intent.ACTION_MAIN).apply {
+            addCategory(Intent.CATEGORY_INFO)
+            setPackage(packageName)
+        }
         var ris = lspApp.packageManager.queryIntentActivities(intentToResolve, 0)
 
-        if (ris.size <= 0) {
+        if (ris.isEmpty()) {
             intentToResolve.removeCategory(Intent.CATEGORY_INFO)
             intentToResolve.addCategory(Intent.CATEGORY_LAUNCHER)
-            intentToResolve.setPackage(packageName)
             ris = lspApp.packageManager.queryIntentActivities(intentToResolve, 0)
         }
 
-        if (ris.size <= 0) return null
+        if (ris.isEmpty()) return null
 
         return Intent(intentToResolve)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -241,12 +267,13 @@ object NPackageManager {
     }
 
     fun getSettingsIntent(packageName: String): Intent? {
-        val intentToResolve = Intent(Intent.ACTION_MAIN)
-        intentToResolve.addCategory(SETTINGS_CATEGORY)
-        intentToResolve.setPackage(packageName)
+        val intentToResolve = Intent(Intent.ACTION_MAIN).apply {
+            addCategory(SETTINGS_CATEGORY)
+            setPackage(packageName)
+        }
         val ris = lspApp.packageManager.queryIntentActivities(intentToResolve, 0)
 
-        if (ris.size <= 0) return getLaunchIntentForPackage(packageName)
+        if (ris.isEmpty()) return getLaunchIntentForPackage(packageName)
 
         return Intent(intentToResolve)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

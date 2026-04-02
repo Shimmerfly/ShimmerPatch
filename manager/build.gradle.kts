@@ -21,8 +21,10 @@ android {
         applicationId = defaultManagerPackageName
     }
 
-    androidResources {
-        noCompress.add(".so")
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
     }
 
     buildTypes {

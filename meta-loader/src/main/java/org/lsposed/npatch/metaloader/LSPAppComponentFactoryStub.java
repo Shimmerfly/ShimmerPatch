@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,7 +77,8 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
             }
 
             int currentUserId = Process.myUid() / 100000;
-
+            String soAssetPath;
+            File soSourceApk = null;
             if (useManager) {
                 Log.i(TAG, "Bootstrap loader from manager");
                 var ipm = IPackageManager.Stub.asInterface(ServiceManager.getService("package"));
@@ -92,7 +94,8 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
                     transfer(is, os);
                     dex = os.toByteArray();
                 }
-                soPath = manager.sourceDir + "!/assets/npatch/so/" + libName + "/libnpatch.so";
+                soSourceApk = new File(manager.sourceDir);
+                soAssetPath = "assets/npatch/so/" + libName + "/libnpatch.so";
             } else {
                 Log.i(TAG, "Bootstrap loader from embedment");
                 try (var is = cl.getResourceAsStream(Constants.LOADER_DEX_ASSET_PATH);
@@ -100,63 +103,21 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
                     transfer(is, os);
                     dex = os.toByteArray();
                 }
-                java.net.URL url = cl.getResource("assets/npatch/so/" + libName + "/libnpatch.so");
-                if (url == null) {
+                soAssetPath = "assets/npatch/so/" + libName + "/libnpatch.so";
+            }
+            try (var is = soSourceApk != null
+                    ? new ZipFile(soSourceApk).getInputStream(new ZipFile(soSourceApk).getEntry(soAssetPath))
+                    : cl.getResourceAsStream(soAssetPath)) {
+                if (is == null) {
                     throw new RuntimeException("Should not happen: libnpatch.so not found in assets");
                 }
-                String rawPath = url.getPath();
-                if (rawPath.startsWith("file:")) {
-                    soPath = rawPath.substring(5);
-                } else if (rawPath.startsWith("jar:file:")) {
-                    soPath = rawPath.substring(9);
-                } else {
-                    soPath = rawPath;
-                }
-                try {
-                    soPath = java.net.URLDecoder.decode(soPath, "UTF-8");
-                } catch (java.io.UnsupportedEncodingException e) {
-                }
-                Log.i(TAG, "Loading native lib from: " + soPath);
-            }
-
-            if (soPath.contains("!/")) {
-                String[] parts = soPath.split("!/");
-                String apkPath = parts[0];
-                String entryPath = parts[1];
-
-                File outDir = new File(System.getProperty("java.io.tmpdir"));
-
-                try {
-                    ActivityThread at = ActivityThread.currentActivityThread();
-                    java.lang.reflect.Field boundAppField = at.getClass().getDeclaredField("mBoundApplication");
-                    boundAppField.setAccessible(true);
-                    Object mBoundApp = boundAppField.get(at);
-                    if (mBoundApp != null) {
-                        java.lang.reflect.Field appInfoField = mBoundApp.getClass().getDeclaredField("appInfo");
-                        appInfoField.setAccessible(true);
-                        ApplicationInfo appInfo = (ApplicationInfo) appInfoField.get(mBoundApp);
-                        outDir = new File(appInfo.dataDir, "code_cache");
-                    }
-                } catch (Throwable ignored) {
-                    Log.w(TAG, "Failed to reflect dataDir, using fallback tmpdir");
-                }
-
-                if (!outDir.exists()) {
-                    outDir.mkdirs();
-                }
-
-                File extractedSo = new File(outDir, "libnpatch_" + arch + ".so");
-
-                try (ZipFile zipFile = new ZipFile(apkPath);
-                     InputStream is = zipFile.getInputStream(zipFile.getEntry(entryPath));
-                     OutputStream os = new FileOutputStream(extractedSo)) {
+                File soFile = createTempSoFile();
+                soFile.deleteOnExit();
+                try (var os = new FileOutputStream(soFile)) {
                     transfer(is, os);
                 }
-
-                Log.i(TAG, "Successfully extracted native lib to: " + extractedSo.getAbsolutePath());
-                System.load(extractedSo.getAbsolutePath());
-            } else {
-                System.load(soPath);
+                Log.i(TAG, "Loading native lib from temp file: " + soFile.getAbsolutePath());
+                System.load(soFile.getAbsolutePath());
             }
 
         } catch (Throwable e) {
@@ -170,5 +131,23 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
         while (-1 != (n = is.read(buffer))) {
             os.write(buffer, 0, n);
         }
+    }
+
+    private static File createTempSoFile() throws IOException {
+        String packageName = null;
+        try {
+            var currentPackageName = ActivityThread.class.getDeclaredMethod("currentPackageName");
+            currentPackageName.setAccessible(true);
+            packageName = (String) currentPackageName.invoke(null);
+        } catch (Throwable ignored) {
+        }
+        if (packageName == null || packageName.isEmpty()) {
+            throw new IOException("Unable to resolve current package name");
+        }
+        File baseDir = new File("/data/user/0/" + packageName + "/cache");
+        if (!baseDir.exists() && !baseDir.mkdirs()) {
+            throw new IOException("Unable to create cache directory: " + baseDir);
+        }
+        return File.createTempFile("libnpatch-", ".so", baseDir);
     }
 }

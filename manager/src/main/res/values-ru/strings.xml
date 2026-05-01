@@ -11,7 +11,7 @@
     <string name="shizuku_available">Служба Shizuku доступна</string>
     <string name="shizuku_unavailable">Служба Shizuku не подключена</string>
     <string name="screen_repo">Репозиторий</string>
-    <string name="screen_logs">Журналы</string>
+
     <string name="off">Выкл.</string>
     <string name="error_unknown">Неизвестная ошибка</string>
     <!-- Home Screen -->
@@ -25,7 +25,7 @@
     <string name="home_info_copied">Скопировано в буфер обмена</string>
     <string name="home_support">Поддержка</string>
     <string name="home_description">NPatch — это бесплатный без-рута-фреймворк Xposed, основанный на ядре LSPosed.</string>
-    <string name="home_view_source_code"><![CDATA[Посмотрите исходный код на %1$s<br/><br/>Заходите на наш %2$s-канал]]></string>
+    <string name="home_view_source_code"><![CDATA[Посмотрите исходный код на %1$s]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">Управление</string>
     <string name="manage_loading">Загрузка</string>
@@ -88,4 +88,6 @@
     <string name="settings_detail_patch_logs">Подробности журнала патча</string>
     <string name="patch_inject_dex">Inject loader dex</string>
     <string name="patch_inject_dex_desc">Для приложений с изолированными сервисами, такими как рендеринг браузеров, пожалуйста, включите эту опцию, чтобы убедиться, что они работают должным образом.</string>
+    <string name="patch_output_log_to_media">Вывод журнала в каталог Media</string>
+    <string name="patch_output_log_to_media_desc">Вывод журналов Xposed и журналов запуска фреймворка в каталог Media.</string>
 </resources>

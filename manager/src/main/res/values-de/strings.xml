@@ -11,7 +11,6 @@
     <string name="shizuku_available">Shizuku-Dienst verfügbar</string>
     <string name="shizuku_unavailable">Shizuku-Dienst nicht verbunden</string>
     <string name="screen_repo">Repo</string>
-    <string name="screen_logs">Protokolle</string>
     <string name="off">Aus</string>
     <string name="error_unknown">Unbekannter Fehler</string>
     <!-- Home Screen -->
@@ -25,7 +24,7 @@
     <string name="home_info_copied">In Zwischenablage kopiert</string>
     <string name="home_support">Unterstützung</string>
     <string name="home_description">NPatch ist ein kostenloses Xposed-Framework ohne Rootberechtigung, das auf den LSPosed-Kern basiert.</string>
-    <string name="home_view_source_code"><![CDATA[Quellcode unter %1$s anzeigen<br/>Trete unserem %2$s -Kanal bei]]></string>
+    <string name="home_view_source_code"><![CDATA[Quellcode unter %1$s anzeigen]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">Verwalten</string>
     <string name="manage_loading">Laden</string>
@@ -88,4 +87,6 @@
     <string name="settings_detail_patch_logs">Detaillierte Patch-Protokolle</string>
     <string name="patch_inject_dex">Loader-Index einfügen</string>
     <string name="patch_inject_dex_desc">Für Anwendungen mit isolierten Diensten, wie die Render-Engines von Browsern, aktivieren Sie bitte diese Option, um sicherzustellen, dass sie ordnungsgemäß funktionieren.</string>
+    <string name="patch_output_log_to_media">Protokoll in Media-Verzeichnis ausgeben</string>
+    <string name="patch_output_log_to_media_desc">Gibt die Xposed-Protokolle und die Startprotokolle des Frameworks in das Media-Verzeichnis aus.</string>
 </resources>

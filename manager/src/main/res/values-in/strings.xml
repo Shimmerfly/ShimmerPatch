@@ -11,7 +11,6 @@
     <string name="shizuku_available">Layanan Shizuku tersedia</string>
     <string name="shizuku_unavailable">Layanan Shizuku tidak terhubung</string>
     <string name="screen_repo">Repo</string>
-    <string name="screen_logs">Log</string>
     <string name="off">Mati</string>
     <string name="error_unknown"></string>
     <!-- Home Screen -->
@@ -25,7 +24,7 @@
     <string name="home_info_copied">Disalin ke papan klip</string>
     <string name="home_support">Mendukung</string>
     <string name="home_description">NPatch adalah kerangka kerja Xposed non-root gratis berdasarkan inti LSPosed.</string>
-    <string name="home_view_source_code"><![CDATA[Lihat kode sumber di %1$s<br/>Bergabunglah dengan %2$s saluran kami]]></string>
+    <string name="home_view_source_code"><![CDATA[Lihat kode sumber di %1$s]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">Kelola</string>
     <string name="manage_loading">Memuat</string>

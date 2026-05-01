@@ -11,7 +11,6 @@
     <string name="shizuku_available">A Shizuku szolgáltatás elérhető</string>
     <string name="shizuku_unavailable">A Shizuku szolgáltatás nincs csatlakoztatva</string>
     <string name="screen_repo">Repo</string>
-    <string name="screen_logs">Naplók</string>
     <string name="off">Off</string>
     <string name="error_unknown">Ismeretlen hiba</string>
     <!-- Home Screen -->
@@ -25,7 +24,7 @@
     <string name="home_info_copied">Vágólapra másolva</string>
     <string name="home_support">Támogatás</string>
     <string name="home_description">Az NPatch egy ingyenes, nem root Xposed keretrendszer, amely az LSPosed magon alapul.</string>
-    <string name="home_view_source_code"><![CDATA[Forráskód megtekintése itt: %1$s<br/>Csatlakozzon %2$s csatornánkhoz]]></string>
+    <string name="home_view_source_code"><![CDATA[Forráskód megtekintése itt: %1$s]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">Kezelés</string>
     <string name="manage_loading">Betöltés</string>

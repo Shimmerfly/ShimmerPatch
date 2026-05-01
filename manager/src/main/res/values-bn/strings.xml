@@ -11,7 +11,7 @@
     <string name="shizuku_available">শিজুকু পরিষেবা উপলব্ধ</string>
     <string name="shizuku_unavailable">Shizuku পরিষেবা সংযুক্ত নেই৷</string>
     <string name="screen_repo">রেপো</string>
-    <string name="screen_logs">লগ</string>
+
     <string name="off">বন্ধ</string>
     <string name="error_unknown">অজানা ত্রুটি</string>
     <!-- Home Screen -->
@@ -25,7 +25,7 @@
     <string name="home_info_copied">ক্লিপবোর্ডে কপি করা হয়েছে</string>
     <string name="home_support">সমর্থন</string>
     <string name="home_description">NPatch হল LSPosed কোরের উপর ভিত্তি করে একটি বিনামূল্যের নন-রুট Xposed ফ্রেমওয়ার্ক।</string>
-    <string name="home_view_source_code"><![CDATA[%1$s<br/>এ সোর্স কোড দেখুন আমাদের %2$s চ্যানেলে যোগ দিন]]></string>
+    <string name="home_view_source_code"><![CDATA[%1$s]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">পরিচালনা করুন</string>
     <string name="manage_loading">লোড হচ্ছে</string>

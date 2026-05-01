@@ -11,7 +11,6 @@
     <string name="shizuku_available">Servicio Shizuku disponible</string>
     <string name="shizuku_unavailable">Servicio Shizuku no conectado</string>
     <string name="screen_repo">Repo</string>
-    <string name="screen_logs">Registros</string>
     <string name="off">Fuera de</string>
     <string name="error_unknown">Error desconocido</string>
     <!-- Home Screen -->
@@ -25,7 +24,7 @@
     <string name="home_info_copied">Copiado al portapapeles</string>
     <string name="home_support">Apoyo</string>
     <string name="home_description">NPatch es un marco Xposed no root gratuito basado en el núcleo LSPosed.</string>
-    <string name="home_view_source_code"><![CDATA[Ver código fuente en %1$s<br/>Únete a nuestro canal %2$s]]></string>
+    <string name="home_view_source_code"><![CDATA[Ver código fuente en %1$s]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">Gestionar</string>
     <string name="manage_loading">Cargando</string>
@@ -88,4 +87,6 @@
     <string name="settings_detail_patch_logs">Registros de parches detallados</string>
     <string name="patch_inject_dex">Inyectar dex del cargador</string>
     <string name="patch_inject_dex_desc">Para aplicaciones con servicios aislados, como los motores de renderizado de navegadores, por favor active esta opción para asegurarse de que funcionan correctamente.</string>
+    <string name="patch_output_log_to_media">Salida de registro al directorio Media</string>
+    <string name="patch_output_log_to_media_desc">Salida de los registros Xposed y los registros de inicio del framework al directorio Media.</string>
 </resources>

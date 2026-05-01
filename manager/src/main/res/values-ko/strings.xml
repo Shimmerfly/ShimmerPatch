@@ -11,7 +11,7 @@
     <string name="shizuku_available">시즈쿠 서비스 가능</string>
     <string name="shizuku_unavailable">시즈쿠 서비스가 연결되지 않았습니다</string>
     <string name="screen_repo">레포</string>
-    <string name="screen_logs">로그</string>
+
     <string name="off">끄다</string>
     <string name="error_unknown">알 수 없는 오류</string>
     <!-- Home Screen -->
@@ -25,7 +25,7 @@
     <string name="home_info_copied">클립보드에 복사됨</string>
     <string name="home_support">지원</string>
     <string name="home_description">NPatch는 LSPosed 코어를 기반으로 하는 무료 비루트 Xposed 프레임워크입니다.</string>
-    <string name="home_view_source_code"><![CDATA[%1$s<br/>에서 소스 코드 보기 %2$s 채널 가입]]></string>
+    <string name="home_view_source_code"><![CDATA[%1$s]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">관리하다</string>
     <string name="manage_loading">로딩 중</string>
@@ -87,5 +87,7 @@
     <string name="settings_keystore_wrong_alias_password">잘못된 별칭 암호</string>
     <string name="settings_detail_patch_logs">세부 패치 로그</string>
     <string name="patch_inject_dex">로더 덱스 주입</string>
-    <string name="patch_inject_dex_desc">브라우저의 렌더 엔진과 같이 격리된 서비스를 갖춘 애플리케이션의 경우, 이 옵션을 켜서 제대로 작동하는지 확인하세요.</string>
+    <string name="patch_inject_dex_desc">브라우저의 렌더 엔진과 같이 격리된 서비스를 갖춘 애플리케이션의 경우, 이 옵션을 켜서 제대로 작동하는지 확인하세요。</string>
+    <string name="patch_output_log_to_media">Media 디렉토리에 로그 출력</string>
+    <string name="patch_output_log_to_media_desc">Xposed 로그와 프레임워크 시작 로그를 Media 디렉토리에 출력합니다.</string>
 </resources>

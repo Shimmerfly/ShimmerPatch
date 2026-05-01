@@ -1,6 +1,15 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
+    buildscript {
+        repositories {
+            mavenCentral()
+            maven(url = "https://storage.googleapis.com/r8-releases/raw")
+        }
+        dependencies {
+            classpath("com.android.tools:r8:8.13.19")
+        }
+    }
     repositories {
         gradlePluginPortal()
         google()
@@ -34,17 +43,15 @@ include(
     ":patch-loader",
     ":share:android",
     ":share:java",
-    ":xposed"
 )
 
 includeBuild("core") {
     dependencySubstitution {
         substitute(module("vector:axml")).using(project(":external:axml"))
         substitute(module("vector:bridge")).using(project(":hiddenapi:bridge"))
-        substitute(module("vector:core")).using(project(":core"))
+        substitute(module("vector:legacy")).using(project(":legacy"))
+        substitute(module("vector:core")).using(project(":xposed"))
         substitute(module("vector:daemon-service")).using(project(":services:daemon-service"))
         substitute(module("vector:stubs")).using(project(":hiddenapi:stubs"))
     }
 }
-
-buildCache { local { removeUnusedEntriesAfterDays = 1 } }

@@ -16,13 +16,13 @@ import org.lsposed.npatch.share.Constants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
+import java.io.FileOutputStream;
 import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -77,6 +77,7 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
             }
 
             int currentUserId = Process.myUid() / 100000;
+
             String soAssetPath;
             File soSourceApk = null;
             if (useManager) {
@@ -105,6 +106,7 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
                 }
                 soAssetPath = "assets/npatch/so/" + libName + "/libnpatch.so";
             }
+
             try (var is = soSourceApk != null
                     ? new ZipFile(soSourceApk).getInputStream(new ZipFile(soSourceApk).getEntry(soAssetPath))
                     : cl.getResourceAsStream(soAssetPath)) {
@@ -119,7 +121,6 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
                 Log.i(TAG, "Loading native lib from temp file: " + soFile.getAbsolutePath());
                 System.load(soFile.getAbsolutePath());
             }
-
         } catch (Throwable e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -144,6 +145,7 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
         if (packageName == null || packageName.isEmpty()) {
             throw new IOException("Unable to resolve current package name");
         }
+
         File baseDir = new File("/data/user/0/" + packageName + "/cache");
         if (!baseDir.exists() && !baseDir.mkdirs()) {
             throw new IOException("Unable to create cache directory: " + baseDir);

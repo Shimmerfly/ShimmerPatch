@@ -12,9 +12,10 @@
     <string name="shizuku_unavailable">Shizuku 服务未连接</string>
     <string name="screen_home">主页</string>
     <string name="screen_repo">仓库</string>
-    <string name="screen_logs">日志</string>
+
     <string name="off">关闭</string>
     <string name="error_unknown">未知错误</string>
+
     <!-- Home Screen -->
     <string name="home_shizuku_warning">部分功能不可用</string>
     <string name="home_api_version">API 版本</string>
@@ -28,7 +29,8 @@
     <string name="home_info_copied">已复制到剪贴板</string>
     <string name="home_support">支持</string>
     <string name="home_description">NPatch 是一款免费且迭代于 LSPatch 的，基于 LSPosed 核心的免 Root 的 Xposed 框架。</string>
-    <string name="home_view_source_code"><![CDATA[查看源代码 %1$s<br/>加入我们的 %2$s 频道]]></string>
+    <string name="home_view_source_code"><![CDATA[查看源代码 %1$s]]></string>
+
     <!-- Manage Screen -->
     <string name="screen_manage">管理</string>
     <string name="manage_loading">加载中</string>
@@ -38,6 +40,7 @@
     <string name="manage_update_loader_successfully">更新成功</string>
     <string name="manage_update_loader_failed">更新失败</string>
     <string name="manage_module_scope">模块作用域</string>
+    <string name="manage_module_scope_updated">模块作用域已更新</string>
     <string name="manage_optimize">优化</string>
     <string name="manage_optimize_successfully">优化成功</string>
     <string name="manage_optimize_failed">优化失败</string>
@@ -46,6 +49,7 @@
     <string name="manage_module_settings">模块设置</string>
     <string name="manage_app_info">应用信息</string>
     <string name="manage_check_manager_package_name">该应用由 %1$s 管理\n在本管理器中修改作用域 %2$s 不会生效\n重新修补以解决</string>
+
     <!-- New Patch Screen -->
     <string name="screen_new_patch">新建修补</string>
     <string name="patch_select_dir_title">选择存储目录</string>
@@ -53,12 +57,14 @@
     <string name="patch_select_dir_error">设置存储目录时出错</string>
     <string name="patch_from_storage">从存储目录中选择 (多个) apk</string>
     <string name="patch_from_applist">选择已安装的应用程序</string>
-    <string name="patch_mode">修补模式</string>
+    <string name="patch_from_installed_modules">选择已安装的 Xposed 模组</string>
+    <string name="patch_mode">打包模式</string>
     <string name="patch_local">本地模式</string>
     <string name="patch_local_desc">为未嵌入模块的应用程序打补丁。\nXposed 范围可动态更改，无需重新打补丁。\n此模式下的应用程式只能在本地设备上与 NPatch 管理器搭配使用。</string>
     <string name="patch_integrated">集成模式</string>
     <string name="patch_integrated_desc">修补 App 并内置模块。\n经修补的应用可以在没有管理器的情况下独立运行，但不能动态管理配置。\n此模式适用于需要在未安装 NPatch 管理器的设备上运行的应用程式。</string>
     <string name="patch_embed_modules">嵌入模块</string>
+    <string name="patch_advanced">进阶选项</string>
     <string name="patch_debuggable">可调试</string>
     <string name="patch_sigbypass">破解签名校验</string>
     <string name="patch_sigbypasslv0">lv0: 关闭</string>
@@ -75,18 +81,24 @@
     <string name="patch_inject_dex">注入加载器 Dex</string>
     <string name="patch_inject_dex_desc">对那些需要孤立服务进程的应用程序，譬如说浏览器的渲染引擎，请勾选此选项以确保他们正常运行</string>
     <string name="patch_use_microg">强制启用 MicroG 支持</string>
-    <string name="patch_use_microg_desc">重新导向 GMS 请求至社区版 MicroG。适用于 YouTube 等 Google 应用程序，需自行安装对应的 MicroG 服务。</string>    <string name="patch_output_log_to_media">日志输出到 Media 目录</string>
-    <string name="patch_output_log_to_media_desc">将模块的 Xposed 日志输出到目标应用的 Media 目录</string>
+    <string name="patch_use_microg_desc">重新导向 GMS 请求至社区版 MicroG。适用于 YouTube 等 Google 应用程序，需自行安装对应的 MicroG 服务。</string>
+    <string name="patch_output_log_to_media">输出日志到 Media 目录</string>
+    <string name="patch_output_log_to_media_desc">将 Xposed 日志和框架启动日志输出到 Media 目录</string>
     <string name="patch_start">开始修补</string>
     <string name="patch_return">返回</string>
     <string name="patch_uninstall_text">由于签名不同，安装修补的应用前需要先卸载原应用。\n确保您已备份好个人数据。</string>
     <string name="patch_install_successfully">安装成功</string>
     <string name="patch_install_failed">安装失败</string>
     <string name="patch_no_xposed_module">未找到 Xposed 模块</string>
+
     <!-- Select Apps Screen -->
     <string name="screen_select_apps">选择应用程序</string>
+    <string name="screen_select_modules">选择 Xposed 模组</string>
+
     <!-- Settings Screen -->
     <string name="screen_settings">设置</string>
+    <string name="settings_language">语言</string>
+    <string name="settings_language_system">跟随系统</string>
     <string name="settings_keystore">签名密钥库</string>
     <string name="settings_keystore_default">内置</string>
     <string name="settings_keystore_custom">自定义</string>
@@ -102,4 +114,59 @@
     <string name="settings_keystore_wrong_alias_password">别名密码错误</string>
     <string name="settings_detail_patch_logs">详细修补日志</string>
     <string name="settings_storage_directory">变更存储目录</string>
+    <string name="settings_appearance_theme">外观与主题</string>
+    <string name="settings_other_settings">其他设置</string>
+    <string name="settings_monet_dynamic_color">Monet 动态取色</string>
+    <string name="settings_monet_dynamic_color_summary">跟随系统壁纸颜色 (Android 12+)</string>
+    <string name="settings_custom_background_image">自定义背景图片</string>
+    <string name="settings_clear">清除</string>
+    <string name="settings_builtin_theme_color">内置主题色</string>
+    <string name="settings_color_default_blue">默认蓝</string>
+    <string name="settings_color_fresh_green">清新绿</string>
+    <string name="settings_color_elegant_purple">优雅紫</string>
+    <string name="settings_color_vibrant_orange">活力橙</string>
+
+    <!-- Modules Repo-->
+    <string name="sort_by_name">应用程序名称</string>
+    <string name="sort_by_package_name">包名</string>
+    <string name="sort_by_install_time">安装时间</string>
+    <string name="sort_by_update_time">更新时间</string>
+    <string name="refresh_pulling">下拉刷新</string>
+    <string name="refresh_release">松开刷新</string>
+    <string name="refresh_refresh">刷新中</string>
+    <string name="refresh_complete">刷新完成</string>
+    <string name="module_repo">模块仓库</string>
+    <string name="module_repo_up_to_date">所有模块均为最新版</string>
+    <string name="module_repo_published_time">发布于 %s</string>
+    <string name="module_repo_updated_time">更新于 %s</string>
+    <plurals name="module_repo_upgradable">
+        <item quantity="one">%d 个模块可更新</item>
+        <item quantity="other">%d 个模块可更新</item>
+    </plurals>
+    <string name="sort_upgradable_first">可更新优先</string>
+    <string name="list_empty">这里空空如也</string>
+    <string name="need_update">需要更新</string>
+    <string name="installed">已安装</string>
+    <string name="menu_open_in_browser">在浏览器中打开</string>
+    <string name="download_latest_version">下载最新版本</string>
+    <string name="module_readme">自述文件</string>
+    <string name="module_releases">版本发布</string>
+    <string name="module_information">信息</string>
+    <string name="unknown_author">未知</string>
+    <string name="unknown_version">未知</string>
+    <string name="unknown_asset">未知资源</string>
+    <string name="module_app_info">应用信息</string>
+    <string name="nav_back">返回</string>
+    <string name="module_information_homepage">主页</string>
+    <string name="module_information_source_url">源代码</string>
+    <string name="module_information_collaborators">协作者</string>
+    <string name="module_release_view_assets">资源</string>
+    <string name="module_release_load_more">显示更早版本</string>
+    <string name="module_release_no_more">没有更多版本</string>
+    <string name="repo_load_failed">无法加载模块仓库：%s</string>
+    <plurals name="module_release_assets_download_count">
+        <item quantity="one">%d 次下载</item>
+        <item quantity="other">%d 次下载</item>
+    </plurals>
+    <string name="download_asset">下载</string>
 </resources>

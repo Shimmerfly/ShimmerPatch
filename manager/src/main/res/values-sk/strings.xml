@@ -11,7 +11,6 @@
     <string name="shizuku_available">K dispozícii je služba Shizuku</string>
     <string name="shizuku_unavailable">Služba Shizuku nie je pripojená</string>
     <string name="screen_repo">Repo</string>
-    <string name="screen_logs">Denníky</string>
     <string name="off">Vypnuté</string>
     <string name="error_unknown">Neznáma chyba</string>
     <!-- Home Screen -->
@@ -25,7 +24,7 @@
     <string name="home_info_copied">Skopírované do schránky</string>
     <string name="home_support">podpora</string>
     <string name="home_description">NPatch je bezplatný rámec Xposed bez rootov založený na jadre LSPosed.</string>
-    <string name="home_view_source_code"><![CDATA[Zobraziť zdrojový kód na %1$s<br/>Pripojte sa k nášmu %2$s kanálu]]></string>
+    <string name="home_view_source_code"><![CDATA[Zobraziť zdrojový kód na %1$s]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">Spravovať</string>
     <string name="manage_loading">Načítava</string>

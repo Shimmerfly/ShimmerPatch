@@ -11,7 +11,6 @@
     <string name="shizuku_available">Shizuku-tjeneste tilgjengelig</string>
     <string name="shizuku_unavailable">Shizuku-tjenesten er ikke tilkoblet</string>
     <string name="screen_repo">Repo</string>
-    <string name="screen_logs">Tømmerstokker</string>
     <string name="off">Av</string>
     <string name="error_unknown">Ukjent feil</string>
     <!-- Home Screen -->
@@ -25,7 +24,7 @@
     <string name="home_info_copied">Kopiert til utklippstavlen</string>
     <string name="home_support">Brukerstøtte</string>
     <string name="home_description">NPatch er et gratis ikke-root Xposed-rammeverk basert på LSPosed-kjerne.</string>
-    <string name="home_view_source_code"><![CDATA[Se kildekoden på %1$s<br/>Bli med i vår %2$s -kanal]]></string>
+    <string name="home_view_source_code"><![CDATA[Se kildekoden på %1$s]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">Få til</string>
     <string name="manage_loading">Laster</string>

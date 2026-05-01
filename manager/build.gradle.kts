@@ -21,9 +21,19 @@ android {
         applicationId = defaultManagerPackageName
     }
 
+    androidResources {
+        noCompress.add(".so")
+    }
+
     packaging {
         jniLibs {
-            useLegacyPackaging = true
+            excludes += "lib/*/libandroidx.graphics.path.so"
+        }
+        resources {
+            excludes += "kotlin/**"
+            excludes += "META-INF/androidx*"
+            excludes += "META-INF/androidx/**"
+            excludes += "DebugProbesKt.bin"
         }
     }
 
@@ -103,28 +113,38 @@ dependencies {
     implementation(npatch.androidx.compose.ui)
     implementation(npatch.androidx.compose.ui.tooling.preview)
     implementation(npatch.androidx.core.ktx)
+    implementation(libs.material)
+    implementation(npatch.androidx.datastore.preferences)
+    implementation(npatch.coil.compose)
+    implementation(libs.gson)
     implementation(npatch.androidx.lifecycle.viewmodel.compose)
-    implementation(npatch.androidx.navigation.compose)
+    implementation(npatch.androidx.navigation3.runtime)
+    implementation(npatch.androidx.navigation3.ui)
     implementation(libs.androidx.preference)
     implementation(npatch.androidx.room.ktx)
     implementation(npatch.androidx.room.runtime)
+    implementation("com.squareup.okhttp3:okhttp:5.3.2")
 
-    implementation(npatch.google.accompanist.navigation.animation)
-    implementation(npatch.google.accompanist.pager)
-    implementation(npatch.google.accompanist.swiperefresh)
     implementation(libs.material)
     implementation(libs.gson)
     implementation(npatch.rikka.shizuku.api)
     implementation(npatch.rikka.shizuku.provider)
     implementation(npatch.rikka.refine)
-    implementation(npatch.raamcosta.compose.destinations)
+    //implementation(npatch.raamcosta.compose.destinations)
     implementation(libs.appiconloader)
     implementation(libs.hiddenapibypass)
+
+    // MiuiX & Haze
+    implementation(npatch.miuix.android)
+    implementation(npatch.haze)
+    implementation("top.yukonga.miuix.kmp:miuix-icons:0.8.7")
+    implementation(npatch.androidx.webkit)
+
 
     annotationProcessor(npatch.androidx.room.compiler)
     compileOnly(npatch.rikka.hidden.stub)
     ksp(npatch.androidx.room.compiler)
-    ksp(npatch.raamcosta.compose.destinations.ksp)
+    //ksp(npatch.raamcosta.compose.destinations.ksp)
 
     debugImplementation(npatch.androidx.compose.ui.tooling)
     debugImplementation(npatch.androidx.customview)

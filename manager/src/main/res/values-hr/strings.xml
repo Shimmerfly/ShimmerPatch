@@ -11,7 +11,6 @@
     <string name="shizuku_available">Shizuku usluga dostupna</string>
     <string name="shizuku_unavailable">Usluga Shizuku nije povezana</string>
     <string name="screen_repo">Repo</string>
-    <string name="screen_logs">Dnevnici</string>
     <string name="off">Isključeno</string>
     <string name="error_unknown">Nepoznata pogreška</string>
     <!-- Home Screen -->
@@ -25,7 +24,7 @@
     <string name="home_info_copied">Kopirano u međuspremnik</string>
     <string name="home_support">Podrška</string>
     <string name="home_description">NPatch je besplatni Xposed framework bez root-a temeljen na LSPosed jezgri.</string>
-    <string name="home_view_source_code"><![CDATA[Pogledajte izvorni kod na %1$s<br/>Pridružite se našem %2$s kanalu]]></string>
+    <string name="home_view_source_code"><![CDATA[Pogledajte izvorni kod na %1$s]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">Upravljanje</string>
     <string name="manage_loading">Učitavanje</string>

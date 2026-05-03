@@ -103,11 +103,7 @@ public class LSPApplication {
             return;
         }
 
-<<<<<<< Updated upstream
-        Log.d(TAG, "Initialize service client");
-=======
         logInfo("Initialize service client");
->>>>>>> Stashed changes
         ILSPApplicationService service = null;
 
         if (config.useManager) {
@@ -125,32 +121,19 @@ public class LSPApplication {
                 }
                 SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
                 shared.edit().putString("modules", moduleArr.toString()).apply();
-<<<<<<< Updated upstream
-                Log.i(TAG, "Success update module scope from Manager");
-            } catch (Throwable e) {
-                Log.w(TAG, "Failed to connect to manager: " + e.getMessage());
-=======
                 logInfo("Success update module scope from Manager");
             } catch (Throwable e) {
                 logWarn("Failed to connect to manager: " + e.getMessage());
->>>>>>> Stashed changes
                 service = null;
             }
         }
 
         if (service == null) {
             if (hasEmbeddedModules(context)) {
-<<<<<<< Updated upstream
-                Log.i(TAG, "Using Integrated Service (Embedded Modules Found)");
-                service = new IntegrApplicationService(context);
-            } else {
-                Log.i(TAG, "Using NeoLocal Service (Cached Config)");
-=======
                 logInfo("Using Integrated Service (Embedded Modules Found)");
                 service = new IntegrApplicationService(context);
             } else {
                 logInfo("Using NeoLocal Service (Cached Config)");
->>>>>>> Stashed changes
                 service = new NeoLocalApplicationService(context);
             }
         }
@@ -165,33 +148,19 @@ public class LSPApplication {
         if (config.outputLog) {
             XposedBridge.setLogPrinter(new XposedLogPrinter(0, "NPatch"));
         }
-<<<<<<< Updated upstream
-        Log.i(TAG, "Load modules");
-        LSPLoader.initModules(appLoadedApk);
-        Log.i(TAG, "Modules initialized");
-=======
         logInfo("Load modules");
         LSPLoader.initModules(appLoadedApk);
         logInfo("Modules initialized");
->>>>>>> Stashed changes
 
         switchAllClassLoader();
         SigBypass.doSigBypass(context, config.sigBypassLevel);
 
         if (config.useMicroG) {
-<<<<<<< Updated upstream
-            Log.i(TAG, "Activating MicroG redirect via NPatch");
-            GmsRedirector.activate(context, config.originalSignature);
-        }
-
-        Log.i(TAG, "NPatch bootstrap completed");
-=======
             logInfo("Activating MicroG redirect via NPatch");
             GmsRedirector.activate(context, config.originalSignature);
         }
 
         logInfo("NPatch bootstrap completed");
->>>>>>> Stashed changes
     }
 
     private static Context createLoadedApkWithContext() {
@@ -211,11 +180,8 @@ public class LSPApplication {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-<<<<<<< Updated upstream
-=======
             XLog.init(config.newPackage, ActivityThread.currentProcessName(), config.outputLog);
             logInfo("Loaded patch config for " + config.newPackage + ", useManager=" + config.useManager + ", outputLog=" + config.outputLog);
->>>>>>> Stashed changes
             Log.i(TAG, "Use manager: " + config.useManager);
             Log.i(TAG, "Signature bypass level: " + config.sigBypassLevel);
 

@@ -6,6 +6,7 @@ val verCode: Int by rootProject.extra
 val verName: String by rootProject.extra
 val coreVerCode: Int by rootProject.extra
 val coreVerName: String by rootProject.extra
+val miuixVersion = npatch.versions.miuix.get()
 
 plugins {
     alias(libs.plugins.agp.app)
@@ -28,6 +29,7 @@ android {
     packaging {
         jniLibs {
             excludes += "lib/*/libandroidx.graphics.path.so"
+            excludes += "lib/*/libdatastore_shared_counter.so"
         }
         resources {
             excludes += "kotlin/**"
@@ -61,7 +63,7 @@ android {
         kotlinCompilerExtensionVersion = "1.5.15"
     }
 
-    namespace = "org.lsposed.npatch"
+    namespace = "top.nkbe.npatch"
 
     applicationVariants.all {
         kotlin.sourceSets {
@@ -135,9 +137,12 @@ dependencies {
     implementation(libs.hiddenapibypass)
 
     // MiuiX & Haze
-    implementation(npatch.miuix.android)
     implementation(npatch.haze)
-    implementation("top.yukonga.miuix.kmp:miuix-icons:0.8.7")
+    implementation(npatch.hazeBlur)
+    implementation(npatch.backdrop)
+    implementation("top.yukonga.miuix.kmp:miuix-ui:$miuixVersion")
+    implementation("top.yukonga.miuix.kmp:miuix-preference:$miuixVersion")
+    implementation("top.yukonga.miuix.kmp:miuix-icons:$miuixVersion")
     implementation(npatch.androidx.webkit)
 
 

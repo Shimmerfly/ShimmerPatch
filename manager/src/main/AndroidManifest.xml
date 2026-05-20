@@ -20,7 +20,7 @@
     <application
         android:name=".LSPApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_launcher_playstore"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:largeHeap="true"
@@ -93,7 +93,7 @@
 
         <provider
             android:name=".manager.ConfigProvider"
-            android:authorities="org.lsposed.npatch.manager.provider.config"
+            android:authorities="top.nkbe.npatch.manager.provider.config"
             android:exported="true"
             android:enabled="true" />
 

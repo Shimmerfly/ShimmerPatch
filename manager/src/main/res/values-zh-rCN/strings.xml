@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">NPatch</string>
     <string name="add">添加</string>
     <string name="install">安装</string>
     <string name="installing">安装中</string>
@@ -12,7 +13,6 @@
     <string name="shizuku_unavailable">Shizuku 服务未连接</string>
     <string name="screen_home">主页</string>
     <string name="screen_repo">仓库</string>
-
     <string name="off">关闭</string>
     <string name="error_unknown">未知错误</string>
 
@@ -23,17 +23,36 @@
     <string name="home_framework_version">框架版本</string>
     <string name="home_system_version">系统版本</string>
     <string name="home_device">设备</string>
-    <string name="home_device_info">设备信息</string>
-    <string name="coming_soon">敬请期待</string>
     <string name="home_system_abi">系统架构</string>
     <string name="home_info_copied">已复制到剪贴板</string>
     <string name="home_support">支持</string>
-    <string name="home_description">NPatch 是一款免费且迭代于 LSPatch 的，基于 LSPosed 核心的免 Root 的 Xposed 框架。</string>
-    <string name="home_view_source_code"><![CDATA[查看源代码 %1$s]]></string>
+    <string name="home_about">关于 NPatch</string>
+    <string name="home_description">NPatch 是一款免费且迭代于 LSPatch 的，基于 Vector 核心的免 Root 的 Xposed 框架。</string>
+
+    <!-- About Screen -->
+    <string name="about_view_source_code"><![CDATA[查看源代码 %1$s]]></string>
+    <string name="about_author_summary">NPatch 主要开发者</string>
+    <string name="about_disclaimer_title">免责声明</string>
+    <string name="about_disclaimer_body">NPatch 仅供学习、研究以及合法的应用兼容性工作使用。请尊重当地法律、应用条款以及原开发者的权益。您需自行承担在设备上使用修补应用与模块的全部责任，开发者不对任何直接或间接的设备故障、数据丢失或其他损失承担责任。</string>
+    <string name="about_links_title">相关链接</string>
+    <string name="about_official_website">官方网站</string>
+    <string name="about_link_website_summary">访问 NkBe 的官方网站</string>
+    <string name="about_link_github_summary">查看源代码与发布版本</string>
+    <string name="about_link_telegram_summary">订阅我们的频道</string>
+    <string name="about_acknowledgments_title">特别鸣谢（排名不分先后）</string>
+    <string name="about_ack_rovo89_summary">Xposed 框架创始人，一切模块化生态的起源与奠基者。</string>
+    <string name="about_ack_jingmatrix_summary">Vector 作者，其优秀的框架工作为 NPatch 的持续迭代提供了重要基础与启发。</string>
+    <string name="about_ack_lsposed_team_summary">感谢 LSPosed 团队在现代化 Xposed 生态与底层注入技术上的持续贡献。</string>
+    <string name="about_ack_lspatch_summary">免 Root 修补方案的先行者，证明了在管理器侧动态加载 Xposed 环境的可行性。</string>
+    <string name="about_ack_libxposed_summary">现代 Xposed API 标准化推手，为模块开发带来了类型安全与更清晰的秩序。</string>
+    <string name="about_ack_winter_summary">首位打赏我的支持者，感谢这份很早、也很直接的鼓励。</string>
+    <string name="about_ack_community_summary">感谢所有参与测试、提交 PR 与回报 Issue 的用户，共同推动项目前进。</string>
 
     <!-- Manage Screen -->
     <string name="screen_manage">管理</string>
     <string name="manage_loading">加载中</string>
+    <string name="manage_search">搜索</string>
+    <string name="manage_no_search_results">暂无搜索结果</string>
     <string name="manage_no_apps">尚无已修补的应用</string>
     <string name="manage_rolling">滚动</string>
     <string name="manage_update_loader">更新加载器</string>
@@ -44,10 +63,16 @@
     <string name="manage_optimize">优化</string>
     <string name="manage_optimize_successfully">优化成功</string>
     <string name="manage_optimize_failed">优化失败</string>
+    <string name="manage_force_stop">强制停止</string>
+    <string name="manage_force_stop_successfully">强制停止成功</string>
+    <string name="manage_force_stop_failed">强制停止失败</string>
     <string name="manage_uninstall_successfully">卸载成功</string>
     <string name="manage_no_modules">尚无模块</string>
     <string name="manage_module_settings">模块设置</string>
     <string name="manage_app_info">应用信息</string>
+    <string name="manage_module_pipeline_unsupported">不支持的架构</string>
+    <string name="manage_module_api_unsupported">不支持的 API %1$d</string>
+    <string name="manage_module_unsupported_warning">Modern 架构不支持 API %1$d</string>
     <string name="manage_check_manager_package_name">该应用由 %1$s 管理\n在本管理器中修改作用域 %2$s 不会生效\n重新修补以解决</string>
 
     <!-- New Patch Screen -->
@@ -70,7 +95,7 @@
     <string name="patch_sigbypasslv0">lv0: 关闭</string>
     <string name="patch_sigbypasslv1">lv1: 绕过 PM</string>
     <string name="patch_sigbypasslv2">lv2: 绕过 PM + openat(libc)</string>
-    <string name="patch_sigbypasslv3">lv3: 绕过 PM + openat(libc) + 路径重定向</string>
+    <string name="patch_sigbypasslv3">lv3: 绕过 PM + openat(libc) + 套件本地解析</string>
     <string name="patch_sigbypasslv4">lv4: 绕过 PM + openat(libc) + SVC (仅 64 位)</string>
     <string name="patch_override_version_code">覆写版本号</string>
     <string name="patch_override_version_code_desc">将修补的 App 版本号重写为 1\n这将允许后续降级安装，并且通常来说这不会影响应用实际感知到的版本号</string>
@@ -95,10 +120,31 @@
     <string name="screen_select_apps">选择应用程序</string>
     <string name="screen_select_modules">选择 Xposed 模组</string>
 
+    <!-- Welcome Screen -->
+    <string name="welcome_version">版本 %1$s</string>
+    <string name="welcome_intro_content">专为免 Root 环境设计的现代化 Xposed 模块注入与应用修补工具。</string>
+    <string name="welcome_intro_detail">NPatch 能在免 Root 环境中，通过修改 APK 文件注入 Xposed 加载器。本地模式需搭配管理器动态加载并管理模块与作用域，但使用时无需保持管理器处于后台运行；集成模式则将模块直接内嵌至目标应用中，适合无管理器的设备独立执行。</string>
+    <string name="welcome_permission_title">配置必要权限</string>
+    <string name="welcome_permission_summary">开始体验前，请先授予基本访问权限以确保核心功能运行。</string>
+    <string name="welcome_permission_storage_title">存储空间访问</string>
+    <string name="welcome_permission_storage_summary">用于选取本机 APK 文件进行修补，并将输出结果保存至外部存储空间。</string>
+    <string name="welcome_permission_applist_title">读取应用程序列表</string>
+    <string name="welcome_permission_applist_summary">用于获取已安装的应用程序，以便您精确选取修补目标。</string>
+    <string name="welcome_permission_granted">已授予</string>
+    <string name="welcome_permission_authorize">前往授权</string>
+
+    <string name="welcome_disclaimer_title">使用须知与免责声明</string>
+    <string name="welcome_disclaimer_summary">在修补应用或加载 Xposed 模块之前，请务必了解以下操作风险。</string>
+    <string name="welcome_disclaimer_content">修改与修补应用程序可能导致其闪退、无法启动或数据丢失。请务必在操作前备份重要数据。使用者需自行承担修补后应用及模块在设备上运行的一切风险与后果。</string>
+    <string name="welcome_basic_settings_title">基础设置</string>
+    <string name="welcome_btn_next">下一步</string>
+    <string name="welcome_btn_skip">跳过导览</string>
+    <string name="welcome_btn_finish">开始体验</string>
+    <string name="welcome_btn_return">返回</string>
+
     <!-- Settings Screen -->
     <string name="screen_settings">设置</string>
     <string name="settings_language">语言</string>
-    <string name="settings_language_system">跟随系统</string>
     <string name="settings_keystore">签名密钥库</string>
     <string name="settings_keystore_default">内置</string>
     <string name="settings_keystore_custom">自定义</string>
@@ -113,18 +159,37 @@
     <string name="settings_keystore_wrong_alias">别名错误</string>
     <string name="settings_keystore_wrong_alias_password">别名密码错误</string>
     <string name="settings_detail_patch_logs">详细修补日志</string>
+    <string name="settings_view_welcome">查看导览界面</string>
+    <string name="settings_view_welcome_summary">重新查看欢迎与权限导览</string>
     <string name="settings_storage_directory">变更存储目录</string>
     <string name="settings_appearance_theme">外观与主题</string>
     <string name="settings_other_settings">其他设置</string>
+    <string name="settings_theme_mode">主题模式</string>
+    <string name="settings_theme_mode_system">跟随系统</string>
+    <string name="settings_theme_mode_system_summary">自动配合设备的亮色与暗色外观</string>
+    <string name="settings_theme_mode_light">亮色模式</string>
+    <string name="settings_theme_mode_light_summary">始终使用明亮界面</string>
+    <string name="settings_theme_mode_dark">暗色模式</string>
+    <string name="settings_theme_mode_dark_summary">始终使用深色界面</string>
     <string name="settings_monet_dynamic_color">Monet 动态取色</string>
     <string name="settings_monet_dynamic_color_summary">跟随系统壁纸颜色 (Android 12+)</string>
+    <string name="settings_floating_glass_bottom_bar">悬浮分页底栏</string>
+    <string name="settings_floating_glass_bottom_bar_summary">在主界面使用悬浮分页底栏</string>
+    <string name="settings_floating_glass_bottom_bar_blur">液态玻璃底栏</string>
+    <string name="settings_floating_glass_bottom_bar_blur_summary">为悬浮底栏启用模糊、鲜明、透镜与高光效果</string>
     <string name="settings_custom_background_image">自定义背景图片</string>
     <string name="settings_clear">清除</string>
-    <string name="settings_builtin_theme_color">内置主题色</string>
-    <string name="settings_color_default_blue">默认蓝</string>
+    <string name="settings_builtin_theme_color">内置主題色</string>
+    <string name="settings_color_default_blue">冷淡蓝</string>
     <string name="settings_color_fresh_green">清新绿</string>
     <string name="settings_color_elegant_purple">优雅紫</string>
-    <string name="settings_color_vibrant_orange">活力橙</string>
+    <string name="settings_color_vibrant_orange">活力橘</string>
+    <string name="settings_color_cyan">天青色</string>
+    <string name="settings_color_mint_green">薄荷绿</string>
+    <string name="settings_color_pink">柔粉红</string>
+    <string name="settings_color_deep_pink">桃红色</string>
+    <string name="settings_color_ice_blue">冰蓝色</string>
+    <string name="settings_color_rose">蔷薇红</string>
 
     <!-- Modules Repo-->
     <string name="sort_by_name">应用程序名称</string>
@@ -169,4 +234,10 @@
         <item quantity="other">%d 次下载</item>
     </plurals>
     <string name="download_asset">下载</string>
+    <string name="package_name">包名</string>
+    <string name="author">作者</string>
+    <string name="time_just_now">刚刚</string>
+    <string name="time_minutes_ago">%d分钟前</string>
+    <string name="time_hours_ago">%d小时前</string>
+    <string name="time_days_ago">%d天前</string>
 </resources>

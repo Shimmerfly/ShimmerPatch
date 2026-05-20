@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add">Add</string>
     <string name="install">Install</string>
@@ -21,17 +22,36 @@
     <string name="home_framework_version">Framework Version</string>
     <string name="home_system_version">System Version</string>
     <string name="home_device">Device</string>
-    <string name="home_device_info">Equipment Information</string>
-    <string name="coming_soon">Stay tuned</string>
     <string name="home_system_abi">System ABI</string>
     <string name="home_info_copied">Copied to clipboard</string>
     <string name="home_support">Support</string>
-    <string name="home_description">NPatch is a free non-root Xposed framework based on LSPosed core.</string>
-    <string name="home_view_source_code"><![CDATA[View source code at %1$s]]></string>
+    <string name="home_about">About NPatch</string>
+    <string name="home_description">NPatch is a free non-root Xposed framework based on Vector.</string>
+
+    <!-- About Screen -->
+    <string name="about_view_source_code"><![CDATA[View source code at %1$s]]></string>
+    <string name="about_author_summary">NPatch maintainer</string>
+    <string name="about_disclaimer_title">Disclaimer</string>
+    <string name="about_disclaimer_body">NPatch is provided only for learning, research, and legitimate app compatibility work. Please respect local laws, app terms, and the rights of original developers. You are responsible for how patched apps and modules are used on your device.</string>
+    <string name="about_links_title">Links</string>
+    <string name="about_official_website">Website</string>
+    <string name="about_link_website_summary">Visit the website of NkBe</string>
+    <string name="about_link_github_summary">View source code and releases</string>
+    <string name="about_link_telegram_summary">Subscribe to our channel</string>
+    <string name="about_acknowledgments_title">Special thanks (unordered)</string>
+    <string name="about_ack_rovo89_summary">Founder of the Xposed Framework; the originator and pioneer of the entire modular ecosystem.</string>
+    <string name="about_ack_lsposed_team_summary">With thanks to the LSPosed Team for their continuous contributions to the Xposed ecosystem and low-level injection techniques.</string>
+    <string name="about_ack_jingmatrix_summary">Author of Vector, whose outstanding framework architecture provided a vital foundation and inspiration for NPatch.</string>
+    <string name="about_ack_lspatch_summary">A pioneer in rootless patching solutions, proving the feasibility of dynamic Xposed environment loading via manager-side implementation.</string>
+    <string name="about_ack_libxposed_summary">The driving force behind Xposed API standardisation, bringing type safety and clear conventions to the module development world.</string>
+    <string name="about_ack_winter_summary">My very first financial supporter; thank you for such early and direct encouragement.</string>
+    <string name="about_ack_community_summary">Thanks to all users involved in testing, submitting PRs, and reporting issues to drive the project forward together.</string>
 
     <!-- Manage Screen -->
     <string name="screen_manage">Manage</string>
     <string name="manage_loading">Loading</string>
+    <string name="manage_search">Search</string>
+    <string name="manage_no_search_results">No search results</string>
     <string name="manage_no_apps">No patched apps yet</string>
     <string name="manage_rolling">Rolling</string>
     <string name="manage_update_loader">Update loader</string>
@@ -42,11 +62,20 @@
     <string name="manage_optimize">Optimize</string>
     <string name="manage_optimize_successfully">Optimize successfully</string>
     <string name="manage_optimize_failed">Optimize failed</string>
+    <string name="manage_force_stop">Force stop</string>
+    <string name="manage_force_stop_successfully">Force stop successfully</string>
+    <string name="manage_force_stop_failed">Force stop failed</string>
     <string name="manage_uninstall_successfully">Uninstall successfully</string>
     <string name="manage_no_modules">No modules yet</string>
     <string name="manage_module_settings">Module settings</string>
     <string name="manage_app_info">App info</string>
-    <string name="manage_check_manager_package_name">This program is managed by %1s\nModifying the scope %2s within this manager will not take effect\nPlease re-patch to resolve this issue</string>
+    <string name="manage_module_pipeline_modern" translatable="false">Modern</string>
+<string name="manage_module_pipeline_legacy" translatable="false">Legacy</string>
+    <string name="manage_module_pipeline_unsupported">Unsupported</string>
+    <string name="manage_module_api_version" translatable="false">API %1$d</string>
+    <string name="manage_module_api_unsupported">Unsupported API %1$d</string>
+    <string name="manage_module_unsupported_warning">API %1$d is not supported by the modern pipeline</string>
+    <string name="manage_check_manager_package_name">This program is managed by %1$s\nModifying the scope %2$s within this manager will not take effect\nPlease re-patch to resolve this issue</string>
 
     <!-- New Patch Screen -->
     <string name="screen_new_patch">New Patch</string>
@@ -68,7 +97,7 @@
     <string name="patch_sigbypasslv0">lv0: Off</string>
     <string name="patch_sigbypasslv1">lv1: Bypass PM</string>
     <string name="patch_sigbypasslv2">lv2: Bypass PM + openat(libc)</string>
-    <string name="patch_sigbypasslv3">lv3: Bypass PM + openat(libc) + IO Redirection</string>
+    <string name="patch_sigbypasslv3">lv3: Bypass PM + openat(libc) + Local Archive Parsing</string>
     <string name="patch_sigbypasslv4">lv4: Bypass PM + openat(libc) + SVC (64-bit only)</string>
     <string name="patch_new_package">Patch New PackageName</string>
     <string name="hint_patch_new_package">Input a new package for app</string>
@@ -93,10 +122,31 @@
     <string name="screen_select_apps">Select apps</string>
     <string name="screen_select_modules">Select Xposed modules</string>
 
+    <!-- Welcome Screen -->
+    <string name="welcome_version">Version %1$s</string>
+    <string name="welcome_intro_content">A modern Xposed module injection and APK patching tool designed for rootless environments.</string>
+    <string name="welcome_intro_detail">NPatch injects the Xposed loader by modifying APK files. Local mode works with the manager to load modules and manage scopes dynamically, without keeping the manager running in the background. Integrated mode embeds modules directly into the target app for standalone use on devices without the manager.</string>
+    <string name="welcome_permission_title">Configure Required Permissions</string>
+    <string name="welcome_permission_summary">Before getting started, grant basic access permissions to keep core features working.</string>
+    <string name="welcome_permission_storage_title">Storage Access</string>
+    <string name="welcome_permission_storage_summary">Used to select local APK files for patching and save output results to external storage.</string>
+    <string name="welcome_permission_applist_title">Read App List</string>
+    <string name="welcome_permission_applist_summary">Used to read installed apps so you can choose patch targets accurately.</string>
+    <string name="welcome_permission_granted">Granted</string>
+    <string name="welcome_permission_authorize">Grant access</string>
+    <string name="welcome_disclaimer_title">Usage Notes and Disclaimer</string>
+    <string name="welcome_disclaimer_summary">Before patching apps or loading Xposed modules, make sure you understand the following risks.</string>
+    <string name="welcome_disclaimer_content">Modifying and patching apps may cause crashes, startup failures, or data loss. Back up important data before operating. Users are responsible for all risks and consequences of running patched apps and modules on their devices.</string>
+    <string name="welcome_basic_settings_title">Basic settings</string>
+    <string name="welcome_btn_next">Next</string>
+    <string name="welcome_btn_skip">Skip guide</string>
+    <string name="welcome_btn_finish">Get started</string>
+    <string name="welcome_btn_return">Return</string>
+
     <!-- Settings Screen -->
     <string name="screen_settings">Settings</string>
     <string name="settings_language">Language</string>
-    <string name="settings_language_system">Follow System</string>
+    <string name="settings_language_system" translatable="false">Follow System</string>
     <string name="settings_keystore">Signature keystore</string>
     <string name="settings_keystore_default">Built-in</string>
     <string name="settings_keystore_custom">Custom</string>
@@ -112,10 +162,23 @@
     <string name="settings_keystore_wrong_alias_password">Wrong alias password</string>
     <string name="settings_storage_directory">change storage directory</string>
     <string name="settings_detail_patch_logs">Detail patch logs</string>
+    <string name="settings_view_welcome">View guide</string>
+    <string name="settings_view_welcome_summary">Review the welcome and permission guide</string>
     <string name="settings_appearance_theme">Appearance &amp; Theme</string>
     <string name="settings_other_settings">Other Settings</string>
+    <string name="settings_theme_mode">Theme Mode</string>
+    <string name="settings_theme_mode_system">Follow System</string>
+    <string name="settings_theme_mode_system_summary">Match the device light and dark appearance automatically</string>
+    <string name="settings_theme_mode_light">Light Mode</string>
+    <string name="settings_theme_mode_light_summary">Use a bright interface all the time</string>
+    <string name="settings_theme_mode_dark">Dark Mode</string>
+    <string name="settings_theme_mode_dark_summary">Use a dark interface all the time</string>
     <string name="settings_monet_dynamic_color">Monet Dynamic Color</string>
     <string name="settings_monet_dynamic_color_summary">Follow system wallpaper color (Android 12+ only)</string>
+    <string name="settings_floating_glass_bottom_bar">Floating glass bottom bar</string>
+    <string name="settings_floating_glass_bottom_bar_summary">Use a floating tab bar on the main screen</string>
+    <string name="settings_floating_glass_bottom_bar_blur">Liquid glass bottom bar</string>
+    <string name="settings_floating_glass_bottom_bar_blur_summary">Enable blur, vibrancy, lens and highlight effects for the floating bottom bar</string>
     <string name="settings_custom_background_image">Custom Background Image</string>
     <string name="settings_clear">Clear</string>
     <string name="settings_builtin_theme_color">Built-in Theme Color</string>
@@ -123,7 +186,14 @@
     <string name="settings_color_fresh_green">Fresh Green</string>
     <string name="settings_color_elegant_purple">Elegant Purple</string>
     <string name="settings_color_vibrant_orange">Vibrant Orange</string>
-    
+    <string name="settings_color_cyan">Cyan</string>
+    <string name="settings_color_mint_green">Mint Green</string>
+    <string name="settings_color_pink">Pink</string>
+    <string name="settings_color_deep_pink">Deep Pink</string>
+    <string name="settings_color_ice_blue">Ice Blue</string>
+    <string name="settings_color_rose">Rose</string>
+    <string name="enable_install_activity_title">Enable install activity</string>
+
     <!-- MiUI Uninstall Desc -->
     <string name="miui_uninstall_title">💩卸💩载💩金💩凡💩</string>
     <string name="miui_uninstall_content">金凡祭天，法力无边\n所以這就是那個魔改到連使用者列表都無法訪問的系統嗎?
@@ -172,4 +242,10 @@
         <item quantity="other">%d downloads</item>
     </plurals>
     <string name="download_asset">Download</string>
+    <string name="package_name">Package name</string>
+    <string name="author">Author</string>
+    <string name="time_just_now">Just now</string>
+    <string name="time_minutes_ago">%d minutes ago</string>
+    <string name="time_hours_ago">%d hours ago</string>
+    <string name="time_days_ago">%d days ago</string>
 </resources>

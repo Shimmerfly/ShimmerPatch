@@ -69,6 +69,12 @@
     <string name="manage_uninstall_successfully">卸载成功</string>
     <string name="manage_no_modules">尚无模块</string>
     <string name="manage_module_settings">模块设置</string>
+    <string name="manage_module_activation_enable">显示激活状态</string>
+    <string name="manage_module_activation_disable">隐藏激活状态</string>
+    <string name="manage_module_activation_enabled">已启用激活状态</string>
+    <string name="manage_module_activation_disabled">已停用激活状态</string>
+    <string name="manage_module_activation_failed">模块激活状态注入失败</string>
+    <string name="manage_module_activation_shizuku_required">请先启用并授权 Shizuku</string>
     <string name="manage_app_info">应用信息</string>
     <string name="manage_module_pipeline_unsupported">不支持的架构</string>
     <string name="manage_module_api_unsupported">不支持的 API %1$d</string>

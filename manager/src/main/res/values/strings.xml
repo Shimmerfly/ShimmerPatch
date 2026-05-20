@@ -68,6 +68,12 @@
     <string name="manage_uninstall_successfully">Uninstall successfully</string>
     <string name="manage_no_modules">No modules yet</string>
     <string name="manage_module_settings">Module settings</string>
+    <string name="manage_module_activation_enable">Show activation status</string>
+    <string name="manage_module_activation_disable">Hide activation status</string>
+    <string name="manage_module_activation_enabled">Activation status enabled</string>
+    <string name="manage_module_activation_disabled">Activation status disabled</string>
+    <string name="manage_module_activation_failed">Failed to activate module status</string>
+    <string name="manage_module_activation_shizuku_required">Enable and authorize Shizuku first</string>
     <string name="manage_app_info">App info</string>
     <string name="manage_module_pipeline_modern" translatable="false">Modern</string>
 <string name="manage_module_pipeline_legacy" translatable="false">Legacy</string>

@@ -69,6 +69,12 @@
     <string name="manage_uninstall_successfully">解除安裝成功</string>
     <string name="manage_no_modules">還沒有模組</string>
     <string name="manage_module_settings">模組設定</string>
+    <string name="manage_module_activation_enable">顯示激活狀態</string>
+    <string name="manage_module_activation_disable">隱藏激活狀態</string>
+    <string name="manage_module_activation_enabled">已啟用激活狀態</string>
+    <string name="manage_module_activation_disabled">已停用激活狀態</string>
+    <string name="manage_module_activation_failed">模組激活狀態注入失敗</string>
+    <string name="manage_module_activation_shizuku_required">請先啟用並授權 Shizuku</string>
     <string name="manage_app_info">程式資訊</string>
     <string name="manage_module_pipeline_unsupported">不支援的架構</string>
     <string name="manage_module_api_unsupported">不支援的 API %1$d</string>

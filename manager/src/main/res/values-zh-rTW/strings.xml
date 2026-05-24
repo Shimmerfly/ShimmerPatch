@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">NPatch</string>
     <string name="add">新增</string>
     <string name="install">安裝</string>
     <string name="installing">安裝中</string>
@@ -69,12 +68,6 @@
     <string name="manage_uninstall_successfully">解除安裝成功</string>
     <string name="manage_no_modules">還沒有模組</string>
     <string name="manage_module_settings">模組設定</string>
-    <string name="manage_module_activation_enable">顯示激活狀態</string>
-    <string name="manage_module_activation_disable">隱藏激活狀態</string>
-    <string name="manage_module_activation_enabled">已啟用激活狀態</string>
-    <string name="manage_module_activation_disabled">已停用激活狀態</string>
-    <string name="manage_module_activation_failed">模組激活狀態注入失敗</string>
-    <string name="manage_module_activation_shizuku_required">請先啟用並授權 Shizuku</string>
     <string name="manage_app_info">程式資訊</string>
     <string name="manage_module_pipeline_unsupported">不支援的架構</string>
     <string name="manage_module_api_unsupported">不支援的 API %1$d</string>
@@ -98,11 +91,16 @@
     <string name="patch_advanced">進階選項</string>
     <string name="patch_debuggable">程式可偵錯</string>
     <string name="patch_sigbypass">破解簽名驗證</string>
-    <string name="patch_sigbypasslv0">lv0: 關閉</string>
-    <string name="patch_sigbypasslv1">lv1: 繞過 PM</string>
-    <string name="patch_sigbypasslv2">lv2: 繞過 PM + openat(libc)</string>
-    <string name="patch_sigbypasslv3">lv3: 繞過 PM + openat(libc) + 套件本地解析</string>
-    <string name="patch_sigbypasslv4">lv4: 繞過 PM + openat(libc) + SVC (僅 64 位)</string>
+    <string name="patch_sigbypasslv0">None</string>
+    <string name="patch_sigbypasslv0_desc">不進行任何處理</string>
+    <string name="patch_sigbypasslv1">Basic（基礎）</string>
+    <string name="patch_sigbypasslv1_desc">增加 Java IO 與 Native openat/openat64 重定向，讓簽名相關的檔案讀取改為存取原始 APK</string>
+    <string name="patch_sigbypasslv2">High（進階）</string>
+    <string name="patch_sigbypasslv2_desc">基於 Basic，恢復原始 AppComponentFactory，並進一步處理 PackageInfo 反序列化、安裝包封存讀取，以及 hasSigningCertificate 等更嚴格的校驗路徑</string>
+    <string name="patch_sigbypasslv3">Extreme（極致）</string>
+    <string name="patch_sigbypasslv3_desc">基於 High，hook PackageInfo(Parcel) 構造函數，覆蓋 Binder 反序列化取得簽名資訊的路徑</string>
+    <string name="patch_sigbypasslv4">Seccomp</string>
+    <string name="patch_sigbypasslv4_desc">基於 High，在 ARM64 上啟用 FPA 風格 seccomp v2 過濾與 trusted thread 檔案重定向（與 Extreme 互斥）</string>
     <string name="patch_override_version_code">覆蓋版本編號</string>
     <string name="patch_override_version_code_desc">將打包應用程式的版本編號改成 1\n允許以後降級安裝，一般來說，這不會影響應用程式實際感知的版本編號。</string>
     <string name="patch_new_package">修補新套件名</string>
@@ -154,7 +152,6 @@
     <string name="screen_settings">設定</string>
     <string name="settings_language">語言</string>
     <string name="settings_keystore">簽名金鑰庫</string>
-    <string name="settings_keystore_default">內建</string>
     <string name="settings_keystore_custom">自訂</string>
     <string name="settings_keystore_dialog_title">自訂金鑰庫</string>
     <string name="settings_keystore_file">金鑰庫檔案</string>
@@ -182,7 +179,7 @@
     <string name="settings_monet_dynamic_color">Monet 動態取色</string>
     <string name="settings_monet_dynamic_color_summary">跟隨系統桌布顏色 (Android 12+)</string>
     <string name="settings_floating_glass_bottom_bar">懸浮分頁底欄</string>
-    <string name="settings_floating_glass_bottom_bar_summary">在主畫面使用懸浮分頁底欄</string>
+    <string name="settings_floating_glass_bottom_bar_summary">在主畫面使用懸浮分頁底欄\nAndroid 13 以下效果不完整</string>
     <string name="settings_floating_glass_bottom_bar_blur">液態玻璃底欄</string>
     <string name="settings_floating_glass_bottom_bar_blur_summary">為懸浮底欄啟用模糊、鮮明、透鏡與高光效果</string>
     <string name="settings_custom_background_image">自定義背景圖片</string>

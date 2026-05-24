@@ -68,12 +68,6 @@
     <string name="manage_uninstall_successfully">Uninstall successfully</string>
     <string name="manage_no_modules">No modules yet</string>
     <string name="manage_module_settings">Module settings</string>
-    <string name="manage_module_activation_enable">Show activation status</string>
-    <string name="manage_module_activation_disable">Hide activation status</string>
-    <string name="manage_module_activation_enabled">Activation status enabled</string>
-    <string name="manage_module_activation_disabled">Activation status disabled</string>
-    <string name="manage_module_activation_failed">Failed to activate module status</string>
-    <string name="manage_module_activation_shizuku_required">Enable and authorize Shizuku first</string>
     <string name="manage_app_info">App info</string>
     <string name="manage_module_pipeline_modern" translatable="false">Modern</string>
 <string name="manage_module_pipeline_legacy" translatable="false">Legacy</string>
@@ -100,11 +94,16 @@
     <string name="patch_advanced">Advanced options</string>
     <string name="patch_debuggable">Debuggable</string>
     <string name="patch_sigbypass">Signature bypass</string>
-    <string name="patch_sigbypasslv0">lv0: Off</string>
-    <string name="patch_sigbypasslv1">lv1: Bypass PM</string>
-    <string name="patch_sigbypasslv2">lv2: Bypass PM + openat(libc)</string>
-    <string name="patch_sigbypasslv3">lv3: Bypass PM + openat(libc) + Local Archive Parsing</string>
-    <string name="patch_sigbypasslv4">lv4: Bypass PM + openat(libc) + SVC (64-bit only)</string>
+    <string name="patch_sigbypasslv0">None</string>
+    <string name="patch_sigbypasslv0_desc">No processing performed</string>
+    <string name="patch_sigbypasslv1">Basic</string>
+    <string name="patch_sigbypasslv1_desc">Adds Java IO and native openat/openat64 redirection so signature-related file reads use the original APK</string>
+    <string name="patch_sigbypasslv2">High</string>
+    <string name="patch_sigbypasslv2_desc">Builds on Basic by restoring the original AppComponentFactory, then hooks PackageInfo parceling, package archive reads, and hasSigningCertificate checks for stricter verification paths</string>
+    <string name="patch_sigbypasslv3">Extreme</string>
+    <string name="patch_sigbypasslv3_desc">Builds on High by hooking the PackageInfo(Parcel) constructor so signatures are replaced across binder unparceling paths</string>
+    <string name="patch_sigbypasslv4">Seccomp</string>
+    <string name="patch_sigbypasslv4_desc">Builds on High with FPA-style seccomp v2 filtering and trusted-thread file redirection on ARM64 (does not stack with Extreme)</string>
     <string name="patch_new_package">Patch New PackageName</string>
     <string name="hint_patch_new_package">Input a new package for app</string>
     <string name="patch_override_version_code">Override version code</string>
@@ -154,7 +153,6 @@
     <string name="settings_language">Language</string>
     <string name="settings_language_system" translatable="false">Follow System</string>
     <string name="settings_keystore">Signature keystore</string>
-    <string name="settings_keystore_default">Built-in</string>
     <string name="settings_keystore_custom">Custom</string>
     <string name="settings_keystore_dialog_title">Custom keystore</string>
     <string name="settings_keystore_file">Keystore file</string>
@@ -182,7 +180,7 @@
     <string name="settings_monet_dynamic_color">Monet Dynamic Color</string>
     <string name="settings_monet_dynamic_color_summary">Follow system wallpaper color (Android 12+ only)</string>
     <string name="settings_floating_glass_bottom_bar">Floating glass bottom bar</string>
-    <string name="settings_floating_glass_bottom_bar_summary">Use a floating tab bar on the main screen</string>
+    <string name="settings_floating_glass_bottom_bar_summary">Use a floating tab bar on the main screen\nLimited on Android 12 and below</string>
     <string name="settings_floating_glass_bottom_bar_blur">Liquid glass bottom bar</string>
     <string name="settings_floating_glass_bottom_bar_blur_summary">Enable blur, vibrancy, lens and highlight effects for the floating bottom bar</string>
     <string name="settings_custom_background_image">Custom Background Image</string>

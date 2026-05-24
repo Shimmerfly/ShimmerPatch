@@ -69,12 +69,6 @@
     <string name="manage_uninstall_successfully">卸载成功</string>
     <string name="manage_no_modules">尚无模块</string>
     <string name="manage_module_settings">模块设置</string>
-    <string name="manage_module_activation_enable">显示激活状态</string>
-    <string name="manage_module_activation_disable">隐藏激活状态</string>
-    <string name="manage_module_activation_enabled">已启用激活状态</string>
-    <string name="manage_module_activation_disabled">已停用激活状态</string>
-    <string name="manage_module_activation_failed">模块激活状态注入失败</string>
-    <string name="manage_module_activation_shizuku_required">请先启用并授权 Shizuku</string>
     <string name="manage_app_info">应用信息</string>
     <string name="manage_module_pipeline_unsupported">不支持的架构</string>
     <string name="manage_module_api_unsupported">不支持的 API %1$d</string>
@@ -82,7 +76,7 @@
     <string name="manage_check_manager_package_name">该应用由 %1$s 管理\n在本管理器中修改作用域 %2$s 不会生效\n重新修补以解决</string>
 
     <!-- New Patch Screen -->
-    <string name="screen_new_patch">新建修补</string>
+    <string name="screen_new_patch">新建打包</string>
     <string name="patch_select_dir_title">选择存储目录</string>
     <string name="patch_select_dir_text">选择一个目录来存储已修补的 apk</string>
     <string name="patch_select_dir_error">设置存储目录时出错</string>
@@ -98,11 +92,16 @@
     <string name="patch_advanced">进阶选项</string>
     <string name="patch_debuggable">可调试</string>
     <string name="patch_sigbypass">破解签名校验</string>
-    <string name="patch_sigbypasslv0">lv0: 关闭</string>
-    <string name="patch_sigbypasslv1">lv1: 绕过 PM</string>
-    <string name="patch_sigbypasslv2">lv2: 绕过 PM + openat(libc)</string>
-    <string name="patch_sigbypasslv3">lv3: 绕过 PM + openat(libc) + 套件本地解析</string>
-    <string name="patch_sigbypasslv4">lv4: 绕过 PM + openat(libc) + SVC (仅 64 位)</string>
+    <string name="patch_sigbypasslv0">None</string>
+    <string name="patch_sigbypasslv0_desc">不进行任何处理</string>
+    <string name="patch_sigbypasslv1">Basic（基础）</string>
+    <string name="patch_sigbypasslv1_desc">增加 Java IO 与 Native openat/openat64 重定向，让签名相关的文件读取改为访问原始 APK</string>
+    <string name="patch_sigbypasslv2">High（进阶）</string>
+    <string name="patch_sigbypasslv2_desc">基于 Basic，恢复原始 AppComponentFactory，并进一步处理 PackageInfo 反序列化、安装包归档读取，以及 hasSigningCertificate 等更严格的校验路径</string>
+    <string name="patch_sigbypasslv3">Extreme（极致）</string>
+    <string name="patch_sigbypasslv3_desc">基于 High，hook PackageInfo(Parcel) 构造函数，覆盖 Binder 反序列化得到签名信息的路径</string>
+    <string name="patch_sigbypasslv4">Seccomp</string>
+    <string name="patch_sigbypasslv4_desc">基于 High，在 ARM64 上启用 FPA 风格 seccomp v2 过滤与 trusted thread 文件重定向（与 Extreme 互斥）</string>
     <string name="patch_override_version_code">覆写版本号</string>
     <string name="patch_override_version_code_desc">将修补的 App 版本号重写为 1\n这将允许后续降级安装，并且通常来说这不会影响应用实际感知到的版本号</string>
     <string name="patch_new_package">修补新包名</string>
@@ -152,7 +151,6 @@
     <string name="screen_settings">设置</string>
     <string name="settings_language">语言</string>
     <string name="settings_keystore">签名密钥库</string>
-    <string name="settings_keystore_default">内置</string>
     <string name="settings_keystore_custom">自定义</string>
     <string name="settings_keystore_dialog_title">自定义密钥库</string>
     <string name="settings_keystore_file">密钥库文件</string>
@@ -180,7 +178,7 @@
     <string name="settings_monet_dynamic_color">Monet 动态取色</string>
     <string name="settings_monet_dynamic_color_summary">跟随系统壁纸颜色 (Android 12+)</string>
     <string name="settings_floating_glass_bottom_bar">悬浮分页底栏</string>
-    <string name="settings_floating_glass_bottom_bar_summary">在主界面使用悬浮分页底栏</string>
+    <string name="settings_floating_glass_bottom_bar_summary">在主界面使用悬浮分页底栏\nAndroid 13 以下效果不完整</string>
     <string name="settings_floating_glass_bottom_bar_blur">液态玻璃底栏</string>
     <string name="settings_floating_glass_bottom_bar_blur_summary">为悬浮底栏启用模糊、鲜明、透镜与高光效果</string>
     <string name="settings_custom_background_image">自定义背景图片</string>

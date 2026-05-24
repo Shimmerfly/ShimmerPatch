@@ -263,7 +263,7 @@ public class LSPApplication {
             Log.i(TAG, "Signature bypass level: " + config.sigBypassLevel);
 
             String loadedApkSourceDir = patchedApkPath;
-            if (config.sigBypassLevel >= Constants.SIGBYPASS_LV_PM_OPENAT) {
+            if (config.sigBypassLevel >= Constants.SIGBYPASS_BASIC) {
                 Path cacheApkPath = OriginApkHelper.prepareOriginApk(appInfo, baseClassLoader);
                 Path nativeLibraryDir = OriginApkHelper.prepareNativeLibraryDir(appInfo, cacheApkPath, patchedApkPath);
                 SigBypass.setPaths(cacheApkPath.toString(), patchedApkPath);
@@ -272,7 +272,11 @@ public class LSPApplication {
                     appInfo.nativeLibraryDir = nativeLibraryDir.toString();
                 }
             }
-            appInfo.appComponentFactory = config.appComponentFactory;
+            if (config.sigBypassLevel >= Constants.SIGBYPASS_HIGH) {
+                appInfo.appComponentFactory = config.appComponentFactory;
+            } else {
+                appInfo.appComponentFactory = null;
+            }
 
             Path providerPath = null;
             if (config.injectProvider) {
@@ -349,7 +353,7 @@ public class LSPApplication {
             var context = (Context) XposedHelpers.callStaticMethod(Class.forName("android.app.ContextImpl"), "createAppContext", activityThread, stubLoadedApk);
             if (config.appComponentFactory != null) {
                 try {
-                    context.getClassLoader().loadClass(config.appComponentFactory);
+                    appLoadedApk.getClassLoader().loadClass(config.appComponentFactory);
                 } catch (Throwable e) {
                     Log.w(TAG, "Original AppComponentFactory not found: " + config.appComponentFactory, e);
                     appInfo.appComponentFactory = null;

@@ -98,7 +98,8 @@
     <string name="patch_sigbypasslv3">lv3: 瞒过 PM + openat(libc) + 套件本地解析</string>
     <string name="patch_sigbypasslv4">lv4: 瞒过 PM + openat(libc) + SVC 瞬移 (仅 64 位)</string>
     <string name="patch_override_version_code">改写喵龄</string>
-    <string name="patch_override_version_code_desc">把喵龄改成 1。这样就算它“老了”也能强行塞回去，App通常察觉不到喵。</string>
+    <string name="patch_override_version_code_desc">把喵龄改成自定义值，默认 1。这样更多时候都能强行塞回去，App通常察觉不到喵。</string>
+    <string name="patch_custom_version_code">自定义喵龄</string>
     <string name="patch_new_package">改名卡喵</string>
     <string name="hint_patch_new_package">请输入这只猫的新包名喵</string>
     <string name="patch_inject_mt_provider">注入猫洞（MT Provider）</string>

@@ -39,7 +39,7 @@ val (coreCommitCount, coreLatestTag) = runCatching {
             val ver = git.describe().setTags(true).setAbbrev(0).call()?.removePrefix("v") ?: "2.0"
             count to ver
         }
-}.getOrNull() ?: (3045 to "2.0")
+}.getOrNull() ?: (3047 to "2.0")
 
 // sync from https://github.com/JingMartix/LSPosed/blob/master/build.gradle.kts
 val defaultManagerPackageName by extra("top.nkbe.npatch")

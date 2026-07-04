@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add">شامل کریں۔ </string>
     <string name="install">Install</string>
@@ -86,4 +86,6 @@
     <string name="settings_keystore_wrong_alias">غلط عرفی نام</string>
     <string name="settings_keystore_wrong_alias_password">غلط عرفی پاس ورڈ</string>
     <string name="settings_detail_patch_logs">تفصیلی پیچ لاگز</string>
+    <string name="settings_card_background_alpha">کارڈ پس منظر کی غیر شفافیت</string>
+    <string name="settings_card_background_alpha_summary">حسب ضرورت پس منظر تصویر فعال ہونے پر لاگو ہوتا ہے</string>
 </resources>

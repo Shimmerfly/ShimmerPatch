@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add">Papildyti</string>
     <string name="install">Įdiekite</string>
@@ -129,4 +129,6 @@
         <item quantity="other">%d download</item>
     </plurals>
     <string name="download_asset">Scarica</string>
+    <string name="settings_card_background_alpha">Kortelių fono nepermatomumas</string>
+    <string name="settings_card_background_alpha_summary">Taikoma, kai įjungtas pasirinktinis fono paveikslėlis</string>
 </resources>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add">Add</string>
     <string name="install">Install</string>
@@ -17,6 +17,7 @@
 
     <!-- Home Screen -->
     <string name="home_shizuku_warning">Some functions unavailable</string>
+    <string name="home_shizuku_optional_summary">Optional extension, not required by NPatch.</string>
     <string name="home_api_version">API Version</string>
     <string name="home_npatch_version">NPatch Version</string>
     <string name="home_framework_version">Framework Version</string>
@@ -45,6 +46,7 @@
     <string name="about_ack_lspatch_summary">A pioneer in rootless patching solutions, proving the feasibility of dynamic Xposed environment loading via manager-side implementation.</string>
     <string name="about_ack_libxposed_summary">The driving force behind Xposed API standardisation, bringing type safety and clear conventions to the module development world.</string>
     <string name="about_ack_winter_summary">My very first financial supporter; thank you for such early and direct encouragement.</string>
+    <string name="about_ack_m558_summary">The one who keeps the gears turning behind the scenes — thank you for the quiet but indispensable support.</string>
     <string name="about_ack_community_summary">Thanks to all users involved in testing, submitting PRs, and reporting issues to drive the project forward together.</string>
 
     <!-- Manage Screen -->
@@ -65,6 +67,9 @@
     <string name="manage_force_stop">Force stop</string>
     <string name="manage_force_stop_successfully">Force stop successfully</string>
     <string name="manage_force_stop_failed">Force stop failed</string>
+    <string name="manage_force_restart">Force restart</string>
+    <string name="manage_force_restart_successfully">Force restart successfully</string>
+    <string name="manage_force_restart_failed">Force restart failed</string>
     <string name="manage_uninstall_successfully">Uninstall successfully</string>
     <string name="manage_no_modules">No modules yet</string>
     <string name="manage_module_settings">Module settings</string>
@@ -99,11 +104,11 @@
     <string name="patch_sigbypasslv1">Basic</string>
     <string name="patch_sigbypasslv1_desc">Adds Java IO and native openat/openat64 redirection so signature-related file reads use the original APK</string>
     <string name="patch_sigbypasslv2">High</string>
-    <string name="patch_sigbypasslv2_desc">Builds on Basic by restoring the original AppComponentFactory, then hooks PackageInfo parceling, package archive reads, and hasSigningCertificate checks for stricter verification paths</string>
+    <string name="patch_sigbypasslv2_desc">Builds on Basic by restoring the original AppComponentFactory and hooking getPackageArchiveInfo / hasSigningCertificate for stricter verification paths</string>
     <string name="patch_sigbypasslv3">Extreme</string>
     <string name="patch_sigbypasslv3_desc">Builds on High by hooking the PackageInfo(Parcel) constructor so signatures are replaced across binder unparceling paths</string>
     <string name="patch_sigbypasslv4">Seccomp</string>
-    <string name="patch_sigbypasslv4_desc">Builds on High with FPA-style seccomp v2 filtering and trusted-thread file redirection on ARM64 (does not stack with Extreme)</string>
+    <string name="patch_sigbypasslv4_desc">Enables seccomp v2 filtering and trusted-thread file redirection on ARM64, referencing the implementation approach used by FunPatchApp</string>
     <string name="patch_new_package">Patch New PackageName</string>
     <string name="hint_patch_new_package">Input a new package for app</string>
     <string name="patch_override_version_code">Override version code</string>
@@ -111,12 +116,12 @@
     <string name="patch_custom_version_code">Custom version code</string>
     <string name="patch_inject_mt_provider">Inject Files Provider</string>
     <string name="patch_inject_mt_provider_desc">Inject file providers to manage files in the data directory without root privileges (From MT Manager)</string>
-    <string name="patch_inject_dex">Inject loader dex</string>
-    <string name="patch_inject_dex_desc">For applications with isolated services, such as the render engines of browsers, please turn on this option to ensure that they work properly.</string>
     <string name="patch_use_microg">Force enable MicroG support</string>
     <string name="patch_use_microg_desc">Redirect GMS requests to the community version of MicroG (such as ReVanced GmsCore). Applicable to Google apps like YouTube, requires manually installing the corresponding MicroG service.</string>
     <string name="patch_output_log_to_media">Output Log to Media Directory</string>
     <string name="patch_output_log_to_media_desc">Output the Xposed logs and framework startup logs of the module running to the Media directory.</string>
+    <string name="patch_hide_libs">Exempt environment checks</string>
+    <string name="patch_hide_libs_desc">Sanitize ART and sensitive system library visibility for apps that perform basic runtime environment checks.</string>
     <string name="patch_start">Start Patch</string>
     <string name="patch_return">Return</string>
     <string name="patch_uninstall_text">Due to different signatures, you need to uninstall the original app before installing the patched one.\nMake sure you have backed up personal data.</string>
@@ -131,13 +136,15 @@
     <!-- Welcome Screen -->
     <string name="welcome_version">Version %1$s</string>
     <string name="welcome_intro_content">A modern Xposed module injection and APK patching tool designed for rootless environments.</string>
-    <string name="welcome_intro_detail">NPatch injects the Xposed loader by modifying APK files. Local mode works with the manager to load modules and manage scopes dynamically, without keeping the manager running in the background. Integrated mode embeds modules directly into the target app for standalone use on devices without the manager.</string>
+    <string name="welcome_intro_detail">NPatch injects the Xposed loader by modifying APK files. Local mode works with the manager to load modules and manage scopes dynamically, without keeping the manager running in the background. Integrated mode embeds modules directly into the target app for standalone use on devices without the manager. Shizuku only unlocks some convenience features and is not required for NPatch core patching, module loading, or basic management.</string>
     <string name="welcome_permission_title">Configure Required Permissions</string>
     <string name="welcome_permission_summary">Before getting started, grant basic access permissions to keep core features working.</string>
     <string name="welcome_permission_storage_title">Storage Access</string>
     <string name="welcome_permission_storage_summary">Used to select local APK files for patching and save output results to external storage.</string>
     <string name="welcome_permission_applist_title">Read App List</string>
     <string name="welcome_permission_applist_summary">Used to read installed apps so you can choose patch targets accurately.</string>
+    <string name="welcome_optional_title">Optional extension: Shizuku</string>
+    <string name="welcome_optional_summary">Optional extension only. Even without Shizuku, NPatch core features still work normally.</string>
     <string name="welcome_permission_granted">Granted</string>
     <string name="welcome_permission_authorize">Grant access</string>
     <string name="welcome_disclaimer_title">Usage Notes and Disclaimer</string>
@@ -167,8 +174,15 @@
     <string name="settings_keystore_wrong_alias_password">Wrong alias password</string>
     <string name="settings_storage_directory">change storage directory</string>
     <string name="settings_detail_patch_logs">Detail patch logs</string>
+    <string name="settings_output_full_log">Output manager log to media</string>
+    <string name="settings_output_full_log_summary">Write manager logs to Android/media/top.nkbe.npatch/log for debugging</string>
     <string name="settings_view_welcome">View guide</string>
     <string name="settings_view_welcome_summary">Review the welcome and permission guide</string>
+    <string name="settings_manager_cache">Clear manager cache</string>
+    <string name="settings_manager_cache_summary">Clear module sync cache, repo cache, and temporary patch files while keeping your basic settings</string>
+    <string name="settings_manager_cache_dialog_text">This clears manager-side sync state and temporary files. Storage directory, keystore, language, and theme settings will be kept.</string>
+    <string name="settings_manager_cache_success">Manager cache cleared</string>
+    <string name="settings_manager_cache_failed">Failed to clear manager cache</string>
     <string name="settings_appearance_theme">Appearance &amp; Theme</string>
     <string name="settings_other_settings">Other Settings</string>
     <string name="settings_theme_mode">Theme Mode</string>
@@ -185,8 +199,14 @@
     <string name="settings_floating_glass_bottom_bar_blur">Liquid glass bottom bar</string>
     <string name="settings_floating_glass_bottom_bar_blur_summary">Enable blur, vibrancy, lens and highlight effects for the floating bottom bar</string>
     <string name="settings_custom_background_image">Custom Background Image</string>
+    <string name="settings_card_background_alpha">Card background opacity</string>
+    <string name="settings_card_background_alpha_summary">Applies when a custom background image is enabled</string>
     <string name="settings_clear">Clear</string>
+    <string name="accessibility_clear">Clear</string>
+    <string name="accessibility_sort">Sort</string>
+    <string name="accessibility_selected">Selected</string>
     <string name="settings_builtin_theme_color">Built-in Theme Color</string>
+    <string name="settings_color_cherry_blossom">Cherry Blossom</string>
     <string name="settings_color_default_blue">Default Blue</string>
     <string name="settings_color_fresh_green">Fresh Green</string>
     <string name="settings_color_elegant_purple">Elegant Purple</string>
@@ -242,6 +262,7 @@
     <string name="module_release_load_more">Show older versions</string>
     <string name="module_release_no_more">No more release</string>
     <string name="repo_load_failed">Failed to load module repo: %s</string>
+    <string name="repo_loading_mirror">Loading mirror repository…</string>
     <plurals name="module_release_assets_download_count">
         <item quantity="one">%d download</item>
         <item quantity="other">%d downloads</item>
@@ -249,6 +270,8 @@
     <string name="download_asset">Download</string>
     <string name="package_name">Package name</string>
     <string name="author">Author</string>
+    <string name="repo_filter_scope_title">Filter by applicable app</string>
+    <string name="repo_filter_clear">Clear app filter</string>
     <string name="time_just_now">Just now</string>
     <string name="time_minutes_ago">%d minutes ago</string>
     <string name="time_hours_ago">%d hours ago</string>

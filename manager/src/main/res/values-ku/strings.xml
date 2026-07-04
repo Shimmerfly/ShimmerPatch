@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add">Lêzêdekirin</string>
     <string name="install">Lêkirin</string>
@@ -85,4 +85,6 @@
     <string name="settings_keystore_wrong_alias">Navê nasnavê xelet</string>
     <string name="settings_keystore_wrong_alias_password">Şîfreya nasnavê çewt</string>
     <string name="settings_detail_patch_logs">Detail patch têketin</string>
+    <string name="settings_card_background_alpha">Tarîtiya paşxaneya kartê</string>
+    <string name="settings_card_background_alpha_summary">Dema wêneyê paşxaneya xweser çalak be tê sepandin</string>
 </resources>

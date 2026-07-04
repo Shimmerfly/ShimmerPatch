@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add">Addไทย</string>
     <string name="install">ติดตั้ง</string>
@@ -85,4 +85,6 @@
     <string name="settings_keystore_wrong_alias">ชื่อนามแฝงไม่ถูกต้อง</string>
     <string name="settings_keystore_wrong_alias_password">รหัสผ่านนามแฝงไม่ถูกต้อง</string>
     <string name="settings_detail_patch_logs">บันทึกการแก้ไขรายละเอียด</string>
+    <string name="settings_card_background_alpha">ความทึบของพื้นหลังการ์ด</string>
+    <string name="settings_card_background_alpha_summary">ใช้เมื่อเปิดใช้ภาพพื้นหลังแบบกำหนดเอง</string>
 </resources>

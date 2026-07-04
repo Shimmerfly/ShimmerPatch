@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add">新增</string>
     <string name="install">安裝</string>
@@ -17,6 +17,7 @@
 
     <!-- Home Screen -->
     <string name="home_shizuku_warning">部分功能不可用</string>
+    <string name="home_shizuku_optional_summary">可選擴展，不影響 NPatch 核心功能。</string>
     <string name="home_api_version">API 版本</string>
     <string name="home_npatch_version">NPatch 版本</string>
     <string name="home_framework_version">框架版本</string>
@@ -45,6 +46,7 @@
     <string name="about_ack_lspatch_summary">免 Root 修補方案的先行者，證明了在管理器側動態加載 Xposed 環境的可行性。</string>
     <string name="about_ack_libxposed_summary">現代 Xposed API 標準化推手，為模組開發帶來了型別安全與更清晰的秩序。</string>
     <string name="about_ack_winter_summary">首位打赏我的支持者，感谢这份很早、也很直接的鼓励。</string>
+    <string name="about_ack_m558_summary">幕後默默轉動齒輪的人，感謝這份不可或缺的支持。</string>
     <string name="about_ack_community_summary">感謝所有參與測試、提交 PR 與回報 Issue 的用戶，共同推動專案前進。</string>
 
     <!-- Manage Screen -->
@@ -65,6 +67,9 @@
     <string name="manage_force_stop">強制停止</string>
     <string name="manage_force_stop_successfully">強制停止成功</string>
     <string name="manage_force_stop_failed">強制停止失敗</string>
+    <string name="manage_force_restart">強制重啟</string>
+    <string name="manage_force_restart_successfully">強制重啟成功</string>
+    <string name="manage_force_restart_failed">強制重啟失敗</string>
     <string name="manage_uninstall_successfully">解除安裝成功</string>
     <string name="manage_no_modules">還沒有模組</string>
     <string name="manage_module_settings">模組設定</string>
@@ -93,14 +98,14 @@
     <string name="patch_sigbypass">破解簽名驗證</string>
     <string name="patch_sigbypasslv0">None</string>
     <string name="patch_sigbypasslv0_desc">不進行任何處理</string>
-    <string name="patch_sigbypasslv1">Basic（基礎）</string>
+    <string name="patch_sigbypasslv1">Basic</string>
     <string name="patch_sigbypasslv1_desc">增加 Java IO 與 Native openat/openat64 重定向，讓簽名相關的檔案讀取改為存取原始 APK</string>
-    <string name="patch_sigbypasslv2">High（進階）</string>
-    <string name="patch_sigbypasslv2_desc">基於 Basic，恢復原始 AppComponentFactory，並進一步處理 PackageInfo 反序列化、安裝包封存讀取，以及 hasSigningCertificate 等更嚴格的校驗路徑</string>
-    <string name="patch_sigbypasslv3">Extreme（極致）</string>
+    <string name="patch_sigbypasslv2">High</string>
+    <string name="patch_sigbypasslv2_desc">基於 Basic，恢復原始 AppComponentFactory，並 hook getPackageArchiveInfo 與 hasSigningCertificate 等更嚴格的校驗路徑</string>
+    <string name="patch_sigbypasslv3">Extreme</string>
     <string name="patch_sigbypasslv3_desc">基於 High，hook PackageInfo(Parcel) 構造函數，覆蓋 Binder 反序列化取得簽名資訊的路徑</string>
     <string name="patch_sigbypasslv4">Seccomp</string>
-    <string name="patch_sigbypasslv4_desc">基於 High，在 ARM64 上啟用 FPA 風格 seccomp v2 過濾與 trusted thread 檔案重定向（與 Extreme 互斥）</string>
+    <string name="patch_sigbypasslv4_desc">在 ARM64 上啟用 seccomp v2 過濾與 trusted thread 檔案重定向，參考了 FunPatchApp 的實作方案</string>
     <string name="patch_override_version_code">覆蓋版本編號</string>
     <string name="patch_override_version_code_desc">將打包應用程式的版本編號改成自訂值，預設為 1\n允許更多情境下的降級安裝，一般來說，這不會影響應用程式實際感知的版本編號。</string>
     <string name="patch_custom_version_code">自訂版本編號</string>
@@ -108,12 +113,12 @@
     <string name="hint_patch_new_package">請輸入新的套件名</string>
     <string name="patch_inject_mt_provider">注入檔案选取器</string>
     <string name="patch_inject_mt_provider_desc">注入檔案选取器以在沒有 Root 權限的情況下管理 data 目錄的檔案(來自 MT 管理器)</string>
-    <string name="patch_inject_dex">注入載入器 Dex</string>
-    <string name="patch_inject_dex_desc">對那些需要孤立服務程序的應用程式，譬如說瀏覽器的渲染引擎，請勾選此選項以確保他們正常執行</string>
     <string name="patch_use_microg">強制啟用 MicroG 支援</string>
     <string name="patch_use_microg_desc">重新導向 GMS 請求至社群版 MicroG。適用於 YouTube 等 Google 應用程式，需自行安裝對應的 MicroG 服務。</string>
     <string name="patch_output_log_to_media">日誌輸出到 Media 目錄</string>
     <string name="patch_output_log_to_media_desc">將模組運行的 Xposed 日誌及框架啟動日誌輸出至 Media 目錄</string>
+    <string name="patch_hide_libs">豁免環境校驗</string>
+    <string name="patch_hide_libs_desc">為執行基礎執行環境校驗的應用程式收斂 ART 與敏感系統函式庫的可見性。</string>
     <string name="patch_start">開始打包</string>
     <string name="patch_return">返回</string>
     <string name="patch_uninstall_text">由於簽名不同，安裝前需要先解除安裝原程式。\n確保您已備份好個人資料。</string>
@@ -128,17 +133,17 @@
     <!-- Welcome Screen -->
     <string name="welcome_version">版本 %1$s</string>
     <string name="welcome_intro_content">專為免 Root 環境設計的現代化 Xposed 模組注入與應用修補工具。</string>
-    <string name="welcome_intro_detail">NPatch 能在免 Root 環境中，透過修改 APK 檔案注入 Xposed 載入器。本地模式需搭配管理器動態載入並管理模組與作用域，但使用時無需保持管理器處於背景運行；集成模式則將模組直接內嵌至目標應用中，適合無管理器的裝置獨立執行。</string>
-
+    <string name="welcome_intro_detail">NPatch 能在免 Root 環境中，透過修改 APK 檔案注入 Xposed 載入器。本地模式需搭配管理器動態載入並管理模組與作用域，但使用時無需保持管理器處於背景運行；集成模式則將模組直接內嵌至目標應用中，適合無管理器的裝置獨立執行。Shizuku 只會擴充部分便利功能，並不是 NPatch 核心修補、模組載入或基本管理的必要依賴。</string>
     <string name="welcome_permission_title">配置必要權限</string>
     <string name="welcome_permission_summary">開始體驗前，請先授予基本存取權限以確保核心功能運作。</string>
     <string name="welcome_permission_storage_title">儲存空間存取</string>
     <string name="welcome_permission_storage_summary">用於選取本機 APK 檔案進行修補，並將輸出結果儲存至外部儲存空間。</string>
     <string name="welcome_permission_applist_title">讀取應用程式清單</string>
     <string name="welcome_permission_applist_summary">用於獲取已安裝的應用程式，以便您精確選取修補目標。</string>
+    <string name="welcome_optional_title">可選擴展：Shizuku</string>
+    <string name="welcome_optional_summary">僅為可選擴展，未連接也不影響 NPatch 核心功能。</string>
     <string name="welcome_permission_granted">已授予</string>
     <string name="welcome_permission_authorize">前往授權</string>
-
     <string name="welcome_disclaimer_title">使用須知與免責聲明</string>
     <string name="welcome_disclaimer_summary">在修補應用或載入 Xposed 模組之前，請務必了解以下操作風險。</string>
     <string name="welcome_disclaimer_content">修改與修補應用程式可能導致其閃退、無法啟動或資料遺失。請務必在操作前備份重要資料。使用者需自行承擔修補後應用及模組在裝置上執行的一切風險與後果。</string>
@@ -165,9 +170,16 @@
     <string name="settings_keystore_wrong_alias">別名錯誤</string>
     <string name="settings_keystore_wrong_alias_password">別名密碼錯誤</string>
     <string name="settings_detail_patch_logs">詳細打包日誌</string>
+    <string name="settings_output_full_log">輸出管理器日誌到 Media</string>
+    <string name="settings_output_full_log_summary">將管理器日誌寫入 Android/media/top.nkbe.npatch/log 以便調試</string>
     <string name="settings_view_welcome">查看導覽介面</string>
     <string name="settings_view_welcome_summary">重新查看歡迎與權限導覽</string>
     <string name="settings_storage_directory">更改存儲資料夾</string>
+    <string name="settings_manager_cache">清除管理器快取</string>
+    <string name="settings_manager_cache_summary">清除模組同步快取、倉庫快取與臨時修補檔案，同時保留基礎設定</string>
+    <string name="settings_manager_cache_dialog_text">這會清除管理器端的同步狀態與臨時檔案，但會保留儲存目錄、簽名金鑰庫、語言與主題設定。</string>
+    <string name="settings_manager_cache_success">管理器快取已清除</string>
+    <string name="settings_manager_cache_failed">清除管理器快取失敗</string>
     <string name="settings_appearance_theme">外觀與主題</string>
     <string name="settings_other_settings">其他設定</string>
     <string name="settings_theme_mode">主題模式</string>
@@ -184,8 +196,14 @@
     <string name="settings_floating_glass_bottom_bar_blur">液態玻璃底欄</string>
     <string name="settings_floating_glass_bottom_bar_blur_summary">為懸浮底欄啟用模糊、鮮明、透鏡與高光效果</string>
     <string name="settings_custom_background_image">自定義背景圖片</string>
+    <string name="settings_card_background_alpha">卡片背景不透明度</string>
+    <string name="settings_card_background_alpha_summary">啟用自訂背景圖片時生效</string>
     <string name="settings_clear">清除</string>
+    <string name="accessibility_clear">清除</string>
+    <string name="accessibility_sort">排序</string>
+    <string name="accessibility_selected">已選取</string>
     <string name="settings_builtin_theme_color">內建主題色</string>
+    <string name="settings_color_cherry_blossom">櫻花粉</string>
     <string name="settings_color_default_blue">冷淡蓝</string>
     <string name="settings_color_fresh_green">清爽綠</string>
     <string name="settings_color_elegant_purple">優雅紫</string>
@@ -235,6 +253,7 @@
     <string name="module_release_load_more">顯示較舊版本</string>
     <string name="module_release_no_more">沒有更多版本了</string>
     <string name="repo_load_failed">無法載入模組庫：%s</string>
+    <string name="repo_loading_mirror">正在載入鏡像模組庫…</string>
     <plurals name="module_release_assets_download_count">
         <item quantity="one">%d 次下載</item>
         <item quantity="other">%d 次下載</item>
@@ -242,6 +261,8 @@
     <string name="download_asset">下載</string>
     <string name="package_name">套件名稱</string>
     <string name="author">作者</string>
+    <string name="repo_filter_scope_title">按適用應用程式篩選</string>
+    <string name="repo_filter_clear">清除應用篩選</string>
     <string name="time_just_now">剛剛</string>
     <string name="time_minutes_ago">%d分鐘前</string>
     <string name="time_hours_ago">%d小時前</string>

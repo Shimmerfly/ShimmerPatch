@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add">افزودن</string>
     <string name="install">نصب</string>
@@ -86,4 +86,6 @@
     <string name="settings_keystore_wrong_alias">نام مستعار اشتباه است</string>
     <string name="settings_keystore_wrong_alias_password">رمز یا نام مستعار اشتباه است</string>
     <string name="settings_detail_patch_logs">گزارش های اطلاعات پچ</string>
+    <string name="settings_card_background_alpha">کدری پس زمینه کارت</string>
+    <string name="settings_card_background_alpha_summary">وقتی تصویر پس زمینه سفارشی فعال باشد اعمال می شود</string>
 </resources>

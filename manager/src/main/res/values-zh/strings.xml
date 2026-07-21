@@ -104,8 +104,8 @@
     <string name="patch_sigbypasslv2_desc">基于 Basic，恢复原始 AppComponentFactory，并 hook getPackageArchiveInfo 与 hasSigningCertificate 等更严格的校验路径</string>
     <string name="patch_sigbypasslv3">Extreme</string>
     <string name="patch_sigbypasslv3_desc">基于 High，hook PackageInfo(Parcel) 构造函数，覆盖 Binder 反序列化得到签名信息的路径</string>
-    <string name="patch_sigbypasslv4">Seccomp</string>
-    <string name="patch_sigbypasslv4_desc">在 ARM64 上启用 seccomp v2 过滤与 trusted thread 文件重定向，参考了 FunPatchApp 的实现方案</string>
+    <string name="patch_sigbypasslv4">Stealth</string>
+    <string name="patch_sigbypasslv4_desc">采用 GOT/PLT 重定向，参考 FPA (FunPatchApp) 的实现：伪装 PackageInfo/签名结果，并经由各调用方的 GOT 重定向 APK 访问；不修改 libc/libart 的 .text，也不安装 seccomp 过滤器，因此可与 .text CRC 及 seccomp 完整性检测共存。全架构可用</string>
     <string name="patch_override_version_code">覆写版本号</string>
     <string name="patch_override_version_code_desc">将修补的 App 版本号重写为自定义值，默认为 1\n这将允许更多场景下的降级安装，并且通常来说这不会影响应用实际感知到的版本号</string>
     <string name="patch_custom_version_code">自定义版本号</string>
@@ -119,7 +119,8 @@
     <string name="patch_output_log_to_media_desc">将 Xposed 日志和框架启动日志输出到 Media 目录</string>
     <string name="patch_hide_libs">豁免环境校验</string>
     <string name="patch_hide_libs_desc">为执行基础运行环境校验的应用收敛 ART 与敏感系统库的可见性。</string>
-    <string name="patch_start">開始修補</string>
+    <string name="patch_start">开始打包</string>
+    <string name="patch_logs">日志</string>
     <string name="patch_return">返回</string>
     <string name="patch_uninstall_text">由于签名不同，安装修补的应用前需要先卸载原应用。\n确保您已备份好个人数据。</string>
     <string name="patch_install_successfully">安装成功</string>
@@ -182,6 +183,17 @@
     <string name="settings_manager_cache_failed">清除管理器缓存失败</string>
     <string name="settings_appearance_theme">外观与主题</string>
     <string name="settings_other_settings">其他设置</string>
+    <string name="settings_network">网络</string>
+    <string name="settings_dns">DNS</string>
+    <string name="settings_dns_summary">NPatch 网络请求使用的 DNS</string>
+    <string name="settings_dns_tencent">腾讯 DoH</string>
+    <string name="settings_dns_google">Google DoH</string>
+    <string name="settings_dns_cloudflare">Cloudflare DoH</string>
+    <string name="settings_dns_system">系统</string>
+    <string name="settings_dns_custom">自定义</string>
+    <string name="settings_dns_custom_url">DoH 地址</string>
+    <string name="settings_dns_custom_summary">请输入完整的 HTTPS DNS-over-HTTPS 服务地址。</string>
+    <string name="settings_dns_custom_invalid">请输入有效的 HTTPS 地址。</string>
     <string name="settings_theme_mode">主题模式</string>
     <string name="settings_theme_mode_system">跟随系统</string>
     <string name="settings_theme_mode_system_summary">自动配合设备的亮色与暗色外观</string>
@@ -202,7 +214,7 @@
     <string name="accessibility_clear">清除</string>
     <string name="accessibility_sort">排序</string>
     <string name="accessibility_selected">已选择</string>
-    <string name="settings_builtin_theme_color">内置主題色</string>
+    <string name="settings_builtin_theme_color">内置主题色</string>
     <string name="settings_color_cherry_blossom">樱花粉</string>
     <string name="settings_color_default_blue">冷淡蓝</string>
     <string name="settings_color_fresh_green">清新绿</string>

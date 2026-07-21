@@ -66,27 +66,28 @@ object NeoPackageManager {
         val result = withContext(Dispatchers.IO) {
             val pm = lspApp.packageManager
             val collection = mutableListOf<AppInfo>()
-            val applicationList: List<ApplicationInfo>
+            val packages: List<android.content.pm.PackageInfo>
 
             if (ShizukuApi.isReady) {
                 Log.i(TAG, "Fetching app list using Shizuku API")
-                applicationList = runCatching {
-                    ShizukuApi.getInstalledApplications()
+                packages = runCatching {
+                    ShizukuApi.getInstalledPackages(PackageManager.GET_META_DATA)
                 }.getOrElse { t ->
                     Log.e(TAG, "Shizuku failed to fetch app list, falling back to standard PM", t)
-                    pm.getInstalledApplications(PackageManager.GET_META_DATA)
+                    pm.getInstalledPackages(PackageManager.GET_META_DATA)
                 }
             } else {
                 Log.i(TAG, "Fetching app list using standard PackageManager")
-                applicationList = pm.getInstalledApplications(PackageManager.GET_META_DATA)
+                packages = pm.getInstalledPackages(PackageManager.GET_META_DATA)
             }
 
-            applicationList.forEach {
-                val label = pm.getApplicationLabel(it)
+            packages.forEach { pkgInfo ->
+                val appInfo = pkgInfo.applicationInfo ?: return@forEach
+                val label = pm.getApplicationLabel(appInfo)
                 val moduleMetadata = runCatching {
-                    ModuleMetadataReader.read(it, pm)
+                    ModuleMetadataReader.read(pkgInfo, pm)
                 }.getOrNull()
-                collection.add(AppInfo(it, label.toString(), moduleMetadata))
+                collection.add(AppInfo(appInfo, label.toString(), moduleMetadata))
             }
 
             collection.sortWith(compareBy(Collator.getInstance(Locale.getDefault()), AppInfo::label))

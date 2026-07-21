@@ -1,7 +1,9 @@
 package nkbe.util
 
 import android.content.pm.ApplicationInfo
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.os.Bundle
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import java.io.BufferedReader
@@ -26,6 +28,7 @@ data class ModuleMetadataSnapshot(
     val minApiVersion: Int,
     val targetApiVersion: Int,
     val staticScope: Boolean,
+    val autoHotReload: Boolean,
     val author: String,
     val version: String,
     val scopes: List<String>,
@@ -54,6 +57,7 @@ object ModuleMetadataReader {
     private const val KEY_MIN_API_VERSION = "minApiVersion"
     private const val KEY_TARGET_API_VERSION = "targetApiVersion"
     private const val KEY_STATIC_SCOPE = "staticScope"
+    private const val KEY_AUTO_HOT_RELOAD = "autoHotReload"
     private const val KEY_AUTHOR = "author"
     private const val KEY_VERSION = "version"
 
@@ -66,30 +70,23 @@ object ModuleMetadataReader {
     private const val LEGACY_KEY_DESCRIPTION = "xposeddescription"
     private const val LEGACY_KEY_SCOPES = "xposedscope"
 
-    private const val FRAMEWORK_API_VERSION = 101
+    private const val FRAMEWORK_API_VERSION = 102
     private const val MODERN_TARGET_API_VERSION = 101
     private const val LEGACY_MAX_API_VERSION = 94
 
-    fun read(appInfo: ApplicationInfo, packageManager: PackageManager): ModuleMetadataSnapshot? {
+    fun read(packageInfo: PackageInfo, packageManager: PackageManager): ModuleMetadataSnapshot? {
+        val appInfo = packageInfo.applicationInfo ?: return null
         val apkPath = appInfo.sourceDir ?: return null
         val apkFile = File(apkPath)
         if (!apkFile.exists()) return null
 
-        val packageInfo = runCatching {
-            packageManager.getPackageArchiveInfo(apkFile.absolutePath, PackageManager.GET_META_DATA)
-        }.getOrNull()
-        packageInfo?.applicationInfo?.apply {
-            sourceDir = apkFile.absolutePath
-            publicSourceDir = apkFile.absolutePath
-        }
-
-        // Patched apps can embed module assets for their own runtime, but they are not standalone
-        // Xposed modules and should stay in app management instead of the module list.
-        if (packageInfo?.applicationInfo?.metaData?.containsKey("npatch") == true) {
+        // For installed apps, we already have the metadata if it was passed in.
+        // We only need to check npatch metadata to exclude patched apps from the module list.
+        if (appInfo.metaData?.containsKey("npatch") == true) {
             return null
         }
 
-        val legacyMeta = packageInfo?.applicationInfo?.metaData
+        val legacyMeta = appInfo.metaData
         val modernProps = Properties()
         val modernJavaInitList = mutableListOf<String>()
         val modernNativeInitList = mutableListOf<String>()
@@ -113,28 +110,29 @@ object ModuleMetadataReader {
         val minApiVersion = readInt(
             modernProps,
             KEY_MIN_API_VERSION,
-            legacyMeta?.get(LEGACY_KEY_MIN_API_VERSION),
+            readLegacyInt(legacyMeta, LEGACY_KEY_MIN_API_VERSION),
             0,
         )
         val targetApiVersion = readInt(
             modernProps,
             KEY_TARGET_API_VERSION,
-            legacyMeta?.get(LEGACY_KEY_TARGET_API_VERSION),
+            readLegacyInt(legacyMeta, LEGACY_KEY_TARGET_API_VERSION),
             minApiVersion,
         )
         val staticScope = readBoolean(
             modernProps,
             KEY_STATIC_SCOPE,
-            legacyMeta?.get(LEGACY_KEY_STATIC_SCOPE),
+            readLegacyBoolean(legacyMeta, LEGACY_KEY_STATIC_SCOPE),
             false,
         )
+        val autoHotReload = readBoolean(modernProps, KEY_AUTO_HOT_RELOAD, null, false)
         val author = firstNonEmpty(
             readString(modernProps, KEY_AUTHOR),
-            legacyMeta?.get(LEGACY_KEY_AUTHOR)?.toString(),
+            readLegacyString(legacyMeta, LEGACY_KEY_AUTHOR),
         )
         val version = firstNonEmpty(
             readString(modernProps, KEY_VERSION),
-            legacyMeta?.get(LEGACY_KEY_VERSION)?.toString(),
+            readLegacyString(legacyMeta, LEGACY_KEY_VERSION),
         )
 
         val hasModernEntrypoint = modernJavaInitList.isNotEmpty() || modernNativeInitList.isNotEmpty()
@@ -162,28 +160,29 @@ object ModuleMetadataReader {
         }
 
         if (pipeline != ModulePipeline.MODERN && scopes.isEmpty()) {
-            readLegacyScopeList(legacyMeta?.get(LEGACY_KEY_SCOPES), scopes)
+            readLegacyScopeList(readLegacyString(legacyMeta, LEGACY_KEY_SCOPES), scopes)
         }
 
         if (!hasModernMetadata && !hasLegacyEntrypoint && !hasLegacyMetadata) return null
 
         val displayName = firstNonEmpty(
-            loadLabel(packageInfo?.applicationInfo, packageManager),
-            legacyMeta?.get(LEGACY_KEY_NAME)?.toString(),
+            loadLabel(appInfo, packageManager),
+            readLegacyString(legacyMeta, LEGACY_KEY_NAME),
             appInfo.packageName,
         )
         val description = firstNonEmpty(
-            loadDescription(packageInfo?.applicationInfo, packageManager),
-            legacyMeta?.get(LEGACY_KEY_DESCRIPTION)?.toString(),
+            loadDescription(appInfo, packageManager),
+            readLegacyString(legacyMeta, LEGACY_KEY_DESCRIPTION),
         )
 
         return ModuleMetadataSnapshot(
-            packageName = packageInfo?.packageName ?: appInfo.packageName,
+            packageName = appInfo.packageName,
             displayName = displayName,
             description = description,
             minApiVersion = minApiVersion,
             targetApiVersion = targetApiVersion,
             staticScope = staticScope,
+            autoHotReload = autoHotReload,
             author = author,
             version = version,
             scopes = scopes.toList(),
@@ -191,6 +190,18 @@ object ModuleMetadataReader {
             nativeInitList = nativeInitList.toList(),
             pipeline = pipeline,
         )
+    }
+
+    // Read metadata from an APK file that is not necessarily installed.
+    fun read(apkFile: File, packageManager: PackageManager): ModuleMetadataSnapshot? {
+        val packageInfo = runCatching {
+            packageManager.getPackageArchiveInfo(apkFile.absolutePath, PackageManager.GET_META_DATA)
+        }.getOrNull() ?: return null
+        packageInfo.applicationInfo?.apply {
+            sourceDir = apkFile.absolutePath
+            publicSourceDir = apkFile.absolutePath
+        }
+        return read(packageInfo, packageManager)
     }
 
     private fun loadProperties(zipFile: ZipFile, properties: Properties) {
@@ -214,8 +225,8 @@ object ModuleMetadataReader {
         }
     }
 
-    private fun readLegacyScopeList(rawValue: Any?, out: MutableList<String>) {
-        val value = rawValue?.toString()?.trim().orEmpty()
+    private fun readLegacyScopeList(rawValue: String?, out: MutableList<String>) {
+        val value = rawValue?.trim().orEmpty()
         if (value.isEmpty()) return
         val deduplicated = LinkedHashSet<String>()
         value.split(Regex("[\\s,;]+"))
@@ -227,7 +238,7 @@ object ModuleMetadataReader {
 
     private fun loadLabel(applicationInfo: ApplicationInfo?, packageManager: PackageManager): String? {
         if (applicationInfo == null) return null
-        return runCatching { applicationInfo.loadLabel(packageManager)?.toString()?.trim() }
+        return runCatching { applicationInfo.loadLabel(packageManager).toString().trim() }
             .getOrNull()
             ?.takeIf { it.isNotEmpty() }
     }
@@ -241,15 +252,47 @@ object ModuleMetadataReader {
 
     private fun readString(properties: Properties, key: String): String? = properties.getProperty(key)?.trim()?.takeIf { it.isNotEmpty() }
 
-    private fun readInt(properties: Properties, modernKey: String, legacyValue: Any?, defaultValue: Int): Int {
-        readString(properties, modernKey)?.toIntOrNull()?.let { return it }
-        legacyValue?.toString()?.trim()?.toIntOrNull()?.let { return it }
+    private fun readLegacyString(metaData: Bundle?, key: String): String? {
+        if (metaData == null || !metaData.containsKey(key)) return null
+        val rawValue = metaData.get(key) ?: return null
+        return when (rawValue) {
+            is String -> rawValue.trim().takeIf { it.isNotEmpty() }
+            is CharSequence -> rawValue.toString().trim().takeIf { it.isNotEmpty() }
+            else -> null
+        }
+    }
+
+    private fun readLegacyInt(metaData: Bundle?, key: String): Int? {
+        if (metaData == null || !metaData.containsKey(key)) return null
+        val rawValue = metaData.get(key) ?: return null
+        return when (rawValue) {
+            is Number -> rawValue.toInt()
+            is String -> parseLeadingInt(rawValue)
+            is CharSequence -> parseLeadingInt(rawValue.toString())
+            else -> null
+        }
+    }
+
+    private fun readLegacyBoolean(metaData: Bundle?, key: String): Boolean? {
+        if (metaData == null || !metaData.containsKey(key)) return null
+        val rawValue = metaData.get(key) ?: return null
+        return when (rawValue) {
+            is Boolean -> rawValue
+            is String -> rawValue.trim().toBooleanStrictOrNull()
+            is CharSequence -> rawValue.toString().trim().toBooleanStrictOrNull()
+            else -> null
+        }
+    }
+
+    private fun readInt(properties: Properties, modernKey: String, legacyValue: Int?, defaultValue: Int): Int {
+        parseLeadingInt(readString(properties, modernKey))?.let { return it }
+        legacyValue?.let { return it }
         return defaultValue
     }
 
-    private fun readBoolean(properties: Properties, modernKey: String, legacyValue: Any?, defaultValue: Boolean): Boolean {
+    private fun readBoolean(properties: Properties, modernKey: String, legacyValue: Boolean?, defaultValue: Boolean): Boolean {
         readString(properties, modernKey)?.let { return it.toBoolean() }
-        legacyValue?.toString()?.trim()?.let { return it.toBoolean() }
+        legacyValue?.let { return it }
         return defaultValue
     }
 
@@ -259,5 +302,13 @@ object ModuleMetadataReader {
             if (trimmed.isNotEmpty()) return trimmed
         }
         return ""
+    }
+
+    private fun parseLeadingInt(value: String?): Int? {
+        val trimmed = value?.trim().orEmpty()
+        if (trimmed.isEmpty()) return null
+        val digits = trimmed.takeWhile(Char::isDigit)
+        if (digits.isEmpty()) return null
+        return digits.toIntOrNull()
     }
 }

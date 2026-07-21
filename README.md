@@ -8,14 +8,14 @@
 
 NPatch is a rootless implementation of the LSPosed/LSPatch-style framework that injects dex and native libraries into the target APK to provide Xposed API support inside the app process.
 
-**Official website: [npatch.nkbe.top](https://npatch.nkbe.top)**
+Official website: [npatch.nkbe.top](https://npatch.nkbe.top)
 
 For the most up-to-date guides, architecture notes, usage details, and release-related explanations, please refer to the official website first. The website is the main source of truth for day-to-day usage and documentation updates.
 
 Key points:
 
-- The Manager does not need to stay in the foreground all the time.
 - NPatch is designed around in-process injection rather than a system-wide Xposed service.
+- The Manager does not need to stay in the foreground all the time.
 - However, the Manager still must be installed and accessible to the system when you want to add or remove modules, or when you want to sync the latest configuration.
 - Module scope and configuration are still managed through the Manager data flow.
 - For local mode and embedded mode differences, please check the official documentation on the website.
@@ -23,21 +23,26 @@ Key points:
 Supported Android versions:
 
 - Minimum: Android 9
-- Maximum: Same as [JingMatrix/LSPosed](https://github.com/JingMatrix/LSPosed#supported-versions)
+- Maximum: In theory, the same as [JingMatrix/LSPosed](https://github.com/JingMatrix/LSPosed#supported-versions)
 
 Download:
 
 - Stable releases: [GitHub Releases](https://github.com/7723mod/NPatch/releases)
-- Beta version will only be released via the Telegram channel `@ONPatch`.
+- Canary builds: [GitHub Actions](https://github.com/7723mod/NPatch/actions)
+- Debug builds are only available through the @ONPatch Telegram channel
 
 Usage:
 
-- Jar mode
+- Jar
   - Download `npatch.jar`
   - Run `java -jar npatch.jar`
-- Manager mode
+- Manager
   - Install `manager.apk` on an Android device
   - Follow the instructions in the manager app
+
+Translation:
+
+You can contribute translations through [Crowdin](https://crowdin.com/project/lspatch_jingmatrix).
 
 Credits:
 

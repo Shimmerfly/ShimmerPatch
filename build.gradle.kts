@@ -43,9 +43,9 @@ val (coreCommitCount, coreLatestTag) = runCatching {
 
 // sync from https://github.com/JingMartix/LSPosed/blob/master/build.gradle.kts
 val defaultManagerPackageName by extra("top.nkbe.npatch")
-val apiCode by extra(101)
-val verCode by extra(commitCount)
-val verName by extra("1.0.5")
+val apiCode by extra(102)
+val verCode by extra(733)
+val verName by extra("1.0.6")
 val coreVerCode by extra(coreCommitCount)
 val coreVerName by extra(coreLatestTag)
 val androidMinSdkVersion by extra(28)

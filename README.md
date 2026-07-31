@@ -13,6 +13,8 @@ NPatch Remote API 是给 Xposed 模块介面 使用的轻量级 Android SDK。�
 
 ## 三条通道：不要混淆 `XposedInterface` 与 `XposedService`
 
+NPatch Remote API 不是另一套 Xposed API，也不取代 libxposed。
+
 `XposedInterface` 和 `XposedService` 属于不同进程、不同生命周期和不同业务。NPatch Remote API 不参与注入目标进程，也不提供 `XposedInterface`；它只为模块本体/设置 App 在 NPatch Local 模式下补充一个取得标准 `XposedService` 的入口。
 
 | 通道 | 所在进程 | 用途 | 获取方式 |

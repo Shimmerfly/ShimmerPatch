@@ -1,39 +1,30 @@
 # NPatch Remote API
 
-NPatch Remote API 是给 Xposed 模块伴生 App 使用的轻量 Android SDK。它让模块设置界面在本地修补模式下安全连接 NPatch Manager，共享 Remote Preferences 与 Remote Files。
+[English](README_EN.md) · 简体中文
 
-The NPatch Remote API is a small Android SDK for Xposed module companion apps. It lets a module settings UI securely connect to NPatch Manager in Local mode and share Remote Preferences and Remote Files.
+NPatch Remote API 是给 Xposed 模块设置界面（模块 App）使用的轻量级 Android SDK。它让模块 App 在本地修补模式下安全连接 NPatch Manager，读写 NPatch Remote Store 中的 Preferences 和 Files，数据按模块包名隔离。
 
-## 能做什么 / What it does
+## 功能特性
 
-- 模块 App 通过已验证的 ContentProvider 获取标准 libxposed API 102 `IXposedService`。
-- Manager 按模块包名隔离 Preferences 和 Files，并绑定 Binder 的 calling UID。
-- 被注入目标进程继续使用 libxposed 提供的只读 Remote API；公共 SDK 不暴露目标进程的内部 AIDL。
-- SDK 支持有界同步连接、`connectAsync`、Provider 可用性探测和自定义 Manager authority。
+- 模块 App 通过经过身份验证的 ContentProvider 取得标准 libxposed API 102 的 `IXposedService`。
+- Manager 按模块包名隔离 Preferences 与 Files，并把服务绑定到 Binder 调用 UID。
+- 被注入的目标进程继续使用 libxposed 提供的只读 Remote API；本 SDK 不暴露目标进程侧的私有 AIDL。
+- 支持带超时的同步连接、`connectAsync`、Provider 可用性探测以及自定义 Manager authority。
 
-- A module app obtains the standard libxposed API 102 `IXposedService` through an authenticated ContentProvider.
-- Manager isolates Preferences and Files by module package and binds the service to the original Binder calling UID.
-- Injected target processes continue to use the read-only Remote API supplied by libxposed; this SDK does not expose the private target-side AIDL.
-- The SDK provides bounded synchronous connection, `connectAsync`, provider availability checks, and custom Manager authorities.
+## 与 libxposed 的关系
 
-## 与 libxposed 的关系 / Relationship to libxposed
+NPatch Remote API **不是另一套 Hook API，也不取代 libxposed**。libxposed API 102 定义了 `IXposedService`、Remote Preferences、Remote Files 等标准能力；本 SDK 只解决本地修补模式下，普通模块 App 无法像被注入进程那样通过框架 callback 取得 service 的问题。取得 Binder 之后，仍然使用标准 API 102 合约。
 
-NPatch Remote API 不是另一套 Hook API，也不取代 libxposed。它只解决本地模式下普通模块 App 无法通过 injected-process callback 获取 service 的问题；取得 Binder 后仍使用标准 API 102 合约。
-
-This is not another hooking API and does not replace libxposed. It only solves the Local-mode connection gap for a normal module app that cannot receive the injected-process callback; the returned Binder still follows the standard API 102 contract.
-
-| 能力 / Capability | libxposed | NPatch Remote API |
+| 能力 | libxposed | NPatch Remote API |
 | --- | --- | --- |
-| Hook 与模块生命周期 / Hooks and lifecycle | 标准入口 / Standard API | 不封装 / Not wrapped |
-| 被注入进程取得 service / Service in an injected process | 框架 callback | 不参与 / Not involved |
-| 模块设置 App 连接 / Module-app connection | 框架相关 / Framework-dependent | Manager Provider 验证入口 / Authenticated Manager entry |
-| Remote Preferences / Files | API 102 Binder 合约 / API 102 Binder contract | 使用同一合约 / Same contract |
+| Hook 与模块生命周期 | 标准入口 | 不提供 |
+| 被注入进程取得 service | 框架 callback | 不参与 |
+| 模块设置 App 取得 service | 没有统一的本地模式入口 | 通过 Manager Provider 验证后取得 |
+| Remote Preferences / Files | API 102 Binder 合约 | 使用同一份合约 |
 
-## 引入 / Add the SDK
+## 引入 SDK
 
-从 [Releases](https://github.com/7723mod/NPatch-Remote-API/releases) 下载 AAR：
-
-Download the AAR from [Releases](https://github.com/7723mod/NPatch-Remote-API/releases):
+从 [Releases](https://github.com/7723mod/NPatch-Remote-API/releases) 下载 AAR，复制到模块 App 的 `libs/` 目录，然后添加依赖：
 
 ```kotlin
 dependencies {
@@ -42,15 +33,11 @@ dependencies {
 }
 ```
 
-SDK 的最低 Android 版本为 API 28，独立构建需要 JDK 21、Android SDK 37 和 Gradle Wrapper。
+SDK 最低支持 Android 9（API 28）或更高版本。独立构建本仓库需要 JDK 21、Android SDK 37 和自带的 Gradle Wrapper。
 
-The minimum Android version is API 28. Building this repository requires JDK 21, Android SDK 37, and the included Gradle Wrapper.
+## 快速开始
 
-## 快速开始 / Quick start
-
-请在工作线程调用同步 API，或在 UI 中使用异步 API。连接结果不应阻塞主线程。
-
-Call the synchronous API from a worker thread, or use the asynchronous API from a UI. Do not block the main thread on connection.
+连接可能需要启动 NPatch Manager 进程。请在工作线程调用同步 API，或在 UI 中使用异步 API；不要在主线程上阻塞等待连接。
 
 ```java
 NPatchRemoteClient.connectAsync(getApplicationContext())
@@ -65,7 +52,7 @@ NPatchRemoteClient.connectAsync(getApplicationContext())
         });
 ```
 
-若 Manager 使用自定义 application ID，可传入对应 authority。For a custom Manager application ID, pass its authority:
+若自行编译的 Manager 使用了自定义 application ID，可同时传入模块包名与对应的 authority：
 
 ```java
 NPatchRemoteClient client = NPatchRemoteClient.connect(
@@ -75,31 +62,25 @@ NPatchRemoteClient client = NPatchRemoteClient.connect(
 );
 ```
 
-完整接入、API 行为和安全边界请参阅：
+完整接入方式、API 行为与安全边界请参阅 NPatch 官网开发指南：
 
-For the complete integration guide, API behavior, and security boundary, see:
+- [NPatch Remote API 开发指南](https://npatch.nkbe.top/guide/remote-api.html)
 
-- [接入指南 / Getting started](docs/getting-started.md)
-- [API 与行为 / API reference](docs/api-reference.md)
-- [安全与架构 / Security and architecture](docs/architecture.md)
-
-## 构建 / Build
+## 构建
 
 ```bash
 ./gradlew assembleRelease
 ```
 
-输出位于 `build/outputs/aar/`，也可以执行 `publishReleasePublicationToMavenLocal` 发布到本机 Maven。
+AAR 输出在 `build/outputs/aar/`。也可以运行 `publishReleasePublicationToMavenLocal` 发布到本机 Maven 仓库。
 
-The AAR is written to `build/outputs/aar/`. You can also run `publishReleasePublicationToMavenLocal` to publish it to the local Maven repository.
+## 兼容性
 
-## 兼容性 / Compatibility
+- SDK：`1.0.0`
+- libxposed interface：`102.0.0`
+- NPatch：`1.0.7` 或更高
+- Android：API 28+（Android 9 或更高）
 
-- SDK API: `1.0.0`
-- libxposed interface: `102.0.0`
-- NPatch: `1.0.7` or newer
-- Android: API 28+
+## 许可证
 
-## License
-
-Apache License 2.0. See [LICENSE](LICENSE).
+Apache License 2.0。参见 [LICENSE](LICENSE)。

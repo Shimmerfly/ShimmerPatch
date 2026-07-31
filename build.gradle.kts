@@ -48,7 +48,7 @@ publishing {
             pom {
                 name = "NPatch Remote API"
                 description = "Authenticated NPatch Manager remote storage client for Xposed module apps"
-                url = "https://github.com/HSSkyBoy/NPatch-Remote-API"
+                url = "https://github.com/7723mod/NPatch-Remote-API"
                 licenses {
                     license {
                         name = "GNU General Public License v3.0"
@@ -56,8 +56,8 @@ publishing {
                     }
                 }
                 scm {
-                    url = "https://github.com/HSSkyBoy/NPatch-Remote-API"
-                    connection = "scm:git:https://github.com/HSSkyBoy/NPatch-Remote-API.git"
+                    url = "https://github.com/7723mod/NPatch-Remote-API"
+                    connection = "scm:git:https://github.com/7723mod/NPatch-Remote-API.git"
                 }
             }
         }

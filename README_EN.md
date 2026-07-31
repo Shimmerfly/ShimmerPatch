@@ -11,16 +11,17 @@ NPatch Remote API is a lightweight Android SDK for the Xposed module settings UI
 - Injected target processes keep using the read-only Remote API supplied by libxposed; this SDK does not expose the private target-side AIDL.
 - The SDK provides a time-bounded synchronous connect, `connectAsync`, provider availability checks, and support for a custom Manager authority.
 
-## Relationship to libxposed
+## Three channels: `XposedInterface` and `XposedService` are different
 
-NPatch Remote API is **not another hooking API and does not replace libxposed**. libxposed API 102 defines the standard capabilities — `IXposedService`, Remote Preferences, Remote Files, and more. This SDK only solves the Local-mode connection gap for a normal module app that cannot receive the injected-process callback; the returned Binder still follows the standard API 102 contract.
+`XposedInterface` and `XposedService` belong to different processes, lifecycles, and responsibilities. NPatch Remote API does not participate in target-process injection and does not provide `XposedInterface`; it only adds a module-app entry point for obtaining the standard `XposedService` contract in NPatch Local mode.
 
-| Capability | libxposed | NPatch Remote API |
-| --- | --- | --- |
-| Hooks and module lifecycle | Standard entry point | Not provided |
-| Getting the service in an injected process | Framework callback | Not involved |
-| Module settings app connection | No unified Local-mode entry | Authenticated Manager Provider entry |
-| Remote Preferences / Files | API 102 Binder contract | Same contract |
+| Channel | Process | Purpose | Delivery |
+| --- | --- | --- | --- |
+| `XposedInterface` | Injected target app | Module entry, hooks, and target-process lifecycle | libxposed module lifecycle callbacks such as `XposedModule.attachFramework(...)` |
+| `XposedService` | Module or settings app | Scope, Remote Preferences, Remote Files, and hot reload | The module registers `<module-package>.XposedService`; `XposedServiceHelper.registerListener(...)` receives the Binder |
+| `NPatchRemoteClient` | Module settings app | Explicit/fallback connection in NPatch Local mode | Authenticated NPatch Manager ContentProvider, returning the same API 102 `IXposedService` contract |
+
+Modules should prefer the standard libxposed `XposedServiceHelper.registerListener(...)` path. Use `NPatchRemoteClient` only when standard service delivery is unavailable, is not triggered, or the module explicitly needs to connect to NPatch Local Manager. It does not replace `XposedInterface` or define another hooking API.
 
 ## Add the SDK
 

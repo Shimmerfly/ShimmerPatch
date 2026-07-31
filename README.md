@@ -11,16 +11,17 @@ NPatch Remote API 是给 Xposed 模块介面 使用的轻量级 Android SDK。�
 - 被注入的目标进程继续使用 libxposed 提供的只读 Remote API；本 SDK 不暴露目标进程侧的私有 AIDL。
 - 支持带超时的同步连接、`connectAsync`、Provider 可用性探测以及自定义 Manager authority。
 
-## 与 libxposed 的关系
+## 三条通道：不要混淆 `XposedInterface` 与 `XposedService`
 
-NPatch Remote API **不是另一套 Hook API，也不取代 libxposed**。libxposed API 102 定义了 `IXposedService`、Remote Preferences、Remote Files 等标准能力；本 SDK 只解决本地修补模式下，普通模块 App 无法像被注入进程那样通过框架 callback 取得 service 的问题。取得 Binder 之后，仍然使用标准 API 102 合约。
+`XposedInterface` 和 `XposedService` 属于不同进程、不同生命周期和不同业务。NPatch Remote API 不参与注入目标进程，也不提供 `XposedInterface`；它只为模块本体/设置 App 在 NPatch Local 模式下补充一个取得标准 `XposedService` 的入口。
 
-| 能力 | libxposed | NPatch Remote API |
-| --- | --- | --- |
-| Hook 与模块生命周期 | 标准入口 | 不提供 |
-| 被注入进程取得 service | 框架 callback | 不参与 |
-| 模块设置 App 取得 service | 没有统一的本地模式入口 | 通过 Manager Provider 验证后取得 |
-| Remote Preferences / Files | API 102 Binder 合约 | 使用同一份合约 |
+| 通道 | 所在进程 | 用途 | 获取方式 |
+| --- | --- | --- | --- |
+| `XposedInterface` | 被注入的目标 App | 模块入口、Hook、目标进程生命周期 | `XposedModule.attachFramework(...)` 等 libxposed 模块生命周期回调 |
+| `XposedService` | 模块本体或设置 App | 作用域、Remote Preferences、Remote Files、热重载 | 模块注册 `<模块包名>.XposedService`，由 `XposedServiceHelper.registerListener(...)` 接收 Binder |
+| `NPatchRemoteClient` | 模块设置 App | NPatch Local 模式的备用/显式连接 | 经过校验的 NPatch Manager ContentProvider，返回同一份 API 102 `IXposedService` 合约 |
+
+模块应优先使用 libxposed 的 `XposedServiceHelper.registerListener(...)` 标准路径。只有标准服务投递不可用、未触发或模块需要显式连接 NPatch Local Manager 时，才使用 `NPatchRemoteClient`。它不会替代 `XposedInterface`，也不会定义另一套 Hook API。
 
 ## 引入 SDK
 

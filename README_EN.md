@@ -11,7 +11,7 @@ NPatch Remote API is a lightweight Android SDK for the Xposed module settings UI
 - Injected target processes keep using the read-only Remote API supplied by libxposed; this SDK does not expose the private target-side AIDL.
 - The SDK provides a time-bounded synchronous connect, `connectAsync`, provider availability checks, and support for a custom Manager authority.
 
-## Three channels: `XposedInterface` and `XposedService` are different
+## Relationship to libxposed
 
 NPatch Remote API is not another Xposed API and does not replace libxposed.
 

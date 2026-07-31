@@ -11,7 +11,7 @@ NPatch Remote API 是给 Xposed 模块介面 使用的轻量级 Android SDK。�
 - 被注入的目标进程继续使用 libxposed 提供的只读 Remote API；本 SDK 不暴露目标进程侧的私有 AIDL。
 - 支持带超时的同步连接、`connectAsync`、Provider 可用性探测以及自定义 Manager authority。
 
-## 三条通道：不要混淆 `XposedInterface` 与 `XposedService`
+## 与 libxposed 的关系
 
 NPatch Remote API 不是另一套 Xposed API，也不取代 libxposed。
 

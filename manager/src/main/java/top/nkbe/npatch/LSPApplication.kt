@@ -6,15 +6,19 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
 import android.os.LocaleList
-import java.io.File
 import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import nkbe.util.NeoPackageManager
-import nkbe.util.ShizukuApi
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import top.nkbe.npatch.manager.AppBroadcastReceiver
+import top.nkbe.npatch.manager.ManagerLogger
+import top.nkbe.npatch.manager.ManagerIntegrity
+import top.nkbe.npatch.manager.ModuleScopeSyncStore
+import nkbe.util.NeoPackageManager
+import nkbe.util.ShizukuApi
+import top.nkbe.npatch.util.SB
+import java.io.File
 
 lateinit var lspApp: LSPApplication
 
@@ -25,6 +29,7 @@ class LSPApplication : Application() {
 
     var targetApkFiles: ArrayList<File>? = null
     val globalScope = CoroutineScope(Dispatchers.Default)
+
 
     override fun attachBaseContext(base: Context) {
         val prefs = base.getSharedPreferences("settings", Context.MODE_PRIVATE)
@@ -38,18 +43,38 @@ class LSPApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        ManagerIntegrity.verifyOnStartup(this)
+
+        try {
+        } catch (e: UnsatisfiedLinkError) {
+            e.printStackTrace()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             runCatching { HiddenApiBypass.addHiddenApiExemptions("") }
+                .onFailure { it.printStackTrace() }
         }
 
         lspApp = this
         filesDir.mkdir()
         tmpApkDir = cacheDir.resolve("apk").also { it.mkdir() }
-        prefs = getSharedPreferences("settings", Context.MODE_PRIVATE)
-
+        prefs = lspApp.getSharedPreferences("settings", Context.MODE_PRIVATE)
+        ManagerLogger.init()
         ShizukuApi.init()
+        ShizukuApi.addOnReadyListener {
+            globalScope.launch {
+                ModuleScopeSyncStore.syncTrackedModuleScopes()
+            }
+        }
         AppBroadcastReceiver.register(this)
-        globalScope.launch { NeoPackageManager.fetchAppList() }
+        globalScope.launch { 
+            NeoPackageManager.fetchAppList() 
+            
+            if (SB.hasConflict(this@LSPApplication)) {
+                SB.triggerConflict(this@LSPApplication)
+            }
+        }
     }
 
     companion object {

@@ -6,6 +6,7 @@ import android.app.LoadedApk;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 import android.os.Process;
@@ -13,21 +14,16 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
@@ -37,8 +33,12 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import dalvik.system.PathClassLoader;
 import io.github.libxposed.api.XposedModule;
 import io.github.libxposed.api.XposedModuleInterface;
+import io.github.libxposed.api.XposedInterface.ExceptionMode;
 import org.lsposed.lspd.models.Module;
+import org.lsposed.lspd.service.ILSPInjectedModuleService;
 import org.lsposed.lspd.service.ILSPApplicationService;
+import org.lsposed.lspd.service.IHotReloadTarget;
+import org.lsposed.lspd.service.IRemotePreferenceCallback;
 import org.matrix.vector.impl.VectorContext;
 import org.matrix.vector.impl.VectorLifecycleManager;
 import org.matrix.vector.impl.core.VectorServiceClient;
@@ -50,12 +50,25 @@ public class LSPLoader {
     private static final Map<String, ApplicationInfo> moduleRuntimeAppInfos = new ConcurrentHashMap<>();
     private static volatile boolean moduleSelfPathHooked;
 
+    public static Map<String, String> getActiveModuleApkPaths() {
+        Map<String, String> result = new java.util.HashMap<>();
+        for (Map.Entry<String, ApplicationInfo> e : moduleRuntimeAppInfos.entrySet()) {
+            ApplicationInfo info = e.getValue();
+            if (info != null && info.sourceDir != null) {
+                result.put(e.getKey(), info.sourceDir);
+            }
+        }
+        return result;
+    }
+
     public static void initModules(LoadedApk loadedApk) {
+        installNativeModuleServiceProxy();
         registerModuleRuntimeAppInfos();
         installModuleSelfPathCompatibility();
-        installNativeModuleServiceProxy();
         XposedInit.loadModules(ActivityThread.currentActivityThread());
-        dispatchModernLifecycle(loadedApk);
+        ApplicationInfo moduleCompatibleAppInfo =
+                SigBypass.createModuleCompatibleApplicationInfo(loadedApk.getApplicationInfo());
+        dispatchModernLifecycle(loadedApk, moduleCompatibleAppInfo);
 
         XposedInit.loadedPackagesInProcess.add(loadedApk.getPackageName());
         setPackageNameForResDir(loadedApk.getPackageName(), loadedApk.getResDir());
@@ -64,7 +77,9 @@ public class LSPLoader {
         lpparam.packageName = loadedApk.getPackageName();
         lpparam.processName = ActivityThread.currentProcessName();
         lpparam.classLoader = loadedApk.getClassLoader();
-        lpparam.appInfo = loadedApk.getApplicationInfo();
+        lpparam.appInfo = moduleCompatibleAppInfo != null
+                ? moduleCompatibleAppInfo
+                : loadedApk.getApplicationInfo();
         lpparam.isFirstApplication = true;
         XC_LoadPackage.callAll(lpparam);
     }
@@ -239,6 +254,11 @@ public class LSPLoader {
         }
 
         @Override
+        public void registerHotReloadTarget(IHotReloadTarget target) throws RemoteException {
+            base.registerHotReloadTarget(target);
+        }
+
+        @Override
         public IBinder asBinder() {
             return base.asBinder();
         }
@@ -254,6 +274,28 @@ public class LSPLoader {
                 && !module.file.moduleLibraryNames.isEmpty();
     }
 
+    private static ClassLoader createEnhancedModuleClassLoader(
+            Module module,
+            String librarySearchPath,
+            ClassLoader parent
+    ) {
+        if (module.file.targetApiVersion < 102) {
+            return new PathClassLoader(module.apkPath, librarySearchPath, parent);
+        }
+        return new PathClassLoader(module.apkPath, librarySearchPath, parent) {
+            @Override
+            protected Class<?> loadClass(String name, boolean resolve)
+                    throws ClassNotFoundException {
+                if (name.startsWith("de.robv.android.xposed.")) {
+                    throw new ClassNotFoundException(
+                            name + " is unavailable to modules targeting Xposed API 102 or higher"
+                    );
+                }
+                return super.loadClass(name, resolve);
+            }
+        };
+    }
+
     private static boolean performEnhancedLoad(Module module, boolean isSystemServer, String processName) {
         try {
             ApplicationInfo moduleAppInfo = buildRuntimeApplicationInfo(module);
@@ -261,12 +303,16 @@ public class LSPLoader {
             String librarySearchPath = buildLibrarySearchPath(module, nativeDir);
 
             ClassLoader initLoader = XposedModule.class.getClassLoader();
-            PathClassLoader moduleClassLoader = new PathClassLoader(module.apkPath, librarySearchPath, initLoader);
+            ClassLoader moduleClassLoader =
+                    createEnhancedModuleClassLoader(module, librarySearchPath, initLoader);
 
             VectorContext vectorContext = new VectorContext(
                     module.packageName,
                     moduleAppInfo,
-                    module.service != null ? module.service : getEmptyService()
+                    module.service != null ? module.service : EMPTY_INJECTED_MODULE_SERVICE,
+                    module.file.exceptionPassthrough
+                            ? ExceptionMode.PASSTHROUGH
+                            : ExceptionMode.PROTECTIVE
             );
 
             for (String libName : discoverNativeLibraries(module)) {
@@ -287,7 +333,10 @@ public class LSPLoader {
                         ctor.setAccessible(true);
                         XposedModule instance = (XposedModule) ctor.newInstance();
 
-                        instance.attachFramework(vectorContext);
+                        instance.attachFramework(
+                                vectorContext,
+                                () -> VectorLifecycleManager.INSTANCE.detach(instance)
+                        );
 
                         VectorLifecycleManager.INSTANCE.getActiveModules().add(instance);
 
@@ -357,50 +406,7 @@ public class LSPLoader {
     }
 
     private static File prepareNativeLibraryDir(Module module) {
-        try {
-            Application app = currentApplication();
-            if (app == null) return null;
-            
-            File cacheRoot = app.getCacheDir();
-            File moduleRoot = new File(new File(cacheRoot, "npatch/native"), module.packageName.replace(".", "_"));
-            File apkFile = new File(module.apkPath);
-            String stamp = apkFile.lastModified() + "-" + apkFile.length();
-            File targetDir = new File(moduleRoot, stamp);
-            
-            if (targetDir.exists() && targetDir.list() != null && targetDir.list().length > 0) {
-                return targetDir;
-            }
-
-            targetDir.mkdirs();
-            String[] abis = Process.is64Bit() ? Build.SUPPORTED_64_BIT_ABIS : Build.SUPPORTED_32_BIT_ABIS;
-            
-            try (ZipFile zip = new ZipFile(apkFile)) {
-                for (String abi : abis) {
-                    String prefix = "lib/" + abi + "/";
-                    boolean extractedAny = false;
-                    Enumeration<? extends ZipEntry> entries = zip.entries();
-                    while (entries.hasMoreElements()) {
-                        ZipEntry entry = entries.nextElement();
-                        if (entry.getName().startsWith(prefix) && entry.getName().endsWith(".so")) {
-                            File outFile = new File(targetDir, new File(entry.getName()).getName());
-                            try (InputStream is = zip.getInputStream(entry);
-                                 FileOutputStream os = new FileOutputStream(outFile)) {
-                                byte[] buffer = new byte[8192];
-                                int len;
-                                while ((len = is.read(buffer)) > 0) os.write(buffer, 0, len);
-                            }
-                            outFile.setExecutable(true, false);
-                            extractedAny = true;
-                        }
-                    }
-                    if (extractedAny) return targetDir;
-                }
-            }
-            return targetDir;
-        } catch (Throwable e) {
-            Log.e(TAG, "Failed to prepare native dir", e);
-            return null;
-        }
+        return ModuleNativeCache.prepare(currentApplication(), module);
     }
 
     private static String buildLibrarySearchPath(Module module, File nativeDir) {
@@ -454,17 +460,38 @@ public class LSPLoader {
         } catch (Throwable ignored) { return null; }
     }
 
-    private static org.lsposed.lspd.service.ILSPInjectedModuleService getEmptyService() {
-        try {
-            Class<?> clazz = Class.forName("org.matrix.vector.impl.core.VectorModuleManager$EmptyInjectedModuleService");
-            return (org.lsposed.lspd.service.ILSPInjectedModuleService) XposedHelpers.getStaticObjectField(clazz, "INSTANCE");
-        } catch (Throwable ignored) { return null; }
-    }
+    private static final ILSPInjectedModuleService EMPTY_INJECTED_MODULE_SERVICE =
+            new ILSPInjectedModuleService.Stub() {
+                @Override
+                public long getFrameworkProperties() {
+                    return 0L;
+                }
 
-    private static void dispatchModernLifecycle(LoadedApk loadedApk) {
+                @Override
+                public Bundle requestRemotePreferences(
+                        String group,
+                        IRemotePreferenceCallback callback
+                ) {
+                    return Bundle.EMPTY;
+                }
+
+                @Override
+                public ParcelFileDescriptor openRemoteFile(String path) {
+                    return null;
+                }
+
+                @Override
+                public String[] getRemoteFileList() {
+                    return new String[0];
+                }
+            };
+
+    private static void dispatchModernLifecycle(LoadedApk loadedApk, ApplicationInfo moduleCompatibleAppInfo) {
         try {
             String packageName = loadedApk.getPackageName();
-            ApplicationInfo appInfo = loadedApk.getApplicationInfo();
+            ApplicationInfo appInfo = moduleCompatibleAppInfo != null
+                    ? moduleCompatibleAppInfo
+                    : loadedApk.getApplicationInfo();
             ClassLoader classLoader = loadedApk.getClassLoader();
             Object appComponentFactory = createAppComponentFactory(appInfo, classLoader);
 

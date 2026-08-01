@@ -1,0 +1,470 @@
+package top.nkbe.npatch.repo
+
+import android.content.Context
+import android.util.Log
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import top.nkbe.npatch.R
+import top.nkbe.npatch.lspApp
+import top.nkbe.npatch.network.NetworkDns
+import java.io.IOException
+import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
+import java.time.Instant
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
+
+class RepoLoader private constructor() {
+
+    var onlineModules: Map<String, OnlineModule> = ConcurrentHashMap()
+        private set
+
+    private var latestVersion: Map<String, ModuleVersion> = ConcurrentHashMap()
+
+    class ModuleVersion(val versionCode: Long, val versionName: String) {
+        fun upgradable(installedVersionCode: Long, installedVersionName: String?): Boolean {
+            val safeVersionName = installedVersionName?.replace(' ', '_') ?: ""
+            return versionCode > installedVersionCode ||
+                (versionCode == installedVersionCode && versionName != safeVersionName)
+        }
+    }
+
+    private val repoFile: Path = Paths.get(lspApp.filesDir.absolutePath, "repo.json")
+    private val listeners = ConcurrentHashMap.newKeySet<RepoListener>()
+    private val loadLock = ReentrantLock()
+    private val isRefreshing = AtomicBoolean(false)
+
+    @Volatile
+    var isRepoLoaded = false
+        private set
+
+    val hasLocalRepo: Boolean
+        get() = Files.exists(repoFile)
+
+    private val resources = lspApp.resources
+
+    private val channels: Array<String> = try {
+        resources.getStringArray(R.array.update_channel_values)
+    } catch (_: Exception) {
+        arrayOf("release", "beta", "snapshot")
+    }
+
+    companion object {
+        private const val TAG = "RepoLoader"
+        private const val repoBaseUrl = "" // 别想，自己找
+        private val repoBaseHttpUrl = repoBaseUrl.toHttpUrl()
+
+        private val executorService = Executors.newCachedThreadPool()
+        private val systemDnsClient = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .callTimeout(30, TimeUnit.SECONDS)
+            .build()
+
+        @Volatile
+        private var instance: RepoLoader? = null
+
+        @JvmStatic
+        fun getInstance(): RepoLoader {
+            return instance ?: synchronized(this) {
+                instance ?: RepoLoader().also {
+                    instance = it
+                    executorService.submit { it.loadLocalData(true) }
+                }
+            }
+        }
+    }
+
+    fun loadRemoteData() {
+        if (!isRefreshing.compareAndSet(false, true)) return
+        executorService.submit {
+            var tempFile: Path? = null
+            try {
+                tempFile = Files.createTempFile(repoFile.parent, "repo-", ".json")
+                val request = Request.Builder().url("${repoBaseUrl}modules").build()
+                downloadTo(request, tempFile)
+
+                // Parse before replacing the last known-good cache. A broken or
+                // interrupted mirror response must never make the repo unusable.
+                val repoModules = Files.newInputStream(tempFile).use { input ->
+                    InputStreamReader(input, StandardCharsets.UTF_8).use(::parseRepoModules)
+                }
+                applyModules(repoModules)
+                try {
+                    Files.move(
+                        tempFile,
+                        repoFile,
+                        StandardCopyOption.ATOMIC_MOVE,
+                        StandardCopyOption.REPLACE_EXISTING
+                    )
+                } catch (_: Throwable) {
+                    Files.move(tempFile, repoFile, StandardCopyOption.REPLACE_EXISTING)
+                }
+                isRefreshing.set(false)
+                listeners.forEach { it.onRepoLoaded() }
+            } catch (e: Throwable) {
+                Log.e(TAG, "load remote data", e)
+                isRefreshing.set(false)
+                listeners.forEach { it.onThrowable(e) }
+            } finally {
+                tempFile?.let(Files::deleteIfExists)
+                isRefreshing.set(false)
+            }
+        }
+    }
+
+    fun loadLocalData(updateRemoteRepo: Boolean) {
+        var localLoaded = false
+        loadLock.withLock {
+            try {
+                if (Files.exists(repoFile)) {
+                    val repoModules = Files.newInputStream(repoFile).use { input ->
+                        InputStreamReader(input, StandardCharsets.UTF_8).use { reader ->
+                            parseRepoModules(reader)
+                        }
+                    }
+                    applyModules(repoModules)
+                    localLoaded = true
+                    listeners.forEach { it.onRepoLoaded() }
+                }
+            } catch (t: Throwable) {
+                Log.e(TAG, Log.getStackTraceString(t))
+                listeners.forEach { it.onThrowable(t) }
+            }
+        }
+        if (updateRemoteRepo || !localLoaded) loadRemoteData()
+    }
+
+    private fun applyModules(repoModules: Array<OnlineModule>) {
+        val modules = ConcurrentHashMap<String, OnlineModule>()
+        repoModules.forEach { module ->
+            module.name?.takeIf(String::isNotBlank)?.let { modules[it] = module }
+        }
+        val prefs = lspApp.getSharedPreferences("${lspApp.packageName}_preferences", Context.MODE_PRIVATE)
+        val channel = prefs.getString("update_channel", channels[0]) ?: channels[0]
+        onlineModules = modules
+        updateLatestVersion(repoModules, channel)
+    }
+
+    private fun downloadTo(request: Request, target: Path) {
+        var primaryFailure: Throwable? = null
+        try {
+            executeToFile(NetworkDns.client(), request, target)
+            return
+        } catch (t: Throwable) {
+            primaryFailure = t
+            Log.w(TAG, "Private DNS request failed; retrying with system DNS", t)
+        }
+
+        try {
+            executeToFile(systemDnsClient, request, target)
+        } catch (t: Throwable) {
+            t.addSuppressed(primaryFailure)
+            throw t
+        }
+    }
+
+    private fun executeToFile(client: OkHttpClient, request: Request, target: Path) {
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) throw IOException("HTTP ${response.code}")
+            response.body.byteStream().use { input ->
+                Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING)
+            }
+        }
+    }
+
+    private fun parseRepoModules(reader: InputStreamReader): Array<OnlineModule> {
+        // We still need to check if it's an array or object
+        // For simplicity, we can peek or just try parsing as JsonElement
+        val element = JsonParser.parseReader(reader)
+        return if (element.isJsonArray) {
+            Gson().fromJson(element, Array<OnlineModule>::class.java)
+        } else {
+            val root = element.asJsonObject
+            val modulesArray = root.getAsJsonArray("modules") ?: return emptyArray()
+            Array(modulesArray.size()) { index ->
+                mapFpaModuleSummary(modulesArray[index].asJsonObject)
+            }
+        }
+    }
+
+    private fun mapFpaModuleSummary(json: JsonObject): OnlineModule {
+        val module = OnlineModule()
+        val packageName = json.optString("pkg")
+        val versionCode = json.optLong("new_version_code")
+        val versionName = json.optString("new_version")
+        val latestReleaseTime = epochMillisToIso(json.optLong("new_update_time"))
+
+        module.name = packageName
+        module.description = json.optString("desc")
+        module.summary = json.optString("summary")
+        module.readmeHTML = json.optString("readme_html")
+        module.readme = json.optString("readme_text")
+        module.createdAt = epochMillisToIso(json.optLong("createTime"))
+        module.updatedAt = latestReleaseTime
+        module.latestReleaseTime = latestReleaseTime
+        module.homepageUrl = packageName?.let(::getModulePageUrl)
+        module.collaborators = listOf(parseAuthor(json.optString("author")))
+        module.scope =
+            buildList {
+                addAll(json.optStringList("xp89scope"))
+                addAll(json.optStringList("xp100scope"))
+            }.distinct()
+
+        if (versionCode > 0L && !versionName.isNullOrEmpty()) {
+            module.latestRelease = "$versionCode-$versionName"
+        }
+
+        return module
+    }
+
+    @Synchronized
+    private fun updateLatestVersion(modules: Array<OnlineModule>, channel: String) {
+        val versions = ConcurrentHashMap<String, ModuleVersion>()
+        for (module in modules) {
+            var release = module.latestRelease
+            if (channel == channels[1] && !module.latestBetaRelease.isNullOrEmpty()) {
+                release = module.latestBetaRelease
+            } else if (channel == channels[2]) {
+                if (!module.latestSnapshotRelease.isNullOrEmpty()) {
+                    release = module.latestSnapshotRelease
+                } else if (!module.latestBetaRelease.isNullOrEmpty()) {
+                    release = module.latestBetaRelease
+                }
+            }
+
+            if (release.isNullOrEmpty()) continue
+
+            val splits = release.split("-", limit = 2)
+            if (splits.size < 2) continue
+
+            try {
+                val verCode = splits[0].toLong()
+                val verName = splits[1]
+                module.name?.let { name ->
+                    versions[name] = ModuleVersion(verCode, verName)
+                }
+            } catch (_: NumberFormatException) {
+                continue
+            }
+        }
+        latestVersion = versions
+        isRepoLoaded = true
+    }
+
+    fun updateLatestVersion(channel: String) {
+        if (isRepoLoaded) {
+            updateLatestVersion(onlineModules.values.toTypedArray(), channel)
+            listeners.forEach { it.onRepoLoaded() }
+        }
+    }
+
+    fun getModuleLatestVersion(packageName: String): ModuleVersion? {
+        return if (isRepoLoaded) latestVersion[packageName] else null
+    }
+
+    fun getReleases(packageName: String): List<Release> {
+        val prefs = lspApp.getSharedPreferences("${lspApp.packageName}_preferences", Context.MODE_PRIVATE)
+        val channel = prefs.getString("update_channel", channels[0]) ?: channels[0]
+        var releases: List<Release> = ArrayList()
+
+        if (isRepoLoaded) {
+            val module = onlineModules[packageName]
+            if (module != null) {
+                releases = module.releases
+                if (!module.releasesLoaded) {
+                    if (channel == channels[1] && module.betaReleases.isNotEmpty()) {
+                        releases = module.betaReleases
+                    } else if (channel == channels[2]) {
+                        if (module.snapshotReleases.isNotEmpty()) {
+                            releases = module.snapshotReleases
+                        } else if (module.betaReleases.isNotEmpty()) {
+                            releases = module.betaReleases
+                        }
+                    }
+                }
+            }
+        }
+        return releases
+    }
+
+    fun getLatestReleaseTime(packageName: String, channel: String): String? {
+        var releaseTime: String? = null
+        if (isRepoLoaded) {
+            val module = onlineModules[packageName]
+            if (module != null) {
+                releaseTime = module.latestReleaseTime
+                if (channel == channels[1] && module.latestBetaReleaseTime != null) {
+                    releaseTime = module.latestBetaReleaseTime
+                } else if (channel == channels[2]) {
+                    if (module.latestSnapshotReleaseTime != null) {
+                        releaseTime = module.latestSnapshotReleaseTime
+                    } else if (module.latestBetaReleaseTime != null) {
+                        releaseTime = module.latestBetaReleaseTime
+                    }
+                }
+            }
+        }
+        return releaseTime
+    }
+
+    fun loadRemoteReleases(packageName: String) {
+        executorService.submit {
+            try {
+                val request = Request.Builder().url(getModulePageUrl(packageName)).build()
+                val bodyString = executeForString(request)
+                val module = (onlineModules[packageName] ?: OnlineModule().apply { name = packageName })
+                val root = JsonParser.parseString(bodyString).asJsonObject
+                val versions = root.getAsJsonArray("modules")
+                module.releases = versions?.map { mapFpaRelease(packageName, it.asJsonObject) } ?: emptyList()
+                module.releasesLoaded = true
+                (onlineModules as MutableMap)[packageName] = module
+                listeners.forEach { it.onModuleReleasesLoaded(module) }
+            } catch (t: Throwable) {
+                Log.e(TAG, "load releases for $packageName", t)
+                listeners.forEach { it.onThrowable(t) }
+            }
+        }
+    }
+
+    private fun executeForString(request: Request): String {
+        var lastFailure: Throwable? = null
+        val clients = buildList {
+            runCatching { NetworkDns.client() }
+                .onSuccess(::add)
+                .onFailure { lastFailure = it }
+            add(systemDnsClient)
+        }
+        for (client in clients) {
+            try {
+                return client.newCall(request).execute().use { response ->
+                    if (!response.isSuccessful) throw IOException("HTTP ${response.code}")
+                    response.body.string()
+                }
+            } catch (t: Throwable) {
+                lastFailure?.let(t::addSuppressed)
+                lastFailure = t
+            }
+        }
+        throw lastFailure ?: IOException("Repository request failed")
+    }
+
+    private fun mapFpaRelease(packageName: String, json: JsonObject): Release {
+        val release = Release()
+        val versionCode = json.optLong("version_code")
+        val versionName = json.optString("version")
+        val tag = json.optString("tag")
+        val fileName = json.optString("file_name")
+        val versionTime = epochMillisToIso(json.optLong("version_time"))
+
+        release.name =
+            buildString {
+                if (!versionName.isNullOrEmpty()) append(versionName)
+                if (versionCode > 0L) {
+                    if (isNotEmpty()) append(" ")
+                    append("($versionCode)")
+                }
+            }.ifEmpty { tag }
+        release.tagName = tag
+        release.createdAt = versionTime
+        release.publishedAt = versionTime
+        release.updatedAt = versionTime
+        release.description = json.optString("desc_text")
+        release.descriptionHTML = json.optString("desc_html")
+        release.releaseAssets =
+            if (tag.isNullOrEmpty() || fileName.isNullOrEmpty()) {
+                emptyList()
+            } else {
+                listOf(
+                    ReleaseAsset().apply {
+                        name = fileName
+                        downloadUrl = getModuleFileUrl(packageName, tag, fileName)
+                    }
+                )
+            }
+        return release
+    }
+
+    private fun parseAuthor(author: String?): Collaborator {
+        val collaborator = Collaborator()
+        val raw = author?.trim().orEmpty()
+        val match = Regex("""^(.+?)\(([^()]+)\)$""").find(raw)
+        if (match != null) {
+            collaborator.name = match.groupValues[1].trim()
+            collaborator.login = match.groupValues[2].trim()
+        } else if (raw.isNotEmpty()) {
+            collaborator.name = raw
+        }
+        return collaborator
+    }
+
+    private fun epochMillisToIso(value: Long): String? {
+        if (value <= 0L) return null
+        return Instant.ofEpochMilli(value).toString()
+    }
+
+    private fun JsonObject.optString(name: String): String? {
+        val element = get(name) ?: return null
+        if (element.isJsonNull) return null
+        return element.asString
+    }
+
+    private fun JsonObject.optLong(name: String): Long {
+        val element = get(name) ?: return 0L
+        if (element.isJsonNull) return 0L
+        return runCatching { element.asLong }.getOrDefault(0L)
+    }
+
+    private fun JsonObject.optStringList(name: String): List<String> {
+        val array = getAsJsonArray(name) ?: return emptyList()
+        return array.mapNotNull { element ->
+            if (element == null || element.isJsonNull) null else element.asString
+        }
+    }
+
+    fun getModulePageUrl(packageName: String): String = repoBaseHttpUrl.newBuilder()
+        .addPathSegment("info")
+        .addPathSegment(packageName)
+        .build()
+        .toString()
+
+    fun getModuleFileUrl(packageName: String, tag: String, fileName: String): String = repoBaseHttpUrl.newBuilder()
+        .addPathSegment("file")
+        .addPathSegment(packageName)
+        .addPathSegment(tag)
+        .addPathSegment(fileName)
+        .build()
+        .toString()
+
+    fun addListener(listener: RepoListener) {
+        listeners.add(listener)
+    }
+
+    fun removeListener(listener: RepoListener) {
+        listeners.remove(listener)
+    }
+
+    fun getOnlineModule(packageName: String?): OnlineModule? {
+        return if (isRepoLoaded && packageName != null) onlineModules[packageName] else null
+    }
+
+    interface RepoListener {
+        fun onRepoLoaded() {}
+        fun onModuleReleasesLoaded(module: OnlineModule?) {}
+        fun onThrowable(t: Throwable?) {
+            Log.e(TAG, "load repo failed", t)
+        }
+    }
+}

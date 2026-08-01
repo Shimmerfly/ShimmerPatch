@@ -2,6 +2,9 @@
  public static void check*(...);
  public static void throw*(...);
 }
+-obfuscationdictionary ../proguard/obfuscation-dictionary.txt
+-classobfuscationdictionary ../proguard/obfuscation-dictionary.txt
+-packageobfuscationdictionary ../proguard/obfuscation-dictionary.txt
 -assumenosideeffects class java.util.Objects {
     public static ** requireNonNull(...);
 }
@@ -23,9 +26,11 @@
 -keep class top.nkbe.npatch.share.LSPConfig { *; }
 -keep class top.nkbe.npatch.share.PatchConfig { *; }
 -keep class org.lsposed.lspd.nativebridge.** { *; }
+-keep class org.lsposed.hiddenapibypass.** { *; }
 -keep class top.nkbe.npatch.loader.SigBypass { *; }
 -dontwarn com.google.auto.value.AutoValue$Builder
 -dontwarn com.google.auto.value.AutoValue
+-dontwarn org.lsposed.hiddenapibypass.**
 -dontwarn com.squareup.moshi.**
 -dontwarn retrofit2.**
 -dontwarn okio.**

@@ -4,7 +4,6 @@ import com.android.build.gradle.BaseExtension
 import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.internal.storage.file.FileRepository
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
-import com.android.build.gradle.LibraryExtension
 import org.gradle.kotlin.dsl.extra
 
 plugins {
@@ -39,13 +38,12 @@ val (coreCommitCount, coreLatestTag) = runCatching {
             val ver = git.describe().setTags(true).setAbbrev(0).call()?.removePrefix("v") ?: "2.0"
             count to ver
         }
-}.getOrNull() ?: (3047 to "2.0")
+}.getOrNull() ?: (3068 to "2.1")
 
-// sync from https://github.com/JingMartix/LSPosed/blob/master/build.gradle.kts
 val defaultManagerPackageName by extra("top.nkbe.npatch")
 val apiCode by extra(102)
-val verCode by extra(733)
-val verName by extra("1.0.6")
+val verCode by extra(commitCount)
+val verName by extra("1.0.7")
 val coreVerCode by extra(coreCommitCount)
 val coreVerName by extra(coreLatestTag)
 val androidMinSdkVersion by extra(28)
@@ -61,10 +59,22 @@ tasks.register<Delete>("clean") {
 }
 
 listOf("Debug", "Release").forEach { variant ->
+    val variantLower = variant.lowercase()
+    val remoteApiTask = tasks.register<Copy>("buildRemoteApi$variant") {
+        description = "Build and collect the NPatch Remote API $variant AAR"
+        dependsOn(":remote-api:assemble$variant")
+        from(project(":remote-api").layout.buildDirectory.dir("outputs/aar")) {
+            include("remote-api-$variantLower.aar")
+            rename { "npatch-remote-api-v1.0.0-$variantLower.aar" }
+        }
+        into(layout.projectDirectory.dir("out/$variantLower"))
+    }
+
     tasks.register("build$variant") {
         description = "Build NPatch with $variant"
         dependsOn(tasks.findByPath(":jar:build$variant") ?: "jar:build$variant")
         dependsOn(tasks.findByPath(":manager:build$variant") ?: "manager:build$variant")
+        dependsOn(remoteApiTask)
     }
 }
 
@@ -86,33 +96,6 @@ fun Project.configureBaseExtension() {
         defaultConfig {
             minSdk = androidMinSdkVersion
             targetSdk = androidTargetSdkVersion
-            versionCode = verCode
-            versionName = verName
-
-            signingConfigs.create("config") {
-                val androidStoreFile = (
-                    System.getenv("ANDROID_STORE_FILE")
-                        ?: project.findProperty("androidStoreFile")?.toString()
-                    )?.takeIf { it.isNotBlank() }
-                val androidStorePassword = System.getenv("ANDROID_STORE_PASSWORD")
-                    ?: project.findProperty("androidStorePassword")?.toString()
-                val androidKeyAlias = System.getenv("ANDROID_KEY_ALIAS")
-                    ?: project.findProperty("androidKeyAlias")?.toString()
-                val androidKeyPassword = System.getenv("ANDROID_KEY_PASSWORD")
-                    ?: project.findProperty("androidKeyPassword")?.toString()
-
-                if (androidStoreFile != null && androidStorePassword != null && androidKeyAlias != null && androidKeyPassword != null) {
-                    storeFile = rootProject.file(androidStoreFile)
-                    storePassword = androidStorePassword
-                    keyAlias = androidKeyAlias
-                    keyPassword = androidKeyPassword
-                }
-
-                if (this is com.android.build.api.dsl.ApkSigningConfig) {
-                    enableV2Signing = true
-                    enableV3Signing = true
-                }
-            }
 
             externalNativeBuild {
                 cmake {
@@ -151,9 +134,6 @@ fun Project.configureBaseExtension() {
         }
 
         buildTypes {
-            all {
-                signingConfig = if (signingConfigs["config"].storeFile != null) signingConfigs["config"] else signingConfigs["debug"]
-            }
             named("debug") {
                 externalNativeBuild {
                     cmake {
@@ -167,7 +147,6 @@ fun Project.configureBaseExtension() {
                 }
             }
             named("release") {
-                signingConfig = if (signingConfigs["config"].storeFile != null) signingConfigs["config"] else signingConfigs["debug"]
                 externalNativeBuild {
                     cmake {
                         val flags = arrayOf(
@@ -201,43 +180,77 @@ fun Project.configureBaseExtension() {
             }
         }
     }
+}
 
-    extensions.findByType(ApplicationExtension::class)?.lint {
-        abortOnError = true
-        checkReleaseBuilds = false
+fun Project.configureApplicationExtension(extension: ApplicationExtension) {
+    extension.run {
+        defaultConfig {
+            versionCode = verCode
+            versionName = verName
+        }
+
+        val config = signingConfigs.create("config") {
+            val androidStoreFile = (
+                System.getenv("ANDROID_STORE_FILE")
+                    ?: project.findProperty("androidStoreFile")?.toString()
+                )?.takeIf { it.isNotBlank() }
+            val androidStorePassword = System.getenv("ANDROID_STORE_PASSWORD")
+                ?: project.findProperty("androidStorePassword")?.toString()
+            val androidKeyAlias = System.getenv("ANDROID_KEY_ALIAS")
+                ?: project.findProperty("androidKeyAlias")?.toString()
+            val androidKeyPassword = System.getenv("ANDROID_KEY_PASSWORD")
+                ?: project.findProperty("androidKeyPassword")?.toString()
+
+            if (androidStoreFile != null && androidStorePassword != null && androidKeyAlias != null && androidKeyPassword != null) {
+                storeFile = rootProject.file(androidStoreFile)
+                storePassword = androidStorePassword
+                keyAlias = androidKeyAlias
+                keyPassword = androidKeyPassword
+            }
+            enableV2Signing = true
+            enableV3Signing = true
+        }
+        val selectedSigningConfig = if (config.storeFile != null) config else signingConfigs["debug"]
+        buildTypes.configureEach {
+            signingConfig = selectedSigningConfig
+        }
+        lint {
+            abortOnError = true
+            checkReleaseBuilds = false
+        }
     }
 
     extensions.findByType(ApplicationAndroidComponentsExtension::class)?.let { androidComponents ->
-        val optimizeReleaseRes = task("optimizeReleaseRes").doLast {
-            val isWindows = System.getProperty("os.name").lowercase().contains("windows")
-            val aapt2Name = if (isWindows) "aapt2.exe" else "aapt2"
+        val optimizeReleaseRes = tasks.register("optimizeReleaseRes") {
+            doLast {
+                val isWindows = System.getProperty("os.name").lowercase().contains("windows")
+                val aapt2Name = if (isWindows) "aapt2.exe" else "aapt2"
 
-            val aapt2 = File(
-                androidComponents.sdkComponents.sdkDirectory.get().asFile,
-                "build-tools/${androidBuildToolsVersion}/$aapt2Name"
-            )
-            val zip = java.nio.file.Paths.get(
-                project.buildDir.path,
-                "intermediates",
-                "optimized_processed_res",
-                "release",
-                "optimizeReleaseResources",
-                "resources-release-optimize.ap_"
-            )
-            val optimized = File("${zip}.opt")
-            val cmd = exec {
-                commandLine(
-                    aapt2, "optimize",
-                    "--collapse-resource-names",
-                    "--enable-sparse-encoding",
-                    "-o", optimized,
-                    zip
+                val aapt2 = File(
+                    androidComponents.sdkComponents.sdkDirectory.get().asFile,
+                    "build-tools/${androidBuildToolsVersion}/$aapt2Name"
                 )
-                isIgnoreExitValue = false
-            }
-            if (cmd.exitValue == 0) {
-                delete(zip)
-                optimized.renameTo(zip.toFile())
+                val zip = project.layout.buildDirectory.get().asFile.toPath()
+                    .resolve("intermediates")
+                    .resolve("optimized_processed_res")
+                    .resolve("release")
+                    .resolve("optimizeReleaseResources")
+                    .resolve("resources-release-optimize.ap_")
+                val optimized = File("${zip}.opt")
+                val cmd = providers.exec {
+                    commandLine(
+                        aapt2, "optimize",
+                        "--collapse-resource-names",
+                        "--enable-sparse-encoding",
+                        "-o", optimized,
+                        zip
+                    )
+                    isIgnoreExitValue = false
+                }.result.get()
+                if (cmd.exitValue == 0) {
+                    delete(zip)
+                    optimized.renameTo(zip.toFile())
+                }
             }
         }
 
@@ -252,6 +265,9 @@ fun Project.configureBaseExtension() {
 subprojects {
     plugins.withId("com.android.application") {
         configureBaseExtension()
+        extensions.findByType(ApplicationExtension::class)?.let {
+            configureApplicationExtension(it)
+        }
     }
     plugins.withId("com.android.library") {
         configureBaseExtension()

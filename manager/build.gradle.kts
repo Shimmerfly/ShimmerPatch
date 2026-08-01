@@ -1,4 +1,6 @@
+import java.util.Base64
 import java.util.Locale
+import com.android.build.api.artifact.SingleArtifact
 
 val defaultManagerPackageName: String by rootProject.extra
 val apiCode: Int by rootProject.extra
@@ -6,20 +8,51 @@ val verCode: Int by rootProject.extra
 val verName: String by rootProject.extra
 val coreVerCode: Int by rootProject.extra
 val coreVerName: String by rootProject.extra
-val miuixVersion = npatch.versions.miuix.get()
+
+fun decodeSha256Hex(value: String): ByteArray {
+    require(value.length == 64) { "Manager signature digest must be 64 hex chars: $value" }
+    return ByteArray(value.length / 2) { index ->
+        value.substring(index * 2, index * 2 + 2).toInt(16).toByte()
+    }
+}
+
+fun encodeAllowlistEntry(value: String): String {
+    val key = 0x5A
+    val obfuscated = decodeSha256Hex(value).map { byte -> (byte.toInt() xor key).toByte() }.toByteArray()
+    return Base64.getEncoder().encodeToString(obfuscated)
+}
 
 plugins {
     alias(libs.plugins.agp.app)
+    alias(npatch.plugins.kotlin.android)
     alias(npatch.plugins.compose.compiler)
     alias(npatch.plugins.google.devtools.ksp)
     alias(npatch.plugins.rikka.tools.refine)
-    alias(npatch.plugins.kotlin.android)
     id("kotlin-parcelize")
 }
 
 android {
     defaultConfig {
         applicationId = defaultManagerPackageName
+        val managerSignatureAllowlist = (
+            System.getenv("NPATCH_MANAGER_SIGNATURE_SHA256")
+                ?: project.findProperty("npatchManagerSignatureSha256")?.toString()
+                ?: listOf(
+                    "DB73788534AFFC4BFA3AE16040A2D3A2",
+                    "C2B63EDEA1E07F3A1CF9AFF4DD0995A8",
+                ).joinToString("")
+            )
+            .split(',', ';', ' ', '\n', '\r', '\t')
+            .map { it.trim().uppercase(Locale.ROOT) }
+            .filter { it.isNotEmpty() }
+            .distinct()
+            .joinToString(",") { encodeAllowlistEntry(it) }
+        buildConfigField("String", "MANAGER_SIGNATURE_SHA256_ALLOWLIST", "\"$managerSignatureAllowlist\"")
+    }
+
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
     }
 
     packaging {
@@ -51,27 +84,17 @@ android {
     }
 
     buildFeatures {
+        aidl = true
         compose = true
         buildConfig = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
-    }
-
     namespace = "top.nkbe.npatch"
 
-    applicationVariants.all {
-        kotlin.sourceSets {
-            getByName(name) {
-                kotlin.srcDir("build/generated/ksp/$name/kotlin")
-            }
-        }
-    }
 }
 
-afterEvaluate {
-    android.applicationVariants.forEach { variant ->
+androidComponents {
+    onVariants { variant ->
         val variantLowered = variant.name.lowercase()
         val variantCapped = variant.name.replaceFirstChar { it.uppercase() }
 
@@ -88,13 +111,15 @@ afterEvaluate {
             from("${rootProject.projectDir}/out/assets/${variant.name}")
         }
 
-        tasks.named("merge${variantCapped}Assets").configure {
-            dependsOn(copyAssetsTaskProvider)
+        tasks.configureEach {
+            if (name == "merge${variantCapped}Assets") {
+                dependsOn(copyAssetsTaskProvider)
+            }
         }
 
         tasks.register<Copy>("build$variantCapped") {
             dependsOn("assemble$variantCapped")
-            from(variant.outputs.map { it.outputFile })
+            from(variant.artifacts.get(SingleArtifact.APK))
             into("${rootProject.projectDir}/out/$variantLowered")
             rename(".*.apk", "NPatch-v$verName-$verCode-$variantLowered.apk")
         }
@@ -111,6 +136,7 @@ dependencies {
     implementation(npatch.androidx.activity.compose)
     implementation(npatch.androidx.compose.material.icons.extended)
     implementation(npatch.androidx.compose.material3)
+    implementation(npatch.androidx.compose.material3.adaptive.navigation.suite)
     implementation(npatch.androidx.compose.ui)
     implementation(npatch.androidx.compose.ui.tooling.preview)
     implementation(npatch.androidx.core.ktx)
@@ -125,6 +151,7 @@ dependencies {
     implementation(npatch.androidx.room.ktx)
     implementation(npatch.androidx.room.runtime)
     implementation("com.squareup.okhttp3:okhttp:5.3.2")
+    implementation("com.squareup.okhttp3:okhttp-dnsoverhttps:5.3.2")
 
     implementation(libs.material)
     implementation(libs.gson)
@@ -135,13 +162,10 @@ dependencies {
     implementation(libs.appiconloader)
     implementation(libs.hiddenapibypass)
 
-    // MiuiX & Haze
+    // Haze and glass effects
     implementation(npatch.haze)
     implementation(npatch.hazeBlur)
     implementation(npatch.backdrop)
-    implementation("top.yukonga.miuix.kmp:miuix-ui:$miuixVersion")
-    implementation("top.yukonga.miuix.kmp:miuix-preference:$miuixVersion")
-    implementation("top.yukonga.miuix.kmp:miuix-icons:$miuixVersion")
     implementation(npatch.androidx.webkit)
 
 

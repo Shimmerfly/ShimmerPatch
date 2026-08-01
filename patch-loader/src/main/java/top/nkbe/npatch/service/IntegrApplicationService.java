@@ -15,6 +15,7 @@ import top.nkbe.npatch.util.LocalInjectedModuleService;
 import top.nkbe.npatch.util.ModuleLoader;
 import org.lsposed.lspd.models.Module;
 import org.lsposed.lspd.service.ILSPApplicationService;
+import org.lsposed.lspd.service.IHotReloadTarget;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,12 +38,11 @@ public class IntegrApplicationService extends ILSPApplicationService.Stub {
             if (assetsList == null || assetsList.length == 0) {
                 return;
             }
-
             for (var name : assetsList) {
                 if (name == null || name.length() <= 4) continue;
 
                 String packageName = name.substring(0, name.length() - 4);
-                String modulePath = context.getCacheDir() + "/npatch/" + packageName + "/";
+                String modulePath = context.getCacheDir() + "/code_cache/mods/" + packageName + "/";
                 String cacheApkPath;
 
                 try (ZipFile sourceFile = new ZipFile(context.getPackageResourcePath())) {
@@ -154,6 +154,11 @@ public class IntegrApplicationService extends ILSPApplicationService.Stub {
     @Override
     public boolean isLogMuted() throws RemoteException {
         return false;
+    }
+
+    @Override
+    public void registerHotReloadTarget(IHotReloadTarget target) {
+        // Integrated configuration has no manager process that can issue a reload request.
     }
 
 }

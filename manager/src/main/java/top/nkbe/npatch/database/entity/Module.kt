@@ -6,5 +6,5 @@ import androidx.room.PrimaryKey
 @Entity
 data class Module(
     @PrimaryKey val pkgName: String,
-    var apkPath: String,
+    var apkPath: String
 )

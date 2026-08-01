@@ -27,12 +27,14 @@
 #include "art/runtime/oat_file_manager.h"
 #include "native_util.h"
 #include "jni/bypass_sig.h"
-#include "jni/funpatch_seccomp.h"
+
 #include "elf/symbol_cache.h"
 #include "utils/jni_helper.hpp"
 
 #include <fcntl.h>
 #include <linux/memfd.h>
+#include <random>
+#include <string>
 #include <sys/syscall.h>
 #include <unistd.h>
 
@@ -40,9 +42,23 @@ using namespace lsplant;
 
 namespace lspd {
 
+    static std::string CreateAnonymousDexName() {
+        static constexpr char kAlphabet[] = "abcdefghijklmnopqrstuvwxyz0123456789";
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<size_t> pick(0, sizeof(kAlphabet) - 2);
+
+        std::string name = "jit-cache-";
+        for (int i = 0; i < 12; ++i) {
+            name += kAlphabet[pick(gen)];
+        }
+        return name;
+    }
+
     static int CreateDexMemFd(const void* data, size_t size) {
 #if defined(__linux__)
-        const int fd = syscall(__NR_memfd_create, "npatch_dex", MFD_CLOEXEC);
+        const auto name = CreateAnonymousDexName();
+        const int fd = syscall(__NR_memfd_create, name.c_str(), MFD_CLOEXEC);
         if (fd < 0) {
             return -1;
         }
@@ -100,16 +116,18 @@ namespace lspd {
     }
 
     void PatchLoader::InitArtHooker(JNIEnv* env, const InitInfo& initInfo) {
-        Context::InitArtHooker(env, initInfo);
         handler = initInfo;
-        art::ProfileSaver::DisableInline(initInfo);
-        art::FileManager::DisableBackgroundVerification(initInfo);
+        Context::InitArtHooker(env, initInfo);
+        if (!hide_libs_) {
+            art::ProfileSaver::DisableInline(initInfo);
+            art::FileManager::DisableBackgroundVerification(initInfo);
+        }
     }
 
     void PatchLoader::InitHooks(JNIEnv* env) {
         Context::InitHooks(env);
         RegisterBypass(env);
-        RegisterFunPatchSeccomp(env);
+
     }
 
     void PatchLoader::SetupEntryClass(JNIEnv* env) {
@@ -135,6 +153,12 @@ namespace lspd {
         };
 
         auto stub = JNI_FindClass(env, "top/nkbe/npatch/metaloader/LSPAppComponentFactoryStub");
+        auto hide_libs_field = JNI_GetStaticFieldID(env, stub, "hideLibs", "Z");
+        hide_libs_ = hide_libs_field != nullptr && JNI_GetStaticBooleanField(env, stub, hide_libs_field);
+        if (hide_libs_) {
+            PrepareLibHideSnapshots();
+        }
+
         auto dex_field = JNI_GetStaticFieldID(env, stub, "dex", "[B");
         ScopedLocalRef<jbyteArray> array = JNI_GetStaticObjectField(env, stub, dex_field);
 
@@ -147,6 +171,7 @@ namespace lspd {
         const auto dex_size = static_cast<size_t>(JNI_GetArrayLength(env, array.get()));
         const int dex_fd = CreateDexMemFd(dex_bytes, dex_size);
         env->ReleaseByteArrayElements(array.get(), dex_bytes, JNI_ABORT);
+        JNI_SetStaticObjectField(env, stub, dex_field, nullptr);
         if (dex_fd < 0) {
             LOGE("Failed to create dex memfd.");
             return;
@@ -158,6 +183,7 @@ namespace lspd {
         InitArtHooker(env, initInfo);
         LoadDex(env, std::move(dex));
         InitHooks(env);
+        RefreshLibHideSnapshots();
 
         GetArt(true);
 

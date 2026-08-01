@@ -1,15 +1,6 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
-    buildscript {
-        repositories {
-            mavenCentral()
-            maven(url = "https://storage.googleapis.com/r8-releases/raw")
-        }
-        dependencies {
-            classpath("com.android.tools:r8:8.13.19")
-        }
-    }
     repositories {
         gradlePluginPortal()
         google()
@@ -41,6 +32,7 @@ include(
     ":meta-loader",
     ":patch",
     ":patch-loader",
+    ":remote-api",
     ":share:android",
     ":share:java",
 )

@@ -35,11 +35,6 @@ class AppBroadcastReceiver : BroadcastReceiver() {
             lspApp.globalScope.launch {
                 Log.i(TAG, "Received intent: $intent")
                 NeoPackageManager.fetchAppList()
-                if (intent.action == Intent.ACTION_PACKAGE_REPLACED) {
-                    intent.data?.schemeSpecificPart?.let { packageName ->
-                        HotReloadRegistry.triggerAutoHotReload(packageName)
-                    }
-                }
             }
         }
     }

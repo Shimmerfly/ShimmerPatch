@@ -16,19 +16,42 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import top.nkbe.npatch.loader.util.XLog;
 import top.nkbe.npatch.util.LocalInjectedModuleService;
+import top.nkbe.npatch.util.ManagerRemoteServiceBridge;
 import top.nkbe.npatch.util.ModuleLoader;
 import org.lsposed.lspd.models.Module;
 import org.lsposed.lspd.service.ILSPApplicationService;
+import org.lsposed.lspd.service.IHotReloadTarget;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class NeoLocalApplicationService extends ILSPApplicationService.Stub {
     private static final String TAG = "NPatch";
     private static final String AUTHORITY = "top.nkbe.npatch.manager.provider.config";
     private static final Uri PROVIDER_URI = Uri.parse("content://" + AUTHORITY + "/config");
+    private static final long PROVIDER_TIMEOUT_SECONDS = 3;
+
+    private static final class ProviderResult {
+        final List<Module> legacyModules;
+        final List<Module> modernModules;
+        final JSONArray cache;
+
+        ProviderResult(
+                List<Module> legacyModules,
+                List<Module> modernModules,
+                JSONArray cache
+        ) {
+            this.legacyModules = legacyModules;
+            this.modernModules = modernModules;
+            this.cache = cache;
+        }
+    }
 
     private final List<Module> legacyModules;
     private final List<Module> modernModules;
@@ -36,9 +59,13 @@ public class NeoLocalApplicationService extends ILSPApplicationService.Stub {
     public NeoLocalApplicationService(Context context) {
         legacyModules = Collections.synchronizedList(new ArrayList<>());
         modernModules = Collections.synchronizedList(new ArrayList<>());
-        boolean providerAvailable = loadModulesFromProvider(context);
+        ProviderResult providerResult = loadModulesFromProvider(context);
 
-        if (!providerAvailable && legacyModules.isEmpty() && modernModules.isEmpty()) {
+        if (providerResult != null) {
+            legacyModules.addAll(providerResult.legacyModules);
+            modernModules.addAll(providerResult.modernModules);
+            updateModulesCache(context, providerResult.cache);
+        } else {
             Log.w(TAG, "NeoLocal: Provider unavailable, falling back to local cache.");
             loadModulesFromCache(context);
         }
@@ -61,7 +88,14 @@ public class NeoLocalApplicationService extends ILSPApplicationService.Stub {
                 if (path != null && !path.isEmpty() && new File(path).exists()) {
                     loadModuleByPath(context, packageName, path);
                 } else if (packageName != null) {
-                    loadSingleModule(context, pm, packageName);
+                    loadSingleModule(
+                            context,
+                            pm,
+                            packageName,
+                            false,
+                            legacyModules,
+                            modernModules
+                    );
                 }
             }
         } catch (Exception e) {
@@ -93,10 +127,33 @@ public class NeoLocalApplicationService extends ILSPApplicationService.Stub {
         }
     }
 
-    private boolean loadModulesFromProvider(Context context) {
+    private ProviderResult loadModulesFromProvider(Context context) {
+        FutureTask<ProviderResult> query =
+                new FutureTask<>(() -> queryModulesFromProvider(context));
+        Thread worker = new Thread(query, "NeoLocal-Provider");
+        worker.setDaemon(true);
+        worker.start();
+        try {
+            return query.get(PROVIDER_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        } catch (TimeoutException exception) {
+            query.cancel(true);
+            Log.w(TAG, "NeoLocal: Manager Provider timed out, using cache");
+        } catch (InterruptedException exception) {
+            query.cancel(true);
+            Thread.currentThread().interrupt();
+            Log.w(TAG, "NeoLocal: Manager Provider query interrupted");
+        } catch (ExecutionException exception) {
+            Log.e(TAG, "NeoLocal: Manager Provider query failed", exception.getCause());
+        }
+        return null;
+    }
+
+    private ProviderResult queryModulesFromProvider(Context context) throws Exception {
         PackageManager pm = context.getPackageManager();
         String myPackageName = context.getPackageName();
         JSONArray cacheArray = new JSONArray();
+        List<Module> providerLegacyModules = new ArrayList<>();
+        List<Module> providerModernModules = new ArrayList<>();
 
         Uri queryUri = PROVIDER_URI.buildUpon()
                 .appendQueryParameter("package", myPackageName)
@@ -105,14 +162,24 @@ public class NeoLocalApplicationService extends ILSPApplicationService.Stub {
         try (Cursor cursor = context.getContentResolver().query(queryUri, null, null, null, null)) {
             if (cursor == null) {
                 Log.w(TAG, "NeoLocal: Cannot reach Manager Provider.");
-                return false;
+                return null;
             }
 
             while (cursor.moveToNext()) {
+                if (Thread.currentThread().isInterrupted()) {
+                    return null;
+                }
                 int colIndex = cursor.getColumnIndex("packageName");
                 if (colIndex != -1) {
                     String packageName = cursor.getString(colIndex);
-                    String apkPath = loadSingleModule(context, pm, packageName);
+                    String apkPath = loadSingleModule(
+                            context,
+                            pm,
+                            packageName,
+                            true,
+                            providerLegacyModules,
+                            providerModernModules
+                    );
                     if (apkPath != null) {
                         JSONObject moduleObj = new JSONObject();
                         moduleObj.put("path", apkPath);
@@ -121,15 +188,22 @@ public class NeoLocalApplicationService extends ILSPApplicationService.Stub {
                     }
                 }
             }
-            updateModulesCache(context, cacheArray);
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "NeoLocal: Provider query failed", e);
-            return false;
+            return new ProviderResult(
+                    providerLegacyModules,
+                    providerModernModules,
+                    cacheArray
+            );
         }
     }
 
-    private String loadSingleModule(Context context, PackageManager pm, String pkgName) {
+    private String loadSingleModule(
+            Context context,
+            PackageManager pm,
+            String pkgName,
+            boolean managerBacked,
+            List<Module> legacyTarget,
+            List<Module> modernTarget
+    ) {
         try {
             ApplicationInfo appInfo = pm.getApplicationInfo(pkgName, 0);
             Module m = new Module();
@@ -144,11 +218,13 @@ public class NeoLocalApplicationService extends ILSPApplicationService.Stub {
                     return null;
                 }
                 m.appId = appInfo.uid;
-                m.service = new LocalInjectedModuleService(context, m.packageName);
+                m.service = managerBacked
+                        ? managerBackedService(context, m.packageName)
+                        : new LocalInjectedModuleService(context, m.packageName);
                 if (m.file != null && m.file.legacy) {
-                    legacyModules.add(m);
+                    legacyTarget.add(m);
                 } else {
-                    modernModules.add(m);
+                    modernTarget.add(m);
                 }
                 Log.i(TAG, "NeoLocal: Loaded module " + pkgName);
                 return m.apkPath;
@@ -157,6 +233,23 @@ public class NeoLocalApplicationService extends ILSPApplicationService.Stub {
             Log.e(TAG, "NeoLocal: Failed to load " + pkgName, e);
         }
         return null;
+    }
+
+    private static org.lsposed.lspd.service.ILSPInjectedModuleService managerBackedService(
+            Context context,
+            String modulePackageName
+    ) {
+        try {
+            return ManagerRemoteServiceBridge.connect(context, modulePackageName);
+        } catch (Throwable throwable) {
+            Log.w(
+                    TAG,
+                    "NeoLocal: Manager remote store unavailable for " + modulePackageName
+                            + ", using target-local fallback",
+                    throwable
+            );
+            return new LocalInjectedModuleService(context, modulePackageName);
+        }
     }
 
     private void updateModulesCache(Context context, JSONArray modules) {
@@ -232,5 +325,10 @@ public class NeoLocalApplicationService extends ILSPApplicationService.Stub {
     @Override
     public boolean isLogMuted() throws RemoteException {
         return false;
+    }
+
+    @Override
+    public void registerHotReloadTarget(IHotReloadTarget target) {
+        // Embedded configuration has no manager process that can issue a reload request.
     }
 }

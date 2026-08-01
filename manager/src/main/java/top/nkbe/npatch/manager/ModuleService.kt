@@ -1,19 +1,20 @@
 package top.nkbe.npatch.manager
 
+import android.app.ActivityManager
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.os.Parcel
 import android.os.ParcelFileDescriptor
-import java.util.concurrent.ConcurrentHashMap
 import android.util.Log
+import java.util.concurrent.ConcurrentHashMap
 
 import kotlinx.coroutines.runBlocking
 import top.nkbe.npatch.config.ConfigManager
 import org.lsposed.lspd.models.Module
-import org.lsposed.lspd.service.ILSPApplicationService
 import org.lsposed.lspd.service.IHotReloadTarget
+import org.lsposed.lspd.service.ILSPApplicationService
 
 class ModuleService : Service() {
 
@@ -22,75 +23,104 @@ class ModuleService : Service() {
         private const val REGISTER_CLIENT_PACKAGE = 0x4E5041
     }
 
+    private fun isScopedTarget(packageName: String): Boolean {
+        return runCatching {
+                runBlocking { ConfigManager.getModulesForApp(packageName).isNotEmpty() }
+            }
+            .getOrDefault(false)
+    }
+
     override fun onBind(intent: Intent): IBinder? {
         val packageName = intent.getStringExtra("packageName") ?: return null
 
-        /*
-         * The binding transaction is dispatched by ActivityManager, so its Binder UID is not a
-         * reliable identity for the target application. In particular, some apps reach here with
-         * the manager/system UID and were rejected before their first module list could be read.
-         * Keep the package supplied by the patched loader for the lifetime of this connection;
-         * unscoped apps still receive an empty module list from ConfigManager.
-         */
-        Log.i(TAG, "$packageName requests binder from uid=${Binder.getCallingUid()}")
+        // ActivityManager dispatches onBind, so Binder.getCallingUid() here is not the client.
+        // The returned Binder validates the package on its first direct transaction instead.
+        Log.i(TAG, "$packageName requests binder")
         return ScopedApplicationService(packageName).asBinder()
     }
 
-    private inner class ScopedApplicationService(
-        private val requestedPackageName: String,
-    ) : ILSPApplicationService.Stub() {
+    private inner class ScopedApplicationService(private val packageName: String) :
+        ILSPApplicationService.Stub() {
+
         private val clientPackages = ConcurrentHashMap<Int, String>()
 
         override fun onTransact(code: Int, data: Parcel, reply: Parcel?, flags: Int): Boolean {
             if (code == REGISTER_CLIENT_PACKAGE) {
                 data.enforceInterface("org.lsposed.lspd.service.ILSPApplicationService")
-                val packageName = data.readString()
-                val callingUid = Binder.getCallingUid()
-                val packages = packageManager.getPackagesForUid(callingUid).orEmpty()
-                if (packageName != null && packageName in packages) {
-                    clientPackages[Binder.getCallingPid()] = packageName
-                    Log.i(TAG, "Registered client pid=${Binder.getCallingPid()} package=$packageName")
-                } else {
-                    Log.w(TAG, "Rejected client package registration: uid=$callingUid package=$packageName")
+                val requested = data.readString()
+                val uid = Binder.getCallingUid()
+                val ownedPackages = packageManager.getPackagesForUid(uid).orEmpty()
+                if (requested != null && requested in ownedPackages) {
+                    clientPackages[Binder.getCallingPid()] = requested
+                    reply?.writeNoException()
+                    return true
                 }
-                reply?.writeNoException()
-                return true
+                throw SecurityException("UID $uid does not own $requested")
             }
             return super.onTransact(code, data, reply, flags)
         }
 
-        private fun targetPackageName(): String {
+        private fun targetPackageName(): String? {
             clientPackages[Binder.getCallingPid()]?.let { return it }
             val uid = Binder.getCallingUid()
-            val packages = packageManager.getPackagesForUid(uid).orEmpty()
-            return when {
-                requestedPackageName in packages -> requestedPackageName
-                // Shared uid: prefer the package that actually has scoped modules.
-                packages.size > 1 -> packages.firstOrNull { pkg ->
+            val ownedPackages = packageManager.getPackagesForUid(uid).orEmpty()
+            if (packageName in ownedPackages) return packageName
+            if (ownedPackages.size > 1) {
+                return ownedPackages.firstOrNull { candidate ->
                     runCatching {
-                        runBlocking { ConfigManager.getModulesForApp(pkg).isNotEmpty() }
+                        runBlocking { ConfigManager.getModulesForApp(candidate).isNotEmpty() }
                     }.getOrDefault(false)
-                } ?: requestedPackageName
-                // Isolated processes and service-binding callbacks do not have a package mapping.
-                else -> requestedPackageName
+                }
             }
+            // Isolated app ids have no PackageManager ownership mapping. Only allow the package
+            // captured by the system bind when ActivityManager also associates this PID with it.
+            val appId = uid % 100000
+            if (appId in 99000..99999 && isScopedTarget(packageName)) {
+                val process = callingProcessInfo()
+                val belongsToPackage =
+                    process != null &&
+                        (process.pkgList?.contains(packageName) == true ||
+                            process.processName == packageName ||
+                            process.processName.startsWith("$packageName:"))
+                if (belongsToPackage) return packageName
+            }
+            return null
         }
 
         private fun modules(): List<Module> {
-            return runBlocking { ConfigManager.getModuleFilesForApp(targetPackageName()) }
+            val targetPackage = targetPackageName() ?: return emptyList()
+            val modules = runBlocking { ConfigManager.getModuleFilesForApp(targetPackage) }
+            HotReloadRegistry.recordModules(
+                Binder.getCallingUid(),
+                Binder.getCallingPid(),
+                callingProcessName(targetPackage),
+                modules,
+            )
+            return modules
+        }
+
+        private fun callingProcessName(fallbackPackage: String): String {
+            return callingProcessInfo()?.processName ?: fallbackPackage
+        }
+
+        private fun callingProcessInfo(): ActivityManager.RunningAppProcessInfo? {
+            val pid = Binder.getCallingPid()
+            return getSystemService(ActivityManager::class.java)
+                .runningAppProcesses
+                ?.firstOrNull { it.pid == pid }
         }
 
         override fun isLogMuted(): Boolean = false
 
         override fun getLegacyModulesList(): List<Module> {
             val list = modules().filter { it.file?.legacy == true }
-            Log.d(TAG, "${targetPackageName()} calls getLegacyModulesList: $list")
+            Log.d(TAG, "$packageName calls getLegacyModulesList: $list")
             return list
         }
 
         override fun getModulesList(): List<Module> {
             val list = modules().filter { it.file?.legacy == false }
-            Log.d(TAG, "${targetPackageName()} calls getModulesList: $list")
+            Log.d(TAG, "$packageName calls getModulesList: $list")
             return list
         }
 
@@ -105,30 +135,25 @@ class ModuleService : Service() {
             }
         }
 
-        override fun registerHotReloadTarget(
-            modulePackageName: String,
-            loadedVersionCode: Long,
-            target: IHotReloadTarget,
-        ): Long {
-            val packageName = targetPackageName()
-            return HotReloadRegistry.register(
-                modulePackageName,
-                loadedVersionCode,
-                packageName,
-                Binder.getCallingUid(),
-                Binder.getCallingPid(),
-                packageName,
-                target,
-            )
-        }
-
         override fun requestInjectedManagerBinder(
             binder: MutableList<IBinder>
         ): ParcelFileDescriptor? {
-            val packageName = targetPackageName()
-            Log.i(TAG, "$packageName requests injected manager binder")
-            binder.add(XposedServiceBinder(packageName))
+            val targetPackage = targetPackageName()
+                ?: throw SecurityException("Unregistered ModuleService caller")
+            Log.i(TAG, "$targetPackage requests injected manager binder")
+            binder.add(XposedServiceBinder(targetPackage))
             return null
+        }
+
+        override fun registerHotReloadTarget(target: IHotReloadTarget) {
+            val targetPackage = targetPackageName()
+                ?: throw SecurityException("Unregistered ModuleService caller")
+            HotReloadRegistry.register(
+                Binder.getCallingUid(),
+                Binder.getCallingPid(),
+                callingProcessName(targetPackage),
+                target,
+            )
         }
     }
 }

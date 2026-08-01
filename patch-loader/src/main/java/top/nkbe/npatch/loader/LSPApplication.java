@@ -8,6 +8,7 @@ import android.app.LoadedApk;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.CompatibilityInfo;
 import android.os.Build;
 import android.os.Handler;
@@ -25,12 +26,14 @@ import org.json.JSONObject;
 import org.lsposed.lspd.models.Module;
 import org.lsposed.lspd.service.ILSPApplicationService;
 import org.matrix.vector.Startup;
+import org.matrix.vector.impl.VectorLogBridge;
 import top.nkbe.npatch.loader.util.XLog;
 import top.nkbe.npatch.service.IntegrApplicationService;
 import top.nkbe.npatch.service.NeoLocalApplicationService;
 import top.nkbe.npatch.service.RemoteApplicationService;
 import top.nkbe.npatch.share.Constants;
 import top.nkbe.npatch.share.PatchConfig;
+import top.nkbe.npatch.util.SB;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -72,6 +75,9 @@ public class LSPApplication {
     private static LoadedApk stubLoadedApk;
     private static LoadedApk appLoadedApk;
     private static Thread.UncaughtExceptionHandler previousUncaughtExceptionHandler;
+    private static boolean crashInterceptorInstalled;
+    private static boolean outputLoggingConfigured;
+    private static volatile Throwable lastCoreCapturedCrash;
 
     private static PatchConfig config;
 
@@ -81,6 +87,71 @@ public class LSPApplication {
 
     private static void logWarn(String msg) {
         XLog.w(TAG, msg);
+    }
+
+    private static void setPathField(ApplicationInfo appInfo, String fieldName, String value) {
+        if (appInfo == null || value == null) return;
+        try {
+            XposedHelpers.setObjectField(appInfo, fieldName, value);
+        } catch (Throwable ignored) {
+        }
+    }
+
+    private static void restoreVisibleApplicationInfo(Object boundApplication, ApplicationInfo appInfo, String visibleApkPath) {
+        if (appInfo == null || visibleApkPath == null) return;
+
+        appInfo.sourceDir = visibleApkPath;
+        appInfo.publicSourceDir = visibleApkPath;
+        setPathField(appInfo, "scanSourceDir", visibleApkPath);
+        setPathField(appInfo, "scanPublicSourceDir", visibleApkPath);
+
+        if (boundApplication != null) {
+            try {
+                XposedHelpers.setObjectField(boundApplication, "appInfo", appInfo);
+            } catch (Throwable ignored) {
+            }
+        }
+        if (appLoadedApk != null) {
+            try {
+                XposedHelpers.setObjectField(appLoadedApk, "mApplicationInfo", appInfo);
+            } catch (Throwable ignored) {
+            }
+        }
+        if (stubLoadedApk != null) {
+            try {
+                XposedHelpers.setObjectField(stubLoadedApk, "mApplicationInfo", appInfo);
+            } catch (Throwable ignored) {
+            }
+        }
+    }
+
+    private static void restoreVisibleLoadedApkResources(LoadedApk loadedApk, String visibleApkPath) {
+        if (loadedApk == null || visibleApkPath == null) return;
+
+        setLoadedApkPathField(loadedApk, "mResDir", visibleApkPath);
+        setLoadedApkPathArrayField(loadedApk, "mSplitResDirs", visibleApkPath, visibleApkPath);
+    }
+
+    private static void setLoadedApkPathField(LoadedApk loadedApk, String fieldName, String value) {
+        try {
+            XposedHelpers.setObjectField(loadedApk, fieldName, value);
+        } catch (Throwable ignored) {
+        }
+    }
+
+    private static void setLoadedApkPathArrayField(LoadedApk loadedApk, String fieldName, String fromValue, String toValue) {
+        try {
+            Object value = XposedHelpers.getObjectField(loadedApk, fieldName);
+            if (!(value instanceof String[] paths)) {
+                return;
+            }
+            for (int i = 0; i < paths.length; i++) {
+                if (paths[i] == null || paths[i].equals(fromValue)) {
+                    paths[i] = toValue;
+                }
+            }
+        } catch (Throwable ignored) {
+        }
     }
 
     public static boolean isIsolated() {
@@ -93,6 +164,31 @@ public class LSPApplication {
             return list != null && list.length > 0;
         } catch (IOException e) {
             return false;
+        }
+    }
+
+    private static int resolveSigBypassLevel(ApplicationInfo appInfo, int fallbackLevel) {
+        if (appInfo == null || appInfo.packageName == null) {
+            return fallbackLevel;
+        }
+        try {
+            var systemContext = activityThread.getSystemContext();
+            if (systemContext == null) {
+                return fallbackLevel;
+            }
+            var packageManager = (PackageManager) XposedHelpers.callMethod(systemContext, "getPackageManager");
+            var metaData = packageManager
+                    .getApplicationInfo(appInfo.packageName, PackageManager.GET_META_DATA)
+                    .metaData;
+            String encoded = metaData == null ? null : metaData.getString("npatch");
+            if (encoded == null) {
+                return fallbackLevel;
+            }
+            String json = new String(android.util.Base64.decode(encoded, android.util.Base64.DEFAULT), StandardCharsets.UTF_8);
+            return new JSONObject(json).optInt("sigBypassLevel", fallbackLevel);
+        } catch (Throwable e) {
+            Log.w(TAG, "Failed to resolve signature bypass level from manifest metadata", e);
+            return fallbackLevel;
         }
     }
 
@@ -130,6 +226,10 @@ public class LSPApplication {
         var context = createLoadedApkWithContext();
         if (context == null) {
             XLog.e(TAG, "Error when creating context");
+            return;
+        }
+        if (SB.hasConflict(context)) {
+            SB.triggerConflict(context);
             return;
         }
 
@@ -188,23 +288,25 @@ public class LSPApplication {
         }
 
         registerModuleCallerPrefixes(service);
+        SigBypass.doSigBypass(context, config.lspConfig.sigBypassLevel, config.hideLibs);
         disableProfile(context);
+
         Startup.initXposed(false, ActivityThread.currentProcessName(), context.getApplicationInfo().dataDir, service);
         Startup.bootstrapXposed(false);
 
         // WARN: Since it uses `XResource`, the following class should not be initialized
         // before forkPostCommon is invoke. Otherwise, you will get failure of XResources
 
-        if (config.outputLog) {
-            XposedBridge.setLogPrinter(new XposedLogPrinter(0, "NPatch"));
-            installCrashInterceptor(context);
-        }
         logInfo("Load modules");
         LSPLoader.initModules(appLoadedApk);
         logInfo("Modules initialized");
+        try {
+            CacheCleaner.sweepModuleNativeCache(context.getApplicationInfo(), LSPLoader.getActiveModuleApkPaths());
+        } catch (Throwable e) {
+            Log.w(TAG, "Failed to sweep module native cache", e);
+        }
 
         switchAllClassLoader();
-        SigBypass.doSigBypass(context, config.sigBypassLevel);
 
         if (config.useMicroG) {
             logInfo("Activating MicroG redirect via NPatch");
@@ -215,21 +317,27 @@ public class LSPApplication {
     }
 
     private static void installCrashInterceptor(Context context) {
-        if (previousUncaughtExceptionHandler != null) {
+        if (crashInterceptorInstalled) {
             return;
         }
 
+        crashInterceptorInstalled = true;
         previousUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
             try {
-                XLog.e(TAG, "Uncaught exception in " + thread.getName(), throwable);
-                new Handler(Looper.getMainLooper()).post(() ->
-                        Toast.makeText(
-                                context.getApplicationContext(),
-                                "Crash log saved to Media directory",
-                                Toast.LENGTH_LONG
-                        ).show()
-                );
+                if (lastCoreCapturedCrash != throwable) {
+                    XLog.e(TAG, "Uncaught exception in " + thread.getName(), throwable);
+                }
+                lastCoreCapturedCrash = null;
+                if (context != null) {
+                    new Handler(Looper.getMainLooper()).post(() ->
+                            Toast.makeText(
+                                    context.getApplicationContext(),
+                                    "Crash log saved to Media directory",
+                                    Toast.LENGTH_LONG
+                            ).show()
+                    );
+                }
             } catch (Throwable ignored) {
             }
 
@@ -237,6 +345,22 @@ public class LSPApplication {
                 previousUncaughtExceptionHandler.uncaughtException(thread, throwable);
             }
         });
+    }
+
+    private static synchronized void configureOutputLogging(Context context) {
+        if (outputLoggingConfigured || config == null || !config.outputLog) {
+            return;
+        }
+        outputLoggingConfigured = true;
+        XposedLogPrinter printer = new XposedLogPrinter(0, "NPatch");
+        XposedBridge.setLogPrinter(printer);
+        VectorLogBridge.setSink((priority, tag, message, throwable) -> {
+            if ("NPatchCrash".equals(tag) && throwable != null) {
+                lastCoreCapturedCrash = throwable;
+            }
+            XposedLogPrinter.log(priority, tag, message, throwable);
+        });
+        installCrashInterceptor(context);
     }
 
     private static Context createLoadedApkWithContext() {
@@ -257,22 +381,41 @@ public class LSPApplication {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+            // Keep the effective bypass level out of the editable config.json copy.
+            config.lspConfig.sigBypassLevel = resolveSigBypassLevel(appInfo, config.sigBypassLevel);
             XLog.init(config.newPackage, ActivityThread.currentProcessName(), config.outputLog);
+            configureOutputLogging(null);
             logInfo("Loaded patch config for " + config.newPackage + ", useManager=" + config.useManager + ", outputLog=" + config.outputLog);
             Log.i(TAG, "Use manager: " + config.useManager);
-            Log.i(TAG, "Signature bypass level: " + config.sigBypassLevel);
+            Log.i(TAG, "Signature bypass level: " + config.lspConfig.sigBypassLevel);
+
+            CacheCleaner.handlePatchUpgrade(appInfo, patchedApkPath);
+            CacheCleaner.sweepLibNpatchCache(appInfo);
+            CacheCleaner.sweepLegacyNpatchCache(appInfo);
 
             String loadedApkSourceDir = patchedApkPath;
-            if (config.sigBypassLevel >= Constants.SIGBYPASS_BASIC) {
+            boolean loadedApkUsesOriginCache = false;
+            if (config.lspConfig.sigBypassLevel >= Constants.SIGBYPASS_BASIC) {
                 Path cacheApkPath = OriginApkHelper.prepareOriginApk(appInfo, baseClassLoader);
                 Path nativeLibraryDir = OriginApkHelper.prepareNativeLibraryDir(appInfo, cacheApkPath, patchedApkPath);
                 SigBypass.setPaths(cacheApkPath.toString(), patchedApkPath);
+                SigBypass.setOriginalSignature(config.newPackage, config.originalSignature);
                 loadedApkSourceDir = cacheApkPath.toString();
+                loadedApkUsesOriginCache = true;
+                XLog.i(TAG, "LoadedApk source mode=cache"
+                        + ", patchedApkPath=" + patchedApkPath
+                        + ", cacheApkPath=" + cacheApkPath
+                        + ", selected=" + loadedApkSourceDir);
                 if (nativeLibraryDir != null) {
                     appInfo.nativeLibraryDir = nativeLibraryDir.toString();
                 }
+                try {
+                    CacheCleaner.sweepOriginApkCache(appInfo, OriginApkHelper.getOriginalApkCrc(patchedApkPath));
+                } catch (IOException e) {
+                    Log.w(TAG, "Failed to sweep origin apk cache", e);
+                }
             }
-            if (config.sigBypassLevel >= Constants.SIGBYPASS_HIGH) {
+            if (config.lspConfig.sigBypassLevel >= Constants.SIGBYPASS_HIGH) {
                 appInfo.appComponentFactory = config.appComponentFactory;
             } else {
                 appInfo.appComponentFactory = null;
@@ -280,7 +423,7 @@ public class LSPApplication {
 
             Path providerPath = null;
             if (config.injectProvider) {
-                Path providerDir = Paths.get(appInfo.dataDir, "cache/npatch/origin/");
+                Path providerDir = Paths.get(appInfo.dataDir, "cache/code_cache/");
                 if (!Files.exists(providerDir)) Files.createDirectories(providerDir);
                 providerPath = providerDir.resolve("provider.dex");
                 try {
@@ -305,6 +448,13 @@ public class LSPApplication {
             appInfo.publicSourceDir = loadedApkSourceDir;
             appLoadedApk = activityThread.getPackageInfoNoCheck(appInfo, compatInfo);
             appLoadedApk.getClassLoader();
+            // LoadedApk resources must remain paired with the APK used to create it.  In
+            // signature-bypass mode that APK is the cached original APK; replacing mResDir
+            // with the patched APK mixes its resource table with the original app's IDs and
+            // causes Resources$NotFoundException while inflating layouts.
+            if (!loadedApkUsesOriginCache) {
+                restoreVisibleLoadedApkResources(appLoadedApk, patchedApkPath);
+            }
 
             if (config.injectProvider && providerPath != null) {
                 try {
@@ -327,6 +477,7 @@ public class LSPApplication {
                 }
             }
 
+            restoreVisibleApplicationInfo(mBoundApplication, appInfo, patchedApkPath);
             XposedHelpers.setObjectField(mBoundApplication, "info", appLoadedApk);
 
             var activityClientRecordClass = XposedHelpers.findClass("android.app.ActivityThread$ActivityClientRecord", ActivityThread.class.getClassLoader());
@@ -362,7 +513,7 @@ public class LSPApplication {
             Log.i(TAG, "createLoadedApkWithContext cost: " + (System.currentTimeMillis() - timeStart) + "ms");
             return context;
         } catch (Throwable e) {
-            Log.e(TAG, "createLoadedApk", e);
+            XLog.e(TAG, "createLoadedApk", e);
             return null;
         }
     }

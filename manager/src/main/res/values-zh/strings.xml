@@ -10,6 +10,8 @@
     <string name="modules">模块</string>
     <string name="shizuku_available">Shizuku 服务可用</string>
     <string name="shizuku_unavailable">Shizuku 服务未连接</string>
+    <string name="status_active">运行中</string>
+    <string name="status_inactive">未运行</string>
     <string name="screen_home">主页</string>
     <string name="screen_repo">仓库</string>
     <string name="off">关闭</string>
@@ -28,6 +30,29 @@
     <string name="home_support">支持</string>
     <string name="home_about">关于 NPatch</string>
     <string name="home_description">NPatch 是一款免费且迭代于 LSPatch 的，基于 Vector 核心的免 Root 的 Xposed 框架。</string>
+    <string name="home_contribute">参与项目</string>
+    <string name="home_review_change">审查更改</string>
+    <string name="home_discussions">参与讨论</string>
+    <string name="home_test_canary">测试 Canary 构建</string>
+    <string name="home_report_problem">报告问题</string>
+    <string name="home_recent_activity">最近活动</string>
+    <string name="home_activity_summary">%1$d 次提交，%2$d 位贡献者</string>
+    <string name="home_activity_rest">正在休息——已保留活动记录。下拉刷新。</string>
+    <string name="home_activity_offline">无法加载项目活动，请下拉重试。</string>
+    <string name="home_project_stats">%1$s 个星标 · %2$s 个分支</string>
+    <string name="home_appearance_theme">主题</string>
+    <string name="home_appearance_color">颜色</string>
+    <string name="home_appearance_amoled">AMOLED 纯黑</string>
+    <string name="home_appearance_amoled_summary">在暗色模式中使用纯黑背景表面</string>
+    <string name="home_appearance_ambience">顶部氛围</string>
+    <string name="home_ambience_circuit">电路</string>
+    <string name="home_ambience_none">无</string>
+    <string name="ambience_snow">雪花</string>
+    <string name="ambience_maze">迷宫</string>
+    <string name="ambience_circuit">电路</string>
+    <string name="ambience_matrix">代码雨</string>
+    <string name="ambience_none">静止</string>
+    <string name="home_appearance_navigation">导航</string>
 
     <!-- About Screen -->
     <string name="about_view_source_code"><![CDATA[查看源代码 %1$s]]></string>
@@ -52,6 +77,9 @@
     <!-- Manage Screen -->
     <string name="screen_manage">管理</string>
     <string name="manage_loading">加载中</string>
+    <string name="manage_running">運行中</string>
+    <string name="manage_not_running">未運行</string>
+    <string name="manage_active_of">%1$d / %2$d 已啟用</string>
     <string name="manage_search">搜索</string>
     <string name="manage_no_search_results">暂无搜索结果</string>
     <string name="manage_no_apps">尚无已修补的应用</string>
@@ -74,6 +102,9 @@
     <string name="manage_no_modules">尚无模块</string>
     <string name="manage_module_settings">模块设置</string>
     <string name="manage_app_info">应用信息</string>
+    <string name="manage_export_diagnostics">导出诊断日志</string>
+    <string name="manage_export_diagnostics_chooser">分享已打包应用的诊断日志</string>
+    <string name="manage_export_diagnostics_failed">导出诊断日志失败</string>
     <string name="manage_module_pipeline_unsupported">不支持的架构</string>
     <string name="manage_module_api_unsupported">不支持的 API %1$d</string>
     <string name="manage_module_unsupported_warning">Modern 架构不支持 API %1$d</string>
@@ -102,10 +133,6 @@
     <string name="patch_sigbypasslv1_desc">增加 Java IO 与 Native openat/openat64 重定向，让签名相关的文件读取改为访问原始 APK</string>
     <string name="patch_sigbypasslv2">High</string>
     <string name="patch_sigbypasslv2_desc">基于 Basic，恢复原始 AppComponentFactory，并 hook getPackageArchiveInfo 与 hasSigningCertificate 等更严格的校验路径</string>
-    <string name="patch_sigbypasslv3">Extreme</string>
-    <string name="patch_sigbypasslv3_desc">基于 High，hook PackageInfo(Parcel) 构造函数，覆盖 Binder 反序列化得到签名信息的路径</string>
-    <string name="patch_sigbypasslv4">Stealth</string>
-    <string name="patch_sigbypasslv4_desc">采用 GOT/PLT 重定向，参考 FPA (FunPatchApp) 的实现：伪装 PackageInfo/签名结果，并经由各调用方的 GOT 重定向 APK 访问；不修改 libc/libart 的 .text，也不安装 seccomp 过滤器，因此可与 .text CRC 及 seccomp 完整性检测共存。全架构可用</string>
     <string name="patch_override_version_code">覆写版本号</string>
     <string name="patch_override_version_code_desc">将修补的 App 版本号重写为自定义值，默认为 1\n这将允许更多场景下的降级安装，并且通常来说这不会影响应用实际感知到的版本号</string>
     <string name="patch_custom_version_code">自定义版本号</string>
@@ -120,7 +147,6 @@
     <string name="patch_hide_libs">豁免环境校验</string>
     <string name="patch_hide_libs_desc">为执行基础运行环境校验的应用收敛 ART 与敏感系统库的可见性。</string>
     <string name="patch_start">开始打包</string>
-    <string name="patch_logs">日志</string>
     <string name="patch_return">返回</string>
     <string name="patch_uninstall_text">由于签名不同，安装修补的应用前需要先卸载原应用。\n确保您已备份好个人数据。</string>
     <string name="patch_install_successfully">安装成功</string>
@@ -214,7 +240,7 @@
     <string name="accessibility_clear">清除</string>
     <string name="accessibility_sort">排序</string>
     <string name="accessibility_selected">已选择</string>
-    <string name="settings_builtin_theme_color">内置主题色</string>
+    <string name="settings_builtin_theme_color">内置主題色</string>
     <string name="settings_color_cherry_blossom">樱花粉</string>
     <string name="settings_color_default_blue">冷淡蓝</string>
     <string name="settings_color_fresh_green">清新绿</string>
@@ -265,6 +291,7 @@
     <string name="module_release_load_more">显示更早版本</string>
     <string name="module_release_no_more">没有更多版本</string>
     <string name="repo_load_failed">无法加载模块仓库：%s</string>
+    <string name="repo_retry">重试</string>
     <string name="repo_loading_mirror">正在加载镜像仓库…</string>
     <plurals name="module_release_assets_download_count">
         <item quantity="one">%d 次下载</item>

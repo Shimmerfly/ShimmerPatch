@@ -1,51 +1,49 @@
 # Neo LSPatch Framework
 
-[![Java](https://img.shields.io/badge/Java-ED8B00?logo=OpenJDK&logoColor=white&label=)](https://openjdk.org/) [![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?logo=Kotlin&logoColor=white&label=)](https://kotlinlang.org/) [![Download](https://img.shields.io/github/v/release/7723mod/NPatch?color=orange&logoColor=white&label=&logo=DocuSign)](https://github.com/7723mod/NPatch/releases/latest) [![Total](https://shields.io/github/downloads/7723mod/NPatch/total?logo=Bookmeter&label=Counts&logoColor=yellow&color=yellow)](https://github.com/7723mod/NPatch/releases)
+[![Build](https://img.shields.io/github/actions/workflow/status/7723mod/NPatch/main.yml?branch=master&logo=github&label=Build&event=push)](https://github.com/7723mod/NPatch/actions/workflows/main.yml?query=event%3Apush+is%3Acompleted+branch%3Amaster) [![Crowdin](https://img.shields.io/badge/Localization-Crowdin-blueviolet?logo=Crowdin)](https://crowdin.com/project/lspatch_jingmatrix) [![Download](https://img.shields.io/github/v/release/7723mod/NPatch?color=orange&logoColor=orange&label=Download&logo=DocuSign)](https://github.com/7723mod/NPatch/releases/latest) [![Total](https://shields.io/github/downloads/7723mod/NPatch/total?logo=Bookmeter&label=Counts&logoColor=yellow&color=yellow)](https://github.com/7723mod/NPatch/releases)
 
-## Introduction
+## Introduction 
 
-> 中文见 [README-ZH.md](README-ZH.md)
+Rootless implementation of LSPosed framework, integrating Xposed API by inserting dex and so into the target APK.
 
-NPatch is a rootless implementation of the LSPosed/LSPatch-style framework that injects dex and native libraries into the target APK to provide Xposed API support inside the app process.
+We sincerely invite you to join our [Telegram](https://t.me/NPatch) group to get more information and updates about NPatch.
 
-Official website: [npatch.nkbe.top](https://npatch.nkbe.top)
+## Supported Versions
 
-For the most up-to-date guides, architecture notes, usage details, and release-related explanations, please refer to the official website first. The website is the main source of truth for day-to-day usage and documentation updates.
+- Min: Android 9
+- Max: In theory, same with [JingMatrix/LSPosed](https://github.com/JingMatrix/LSPosed#supported-versions)
 
-Key points:
+## Download
 
-- NPatch is designed around in-process injection rather than a system-wide Xposed service.
-- The Manager does not need to stay in the foreground all the time.
-- However, the Manager still must be installed and accessible to the system when you want to add or remove modules, or when you want to sync the latest configuration.
-- Module scope and configuration are still managed through the Manager data flow.
-- For local mode and embedded mode differences, please check the official documentation on the website.
+For stable releases, please go to [Github Releases page](https://github.com/7723mod/NPatch/releases)
+For canary build, please check [Github Actions](https://github.com/7723mod/NPatch/actions)
+Note: debug builds are only available in Github Actions
 
-Supported Android versions:
+## Usage
 
-- Minimum: Android 9
-- Maximum: In theory, the same as [JingMatrix/LSPosed](https://github.com/JingMatrix/LSPosed#supported-versions)
++ Through jar
+1. Download `npatch.jar`
+1. Run `java -jar npatch.jar`
 
-Download:
++ Through manager
+1. Download and install `manager.apk` on an Android device
+1. Follow the instructions of the manager app
 
-- Stable releases: [GitHub Releases](https://github.com/7723mod/NPatch/releases)
-- Canary builds: [GitHub Actions](https://github.com/7723mod/NPatch/actions)
-- Debug builds are only available through the @ONPatch Telegram channel
 
-Usage:
+## Star Number
 
-- Jar
-  - Download `npatch.jar`
-  - Run `java -jar npatch.jar`
-- Manager
-  - Install `manager.apk` on an Android device
-  - Follow the instructions in the manager app
+[![Star History Chart](https://api.star-history.com/svg?repos=7723mod/NPatch&type=Date)](https://star-history.com/#7723mod/NPatch&Date)
 
-Translation:
+## Translation Contributing
 
-You can contribute translations through [Crowdin](https://crowdin.com/project/lspatch_jingmatrix).
+You can contribute translation [here](https://crowdin.com/project/lspatch_jingmatrix).
 
-Credits:
+## Credits
 
 - [LSPosed](https://github.com/JingMatrix/LSPosed): Core framework
 - [Xpatch](https://github.com/WindySha/Xpatch): Fork source
 - [Apkzlib](https://android.googlesource.com/platform/tools/apkzlib): Repacking tool
+
+## License
+
+NPatch is licensed under the **GNU General Public License v3 (GPL-3)** (http://www.gnu.org/copyleft/gpl.html).

@@ -4,7 +4,12 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.DialogProperties
+import top.nkbe.npatch.ui.component.compat.OverlayDialog
 
+/**
+ * Vector-styled alert dialog. Delegates to [OverlayDialog] with Material 3 [AlertDialog] fallback
+ * for complex custom content scenarios.
+ */
 @Composable
 fun VectorAlertDialog(
     onDismissRequest: () -> Unit,

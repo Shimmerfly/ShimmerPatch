@@ -52,7 +52,6 @@ import top.nkbe.npatch.ui.viewmodel.NewPatchViewModel
 import top.nkbe.npatch.ui.viewmodel.NewPatchViewModel.PatchState
 import top.nkbe.npatch.ui.viewmodel.NewPatchViewModel.ViewAction
 import androidx.compose.material3.ButtonDefaults
-import top.nkbe.npatch.ui.component.compat.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import top.nkbe.npatch.ui.component.compat.SmallTitle

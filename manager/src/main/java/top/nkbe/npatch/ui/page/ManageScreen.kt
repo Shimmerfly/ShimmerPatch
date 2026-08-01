@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -27,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.chrisbanes.haze.rememberHazeState
@@ -39,6 +36,7 @@ import top.nkbe.npatch.ui.component.NPatchScaffold
 import top.nkbe.npatch.ui.component.floatingGlassBottomBarContentPadding
 import top.nkbe.npatch.ui.component.PanelHeader
 import top.nkbe.npatch.ui.component.SearchField
+import top.nkbe.npatch.ui.component.compat.TabRow
 import top.nkbe.npatch.ui.page.manage.AppManageBody
 import top.nkbe.npatch.ui.page.manage.AppManageFab
 import top.nkbe.npatch.ui.page.manage.ModuleManageBody
@@ -130,18 +128,14 @@ fun ManageScreen(
                 },
             )
 
-            TabRow(selectedTabIndex = settledPage) {
-                tabTitles.forEachIndexed { index, title ->
-                    Tab(
-                        selected = settledPage == index,
-                        onClick = {
-                            onSelectedPageChange(index)
-                            scope.launch { pagerState.animateScrollToPage(index) }
-                        },
-                        text = { Text(title, fontWeight = FontWeight.Medium) },
-                    )
-                }
-            }
+            TabRow(
+                tabs = tabTitles,
+                selectedTabIndex = settledPage,
+                onTabSelected = { index ->
+                    onSelectedPageChange(index)
+                    scope.launch { pagerState.animateScrollToPage(index) }
+                },
+            )
 
             HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
                 val contentPadding = PaddingValues(

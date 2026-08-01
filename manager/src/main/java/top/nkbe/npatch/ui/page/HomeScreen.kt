@@ -32,8 +32,7 @@ import androidx.compose.material.icons.rounded.RateReview
 import androidx.compose.material.icons.rounded.Science
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -61,7 +60,9 @@ import top.nkbe.npatch.R
 import top.nkbe.npatch.config.ThemeConfig
 import top.nkbe.npatch.config.dataStore
 import top.nkbe.npatch.share.LSPConfig
+import top.nkbe.npatch.ui.component.NPatchScaffold
 import top.nkbe.npatch.ui.component.VectorStatusHeader
+import top.nkbe.npatch.ui.component.compat.Card
 import top.nkbe.npatch.ui.component.floatingGlassBottomBarContentPadding
 import top.nkbe.npatch.ui.util.LocalFloatingGlassBottomBar
 
@@ -119,7 +120,7 @@ fun HomeScreen(
         }
     }
 
-    Scaffold(contentWindowInsets = WindowInsets(0)) { padding ->
+    NPatchScaffold(contentWindowInsets = WindowInsets(0)) { padding ->
         Box(Modifier.padding(padding).fillMaxSize()) {
             LazyColumn(
                 state = listState,
@@ -196,11 +197,13 @@ private fun ProjectDoor(
     modifier: Modifier,
     onClick: () -> Unit,
 ) {
-    OutlinedCard(onClick = onClick, modifier = modifier) {
-        Row(Modifier.fillMaxHeight().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
-            Spacer(Modifier.width(10.dp))
-            Text(label, style = MaterialTheme.typography.labelLarge)
+    Card(onClick = onClick, modifier = modifier) {
+        Surface(color = MaterialTheme.colorScheme.surfaceContainerHigh, shape = MaterialTheme.shapes.medium) {
+            Row(Modifier.fillMaxHeight().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                Icon(icon, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+                Spacer(Modifier.width(10.dp))
+                Text(label, style = MaterialTheme.typography.labelLarge)
+            }
         }
     }
 }

@@ -3,8 +3,8 @@ room = "2.8.3"
 shizuku = "13.1.5"
 hiddenapi = "4.4.0"
 compose-bom = "2025.12.01"
-kotlin = "2.3.21"
-ksp = "2.3.7"
+kotlin = "2.4.10-RC"
+ksp = "2.3.10"
 commons-io = "2.20.0"
 beust-jcommander = "1.82"
 google-gson = "2.13.1"
@@ -42,6 +42,7 @@ androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+androidx-compose-material3-adaptive-navigation-suite = { module = "androidx.compose.material3.adaptive:adaptive" }
 
 # Database Libraries
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -31,12 +32,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -241,12 +242,23 @@ private fun ToggleRow(
     enabled: Boolean = true,
     onCheckedChange: (Boolean) -> Unit,
 ) {
-    ListItem(
-        headlineContent = { Text(title) },
-        supportingContent = { Text(subtitle, color = MaterialTheme.colorScheme.onSurfaceVariant) },
-        trailingContent = { Switch(checked, onCheckedChange = null, enabled = enabled) },
-        modifier = Modifier.clickable(enabled = enabled) { onCheckedChange(!checked) },
-    )
+    Surface(
+        onClick = { if (enabled) onCheckedChange(!checked) },
+        enabled = enabled,
+        color = MaterialTheme.colorScheme.surface,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Row(
+            Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(Modifier.weight(1f)) {
+                Text(title, style = MaterialTheme.typography.bodyLarge)
+                Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            Switch(checked, onCheckedChange = null, enabled = enabled)
+        }
+    }
 }
 
 private val HOME_SEEDS = listOf(

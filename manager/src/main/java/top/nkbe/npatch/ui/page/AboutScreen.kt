@@ -135,13 +135,9 @@ fun AboutScreen(onBack: () -> Unit) {
 
 @Composable
 private fun ModuleIntroCard() {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-    ) {
+    Card(Modifier.fillMaxWidth()) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
+            modifier = Modifier.fillMaxWidth().padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
@@ -172,9 +168,7 @@ private fun ModuleIntroCard() {
 
 @Composable
 private fun AuthorCard(onClick: () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-    ) {
+    Card(Modifier.fillMaxWidth()) {
         ArrowPreference(
             title = "NkBe",
             summary = stringResource(R.string.about_author_summary),
@@ -196,9 +190,7 @@ private fun AuthorCard(onClick: () -> Unit) {
 
 @Composable
 private fun DisclaimerCard() {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-    ) {
+    Card(Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -223,9 +215,7 @@ private fun DisclaimerCard() {
 private fun AcknowledgmentsCard(onLinkClick: (String) -> Unit) {
     val contributors = rememberAcknowledgmentLinks()
 
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-    ) {
+    Card(Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(vertical = 8.dp)) {
             AboutSectionHeader(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),

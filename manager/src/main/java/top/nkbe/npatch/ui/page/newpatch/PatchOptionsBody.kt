@@ -26,8 +26,11 @@ import top.nkbe.npatch.ui.component.settings.SettingsEditor
 import top.nkbe.npatch.ui.util.backgroundAwareCardColors
 import top.nkbe.npatch.ui.viewmodel.NewPatchViewModel
 import top.nkbe.npatch.ui.viewmodel.NewPatchViewModel.ViewAction
-import androidx.compose.material3.*
-import top.nkbe.npatch.ui.component.compat.Card
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarScrollBehavior
 import top.nkbe.npatch.ui.component.compat.DropdownEntry
 import top.nkbe.npatch.ui.component.compat.DropdownItem
 import top.nkbe.npatch.ui.component.compat.SmallTitle

@@ -70,9 +70,8 @@ import top.nkbe.npatch.ui.util.LocalFloatingGlassBottomBar
 import top.nkbe.npatch.ui.viewmodel.RepoSort
 import top.nkbe.npatch.ui.viewmodel.RepoUiModel
 import top.nkbe.npatch.ui.viewmodel.RepositoryViewModel
-import top.nkbe.npatch.ui.component.compat.Card
+import top.nkbe.npatch.ui.component.compat.Button
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator

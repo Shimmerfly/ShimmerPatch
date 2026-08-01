@@ -27,7 +27,7 @@ val commitCount = runCatching {
     val repo = FileRepository(rootProject.file(".git"))
     val refId = repo.refDatabase.exactRef("refs/remotes/origin/miuix")?.objectId
     if (refId != null) Git(repo).log().add(refId).call().count() else 0
-}.getOrElse {0}
+}.getOrElse {0}.coerceAtLeast(1)
 
 val (coreCommitCount, coreLatestTag) = runCatching {
     FileRepositoryBuilder().setGitDir(rootProject.file("core/.git"))

@@ -6,29 +6,26 @@ import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
 
-import io.github.libxposed.service.HookedProcess;
-import io.github.libxposed.service.IHotReloadCallback;
-import io.github.libxposed.service.IXposedScopeCallback;
 import org.lsposed.lspd.service.ILSPInjectedModuleService;
 import org.lsposed.lspd.service.IRemotePreferenceCallback;
 
+/**
+ * Read-only injected-module view of an {@link NPatchRemoteStore}.
+ *
+ * <p>Vector API 101/102 deliberately keeps injected remote data read-only. Module applications
+ * perform writes through {@code IXposedService}; this service only delivers snapshots, change
+ * callbacks and read-only files to code running inside hooked targets.</p>
+ */
 public final class LocalInjectedModuleService extends ILSPInjectedModuleService.Stub {
     private final NPatchRemoteStore store;
-    private final boolean writableFiles;
     private final int allowedUid;
 
     public LocalInjectedModuleService(Context context, String packageName) {
-        this(context, packageName, false, -1);
+        this(context, packageName, -1);
     }
 
-    public LocalInjectedModuleService(Context context, String packageName, boolean writableFiles) {
-        this(context, packageName, writableFiles, -1);
-    }
-
-    public LocalInjectedModuleService(
-            Context context, String packageName, boolean writableFiles, int allowedUid) {
+    public LocalInjectedModuleService(Context context, String packageName, int allowedUid) {
         store = NPatchRemoteStore.get(context, packageName);
-        this.writableFiles = writableFiles;
         this.allowedUid = allowedUid;
     }
 
@@ -39,80 +36,24 @@ public final class LocalInjectedModuleService extends ILSPInjectedModuleService.
     }
 
     @Override
-    public java.util.List<String> getScope() {
-        enforceCaller();
-        return java.util.Collections.emptyList();
-    }
-
-    @Override
-    public void requestScope(java.util.List<String> packages, IXposedScopeCallback callback) {
-        enforceCaller();
-        if (callback != null) {
-            try {
-                callback.onScopeRequestFailed("Scope requests are not supported by local mode");
-            } catch (RemoteException ignored) {
-            }
-        }
-    }
-
-    @Override
-    public void removeScope(java.util.List<String> packages) {
-        enforceCaller();
-    }
-
-    @Override
-    public java.util.List<HookedProcess> getRunningTargets() {
-        enforceCaller();
-        return java.util.Collections.emptyList();
-    }
-
-    @Override
-    public void hotReloadModule(long targetId, Bundle data, IHotReloadCallback callback) {
-        enforceCaller();
-        if (callback != null) {
-            try {
-                callback.onHotReloadResult(
-                        io.github.libxposed.service.IXposedService.HOT_RELOAD_UNSUPPORTED,
-                        "Hot reload is not supported by local mode");
-            } catch (RemoteException ignored) {
-            }
-        }
-    }
-
-    @Override
-    public Bundle requestRemotePreferences(String group, IRemotePreferenceCallback callback) {
+    public Bundle requestRemotePreferences(
+            String group,
+            IRemotePreferenceCallback callback
+    ) {
         enforceCaller();
         return store.requestPreferences(group, callback);
     }
 
     @Override
-    public void updateRemotePreferences(String group, Bundle diff) throws RemoteException {
-        enforceCaller();
-        store.updatePreferences(group, diff);
-    }
-
-    @Override
-    public void deleteRemotePreferences(String group) throws RemoteException {
-        enforceCaller();
-        store.deletePreferences(group);
-    }
-
-    @Override
     public ParcelFileDescriptor openRemoteFile(String path) throws RemoteException {
         enforceCaller();
-        return store.openFile(path, writableFiles);
+        return store.openFile(path, false);
     }
 
     @Override
     public String[] getRemoteFileList() {
         enforceCaller();
         return store.listFiles();
-    }
-
-    @Override
-    public boolean deleteRemoteFile(String path) {
-        enforceCaller();
-        return store.deleteFile(path);
     }
 
     private void enforceCaller() {

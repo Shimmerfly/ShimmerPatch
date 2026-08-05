@@ -4,11 +4,12 @@ import android.app.ActivityThread;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.util.Log;
+import android.util.LogPrinter;
 
-import org.matrix.vector.util.Utils;
 import org.matrix.vector.impl.hooks.VectorNativeHooker;
 import org.matrix.vector.impl.hooks.VectorInvocation;
 import org.matrix.vector.impl.hooks.VectorLegacyCallback;
+import org.matrix.vector.util.Utils;
 import org.matrix.vector.nativebridge.HookBridge;
 import org.matrix.vector.nativebridge.ResourcesHook;
 
@@ -18,8 +19,11 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -43,7 +47,7 @@ public final class XposedBridge {
     /**
      * @hide
      */
-    public static final String TAG = "VectorLegacyBridge";
+    public static final String TAG = "NPatchLegacyBridge";
 
     /**
      * @deprecated Use {@link #getXposedVersion()} instead.
@@ -52,6 +56,9 @@ public final class XposedBridge {
     public static int XPOSED_BRIDGE_VERSION;
 
     private static final Object[] EMPTY_ARRAY = new Object[0];
+    private static final SimpleDateFormat LOG_TIME_FORMAT =
+            new SimpleDateFormat("'['yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ROOT);
+    private static volatile LogPrinter logPrinter;
 
     // built-in handlers
     public static final CopyOnWriteArraySet<XC_LoadPackage> sLoadedPackageCallbacks = new CopyOnWriteArraySet<>();
@@ -61,6 +68,10 @@ public final class XposedBridge {
     }
 
     public static volatile ClassLoader dummyClassLoader = null;
+
+    public static void setLogPrinter(LogPrinter printer) {
+        logPrinter = printer;
+    }
 
     public static void initXResources() {
         if (dummyClassLoader != null) {
@@ -127,6 +138,17 @@ public final class XposedBridge {
      */
     public synchronized static void log(String text) {
         Log.i(TAG, text);
+        LogPrinter printer = logPrinter;
+        if (printer != null) {
+            printer.println(
+                    LOG_TIME_FORMAT.format(new Date())
+                            + " "
+                            + ActivityThread.currentProcessName()
+                            + ";"
+                            + Thread.currentThread().getName()
+                            + "]"
+                            + text);
+        }
     }
 
     /**
@@ -144,6 +166,17 @@ public final class XposedBridge {
         // line in the modules log.
         String logStr = org.matrix.vector.util.Log.getStackTraceString(t);
         Log.e(TAG, logStr);
+        LogPrinter printer = logPrinter;
+        if (printer != null) {
+            printer.println(
+                    LOG_TIME_FORMAT.format(new Date())
+                            + " "
+                            + ActivityThread.currentProcessName()
+                            + ";"
+                            + Thread.currentThread().getName()
+                            + "]"
+                            + logStr);
+        }
     }
 
     /**

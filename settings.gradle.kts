@@ -26,10 +26,7 @@ include(
     ":hiddenapi:stubs",
     ":hiddenapi:bridge",
     ":legacy",
-    ":manager",
-    ":manager-ui",
     ":services:manager-service",
     ":services:daemon-service",
     ":xposed",
-    ":zygisk",
 )

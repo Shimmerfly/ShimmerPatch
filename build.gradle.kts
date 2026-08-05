@@ -20,14 +20,26 @@ plugins {
     alias(libs.plugins.ktfmt)
 }
 
-/** A ValueSource that executes 'git rev-list --count' to get the total commit count. */
-abstract class GitCommitCountValueSource : ValueSource<String, ValueSourceParameters.None> {
+/** A ValueSource that executes 'git rev-list --count' for the requested repository ref. */
+abstract class GitCommitCountValueSource : ValueSource<String, GitCommitCountValueSource.Parameters> {
+    interface Parameters : ValueSourceParameters {
+        val workingDirectory: Property<String>
+        val ref: Property<String>
+    }
+
     @get:Inject abstract val execOperations: ExecOperations
 
     override fun obtain(): String {
         val output = ByteArrayOutputStream()
         val result = execOperations.exec {
-            commandLine("git", "rev-list", "--count", "refs/remotes/origin/master")
+            commandLine(
+                "git",
+                "-C",
+                parameters.workingDirectory.get(),
+                "rev-list",
+                "--count",
+                parameters.ref.get(),
+            )
             standardOutput = output
             isIgnoreExitValue = true
         }
@@ -202,7 +214,11 @@ abstract class GitCommitHashValueSource : ValueSource<String, GitCommitHashValue
 // the string here and the property name have to stay in step by hand now.
 //
 // This defers the execution of the git commands and allows Gradle to cache the results.
-val versionCodeProvider = providers.of(GitCommitCountValueSource::class.java) {}
+val versionCodeProvider =
+    providers.of(GitCommitCountValueSource::class.java) {
+        parameters.workingDirectory.set(rootDir.parentFile.absolutePath)
+        parameters.ref.set("refs/remotes/origin/miuix")
+    }
 val versionHashProvider =
     providers.of(GitCommitHashValueSource::class.java) {
         // Set on every GitHub Actions runner and on nothing else, so the presence of either is

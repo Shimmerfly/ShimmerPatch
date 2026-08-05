@@ -1,6 +1,6 @@
 [submodule "external/lsplant"]
 	path = external/lsplant
-	url = https://github.com/JingMatrix/LSPlant.git
+	url = https://github.com/HSSkyBoy/LSPlant.git
 [submodule "external/dobby"]
 	path = external/dobby
 	url = https://github.com/JingMatrix/Dobby.git
@@ -24,4 +24,4 @@
 	url = https://github.com/apache/commons-lang.git
 [submodule "external/axml/manifest-editor"]
 	path = external/axml/manifest-editor
-	url = https://github.com/JingMatrix/ManifestEditor.git
+	url = https://github.com/HSSkyBoy/ManifestEditor.git

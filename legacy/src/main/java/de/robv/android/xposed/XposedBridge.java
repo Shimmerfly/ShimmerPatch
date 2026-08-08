@@ -19,11 +19,8 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -56,8 +53,6 @@ public final class XposedBridge {
     public static int XPOSED_BRIDGE_VERSION;
 
     private static final Object[] EMPTY_ARRAY = new Object[0];
-    private static final SimpleDateFormat LOG_TIME_FORMAT =
-            new SimpleDateFormat("'['yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ROOT);
     private static volatile LogPrinter logPrinter;
 
     // built-in handlers
@@ -140,14 +135,7 @@ public final class XposedBridge {
         Log.i(TAG, text);
         LogPrinter printer = logPrinter;
         if (printer != null) {
-            printer.println(
-                    LOG_TIME_FORMAT.format(new Date())
-                            + " "
-                            + ActivityThread.currentProcessName()
-                            + ";"
-                            + Thread.currentThread().getName()
-                            + "]"
-                            + text);
+            printer.println(text);
         }
     }
 
@@ -168,14 +156,7 @@ public final class XposedBridge {
         Log.e(TAG, logStr);
         LogPrinter printer = logPrinter;
         if (printer != null) {
-            printer.println(
-                    LOG_TIME_FORMAT.format(new Date())
-                            + " "
-                            + ActivityThread.currentProcessName()
-                            + ";"
-                            + Thread.currentThread().getName()
-                            + "]"
-                            + logStr);
+            printer.println(logStr);
         }
     }
 

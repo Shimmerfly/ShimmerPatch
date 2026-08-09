@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlin.random.Random
@@ -87,6 +88,13 @@ data class ManagerPresence(
     /** Injected into the host rather than installed. False leaves nothing here to offer. */
     val parasitic: Boolean = true,
     val shortcutSupported: Boolean = false,
+    /**
+     * A shortcut on the home screen the reader is looking at *now*.
+     *
+     * Deliberately narrower than "a shortcut exists": a pin does not follow the reader to a launcher
+     * they install later, so a device that has switched launchers has a route the platform still
+     * reports and a home screen with nothing on it — #883. See LaunchShortcut.isPinnedHere.
+     */
     val shortcutPinned: Boolean = false,
     /**
      * Which copy of the manager is installed beside this one, if any.
@@ -222,6 +230,34 @@ class HomeViewModel(
     val launcherPromptDismissed: StateFlow<Boolean>
         get() = ServiceLocator.settings.launcherPromptDismissed
 
+    /**
+     * Whether the status badge should still be pointing out that it opens something.
+     *
+     * The settings for how to open Vector are on that page and the badge is the only way to it, so a
+     * reader who has never tapped it has no reason to think a tick is a button — #856. The header
+     * makes the case by having the tick turn into a gear for a moment now and then, and this is what
+     * calls it off once it has been made.
+     */
+    val statusBadgeHint: StateFlow<Boolean> =
+        ServiceLocator.settings.statusBadgeOpens
+            .map { it < STATUS_BADGE_HINT_OPENS }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5_000),
+                ServiceLocator.settings.statusBadgeOpens.value < STATUS_BADGE_HINT_OPENS,
+            )
+
+    /**
+     * Counts a badge tap that opened System status.
+     *
+     * Only the badge, not every arrival at that page: the hint is teaching where *this control*
+     * leads, so a visit that came from a notification or a deep link has not learnt it.
+     */
+    fun noteStatusBadgeOpened() = ServiceLocator.settings.noteStatusBadgeOpened()
+
+    /** Re-cuts today's badge count, so a session that crossed midnight offers the hint again. */
+    fun refreshStatusBadgeHint() = ServiceLocator.settings.refreshStatusBadgeOpens()
+
     fun refreshPresence() {
         val context = ServiceLocator.context
         _presence.update {
@@ -234,7 +270,7 @@ class HomeViewModel(
             it.copy(
                 parasitic = LaunchShortcut.isParasitic(context),
                 shortcutSupported = LaunchShortcut.isSupported(context),
-                shortcutPinned = LaunchShortcut.isPinned(context),
+                shortcutPinned = LaunchShortcut.isPinnedHere(context),
                 manager = ServiceLocator.managerInstaller.installedManager(),
             )
         }
@@ -311,11 +347,21 @@ class HomeViewModel(
                     if (service != null) refreshToggles()
                 }
         }
-        // Opening Home is not a reason to talk to GitHub. The page renders from disk every time
-        // and only occasionally goes and checks — the window it shows changes a few times a week
-        // at most, and the user's battery and their share of an anonymous rate limit are worth
+        // Returning to Home is not a reason to talk to GitHub. The page renders from disk every
+        // time and only occasionally goes and checks — the window it shows changes a few times a
+        // week at most, and the user's battery and their share of an anonymous rate limit are worth
         // more than redrawing identical rows. Pull-to-refresh is always there when they do want it.
-        val checkNow = Random.nextFloat() < REVALIDATE_PROBABILITY
+        //
+        // Opening the app *is* a reason, and the toss used to apply there too: four launches in five
+        // showed whatever was on disk, which after a while is a feed that has quietly stopped
+        // moving — and a cold start is exactly when it has had the longest to go stale. So the first
+        // Home of a process always checks, and the toss governs only the visits after it. Process
+        // scope rather than a timestamp because that is what "since the app was opened" means here:
+        // parasitically the host is `com.android.shell` and is killed constantly, but each of those
+        // deaths is also what makes the next arrival a first launch to the reader.
+        val firstThisProcess = !homeOpenedThisProcess
+        homeOpenedThisProcess = true
+        val checkNow = firstThisProcess || Random.nextFloat() >= FEED_PAUSE_PROBABILITY
         refreshFeed(
             if (checkNow) GitHubRepository.Freshness.Revalidate
             else GitHubRepository.Freshness.Cached
@@ -631,8 +677,26 @@ class HomeViewModel(
     val historyStalled: StateFlow<Boolean> = _exhausted.asStateFlow()
 
     companion object {
-        /** How often opening Home actually goes and checks GitHub. */
-        private const val REVALIDATE_PROBABILITY = 0.2f
+        /** How often *returning* to Home leaves the feed on what is already on disk. */
+        private const val FEED_PAUSE_PROBABILITY = 0.8f
+
+        /**
+         * True once Home has been built in this process, whatever the feed did about it.
+         *
+         * On the companion because that is exactly the scope wanted — one per process, shared by
+         * every HomeViewModel a session builds, and gone when the host is killed. Volatile because
+         * `init` runs on whichever thread built the ViewModel.
+         */
+        @Volatile private var homeOpenedThisProcess = false
+
+        /**
+         * How many times a day the badge has to be used before it stops explaining itself.
+         *
+         * Five is comfortably more than an accident and less than a sitting spent on that page. The
+         * count resets daily — see SettingsRepository.statusBadgeOpens — so this is not a budget
+         * that runs out for good.
+         */
+        private const val STATUS_BADGE_HINT_OPENS = 5
 
         val Factory =
             object : ViewModelProvider.Factory {

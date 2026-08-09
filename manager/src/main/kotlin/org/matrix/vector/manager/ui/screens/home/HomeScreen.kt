@@ -148,6 +148,7 @@ fun HomeScreen(
     val ambienceKey by viewModel.headerAmbience.collectAsStateWithLifecycle()
     val presence by viewModel.presence.collectAsStateWithLifecycle()
     val promptDismissed by viewModel.launcherPromptDismissed.collectAsStateWithLifecycle()
+    val hintStatus by viewModel.statusBadgeHint.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var showSplash by rememberSaveable { mutableStateOf(false) }
     var showAppearance by rememberSaveable { mutableStateOf(false) }
@@ -158,8 +159,12 @@ fun HomeScreen(
 
     // The status screen has its own copy of this ViewModel — a nav destination is its own store —
     // so a shortcut pinned or an app installed from there is invisible to this one until it is
-    // asked again. Coming back to Home is when it is worth asking.
-    LaunchedEffect(Unit) { viewModel.refreshPresence() }
+    // asked again. Coming back to Home is when it is worth asking, and it is also the only moment
+    // the badge's hint can start running again, so today's tally of it is re-cut here too.
+    LaunchedEffect(Unit) {
+        viewModel.refreshPresence()
+        viewModel.refreshStatusBadgeHint()
+    }
 
     // Four taps on the wordmark, with the remaining count announced from the second. Two taps
     // could be an accident; past that the reader is clearly poking at it, so the app plays along
@@ -312,7 +317,13 @@ fun HomeScreen(
                 hasUpdate = frameworkUpdate.hasUpdate,
                 onOpenUpdate = onOpenUpdate,
                 ambience = AmbienceKind.from(ambienceKey),
-                onOpenStatus = onOpenStatus,
+                hintStatus = hintStatus,
+                onOpenStatus = {
+                    // Counted before the navigation, not after arriving: the tap is what proves the
+                    // badge was understood, and the page has other ways in that prove nothing.
+                    viewModel.noteStatusBadgeOpened()
+                    onOpenStatus()
+                },
                 onOpenAppearance = { showAppearance = true },
                 onOpenLanguage = { showLanguage = true },
                 onBrandTap = ::onBrandTap,

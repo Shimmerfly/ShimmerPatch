@@ -22,6 +22,7 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import java.util.UUID
 import org.matrix.vector.manager.BuildConfig
+import org.matrix.vector.manager.di.ServiceLocator
 import org.matrix.vector.manager.logE
 import org.matrix.vector.manager.logW
 import org.matrix.vector.manager.R
@@ -72,10 +73,67 @@ object LaunchShortcut {
             .onFailure { logW("actions: pin support query failed", it) }
             .getOrDefault(false)
 
+    /**
+     * Whether *some* launcher on this device holds the shortcut.
+     *
+     * Not the same question as whether the reader can see it, which is [isPinnedHere]. The pin flag
+     * is a property of the shortcut and not of the launcher that asked for it, so this stays true
+     * for a launcher that has since been replaced.
+     */
     fun isPinned(context: Context): Boolean =
         runCatching { manager(context)?.pinnedShortcuts.orEmpty().any { it.id == ID } }
             .onFailure { logW("actions: pinned shortcut query failed", it) }
             .getOrDefault(false)
+
+    /**
+     * Whether the shortcut is on the home screen the reader is actually looking at.
+     *
+     * Installing a different launcher does not carry pinned shortcuts across — the new one starts
+     * with an empty home screen — but [isPinned] keeps saying yes, because the platform records the
+     * pin on the shortcut rather than on the pair and only lets the active launcher read the
+     * per-launcher sets. So the row offering to create one showed a tick over a home screen with no
+     * Vector on it, and there was no way to ask for another: #883.
+     *
+     * The launchers that have pinned it are therefore remembered on this side, in
+     * SettingsRepository. A device with nothing recorded is one that pinned the shortcut before this
+     * was written, or by some route that never came back through [request]; rather than tell that
+     * reader their shortcut is missing, the launcher they are on now is adopted as its owner, which
+     * is almost certainly true and makes the *next* launcher change detectable.
+     */
+    fun isPinnedHere(context: Context): Boolean {
+        if (!isPinned(context)) return false
+        // No answer is not a mismatch. A device whose default home cannot be resolved is not one we
+        // may tell that its shortcut has gone.
+        val launcher = currentLauncher(context) ?: return true
+        val settings = ServiceLocator.settings
+        val known = settings.shortcutLaunchers()
+        if (known.isEmpty()) {
+            settings.noteShortcutLauncher(launcher)
+            return true
+        }
+        return launcher in known
+    }
+
+    /**
+     * The package drawing the home screen, or null when the device will not say which.
+     *
+     * Null covers two cases that must both be read as "do not know": the query failing, and it
+     * resolving to the platform's own chooser, which is what a device with several launchers and no
+     * default answers. Neither is evidence that the shortcut is somewhere the reader cannot see.
+     */
+    fun currentLauncher(context: Context): String? =
+        runCatching {
+                context.packageManager
+                    .resolveActivity(
+                        Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME),
+                        PackageManager.MATCH_DEFAULT_ONLY,
+                    )
+                    ?.activityInfo
+                    ?.packageName
+                    ?.takeIf { it != RESOLVER_PACKAGE }
+            }
+            .onFailure { logW("actions: current launcher query failed", it) }
+            .getOrNull()
 
     /**
      * Asks the launcher to pin the shortcut, calling [onPinned] if and when it does.
@@ -90,7 +148,19 @@ object LaunchShortcut {
         if (!isParasitic(context)) return false
         val shortcut = build(context) ?: return false
         return runCatching {
-                manager(context)?.requestPinShortcut(shortcut, callback(context, onPinned)) == true
+                val confirmed =
+                    callback(context) {
+                        // Recorded here rather than when the request is made, because the launcher
+                        // may refuse or the reader may dismiss its dialog, and a launcher noted as
+                        // holding a shortcut it never took would suppress the offer for good. Read
+                        // again rather than captured: this runs after the launcher's own dialog,
+                        // which is long enough for the default home to have changed.
+                        currentLauncher(context)?.let {
+                            ServiceLocator.settings.noteShortcutLauncher(it)
+                        }
+                        onPinned()
+                    }
+                manager(context)?.requestPinShortcut(shortcut, confirmed) == true
             }
             .onFailure { logE("actions: pin shortcut request failed", it) }
             .getOrDefault(false)
@@ -243,6 +313,9 @@ object LaunchShortcut {
 
 /** The synthesised entry every package has, used as the shortcut's publishing activity on Q+. */
 private const val APP_DETAILS_ACTIVITY = "android.app.AppDetailsActivity"
+
+/** What CATEGORY_HOME resolves to when the device has several launchers and no default. */
+private const val RESOLVER_PACKAGE = "android"
 
 /** Held by the system and by nothing installable, so only the platform can confirm a pin. */
 private const val CONFIRMATION_PERMISSION = "android.permission.CREATE_USERS"

@@ -1,6 +1,8 @@
 package org.matrix.vector.manager.ui.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
@@ -28,13 +30,17 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.PriorityHigh
 import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.Palette
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,11 +48,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
+import kotlin.random.Random
+import kotlinx.coroutines.delay
 import org.matrix.vector.manager.R
 import org.matrix.vector.manager.ui.components.ambience.AmbienceKind
 import org.matrix.vector.manager.ui.components.ambience.AmbientSurface
@@ -92,6 +102,8 @@ fun StatusHeader(
     hasUpdate: Boolean,
     onOpenUpdate: () -> Unit,
     ambience: AmbienceKind,
+    /** Whether the badge should still be showing that it opens something. See [StatusIndicator]. */
+    hintStatus: Boolean,
     onOpenStatus: () -> Unit,
     onOpenAppearance: () -> Unit,
     onOpenLanguage: () -> Unit,
@@ -188,6 +200,7 @@ fun StatusHeader(
                     StatusIndicator(
                         state = state,
                         tint = onContainer,
+                        hint = hintStatus,
                         onClick = onOpenStatus,
                         contentDescription = stringResource(R.string.status_open_details),
                     )
@@ -297,11 +310,21 @@ fun StatusHeader(
  *
  * When active it breathes: a slow, low-amplitude pulse that reads as "running" at a glance, and
  * stops dead in the other two states, so stillness itself carries meaning.
+ *
+ * It is also the door to the System status page — the settings for how to open Vector are behind it
+ * and nothing else leads there — and a tick does not look like a door. So while [hint] is set the
+ * tick turns into a gear for ten seconds every thirty, which is the one symbol everybody already
+ * reads as "there are settings here", and turns back. See #856.
+ *
+ * Only the tick. The other three states are being *reported*, urgently in two of them, and a badge
+ * that wanders off into a gear while it is saying the framework is not running would be trading the
+ * message for the hint.
  */
 @Composable
 private fun StatusIndicator(
     state: FrameworkState,
     tint: Color,
+    hint: Boolean,
     onClick: () -> Unit,
     contentDescription: String,
 ) {
@@ -335,20 +358,105 @@ private fun StatusIndicator(
             FrameworkState.Checking -> null
         }
 
+    val hinting = hint && state == FrameworkState.Active
+    var asGear by remember { mutableStateOf(false) }
+    // An Animatable rather than a target the composition sets, because a turn has to be able to
+    // *stop where it is*: the wheel that has just spun a full turn and drawn a still one next must
+    // hold that angle, and an animation driven from a remembered target would spring back to it.
+    val spin = remember { Animatable(0f) }
+
+    LaunchedEffect(hinting) {
+        // Cancelled and restarted whenever the framework leaves or re-enters Active, which is also
+        // what puts the badge back to a tick mid-hint rather than leaving a gear over a red header.
+        if (!hinting) {
+            asGear = false
+            return@LaunchedEffect
+        }
+        while (true) {
+            delay(HINT_PERIOD_MS)
+            asGear = true
+            repeat(HINT_TURNS) {
+                // A coin per turn rather than a steady spin. A gear that simply rotates for ten
+                // seconds is decoration and the eye files it away as such by the second cycle; one
+                // that turns, stops, thinks and turns again reads as something being *operated*,
+                // and it is the stopping that makes the next turn worth looking at.
+                if (Random.nextBoolean()) {
+                    spin.animateTo(
+                        spin.value + FULL_TURN,
+                        animationSpec = tween(HINT_TURN_MS, easing = LinearEasing),
+                    )
+                } else {
+                    delay(HINT_TURN_MS.toLong())
+                }
+            }
+            asGear = false
+            // Wound back into a single turn between hints, so an app left open for an afternoon
+            // does not accumulate an angle large enough to lose its own fraction.
+            spin.snapTo(spin.value.mod(FULL_TURN))
+        }
+    }
+
+    // One number for the whole tick-to-gear swap: what fades, what shrinks, what turns into what.
+    // Timed like the header's colour and corner transitions, since it is the same badge changing.
+    val morph by
+        animateFloatAsState(if (asGear) 1f else 0f, tween(MORPH_MS), label = "indicatorMorph")
+
     Box(
         modifier =
             Modifier.size(52.dp)
                 .scale(if (state == FrameworkState.Active) pulse else 1f)
                 .clip(RoundedCornerShape(percent = corner.toInt()))
-                .background(tint.copy(alpha = 0.15f))
+                // Lifted while the gear is out. The badge is asking to be pressed at that moment,
+                // and a fill a shade stronger is how every other control on the screen says so.
+                .background(tint.copy(alpha = lerp(RESTING_FILL, HINTING_FILL, morph)))
                 .clickable(onClick = onClick)
                 .semantics { this.contentDescription = contentDescription },
         contentAlignment = Alignment.Center,
     ) {
+        // Both glyphs are laid out; `morph` decides which is visible. The transforms live in a
+        // `graphicsLayer` block, which re-runs in the draw phase when the state it reads changes,
+        // so the spin never invalidates the composition — which matters most for `spin`, whose
+        // value moves on every frame of a turn.
         if (icon != null) {
             // The label beside it already names the state, and the box carries the description,
             // so the glyph must not be announced a third time.
-            Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(26.dp))
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = tint,
+                modifier =
+                    Modifier.size(26.dp).graphicsLayer {
+                        alpha = 1f - morph
+                        // Away rather than out: the tick shrinks and twists as the gear arrives
+                        // over it, so the two read as one object changing rather than two swapped.
+                        // The twist is the departing tick's alone, deliberately — a turn of the
+                        // *gear* means a coin came up heads, and nothing else may spend one.
+                        val leaving = lerp(1f, 0.6f, morph)
+                        scaleX = leaving
+                        scaleY = leaving
+                        rotationZ = -MORPH_TURN * morph
+                    },
+            )
+        }
+        if (state == FrameworkState.Active) {
+            Icon(
+                Icons.Rounded.Settings,
+                contentDescription = null,
+                tint = tint,
+                modifier =
+                    Modifier.size(26.dp).graphicsLayer {
+                        alpha = morph
+                        val arriving = lerp(0.6f, 1f, morph)
+                        scaleX = arriving
+                        scaleY = arriving
+                        // `spin` and nothing else. The wheel arrives and leaves at exactly the
+                        // angle it is resting at, so every degree it ever turns through was asked
+                        // for by a coin — which is the whole point of tossing one. It used to pick
+                        // up the tick's twist on the way in and give it back on the way out, and
+                        // that made the gear turn on every hint whatever the coins said.
+                        rotationZ = spin.value
+                    },
+            )
         }
     }
 }
@@ -367,6 +475,37 @@ private fun Color.compositeOverSurface(): Color {
 
 /** One of the two stacked buttons beside the wordmark. */
 private val ICON_BUTTON = 38.dp
+
+// --- the badge's gear hint ------------------------------------------------------------------
+// Long enough apart that the header is a still object most of the time — this sits above whatever
+// the reader came to Home to read — and long enough at a time to be noticed by someone who was
+// looking elsewhere when it began.
+
+/** How long the badge rests as a tick between hints. */
+private const val HINT_PERIOD_MS = 30_000L
+
+/** Each hint is [HINT_TURNS] of these, so ten seconds as a gear. */
+private const val HINT_TURN_MS = 2_000
+
+private const val HINT_TURNS = 5
+
+private const val FULL_TURN = 360f
+
+/** The tick-to-gear cross-dissolve, timed like the header's colour and corner transitions. */
+private const val MORPH_MS = 420
+
+/**
+ * How far the *tick* turns as it hands over, in degrees. Enough to read as a twist.
+ *
+ * Not applied to the gear. See the two `graphicsLayer` blocks: the gear's only source of rotation
+ * is the coin, so a hint whose five tosses all come up tails shows a wheel that never moves.
+ */
+private const val MORPH_TURN = 60f
+
+/** The badge's fill against the header, at rest and while it is asking to be pressed. */
+private const val RESTING_FILL = 0.15f
+
+private const val HINTING_FILL = 0.24f
 
 /**
  * The height of the row the wordmark shares with those buttons.

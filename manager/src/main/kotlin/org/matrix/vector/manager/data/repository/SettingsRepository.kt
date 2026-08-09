@@ -2,6 +2,7 @@ package org.matrix.vector.manager.data.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import java.time.LocalDate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -322,6 +323,77 @@ class SettingsRepository(context: Context) {
         prefs.edit().putBoolean("launcher_prompt_dismissed", true).apply()
         _launcherPromptDismissed.value = true
     }
+
+    /**
+     * Which launchers are known to be holding a pinned Vector shortcut.
+     *
+     * The platform will not say. `ShortcutManager.getPinnedShortcuts` answers for *any* launcher at
+     * once — the pin flag lives on the shortcut, not on the pair — and the per-launcher sets are
+     * only readable by a caller that is itself the active launcher. So a device that pinned the
+     * shortcut, then installed a different launcher, is told it already has one while its home
+     * screen has nothing on it, which is what #883 reported.
+     *
+     * A set rather than a single package because pinning on a second launcher does not unpin the
+     * first, and someone who keeps two and switches between them should not be offered a shortcut
+     * they already have on both. What the set cannot represent is a shortcut *removed* from one of
+     * several launchers holding it: nothing tells us which one lost it, and the platform still
+     * reports the shortcut pinned. That row will read as done until the last copy is gone.
+     */
+    fun shortcutLaunchers(): Set<String> =
+        prefs.getStringSet("shortcut_launchers", emptySet()).orEmpty().toSet()
+
+    fun noteShortcutLauncher(packageName: String) {
+        val known = shortcutLaunchers()
+        if (packageName in known) return
+        // A set of our own: `getStringSet` hands back the instance the preferences hold, which the
+        // platform documents as not ours to modify.
+        prefs.edit().putStringSet("shortcut_launchers", HashSet(known + packageName)).apply()
+    }
+
+    // --- the status badge's own hint ----------------------------------------------------------
+
+    /**
+     * How many times *today* the status badge was used to open System status.
+     *
+     * The badge is the only way to those settings, and nothing about a tick says so — #856. The
+     * header answers that by having the tick turn into a gear now and then, and this is what stops
+     * it: a reader who has opened the page several times today plainly knows where it is, and a gear
+     * that keeps appearing after that is noise on the one part of the header whose job is to report
+     * a state. How many is several is HomeViewModel's to say — this only counts.
+     *
+     * Counted per day rather than for good because the hint costs nothing to offer again and the
+     * knowledge does fade — and because a count that only ever grows would retire the hint on the
+     * strength of an afternoon spent on that page months ago. The day is stored beside the count and
+     * a stale one reads as zero, so no reset has to run at midnight.
+     */
+    private val _statusBadgeOpens = MutableStateFlow(statusBadgeOpensToday())
+    val statusBadgeOpens: StateFlow<Int> = _statusBadgeOpens.asStateFlow()
+
+    fun noteStatusBadgeOpened() {
+        val today = LocalDate.now().toEpochDay()
+        // Against the stored day, not against the flow: a session left open across midnight holds
+        // yesterday's count in memory, and adding to it would carry it into today.
+        val next =
+            if (prefs.getLong("status_badge_day", 0L) == today) _statusBadgeOpens.value + 1 else 1
+        prefs.edit().putLong("status_badge_day", today).putInt("status_badge_opens", next).apply()
+        _statusBadgeOpens.value = next
+    }
+
+    /**
+     * Re-reads the count against today's date.
+     *
+     * Called when Home is opened, which is the only moment the hint can start running again, and is
+     * what lets a session that has crossed midnight — parasitically rare, since the host process is
+     * killed constantly, but free to handle — offer it afresh.
+     */
+    fun refreshStatusBadgeOpens() {
+        _statusBadgeOpens.value = statusBadgeOpensToday()
+    }
+
+    private fun statusBadgeOpensToday(): Int =
+        if (prefs.getLong("status_badge_day", 0L) == LocalDate.now().toEpochDay())
+            prefs.getInt("status_badge_opens", 0)
+        else 0
 
     // --- Logs ---
 

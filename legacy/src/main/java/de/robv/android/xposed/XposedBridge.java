@@ -10,6 +10,7 @@ import org.matrix.vector.impl.hooks.VectorNativeHooker;
 import org.matrix.vector.impl.hooks.VectorInvocation;
 import org.matrix.vector.impl.hooks.VectorLegacyCallback;
 import org.matrix.vector.util.Utils;
+import org.matrix.vector.legacy.BuildConfig;
 import org.matrix.vector.nativebridge.HookBridge;
 import org.matrix.vector.nativebridge.ResourcesHook;
 
@@ -41,16 +42,18 @@ public final class XposedBridge {
      */
     public static final ClassLoader BOOTCLASSLOADER = XposedBridge.class.getClassLoader();
 
-    /**
-     * @hide
-     */
     public static final String TAG = "NPatchLegacyBridge";
+
+    public static String FRAMEWORK_NAME = BuildConfig.FRAMEWORK_NAME;
+    public static String FRAMEWORK_VERSION = BuildConfig.VERSION_NAME;
+    public static String FRAMEWORK_VERSION_NAME = BuildConfig.VERSION_NAME;
+    public static int FRAMEWORK_VERSION_CODE = BuildConfig.VERSION_CODE;
 
     /**
      * @deprecated Use {@link #getXposedVersion()} instead.
      */
     @Deprecated
-    public static int XPOSED_BRIDGE_VERSION;
+    public static int XPOSED_BRIDGE_VERSION = 93;
 
     private static final Object[] EMPTY_ARRAY = new Object[0];
     private static volatile LogPrinter logPrinter;
@@ -120,7 +123,27 @@ public final class XposedBridge {
      * Returns the currently installed version of the Xposed framework.
      */
     public static int getXposedVersion() {
-        return XposedInterface.LIB_API;
+        return 93;
+    }
+
+    public static String getXposedVersionName() {
+        return FRAMEWORK_VERSION;
+    }
+
+    public static int getXposedVersionCode() {
+        return FRAMEWORK_VERSION_CODE;
+    }
+
+    public static String getFrameworkName() {
+        return FRAMEWORK_NAME;
+    }
+
+    public static String getFrameworkVersion() {
+        return FRAMEWORK_VERSION;
+    }
+
+    public static int getFrameworkVersionCode() {
+        return FRAMEWORK_VERSION_CODE;
     }
 
     /**

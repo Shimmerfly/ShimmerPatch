@@ -77,7 +77,10 @@ class VectorContext(
 
     override fun getFrameworkName(): String = BuildConfig.FRAMEWORK_NAME
 
-    override fun getFrameworkVersion(): String = BuildConfig.VERSION_NAME
+    override fun getFrameworkVersion(): String {
+        val ver = BuildConfig.VERSION_NAME
+        return if (ver.startsWith("v")) ver else "v$ver"
+    }
 
     override fun getFrameworkVersionCode(): Long = BuildConfig.VERSION_CODE
 

@@ -125,14 +125,26 @@ void InitializeApiEntries() {
 void RegisterNativeLib(const std::string &library_name) {
     static bool is_initialized = []() {
         InitializeApiEntries();
+
+        const auto *linker = ElfSymbolCache::GetLinker();
+        if (!linker) {
+            LOGE("Cannot initialize native API because the dynamic linker image is unavailable.");
+            return false;
+        }
+
         return InstallNativeAPI(lsplant::InitInfo{
             .inline_hooker =
                 [](void *target, void *replacement) {
                     void *backup = nullptr;
                     return HookInline(target, replacement, &backup) == 0 ? backup : nullptr;
                 },
-            .art_symbol_resolver =
-                [](auto symbol) { return ElfSymbolCache::GetLinker()->getSymbAddress(symbol); },
+            .inline_unhooker = [](void *target) { return UnhookInline(target) == 0; },
+            .art_symbol_resolver = [linker](auto symbol) {
+                return linker->getSymbAddress(symbol);
+            },
+            .art_symbol_prefix_resolver = [linker](auto prefix) {
+                return linker->getSymbPrefixFirstAddress(prefix);
+            },
         });
     }();
 

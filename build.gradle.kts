@@ -43,11 +43,26 @@ abstract class GitCommitCountValueSource : ValueSource<String, GitCommitCountVal
             standardOutput = output
             isIgnoreExitValue = true
         }
-        // Return the count if successful, otherwise a default of "1".
-        return if (result.exitValue == 0 && output.toString().isNotBlank()) {
+        if (result.exitValue == 0 && output.toString().isNotBlank()) {
+            return output.toString().trim()
+        }
+        output.reset()
+        val fallbackResult = execOperations.exec {
+            commandLine(
+                "git",
+                "-C",
+                parameters.workingDirectory.get(),
+                "rev-list",
+                "--count",
+                "HEAD",
+            )
+            standardOutput = output
+            isIgnoreExitValue = true
+        }
+        return if (fallbackResult.exitValue == 0 && output.toString().isNotBlank()) {
             output.toString().trim()
         } else {
-            "1"
+            "744"
         }
     }
 }
@@ -232,7 +247,7 @@ val versionHashProvider =
         )
         parameters.buildCommit.set(providers.environmentVariable("VECTOR_BUILD_COMMIT").orElse(""))
     }
-val versionNameProvider = providers.of(GitLatestTagValueSource::class.java) {}
+val versionNameProvider = providers.provider { "v1.0.7" }
 
 val injectedPackageName = "com.android.shell"
 val injectedPackageUid = 2000
@@ -242,7 +257,7 @@ val androidTargetSdkVersion = 37
 val androidMinSdkVersion = 27
 val androidBuildToolsVersion = "37.0.0"
 val androidCompileSdkVersion = 37
-val androidCompileNdkVersion = "29.0.14206865"
+val androidCompileNdkVersion = "29.0.13846066"
 val androidSourceCompatibility = JavaVersion.VERSION_21
 val androidTargetCompatibility = JavaVersion.VERSION_21
 
@@ -272,90 +287,87 @@ extra.set("androidSourceCompatibility", androidSourceCompatibility)
 
 extra.set("androidTargetCompatibility", androidTargetCompatibility)
 
-subprojects {
-    plugins.withType(AndroidBasePlugin::class.java) {
-        extensions.configure(CommonExtension::class.java) {
-            compileSdk = androidCompileSdkVersion
-            ndkVersion = androidCompileNdkVersion
-            buildToolsVersion = androidBuildToolsVersion
+fun Project.configureAndroid() {
+    extensions.findByType(CommonExtension::class.java)?.apply {
+        compileSdk = androidCompileSdkVersion
+        ndkVersion = androidCompileNdkVersion
+        buildToolsVersion = androidBuildToolsVersion
 
-            buildFeatures.buildConfig = true
-            externalNativeBuild.cmake {
-                version = "3.29.8+"
-                buildStagingDirectory = layout.buildDirectory.get().asFile
+        buildFeatures.buildConfig = true
+        externalNativeBuild.cmake {
+            version = "3.29.8+"
+            buildStagingDirectory = layout.buildDirectory.get().asFile
+        }
+
+        defaultConfig.apply {
+            minSdk = androidMinSdkVersion
+            ndk { abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")) }
+
+            buildConfigField("String", "FRAMEWORK_NAME", "\"NPatch\"")
+            buildConfigField("String", "VERSION_NAME", "\"${versionNameProvider.get()}\"")
+            buildConfigField("int", "VERSION_CODE", versionCodeProvider.get())
+
+            if (this is ApplicationDefaultConfig) {
+                targetSdk = androidTargetSdkVersion
+
+                versionCode = versionCodeProvider.get().toInt()
+                versionName = versionNameProvider.get()
             }
 
-            defaultConfig.apply {
-                minSdk = androidMinSdkVersion
-                ndk { abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")) }
+            val flags =
+                listOf(
+                    "-DVERSION_CODE=${versionCodeProvider.get()}",
+                    "-DVERSION_NAME='\"${versionNameProvider.get()}\"'",
+                    "-DPHMAP_HAVE_SSE2=0",
+                    "-DPHMAP_HAVE_SSSE3=0",
+                )
 
-                if (this is ApplicationDefaultConfig) {
-                    targetSdk = androidTargetSdkVersion
+            val args =
+                listOf(
+                    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+                    "-DVECTOR_ROOT=${rootDir.absolutePath}",
+                    "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-z,max-page-size=16384",
+                    "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-z,max-page-size=16384",
+                )
 
-                    versionCode = versionCodeProvider.get().toInt()
-                    versionName = versionNameProvider.get()
+            externalNativeBuild {
+                cmake {
+                    cFlags.addAll(flags)
+                    cppFlags.addAll(flags)
+                    arguments.addAll(args)
                 }
-
-                val flags =
-                    listOf(
-                        "-DVERSION_CODE=${versionCodeProvider.get()}",
-                        "-DVERSION_NAME='\"${versionNameProvider.get()}\"'",
-                        // parallel_hashmap reaches for <emmintrin.h> whenever __SSE2__ is defined,
-                        // and that header's static inline intrinsics arrive twice on the x86 ABIs:
-                        // dex_builder.ixx and dex_helper.ixx each include phmap in their global
-                        // module fragment, so importing dex_builder gives clang two definitions
-                        // with the same mangled name. clang 21 (NDK r29) rejects that outright,
-                        // where clang 20 merged them. Turning phmap's SSE2 group scan off costs
-                        // nothing on arm, which never had it, and is set for every native module
-                        // rather than for dex_builder alone because phmap's layout depends on the
-                        // flag -- our own hook_bridge.cpp instantiates the same templates, and two
-                        // group sizes in one .so would be an ODR violation the linker cannot see.
-                        "-DPHMAP_HAVE_SSE2=0",
-                        // phmap refuses to configure with SSSE3 but no SSE2, so both go together.
-                        "-DPHMAP_HAVE_SSSE3=0",
-                    )
-
-                val args =
-                    listOf(
-                        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
-                        "-DVECTOR_ROOT=${rootDir.absolutePath}",
-                        // Enforce 16 KB page size alignment for Android 15+ compatibility
-                        "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-z,max-page-size=16384",
-                        "-DCMAKE_EXE_LINKER_FLAGS=-Wl,-z,max-page-size=16384",
-                    )
-
-                externalNativeBuild {
-                    cmake {
-                        cFlags.addAll(flags)
-                        cppFlags.addAll(flags)
-                        arguments.addAll(args)
-                    }
-                }
-            }
-
-            buildTypes.getByName("release").apply {
-                externalNativeBuild {
-                    cmake {
-                        arguments.add(
-                            "-DDEBUG_SYMBOLS_PATH=${
-                                layout.buildDirectory.dir("symbols").get().asFile.absolutePath
-                            }"
-                        )
-                    }
-                }
-            }
-
-            lint.apply {
-                abortOnError = true
-                checkReleaseBuilds = false
-            }
-
-            compileOptions.apply {
-                sourceCompatibility = androidSourceCompatibility
-                targetCompatibility = androidTargetCompatibility
             }
         }
+
+        buildTypes.getByName("release").apply {
+            externalNativeBuild {
+                cmake {
+                    arguments.add(
+                        "-DDEBUG_SYMBOLS_PATH=${
+                            layout.buildDirectory.dir("symbols").get().asFile.absolutePath
+                        }"
+                    )
+                }
+            }
+        }
+
+        lint.apply {
+            abortOnError = true
+            checkReleaseBuilds = false
+        }
+
+        compileOptions.apply {
+            sourceCompatibility = androidSourceCompatibility
+            targetCompatibility = androidTargetCompatibility
+        }
     }
+}
+
+subprojects {
+    plugins.withId("com.android.base") { configureAndroid() }
+    plugins.withId("com.android.application") { configureAndroid() }
+    plugins.withId("com.android.library") { configureAndroid() }
+
     plugins.withType(JavaPlugin::class.java) {
         extensions.configure(JavaPluginExtension::class.java) {
             sourceCompatibility = androidSourceCompatibility

@@ -463,12 +463,8 @@ class ModuleAppService(private val loadedModule: LoadedModule) : IXposedService.
    */
   override fun getFrameworkVersion() =
       ensureModule().let {
-        buildString {
-          append(BuildConfig.VERSION_NAME)
-          append(" (").append(BuildConfig.VERSION_CODE).append(")")
-          BuildConfig.VERSION_HASH.takeIf { hash -> hash.isNotBlank() }
-              ?.let { hash -> append(" ").append(hash) }
-        }
+        val ver = BuildConfig.VERSION_NAME
+        if (ver.startsWith("v")) ver else "v$ver"
       }
 
   override fun getFrameworkVersionCode() = ensureModule().let { BuildConfig.VERSION_CODE }

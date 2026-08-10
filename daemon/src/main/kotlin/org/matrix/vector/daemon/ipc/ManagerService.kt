@@ -233,7 +233,8 @@ object ManagerService : IManagerService.Stub() {
 
   override fun getFrameworkVersionCode() = BuildConfig.VERSION_CODE
 
-  override fun getFrameworkVersionName() = BuildConfig.VERSION_NAME
+  override fun getFrameworkVersionName() =
+      BuildConfig.VERSION_NAME.let { if (it.startsWith("v")) it else "v$it" }
 
   override fun getBuildStamp(): String? = BuildConfig.VERSION_HASH.takeIf { it.isNotBlank() }
 

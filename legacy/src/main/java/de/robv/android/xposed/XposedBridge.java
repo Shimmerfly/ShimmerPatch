@@ -7,11 +7,11 @@ import android.util.Log;
 
 import org.matrix.vector.util.Utils;
 import org.matrix.vector.impl.hooks.VectorNativeHooker;
+import org.matrix.vector.impl.hooks.VectorInvocation;
 import org.matrix.vector.impl.hooks.VectorLegacyCallback;
 import org.matrix.vector.nativebridge.HookBridge;
 import org.matrix.vector.nativebridge.ResourcesHook;
 
-import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Executable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
@@ -298,7 +298,6 @@ public final class XposedBridge {
      * @param args       Arguments for the method call as Object[] array.
      * @return The result returned from the invoked method.
      * @throws NullPointerException      if {@code receiver == null} for a non-static method
-     * @throws IllegalAccessException    if this method is not accessible (see {@link AccessibleObject})
      * @throws IllegalArgumentException  if the number of arguments doesn't match the number of parameters, the receiver
      *                                   is incompatible with the declaring class, or an argument could not be unboxed
      *                                   or converted by a widening conversion to the corresponding parameter type
@@ -314,7 +313,7 @@ public final class XposedBridge {
             throw new IllegalArgumentException("method must be of type Method or Constructor");
         }
 
-        return HookBridge.invokeOriginalMethod((Executable) method, thisObject, args);
+        return VectorInvocation.invokeOriginal((Executable) method, thisObject, args);
     }
 
     /**

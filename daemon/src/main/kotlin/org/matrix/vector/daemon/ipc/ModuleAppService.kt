@@ -76,8 +76,17 @@ class ModuleAppService(private val loadedModule: LoadedModule) : IXposedService.
      */
     private val uidSet = ConcurrentHashMap.newKeySet<Int>()
 
-    /** The uids a send is running for right now, so the three observer callbacks agree on one. */
-    private val sending = ConcurrentHashMap.newKeySet<Int>()
+    /**
+     * Which send is running for a uid right now, so the three observer callbacks agree on one.
+     *
+     * The uid alone was not enough to say that. [uidGone] deliberately drops the marker rather
+     * than wait for a send that may never return, so from that moment a replacement process can
+     * start a second send while the first is still blocked — and the first, on its way out, would
+     * remove the marker the second is holding, letting a *third* start behind it, and would then
+     * commit its own dead process's result over the second's. The value is the attempt that owns
+     * the uid: a send touches nothing unless the token it was handed is still the one here.
+     */
+    private val sending = ConcurrentHashMap<Int, Any>()
 
     /**
      * What tells [uidSet] that a delivery is over: the provider binder we spoke to, and the
@@ -85,6 +94,20 @@ class ModuleAppService(private val loadedModule: LoadedModule) : IXposedService.
      * may collect before it ever fires.
      */
     private val deliveries = ConcurrentHashMap<Int, Pair<IBinder, IBinder.DeathRecipient>>()
+
+    /**
+     * Held wherever [uidSet] and [deliveries] change hands: the three places that hand a uid over
+     * are a send committing its result, [uidGone], and the death of the process that took the
+     * binder, and each of them reads one of the two fields to decide what to do to the other.
+     * Both are individually atomic, which is what made the gap between them easy to miss — a send
+     * that tested its ownership and was then overtaken by [uidGone] before it added the uid left
+     * the uid marked as served with nothing serving it, and the replacement process was refused at
+     * the top of [uidStarts] with no later uid edge to come.
+     *
+     * Nothing that blocks runs under it: the send itself is outside, and `linkToDeath` is a local
+     * call.
+     */
+    private val deliveryLock = Any()
 
     private val serviceMap =
         Collections.synchronizedMap(WeakHashMap<LoadedModule, ModuleAppService>())
@@ -134,14 +157,18 @@ class ModuleAppService(private val loadedModule: LoadedModule) : IXposedService.
     }
 
     fun uidStarts(uid: Int) {
-      if (uid in uidSet || !sending.add(uid)) return
+      if (uid in uidSet) return
+      // What identifies this attempt for as long as it runs, and what every later step of it is
+      // tested against: see [sending].
+      val attempt = Any()
+      if (sending.putIfAbsent(uid, attempt) != null) return
       val module = ConfigCache.getModuleByUid(uid)
       if (module?.code?.legacy != false) {
-        sending.remove(uid)
+        sending.remove(uid, attempt)
         return
       }
       if (isThrottled(uid)) {
-        sending.remove(uid)
+        sending.remove(uid, attempt)
         return
       }
       val service = serviceMap.getOrPut(module) { ModuleAppService(module) }
@@ -152,19 +179,31 @@ class ModuleAppService(private val loadedModule: LoadedModule) : IXposedService.
               try {
                 val delivered = service.sendBinder(uid)
                 if (delivered != null) {
-                  uidSet.add(uid)
-                  binderFailures.remove(uid)
-                  linkDelivery(uid, delivered)
+                  // Only the attempt that still owns the uid may say the module has its service.
+                  // An abandoned one spoke to a process the uid has already outlived, and marking
+                  // the uid served on its word is what refuses the process that replaced it.
+                  synchronized(deliveryLock) {
+                    if (sending[uid] === attempt) {
+                      uidSet.add(uid)
+                      binderFailures.remove(uid)
+                      linkDelivery(uid, delivered)
+                    }
+                  }
                 } else {
+                  // Counted whether or not this attempt still owns the uid, unlike the success
+                  // above: a module app that dies while the platform waits for its provider is
+                  // exactly what the throttle is for, and it is also exactly what takes the
+                  // ownership away. A failure dropped for being stale is one the restart loop
+                  // never has to pay for.
                   recordFailure(uid, module.packageName)
                 }
               } finally {
-                sending.remove(uid)
+                sending.remove(uid, attempt)
               }
             }
           }
           .onFailure {
-            sending.remove(uid)
+            sending.remove(uid, attempt)
             Log.w(TAG, "Could not schedule the binder delivery for ${module.packageName}", it)
           }
     }
@@ -176,9 +215,23 @@ class ModuleAppService(private val loadedModule: LoadedModule) : IXposedService.
      * and this is what makes a second delivery to a restarted module app possible. A death
      * recipient on a proxy is not a client of anything, so unlike the provider reference it puts
      * no floor under the process's priority.
+     *
+     * Called under [deliveryLock], by the attempt that owns the uid.
      */
     private fun linkDelivery(uid: Int, provider: IBinder) {
-      val recipient = IBinder.DeathRecipient { uidSet.remove(uid) }
+      val recipient =
+          object : IBinder.DeathRecipient {
+            override fun binderDied() {
+              // This delivery's own entry, not merely this uid's. A death notification for the
+              // process we served can arrive after a replacement process has taken a binder of its
+              // own — the notification is queued when the process dies, not when we get to it —
+              // and forgetting the uid then sends the module a second copy of a service it already
+              // holds, starting a process to do it.
+              synchronized(deliveryLock) {
+                if (deliveries.remove(uid, provider to this)) uidSet.remove(uid)
+              }
+            }
+          }
       runCatching {
             provider.linkToDeath(recipient, 0)
             deliveries.put(uid, provider to recipient)?.let { (old, previous) ->
@@ -199,8 +252,9 @@ class ModuleAppService(private val loadedModule: LoadedModule) : IXposedService.
 
     private fun recordFailure(uid: Int, modulePkg: String) {
       var crossed = false
-      // Read-modify-write in one step. Two threads cannot be here for one uid while [sending]
-      // holds, but that is an invariant of another field and not one to build arithmetic on.
+      // Read-modify-write in one step, and not merely as a precaution: an attempt abandoned by
+      // [uidGone] and the replacement that took the uid from it can both be counting here for the
+      // same uid, which is the case a plain get-then-put would lose.
       binderFailures.compute(uid) { _, previous ->
         val now = SystemClock.elapsedRealtime()
         val count =
@@ -229,13 +283,17 @@ class ModuleAppService(private val loadedModule: LoadedModule) : IXposedService.
     }
 
     fun uidGone(uid: Int) {
-      uidSet.remove(uid)
-      // A send that never returns — `provider.call` runs the module's own onServiceBind, with no
-      // deadline — would otherwise leave the uid here for the life of the daemon, and every later
-      // delivery for it refused at the top of uidStarts.
-      sending.remove(uid)
-      deliveries.remove(uid)?.let { (binder, recipient) ->
-        runCatching { binder.unlinkToDeath(recipient, 0) }
+      synchronized(deliveryLock) {
+        uidSet.remove(uid)
+        // A send that never returns — `provider.call` runs the module's own onServiceBind, with no
+        // deadline — would otherwise leave the uid here for the life of the daemon, and every later
+        // delivery for it refused at the top of uidStarts. Giving the uid up rather than waiting is
+        // what lets the process that replaces this one be served at once; the attempt token is what
+        // stops the send we walked away from committing over it.
+        sending.remove(uid)
+        deliveries.remove(uid)?.let { (binder, recipient) ->
+          runCatching { binder.unlinkToDeath(recipient, 0) }
+        }
       }
     }
 

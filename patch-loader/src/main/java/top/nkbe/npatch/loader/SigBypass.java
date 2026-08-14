@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.content.pm.SigningInfo;
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Process;
@@ -18,7 +19,6 @@ import com.google.gson.JsonSyntaxException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import top.nkbe.npatch.loader.util.XLog;
 import top.nkbe.npatch.share.Constants;
 
@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,6 +64,8 @@ public class SigBypass {
     private static boolean javaIoHooked;
     private static boolean javaFilePathHooked;
     private static boolean nativeOpenatEnabled;
+    private static boolean useMinimalNativeFileHook;
+    private static boolean libHideEnabled;
 
     static {
         moduleCallerPrefixes.add("top.nkbe.npatch.");
@@ -82,6 +85,20 @@ public class SigBypass {
         return isModuleCaller();
     }
 
+    static void registerModuleNativeLibraryRoots(Context context) {
+        if (context == null) return;
+        File cacheDir = context.getCacheDir();
+        if (cacheDir == null) return;
+        try {
+            org.lsposed.lspd.nativebridge.SigBypass.setModuleNativeLibraryRoots(new String[]{
+                    new File(new File(cacheDir, "native"), "modules").getAbsolutePath(),
+                    new File(new File(cacheDir, "code_cache"), "mods").getAbsolutePath()
+            });
+        } catch (Throwable e) {
+            Log.w(TAG, "Unable to register module native library roots", e);
+        }
+    }
+
     public static void setOriginalSignature(String packageName, String signatureBase64) {
         if (packageName == null || signatureBase64 == null) return;
         try {
@@ -94,6 +111,27 @@ public class SigBypass {
     public static void setPaths(String originalApkPath, String patchedApkPath) {
         redirectApkPath = originalApkPath;
         visibleApkPath = patchedApkPath;
+    }
+
+    private static boolean is360ProtectedApk(String apkPath) {
+        if (apkPath == null) return false;
+        try (ZipFile apk = new ZipFile(apkPath)) {
+            var entries = apk.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                String name = entry.getName().toLowerCase();
+                if (name.contains("qihoo")
+                        || name.contains("qihu")
+                        || name.contains("360")
+                        || name.contains("jiagu")
+                        || name.contains("stub_360")) {
+                    return true;
+                }
+            }
+        } catch (Throwable e) {
+            Log.w(TAG, "fail to inspect APK protector", e);
+        }
+        return false;
     }
 
     private record CallerContext(boolean isModule, boolean isSensitive) {}
@@ -198,16 +236,12 @@ public class SigBypass {
     }
 
     private static void replaceModuleApplicationInfoPaths(Context context, ApplicationInfo applicationInfo) {
-        if (applicationInfo == null || redirectApkPath == null) return;
-        if (!matchesTargetApplicationInfo(context, applicationInfo)) return;
-
-        applicationInfo.sourceDir = redirectApkPath;
-        applicationInfo.publicSourceDir = redirectApkPath;
-        setReflectivePathField(applicationInfo, "scanSourceDir", redirectApkPath);
-        setReflectivePathField(applicationInfo, "scanPublicSourceDir", redirectApkPath);
-        setReflectivePathField(applicationInfo, "baseCodePath", redirectApkPath);
-        setReflectivePathField(applicationInfo, "baseResourcePath", redirectApkPath);
-        replaceSplitPaths(applicationInfo, visibleApkPath, redirectApkPath);
+        // 【重要】模块调用方不能在此重新映射到 redirectApkPath。
+        // origin.apk 是供宿主签名绕过使用的干净原包副本，不包含 NPatch 注入的模块、加固壳
+        // payload 等资源。加固模块可能在 JNI_OnLoad 中取得 sourceDir/getPackageCodePath 后直接
+        // 打开该路径；若返回 origin.apk，壳会因找不到资源而在模块初始化前失败。模块必须始终
+        // 看到外层修补后的 base.apk；native I/O 侧必须与此保持一致，见 should_redirect_apk_contents。
+        replaceApplicationInfoPaths(context, applicationInfo);
     }
 
     private static String mapToVisiblePath(String path) {
@@ -254,10 +288,9 @@ public class SigBypass {
         XC_MethodHook stringPathHook = new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) {
-                boolean moduleCaller = isModuleCaller();
                 Object result = param.getResult();
                 if (!(result instanceof String path)) return;
-                String mappedPath = moduleCaller ? mapToRedirectPath(path) : mapToVisiblePath(path);
+                String mappedPath = mapToVisiblePath(path);
                 if (!path.equals(mappedPath)) {
                     param.setResult(mappedPath);
                 }
@@ -266,11 +299,10 @@ public class SigBypass {
         XC_MethodHook filePathHook = new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) {
-                boolean moduleCaller = isModuleCaller();
                 Object result = param.getResult();
                 if (!(result instanceof File file)) return;
                 String filePath = file.getPath();
-                String mappedPath = moduleCaller ? mapToRedirectPath(filePath) : mapToVisiblePath(filePath);
+                String mappedPath = mapToVisiblePath(filePath);
                 if (!filePath.equals(mappedPath)) {
                     param.setResult(new File(mappedPath));
                 }
@@ -339,10 +371,12 @@ public class SigBypass {
 
     private static void replacePackageInfo(Context context, PackageInfo packageInfo, boolean moduleCaller) {
         if (packageInfo == null) return;
-        if (moduleCaller) {
-            replaceModuleApplicationInfoPaths(context, packageInfo.applicationInfo);
-        } else {
-            replaceApplicationInfoPaths(context, packageInfo.applicationInfo);
+        if (!stealthModeActive) {
+            if (moduleCaller) {
+                replaceModuleApplicationInfoPaths(context, packageInfo.applicationInfo);
+            } else {
+                replaceApplicationInfoPaths(context, packageInfo.applicationInfo);
+            }
         }
         replaceSigningDetails(context, packageInfo);
     }
@@ -710,7 +744,6 @@ public class SigBypass {
         }
     }
 
-
     private static String extractOriginalApk(Context context) {
         File cacheDir = new File(context.getCacheDir(), "code_cache");
         if (!cacheDir.exists() && !cacheDir.mkdirs()) return null;
@@ -754,6 +787,9 @@ public class SigBypass {
                     isPatchedApkPath = file.getPath().equals(patchedApkPath);
                 }
                 if (!isPatchedApkPath) return;
+                // 必须与 replaceModuleApplicationInfoPaths 保持一致：模块的 ZIP/File 读取需要
+                // 外层 APK 内的 NPatch/加固资源，不能被重定向到 origin.apk。
+                if (isModuleCaller()) return;
 
                 if (arg0 instanceof String) {
                     param.args[0] = originalApkPath;
@@ -771,34 +807,58 @@ public class SigBypass {
 
     static void doSigBypass(Context context, int sigBypassLevel, boolean hideLibs) throws IOException {
         activeSigBypassLevel = Math.max(activeSigBypassLevel, sigBypassLevel);
+        int hookLevel = sigBypassLevel;
         String currentApkPath = visibleApkPath != null ? visibleApkPath : context.getPackageResourcePath();
 
-        hideLibs = hideLibs && sigBypassLevel >= Constants.SIGBYPASS_BASIC;
-
-        if (sigBypassLevel >= Constants.SIGBYPASS_BASIC && redirectApkPath == null) {
+        hideLibs = hideLibs && hookLevel >= Constants.SIGBYPASS_BASIC;
+        if (hookLevel >= Constants.SIGBYPASS_BASIC && redirectApkPath == null) {
             redirectApkPath = extractOriginalApk(context);
         }
 
-        if (sigBypassLevel >= Constants.SIGBYPASS_BASIC && redirectApkPath != null) {
+        if (hookLevel >= Constants.SIGBYPASS_BASIC && redirectApkPath != null) {
             hookJavaIO(currentApkPath, redirectApkPath);
             hookJavaFilePathAccessors();
-            org.lsposed.lspd.nativebridge.SigBypass.enableOpenatHook(
-                    currentApkPath,
-                    redirectApkPath,
-                    context.getPackageName(),
-                    hideLibs
-            );
+            useMinimalNativeFileHook = useMinimalNativeFileHook
+                    || (hookLevel >= Constants.SIGBYPASS_EXTREME
+                    && is360ProtectedApk(redirectApkPath));
+            if (useMinimalNativeFileHook) {
+                XLog.i(TAG, "360-like protector detected, using minimal native APK redirect");
+                org.lsposed.lspd.nativebridge.SigBypass.enableOpenatHookMinimal(
+                        currentApkPath,
+                        redirectApkPath,
+                        context.getPackageName(),
+                        hideLibs
+                );
+            } else {
+                org.lsposed.lspd.nativebridge.SigBypass.enableOpenatHook(
+                        currentApkPath,
+                        redirectApkPath,
+                        context.getPackageName(),
+                        hideLibs
+                );
+            }
             nativeOpenatEnabled = true;
+            libHideEnabled = hideLibs;
         }
 
-        if (sigBypassLevel >= Constants.SIGBYPASS_HIGH) {
+        if (hookLevel >= Constants.SIGBYPASS_HIGH) {
             hookPackageArchiveInfo(context);
             hookHasSigningCertificate(context);
             hookGetApplicationInfo(context);
             hookApkPathAccessors(context);
         }
 
-        if (sigBypassLevel >= Constants.SIGBYPASS_BASIC && redirectApkPath == null) {
+        if (hookLevel >= Constants.SIGBYPASS_EXTREME) {
+            boolean parcelHooked = hookPackageInfoConstructor(context);
+            if (!parcelHooked) {
+                hookPackageInfoCreator(context);
+            }
+            hookPackageParserGeneratePackageInfo(context);
+            hookApplicationInfoConstructor(context);
+            hookGetPackageInfo(context);
+        }
+
+        } else if (hookLevel >= Constants.SIGBYPASS_BASIC && redirectApkPath == null) {
             XLog.w(TAG, "Original APK unavailable, native signature bypass disabled");
         }
     }

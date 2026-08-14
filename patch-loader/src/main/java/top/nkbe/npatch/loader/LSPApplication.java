@@ -23,17 +23,15 @@ import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.lsposed.lspd.models.Module;
-import org.lsposed.lspd.service.ILSPApplicationService;
+import org.matrix.vector.ipc.LoadedModule;
+import org.matrix.vector.ipc.IFrameworkService;
 import org.matrix.vector.Startup;
-import org.matrix.vector.impl.VectorLogBridge;
 import top.nkbe.npatch.loader.util.XLog;
 import top.nkbe.npatch.service.IntegrApplicationService;
 import top.nkbe.npatch.service.NeoLocalApplicationService;
 import top.nkbe.npatch.service.RemoteApplicationService;
 import top.nkbe.npatch.share.Constants;
 import top.nkbe.npatch.share.PatchConfig;
-import top.nkbe.npatch.util.SB;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -192,23 +190,23 @@ public class LSPApplication {
         }
     }
 
-    private static void registerModuleCallerPrefixes(ILSPApplicationService service) {
+    private static void registerModuleCallerPrefixes(IFrameworkService service) {
         if (service == null) return;
         try {
-            registerModuleCallerPrefixes(service.getLegacyModulesList());
-            registerModuleCallerPrefixes(service.getModulesList());
+            registerModuleCallerPrefixes(service.getLegacyModules());
+            registerModuleCallerPrefixes(service.getModules());
         } catch (Throwable e) {
-            Log.w(TAG, "Failed to register module caller prefixes", e);
+            Log.w(TAG, "Failed to register LoadedModule caller prefixes", e);
         }
     }
 
-    private static void registerModuleCallerPrefixes(List<Module> modules) {
+    private static void registerModuleCallerPrefixes(List<LoadedModule> modules) {
         if (modules == null) return;
-        for (Module module : modules) {
-            if (module == null) continue;
-            SigBypass.registerModuleCallerPrefix(module.packageName);
-            if (module.file == null || module.file.moduleClassNames == null) continue;
-            for (String className : module.file.moduleClassNames) {
+        for (LoadedModule LoadedModule : modules) {
+            if (LoadedModule == null) continue;
+            SigBypass.registerModuleCallerPrefix(LoadedModule.packageName);
+            if (LoadedModule.code == null || LoadedModule.code.moduleClassNames == null) continue;
+            for (String className : LoadedModule.code.moduleClassNames) {
                 int lastDot = className == null ? -1 : className.lastIndexOf('.');
                 if (lastDot > 0) {
                     SigBypass.registerModuleCallerPrefix(className.substring(0, lastDot));
@@ -228,37 +226,33 @@ public class LSPApplication {
             XLog.e(TAG, "Error when creating context");
             return;
         }
-        if (SB.hasConflict(context)) {
-            SB.triggerConflict(context);
-            return;
-        }
 
         logInfo("Initialize service client");
-        ILSPApplicationService service = null;
+        IFrameworkService service = null;
 
         if (config.useManager) {
             try {
                 service = new RemoteApplicationService(context);
-                List<Module> legacyModules = service.getLegacyModulesList();
-                List<Module> modernModules = service.getModulesList();
+                List<LoadedModule> legacyModules = service.getLegacyModules();
+                List<LoadedModule> modernModules = service.getModules();
                 JSONArray moduleArr = new JSONArray();
                 Map<String, String> cachedModules = new LinkedHashMap<>();
 
                 if (legacyModules != null) {
-                    for (Module module : legacyModules) {
-                        if (module == null || module.packageName == null || module.apkPath == null) {
+                    for (LoadedModule LoadedModule : legacyModules) {
+                        if (LoadedModule == null || LoadedModule.packageName == null || LoadedModule.apkPath == null) {
                             continue;
                         }
-                        cachedModules.put(module.packageName, module.apkPath);
+                        cachedModules.put(LoadedModule.packageName, LoadedModule.apkPath);
                     }
                 }
 
                 if (modernModules != null) {
-                    for (Module module : modernModules) {
-                        if (module == null || module.packageName == null || module.apkPath == null) {
+                    for (LoadedModule LoadedModule : modernModules) {
+                        if (LoadedModule == null || LoadedModule.packageName == null || LoadedModule.apkPath == null) {
                             continue;
                         }
-                        cachedModules.put(module.packageName, module.apkPath);
+                        cachedModules.put(LoadedModule.packageName, LoadedModule.apkPath);
                     }
                 }
 
@@ -270,7 +264,7 @@ public class LSPApplication {
                 }
                 SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
                 shared.edit().putString("modules", moduleArr.toString()).apply();
-                logInfo("Success update module scope from Manager");
+                logInfo("Success update LoadedModule scope from Manager");
             } catch (Throwable e) {
                 logWarn("Failed to connect to manager: " + e.getMessage());
                 service = null;
@@ -288,6 +282,7 @@ public class LSPApplication {
         }
 
         registerModuleCallerPrefixes(service);
+        SigBypass.registerModuleNativeLibraryRoots(context);
         SigBypass.doSigBypass(context, config.lspConfig.sigBypassLevel, config.hideLibs);
         disableProfile(context);
 
@@ -303,7 +298,7 @@ public class LSPApplication {
         try {
             CacheCleaner.sweepModuleNativeCache(context.getApplicationInfo(), LSPLoader.getActiveModuleApkPaths());
         } catch (Throwable e) {
-            Log.w(TAG, "Failed to sweep module native cache", e);
+            Log.w(TAG, "Failed to sweep LoadedModule native cache", e);
         }
 
         switchAllClassLoader();
@@ -352,14 +347,6 @@ public class LSPApplication {
             return;
         }
         outputLoggingConfigured = true;
-        XposedLogPrinter printer = new XposedLogPrinter(0, "NPatch");
-        XposedBridge.setLogPrinter(printer);
-        VectorLogBridge.setSink((priority, tag, message, throwable) -> {
-            if ("NPatchCrash".equals(tag) && throwable != null) {
-                lastCoreCapturedCrash = throwable;
-            }
-            XposedLogPrinter.log(priority, tag, message, throwable);
-        });
         installCrashInterceptor(context);
     }
 
@@ -527,7 +514,15 @@ public class LSPApplication {
         if (appInfo.splitSourceDirs != null) Collections.addAll(codePaths, appInfo.splitSourceDirs);
         if (codePaths.isEmpty()) return;
 
-        var profileDir = HiddenApiBridge.Environment_getDataProfilesDePackageDirectory(appInfo.uid / PER_USER_RANGE, context.getPackageName());
+        File profileDir = null;
+        try {
+            profileDir = (File) XposedHelpers.callStaticMethod(
+                    android.os.Environment.class, "getDataProfilesDePackageDirectory",
+                    appInfo.uid / PER_USER_RANGE, context.getPackageName());
+        } catch (Throwable e) {
+            Log.w(TAG, "Failed to get profile dir", e);
+            return;
+        }
 
         for (int i = codePaths.size() - 1; i >= 0; i--) {
             String splitName = i == 0 ? null : appInfo.splitNames[i - 1];

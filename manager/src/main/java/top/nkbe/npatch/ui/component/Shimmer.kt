@@ -3,7 +3,6 @@ package top.nkbe.npatch.ui.component
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -11,12 +10,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import io.github.suqi8.coui.kmp.theme.COUITheme
 
 private val ShimmerColorShades
     @Composable get() = listOf(
-        MaterialTheme.colorScheme.secondaryContainer.copy(0.9f),
-        MaterialTheme.colorScheme.secondaryContainer.copy(0.2f),
-        MaterialTheme.colorScheme.secondaryContainer.copy(0.9f)
+        COUITheme.colorScheme.secondaryContainer.copy(0.9f),
+        COUITheme.colorScheme.secondaryContainer.copy(0.2f),
+        COUITheme.colorScheme.secondaryContainer.copy(0.9f)
     )
 
 class ShimmerScope(val brush: Brush)

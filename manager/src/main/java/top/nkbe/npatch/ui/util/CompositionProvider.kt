@@ -2,13 +2,13 @@ package top.nkbe.npatch.ui.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.material3.CardColors
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.graphics.Color
 import dev.chrisbanes.haze.blur.HazeBlurStyle
 import dev.chrisbanes.haze.blur.HazeColorEffect
+import io.github.suqi8.coui.kmp.basic.CardColors
+import io.github.suqi8.coui.kmp.basic.CardDefaults
+import io.github.suqi8.coui.kmp.basic.SnackbarHostState
+import io.github.suqi8.coui.kmp.theme.COUITheme
 
 const val BG_SURFACE_ALPHA = 0.6f
 private const val BG_OVERLAY_ALPHA = 0.35f
@@ -28,8 +28,8 @@ val LocalFloatingGlassBottomBarBlur = compositionLocalOf { true }
 
 @Composable
 fun backgroundAwareCardColors(
-    color: Color = MaterialTheme.colorScheme.surfaceContainer,
-    contentColor: Color = MaterialTheme.colorScheme.onSurface,
+    color: Color = COUITheme.colorScheme.surfaceContainer,
+    contentColor: Color = COUITheme.colorScheme.onSurfaceContainer,
     backgroundAlpha: Float = LocalCardBackgroundAlpha.current,
 ): CardColors {
     val adjusted = if (LocalBackgroundImagePath.current.isNotEmpty()) {
@@ -37,8 +37,8 @@ fun backgroundAwareCardColors(
     } else {
         color
     }
-    return CardDefaults.cardColors(
-        containerColor = adjusted,
+    return CardDefaults.defaultColors(
+        color = adjusted,
         contentColor = contentColor,
     )
 }
@@ -57,7 +57,7 @@ fun backgroundAwareColor(
 
 @Composable
 fun backgroundAwareHazeStyle(
-    surfaceColor: Color = MaterialTheme.colorScheme.surface,
+    surfaceColor: Color = COUITheme.colorScheme.surface,
     backgroundAlpha: Float = BG_SURFACE_ALPHA,
     tintAlpha: Float = HAZE_TINT_ALPHA,
 ): HazeBlurStyle {

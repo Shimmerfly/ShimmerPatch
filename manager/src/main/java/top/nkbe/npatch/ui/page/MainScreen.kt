@@ -8,20 +8,26 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveableStateHolder
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
-import org.lsposed.manager.ui.compose.repository.RepositoryScreen
+import io.github.suqi8.coui.kmp.basic.NavigationBar
+import io.github.suqi8.coui.kmp.basic.NavigationBarItem
+import io.github.suqi8.coui.kmp.theme.COUITheme
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import top.nkbe.npatch.ui.component.FloatingGlassBottomBar
 import top.nkbe.npatch.ui.component.FloatingGlassBottomBarIcon
 import top.nkbe.npatch.ui.component.FloatingGlassBottomBarItem
@@ -42,10 +48,17 @@ fun MainScreen(
 ) {
     val tabs = MainTab.entries
     val safeSelectedTab = selectedTab.coerceIn(0, tabs.lastIndex)
-    val stateHolder = rememberSaveableStateHolder()
+    val pagerState = rememberPagerState(
+        initialPage = safeSelectedTab,
+        pageCount = { tabs.size },
+    )
+    val settledPage by remember(pagerState) {
+        derivedStateOf { pagerState.settledPage }
+    }
+    val scope = rememberCoroutineScope()
     val useFloatingGlassBottomBar = LocalFloatingGlassBottomBar.current
     val useFloatingGlassBottomBarBlur = LocalFloatingGlassBottomBarBlur.current
-    val surfaceColor = MaterialTheme.colorScheme.surface
+    val surfaceColor = COUITheme.colorScheme.surface
     val backdrop = if (useFloatingGlassBottomBarBlur) {
         rememberLayerBackdrop {
             drawRect(surfaceColor)
@@ -55,61 +68,19 @@ fun MainScreen(
         null
     }
 
-    @Composable
-    fun Page(page: Int) {
-        when (tabs[page]) {
-            MainTab.Home -> HomeScreen(
-                navigator = navigator,
-                onManageShortcut = { managePage ->
-                    onSelectedManageTabChange(managePage)
-                    onSelectedTabChange(MainTab.Manage.ordinal)
-                },
-                onRepoShortcut = { onSelectedTabChange(MainTab.Repo.ordinal) },
-                onSettingsShortcut = { onSelectedTabChange(MainTab.Settings.ordinal) },
-            )
-            MainTab.Manage -> ManageScreen(
-                navigator = navigator,
-                selectedPage = selectedManageTab,
-                onSelectedPageChange = onSelectedManageTabChange,
-            )
-            MainTab.Repo -> RepositoryScreen(navigator)
-            MainTab.Settings -> SettingsScreen()
+    LaunchedEffect(safeSelectedTab) {
+        if (pagerState.currentPage != safeSelectedTab) {
+            pagerState.scrollToPage(safeSelectedTab)
         }
     }
 
-    @Composable
-    fun CurrentPage() {
-        stateHolder.SaveableStateProvider(tabs[safeSelectedTab].name) {
-            Page(safeSelectedTab)
-        }
-    }
-
-    if (!useFloatingGlassBottomBar) {
-        NavigationSuiteScaffold(
-            navigationSuiteItems = {
-                tabs.forEachIndexed { index, tab ->
-                    val selected = safeSelectedTab == index
-                    item(
-                        selected = selected,
-                        onClick = { onSelectedTabChange(index) },
-                        icon = {
-                            androidx.compose.material3.Icon(
-                                if (selected) tab.selectedIcon else tab.unselectedIcon,
-                                contentDescription = null,
-                            )
-                        },
-                        label = { androidx.compose.material3.Text(stringResource(tab.labelRes)) },
-                    )
-                }
-            },
-        ) {
-            CurrentPage()
-        }
-        return
+    LaunchedEffect(navigator, pagerState) {
+        snapshotFlow { pagerState.settledPage }
+            .distinctUntilChanged()
+            .collect(onSelectedTabChange)
     }
 
     NPatchScaffold(
-        contentWindowInsets = WindowInsets(0),
         bottomBar = {
             if (useFloatingGlassBottomBar) {
                 Box(
@@ -123,18 +94,24 @@ fun MainScreen(
                     contentAlignment = Alignment.BottomCenter,
                 ) {
                     FloatingGlassBottomBar(
-                        selectedIndex = { safeSelectedTab },
-                        onSelected = onSelectedTabChange,
+                        selectedIndex = { pagerState.currentPage },
+                        onSelected = { index ->
+                            onSelectedTabChange(index)
+                            scope.launch { pagerState.animateScrollToPage(index) }
+                        },
                         tabsCount = tabs.size,
                         backdrop = backdrop,
                         isBlurEnabled = useFloatingGlassBottomBarBlur,
                         modifier = Modifier.padding(horizontal = 12.dp),
                     ) {
                         tabs.forEachIndexed { index, tab ->
-                            val isSelected = safeSelectedTab == index
+                            val isSelected = settledPage == index
                             val label = stringResource(tab.labelRes)
                             FloatingGlassBottomBarItem(
-                                onClick = { onSelectedTabChange(index) },
+                                onClick = {
+                                    onSelectedTabChange(index)
+                                    scope.launch { pagerState.animateScrollToPage(index) }
+                                },
                                 selected = isSelected,
                                 label = label,
                             ) {
@@ -149,26 +126,25 @@ fun MainScreen(
                     }
                 }
             } else {
-                NavigationBar {
+                NavigationBar(color = backgroundAwareCardColors().color) {
                     tabs.forEachIndexed { index, tab ->
-                        val isSelected = safeSelectedTab == index
+                        val isSelected = settledPage == index
                         NavigationBarItem(
                             selected = isSelected,
-                            onClick = { onSelectedTabChange(index) },
-                            icon = {
-                                androidx.compose.material3.Icon(
-                                    if (isSelected) tab.selectedIcon else tab.unselectedIcon,
-                                    contentDescription = null,
-                                )
+                            onClick = {
+                                onSelectedTabChange(index)
+                                scope.launch { pagerState.animateScrollToPage(index) }
                             },
-                            label = { androidx.compose.material3.Text(stringResource(tab.labelRes)) },
+                            icon = if (isSelected) tab.selectedIcon else tab.unselectedIcon,
+                            label = stringResource(tab.labelRes),
                         )
                     }
                 }
             }
         },
     ) { padding ->
-        Box(
+        HorizontalPager(
+            state = pagerState,
             modifier = Modifier
                 .then(
                     if (useFloatingGlassBottomBar &&
@@ -182,13 +158,26 @@ fun MainScreen(
                 )
                 // Floating glass must sample page content behind itself. Applying Scaffold's
                 // bottom padding here clips the recorded backdrop above the navigation bar.
-                .then(
-                    if (useFloatingGlassBottomBar) Modifier
-                    else Modifier.padding(bottom = padding.calculateBottomPadding())
-                )
+                .then(if (useFloatingGlassBottomBar) Modifier else Modifier.padding(padding))
                 .fillMaxSize(),
-        ) {
-            CurrentPage()
+        ) { page ->
+            when (tabs[page]) {
+                MainTab.Home -> HomeScreen(
+                    navigator = navigator,
+                    onManageShortcut = { managePage ->
+                        onSelectedManageTabChange(managePage)
+                        onSelectedTabChange(MainTab.Manage.ordinal)
+                    },
+                )
+
+                MainTab.Manage -> ManageScreen(
+                    navigator = navigator,
+                    selectedPage = selectedManageTab,
+                    onSelectedPageChange = onSelectedManageTabChange,
+                )
+
+                MainTab.Settings -> SettingsScreen()
+            }
         }
     }
 }

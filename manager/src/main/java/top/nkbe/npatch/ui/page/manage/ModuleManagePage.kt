@@ -7,7 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
@@ -37,16 +36,18 @@ import top.nkbe.npatch.ui.component.NPatchPullToRefresh
 import top.nkbe.npatch.ui.viewmodel.manage.ModuleManageViewModel
 import top.nkbe.npatch.ui.util.ensureVisibleByMix
 import top.nkbe.npatch.ui.util.relativeLuminance
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
-import top.nkbe.npatch.ui.component.compat.ListPopupColumn
-import top.nkbe.npatch.ui.component.compat.PopupPositionProvider
-import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import top.nkbe.npatch.ui.component.compat.OverlayListPopup
-import androidx.compose.material3.MaterialTheme
+import io.github.suqi8.coui.kmp.basic.Icon
+import io.github.suqi8.coui.kmp.basic.InfiniteProgressIndicator
+import io.github.suqi8.coui.kmp.basic.ListPopupColumn
+import io.github.suqi8.coui.kmp.basic.PopupPositionProvider
+import io.github.suqi8.coui.kmp.basic.ScrollBehavior
+import io.github.suqi8.coui.kmp.basic.Surface
+import io.github.suqi8.coui.kmp.basic.Text
+import io.github.suqi8.coui.kmp.basic.rememberPullToRefreshState
+import io.github.suqi8.coui.kmp.overlay.OverlayListPopup
+import io.github.suqi8.coui.kmp.theme.COUITheme
+import io.github.suqi8.coui.kmp.utils.overScrollVertical
+import io.github.suqi8.coui.kmp.utils.scrollEndHaptic
 
 private data class ModuleBadgeColors(
     val container: Color,
@@ -58,7 +59,7 @@ private fun rememberModuleBadgeColors(
     isModern: Boolean,
     isLegacy: Boolean
 ): ModuleBadgeColors {
-    val surfaceArgb = MaterialTheme.colorScheme.surface.toArgb()
+    val surfaceArgb = COUITheme.colorScheme.surface.toArgb()
     val surfaceIsDark = relativeLuminance(surfaceArgb) < 0.5
     fun boostedContainer(candidate: Color): Color {
         val mixed = ensureVisibleByMix(
@@ -72,18 +73,18 @@ private fun rememberModuleBadgeColors(
 
     return when {
         isModern -> ModuleBadgeColors(
-            container = boostedContainer(MaterialTheme.colorScheme.primaryContainer),
-            content = MaterialTheme.colorScheme.onPrimaryContainer
+            container = boostedContainer(COUITheme.colorScheme.primaryContainer),
+            content = COUITheme.colorScheme.onPrimaryContainer
         )
 
         isLegacy -> ModuleBadgeColors(
-            container = boostedContainer(MaterialTheme.colorScheme.secondaryContainer),
-            content = MaterialTheme.colorScheme.onSecondaryContainer
+            container = boostedContainer(COUITheme.colorScheme.secondaryContainer),
+            content = COUITheme.colorScheme.onSecondaryContainer
         )
 
         else -> ModuleBadgeColors(
-            container = MaterialTheme.colorScheme.error,
-            content = MaterialTheme.colorScheme.onError
+            container = COUITheme.colorScheme.error,
+            content = COUITheme.colorScheme.onError
         )
     }
 }
@@ -92,7 +93,7 @@ private fun rememberModuleBadgeColors(
 fun ModuleManageBody(
     searchQuery: String = "",
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    scrollBehavior: TopAppBarScrollBehavior,
+    scrollBehavior: ScrollBehavior,
     hazeState: HazeState,
     viewModel: ModuleManageViewModel = viewModel()
 ) {
@@ -108,9 +109,6 @@ fun ModuleManageBody(
                     it.metadata.displayName.contains(searchQuery, true)
         }
     }
-    val sortedList = remember(filteredList) {
-        filteredList.sortedByDescending { it.activationEnabled }
-    }
 
     NPatchPullToRefresh(
         isRefreshing = viewModel.isRefreshing,
@@ -123,8 +121,8 @@ fun ModuleManageBody(
             modifier = Modifier
                 .fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
-
-
+                .scrollEndHaptic()
+                .overScrollVertical()
                 .hazeSource(state = hazeState),
             contentPadding = contentPadding,
             overscrollEffect = null
@@ -134,38 +132,28 @@ fun ModuleManageBody(
                     Box(Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             if (NeoPackageManager.appList.isEmpty()) {
-                                LinearProgressIndicator()
+                                InfiniteProgressIndicator()
                                 Spacer(Modifier.height(16.dp))
                                 Text(
                                     text = stringResource(R.string.manage_loading),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    style = COUITheme.textStyles.body1,
+                                    color = COUITheme.colorScheme.onSurfaceVariantSummary
                                 )
                             } else {
                                 Text(
                                     text = if (searchQuery.isNotEmpty()) stringResource(R.string.manage_no_search_results) else stringResource(R.string.manage_no_modules),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    style = COUITheme.textStyles.body1,
+                                    color = COUITheme.colorScheme.onSurfaceVariantSummary
                                 )
                             }
                         }
                     }
                 }
             } else {
-                itemsIndexed(
-                    items = sortedList,
-                    key = { _, item -> item.appInfo.app.packageName }
-                ) { index, item ->
-                    Column {
-                        if (index == 0 || sortedList[index - 1].activationEnabled != item.activationEnabled) {
-                            ModuleSectionHeader(
-                                title = stringResource(
-                                    if (item.activationEnabled) R.string.manage_running
-                                    else R.string.manage_not_running
-                                ),
-                                count = sortedList.count { it.activationEnabled == item.activationEnabled },
-                            )
-                        }
+                items(
+                    items = filteredList,
+                    key = { it.appInfo.app.packageName }
+                ) { item ->
                     val showDropdown = remember { mutableStateOf(false) }
                     val settingsIntent = remember { NeoPackageManager.getSettingsIntent(item.appInfo.app.packageName) }
                     val apiBadgeColors = rememberModuleBadgeColors(
@@ -194,7 +182,7 @@ fun ModuleManageBody(
                                         imageVector = Icons.Outlined.CheckCircle,
                                         contentDescription = null,
                                         modifier = Modifier.size(18.dp),
-                                        tint = MaterialTheme.colorScheme.primary
+                                        tint = COUITheme.colorScheme.primary
                                     )
                                 }
                             },
@@ -221,7 +209,7 @@ fun ModuleManageBody(
                                         text = item.metadata.version,
                                         fontSize = 12.sp,
                                         fontWeight = FontWeight.Medium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        color = COUITheme.colorScheme.onSurfaceVariantSummary
                                     )
                                 }
                             },
@@ -292,30 +280,8 @@ fun ModuleManageBody(
                             }
                         }
                     }
-                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun ModuleSectionHeader(title: String, count: Int) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 18.dp, bottom = 6.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.primary,
-        )
-        Spacer(Modifier.width(10.dp))
-        Text(
-            text = count.toString(),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
     }
 }

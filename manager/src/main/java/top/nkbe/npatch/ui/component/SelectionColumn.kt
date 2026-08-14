@@ -1,15 +1,10 @@
 package top.nkbe.npatch.ui.component
 
-import androidx.compose.ui.semantics.role
-
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +16,9 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import top.nkbe.npatch.R
+import io.github.suqi8.coui.kmp.basic.Icon
+import io.github.suqi8.coui.kmp.basic.Text
+import io.github.suqi8.coui.kmp.theme.COUITheme
 import androidx.compose.ui.res.stringResource
 
 object SelectionColumnScope {
@@ -36,7 +34,7 @@ object SelectionColumnScope {
         extraContent: (@Composable ColumnScope.() -> Unit)? = null
     ) {
         val backgroundColor = animateColorAsState(
-            targetValue = if (selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+            targetValue = if (selected) COUITheme.colorScheme.primary.copy(alpha = 0.1f)
             else Color.Transparent,
             label = "SelectionItemBg"
         ).value
@@ -61,12 +59,12 @@ object SelectionColumnScope {
                 imageVector = icon,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
-                tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                tint = if (selected) COUITheme.colorScheme.primary else COUITheme.colorScheme.onSurface
             )
             Column(Modifier.weight(1f)) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium
+                    style = COUITheme.textStyles.title3
                 )
                 if (desc != null || extraContent != null) {
                     AnimatedVisibility(
@@ -79,8 +77,8 @@ object SelectionColumnScope {
                                 Text(
                                     text = desc,
                                     modifier = Modifier.padding(top = 4.dp),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.67f)
+                                    style = COUITheme.textStyles.body2,
+                                    color = COUITheme.colorScheme.onSurfaceVariantSummary.copy(alpha = 0.67f)
                                 )
                             }
                             extraContent?.invoke(this)

@@ -8,6 +8,7 @@ val verCode: Int by rootProject.extra
 val verName: String by rootProject.extra
 val coreVerCode: Int by rootProject.extra
 val coreVerName: String by rootProject.extra
+val couiVersion = npatch.versions.coui.get()
 
 fun decodeSha256Hex(value: String): ByteArray {
     require(value.length == 64) { "Manager signature digest must be 64 hex chars: $value" }
@@ -136,36 +137,37 @@ dependencies {
     implementation(npatch.androidx.activity.compose)
     implementation(npatch.androidx.compose.material.icons.extended)
     implementation(npatch.androidx.compose.material3)
-    implementation(npatch.androidx.compose.material3.adaptive.navigation.suite)
     implementation(npatch.androidx.compose.ui)
     implementation(npatch.androidx.compose.ui.tooling.preview)
     implementation(npatch.androidx.core.ktx)
-    implementation(libs.material)
+    implementation("com.google.android.material:material:1.12.0")
     implementation(npatch.androidx.datastore.preferences)
     implementation(npatch.coil.compose)
     implementation(libs.gson)
     implementation(npatch.androidx.lifecycle.viewmodel.compose)
     implementation(npatch.androidx.navigation3.runtime)
     implementation(npatch.androidx.navigation3.ui)
-    implementation(libs.androidx.preference)
+    implementation("androidx.preference:preference-ktx:1.2.1")
     implementation(npatch.androidx.room.ktx)
     implementation(npatch.androidx.room.runtime)
     implementation("com.squareup.okhttp3:okhttp:5.3.2")
     implementation("com.squareup.okhttp3:okhttp-dnsoverhttps:5.3.2")
 
-    implementation(libs.material)
     implementation(libs.gson)
     implementation(npatch.rikka.shizuku.api)
     implementation(npatch.rikka.shizuku.provider)
     implementation(npatch.rikka.refine)
     //implementation(npatch.raamcosta.compose.destinations)
-    implementation(libs.appiconloader)
-    implementation(libs.hiddenapibypass)
+    implementation("me.zhanghai.android.appiconloader:appiconloader:1.5.0")
+    implementation(npatch.hiddenapibypass)
 
-    // Haze and glass effects
+    // COUI & Haze
     implementation(npatch.haze)
     implementation(npatch.hazeBlur)
     implementation(npatch.backdrop)
+    implementation("io.github.suqi8.coui.kmp:coui-ui:$couiVersion")
+    implementation("io.github.suqi8.coui.kmp:coui-preference:$couiVersion")
+    implementation("io.github.suqi8.coui.kmp:coui-icons:$couiVersion")
     implementation(npatch.androidx.webkit)
 
 

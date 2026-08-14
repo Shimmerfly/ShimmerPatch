@@ -25,14 +25,12 @@ data class ThemeSettings(
     val useMonet: Boolean,
     val customColor: Int,
     val themeMode: ThemeMode,
-    val amoledBlack: Boolean,
-    val headerAmbience: String,
     val useFloatingGlassBottomBar: Boolean,
     val useFloatingGlassBottomBarBlur: Boolean,
     val cardBackgroundAlphaPercent: Int,
 )
 
-const val DEFAULT_CUSTOM_COLOR = 0xFF6ABFCF.toInt()
+const val DEFAULT_CUSTOM_COLOR = 0xFFF27297.toInt()
 const val CARD_BACKGROUND_ALPHA_MIN = 10
 const val CARD_BACKGROUND_ALPHA_MAX = 91
 const val DEFAULT_CARD_BACKGROUND_ALPHA_PERCENT = 60
@@ -42,8 +40,6 @@ object ThemeConfig {
     val USE_MONET = booleanPreferencesKey("use_monet")
     val CUSTOM_COLOR = intPreferencesKey("custom_color")
     val THEME_MODE = intPreferencesKey("theme_mode")
-    val AMOLED_BLACK = booleanPreferencesKey("amoled_black")
-    val HEADER_AMBIENCE = stringPreferencesKey("header_ambience")
     val USE_FLOATING_GLASS_BOTTOM_BAR = booleanPreferencesKey("use_floating_glass_bottom_bar")
     val USE_FLOATING_GLASS_BOTTOM_BAR_BLUR = booleanPreferencesKey("use_floating_glass_bottom_bar_blur")
     val CARD_BACKGROUND_ALPHA_PERCENT = intPreferencesKey("card_background_alpha_percent")
@@ -58,8 +54,6 @@ object ThemeConfig {
             useMonet = prefs[USE_MONET] ?: false,
             customColor = prefs[CUSTOM_COLOR] ?: DEFAULT_CUSTOM_COLOR,
             themeMode = ThemeMode.fromValue(prefs[THEME_MODE] ?: ThemeMode.SYSTEM.value),
-            amoledBlack = prefs[AMOLED_BLACK] ?: false,
-            headerAmbience = prefs[HEADER_AMBIENCE] ?: "circuit",
             useFloatingGlassBottomBar = prefs[USE_FLOATING_GLASS_BOTTOM_BAR] ?: false,
             useFloatingGlassBottomBarBlur = prefs[USE_FLOATING_GLASS_BOTTOM_BAR_BLUR] ?: isFloatingGlassBottomBarBlurSupported(),
             cardBackgroundAlphaPercent = (prefs[CARD_BACKGROUND_ALPHA_PERCENT] ?: DEFAULT_CARD_BACKGROUND_ALPHA_PERCENT)

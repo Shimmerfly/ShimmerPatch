@@ -1,58 +1,50 @@
 package top.nkbe.npatch.ui.component
 
-import androidx.compose.ui.unit.dp
-
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
+import io.github.suqi8.coui.kmp.basic.ScrollBehavior
+import io.github.suqi8.coui.kmp.basic.TopAppBar
+import io.github.suqi8.coui.kmp.basic.TopAppBarDefaults
+import io.github.suqi8.coui.kmp.theme.COUITheme
 
 @Composable
 fun NPatchTopAppBar(
     title: String,
     modifier: Modifier = Modifier,
     color: Color = Color.Transparent,
-    titleColor: Color = MaterialTheme.colorScheme.onSurface,
+    titleColor: Color = COUITheme.colorScheme.onSurface,
     largeTitle: String = title,
-    largeTitleColor: Color = MaterialTheme.colorScheme.onSurface,
+    largeTitleColor: Color = COUITheme.colorScheme.onSurface,
     subtitle: String = "",
-    subtitleColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    subtitleColor: Color = COUITheme.colorScheme.onSurfaceVariantSummary,
     navigationIcon: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
-    scrollBehavior: TopAppBarScrollBehavior? = null,
+    scrollBehavior: ScrollBehavior? = null,
     defaultWindowInsetsPadding: Boolean = true,
-    titlePadding: Dp = 0.dp,
-    navigationIconPadding: Dp = 0.dp,
-    actionIconPadding: Dp = 0.dp,
+    titlePadding: Dp = TopAppBarDefaults.TitlePadding,
+    navigationIconPadding: Dp = TopAppBarDefaults.NavigationIconPadding,
+    actionIconPadding: Dp = TopAppBarDefaults.ActionIconPadding,
     bottomContent: @Composable () -> Unit = {},
 ) {
-    Column(modifier) {
-        TopAppBar(
-            title = {
-                Column {
-                    Text(
-                        title,
-                        color = titleColor,
-                        style = MaterialTheme.typography.titleLarge,
-                        maxLines = 1,
-                    )
-                    if (subtitle.isNotEmpty()) Text(subtitle, color = subtitleColor, style = MaterialTheme.typography.labelSmall)
-                }
-            },
-            navigationIcon = navigationIcon,
-            actions = actions,
-            scrollBehavior = scrollBehavior,
-            colors = TopAppBarDefaults.topAppBarColors(containerColor = color),
-            windowInsets = if (defaultWindowInsetsPadding) TopAppBarDefaults.windowInsets else WindowInsets(0),
-        )
-        bottomContent()
-    }
+    TopAppBar(
+        title = title,
+        modifier = modifier,
+        color = color,
+        titleColor = titleColor,
+        largeTitle = largeTitle,
+        largeTitleColor = largeTitleColor,
+        subtitle = subtitle,
+        subtitleColor = subtitleColor,
+        navigationIcon = navigationIcon,
+        actions = actions,
+        scrollBehavior = scrollBehavior,
+        defaultWindowInsetsPadding = defaultWindowInsetsPadding,
+        titlePadding = titlePadding,
+        navigationIconPadding = navigationIconPadding,
+        actionIconPadding = actionIconPadding,
+        bottomContent = bottomContent,
+    )
 }

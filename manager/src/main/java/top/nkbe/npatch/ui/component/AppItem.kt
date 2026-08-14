@@ -1,18 +1,12 @@
 package top.nkbe.npatch.ui.component
 
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.material3.CardColors
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,7 +16,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.suqi8.coui.kmp.basic.Card
+import io.github.suqi8.coui.kmp.basic.CardColors
+import io.github.suqi8.coui.kmp.basic.Icon
+import io.github.suqi8.coui.kmp.basic.Surface
 import top.nkbe.npatch.ui.util.backgroundAwareCardColors
+import io.github.suqi8.coui.kmp.basic.Text
+import io.github.suqi8.coui.kmp.theme.COUITheme
+import io.github.suqi8.coui.kmp.utils.PressFeedbackType
 
 @Composable
 fun AppItem(
@@ -42,12 +43,21 @@ fun AppItem(
     onLongPress: () -> Unit = {}
 ) {
     var descriptionExpanded by remember { mutableStateOf(false) }
-    Column(
+    val colorScheme = COUITheme.colorScheme
+
+    Card(
         modifier = modifier
             .fillMaxWidth()
-            .combinedClickable(onClick = onClick, onLongClick = onLongPress),
+            .padding(horizontal = 12.dp)
+            .padding(bottom = 8.dp),
+        colors = cardColors,
+        insideMargin = PaddingValues(12.dp),
+        showIndication = true,
+        pressFeedbackType = PressFeedbackType.Sink,
+        onClick = onClick,
+        onLongPress = onLongPress
     ) {
-        Column(Modifier.padding(horizontal = 20.dp, vertical = 14.dp)) {
+        Column {
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -79,11 +89,7 @@ fun AppItem(
                                 .basicMarquee(),
                             fontSize = 16.sp,
                             fontWeight = FontWeight(600),
-                            color = when {
-                                warningText != null -> MaterialTheme.colorScheme.error
-                                isEnabled -> MaterialTheme.colorScheme.primary
-                                else -> MaterialTheme.colorScheme.onSurfaceVariant
-                            },
+                            color = colorScheme.onSurface,
                             maxLines = 1,
                             softWrap = false
                         )
@@ -96,7 +102,7 @@ fun AppItem(
                         text = packageName,
                         fontSize = 13.sp,
                         fontWeight = FontWeight(500),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = colorScheme.onSurfaceVariantSummary,
                         maxLines = 1,
                         softWrap = false
                     )
@@ -126,6 +132,7 @@ fun AppItem(
                 }
             }
 
+            // 底部描述与警告区域
             if (description.isNotEmpty() || warningText != null) {
                 Spacer(modifier = Modifier.height(4.dp))
 
@@ -134,7 +141,7 @@ fun AppItem(
                         text = description,
                         fontSize = 13.sp,
                         fontWeight = FontWeight(500),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = colorScheme.onSurfaceVariantSummary,
                         maxLines = if (descriptionExpanded) Int.MAX_VALUE else 2,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
@@ -155,22 +162,18 @@ fun AppItem(
                             imageVector = Icons.Outlined.Warning,
                             contentDescription = null,
                             modifier = Modifier.size(14.dp),
-                            tint = MaterialTheme.colorScheme.error
+                            tint = colorScheme.error
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = warningText,
                             fontSize = 12.sp,
                             fontWeight = FontWeight(550),
-                            color = MaterialTheme.colorScheme.error
+                            color = colorScheme.error
                         )
                     }
                 }
             }
         }
-        HorizontalDivider(
-            modifier = Modifier.padding(start = 80.dp, end = 20.dp),
-            color = MaterialTheme.colorScheme.surfaceVariant,
-        )
     }
 }

@@ -47,7 +47,7 @@ import top.nkbe.npatch.R
 import top.nkbe.npatch.BuildConfig
 import top.nkbe.npatch.config.ConfigManager
 import top.nkbe.npatch.config.Configs
-import top.nkbe.npatch.database.entity.Module
+import top.nkbe.npatch.database.entity.LoadedModule
 import top.nkbe.npatch.manager.ModuleScopeSyncStore
 import top.nkbe.npatch.manager.DiagnosticLogExporter
 import top.nkbe.npatch.share.Constants
@@ -66,19 +66,24 @@ import top.nkbe.npatch.ui.viewmodel.manage.ModuleManageViewModel
 import top.nkbe.npatch.ui.viewstate.ProcessingState
 import nkbe.util.NeoPackageManager
 import nkbe.util.ShizukuApi
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
-import top.nkbe.npatch.ui.component.compat.ListPopupColumn
-import top.nkbe.npatch.ui.component.compat.PopupPositionProvider
-import androidx.compose.material3.TopAppBarScrollBehavior
-import androidx.compose.material3.Text
-import top.nkbe.npatch.ui.component.compat.TextButton
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import top.nkbe.npatch.ui.component.compat.OverlayDialog
-import top.nkbe.npatch.ui.component.compat.OverlayListPopup
-import androidx.compose.material3.MaterialTheme
+import io.github.suqi8.coui.kmp.basic.ButtonDefaults
+import io.github.suqi8.coui.kmp.basic.FloatingActionButton
+import io.github.suqi8.coui.kmp.basic.Icon
+import io.github.suqi8.coui.kmp.basic.InfiniteProgressIndicator
+import io.github.suqi8.coui.kmp.basic.ListPopupColumn
+import io.github.suqi8.coui.kmp.basic.PopupPositionProvider
+import io.github.suqi8.coui.kmp.basic.ScrollBehavior
+import io.github.suqi8.coui.kmp.basic.Text
+import io.github.suqi8.coui.kmp.basic.TextButton
+import io.github.suqi8.coui.kmp.basic.rememberPullToRefreshState
+import io.github.suqi8.coui.kmp.layout.DialogButtonBar
+import io.github.suqi8.coui.kmp.layout.DialogButtonBarAction
+import io.github.suqi8.coui.kmp.overlay.OverlayDialog
+import io.github.suqi8.coui.kmp.overlay.OverlayListPopup
+import io.github.suqi8.coui.kmp.overlay.OverlayLoadingDialog
+import io.github.suqi8.coui.kmp.theme.COUITheme
+import io.github.suqi8.coui.kmp.utils.overScrollVertical
+import io.github.suqi8.coui.kmp.utils.scrollEndHaptic
 import java.io.IOException
 
 private const val TAG = "AppManagePage"
@@ -88,7 +93,7 @@ fun AppManageBody(
     navigator: Navigator,
     searchQuery: String = "",
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    scrollBehavior: TopAppBarScrollBehavior,
+    scrollBehavior: ScrollBehavior,
     hazeState: HazeState
 ) {
     val viewModel = viewModel<AppManageViewModel>()
@@ -116,24 +121,17 @@ fun AppManageBody(
         }
     }
 
-    val isProcessing = viewModel.updateLoaderState is ProcessingState.Processing
+    val isProcessing = viewModel.updateLoaderState is ProcessingState.Processing 
             || viewModel.optimizeState is ProcessingState.Processing
             || viewModel.forceStopState is ProcessingState.Processing
             || viewModel.forceRestartState is ProcessingState.Processing
     if (isProcessing) {
         val showLoading = remember { mutableStateOf(true) }
-        OverlayDialog(
-            title = stringResource(R.string.manage_loading),
+        OverlayLoadingDialog(
+            text = stringResource(R.string.manage_loading),
             show = showLoading.value,
             onDismissRequest = { /* 阻断取消，等待处理完成 */ }
-        ) {
-            Box(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                LinearProgressIndicator()
-            }
-        }
+        )
     }
 
     when (viewModel.updateLoaderState) {
@@ -207,8 +205,8 @@ fun AppManageBody(
             modifier = Modifier
                 .fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
-
-
+                .scrollEndHaptic()
+                .overScrollVertical()
                 .hazeSource(state = hazeState),
             contentPadding = contentPadding,
             overscrollEffect = null
@@ -218,18 +216,18 @@ fun AppManageBody(
                     Box(Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             if (NeoPackageManager.appList.isEmpty()) {
-                                LinearProgressIndicator()
+                                InfiniteProgressIndicator()
                                 Spacer(Modifier.height(16.dp))
                                 Text(
                                     text = stringResource(R.string.manage_loading),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    style = COUITheme.textStyles.body1,
+                                    color = COUITheme.colorScheme.onSurfaceVariantSummary
                                 )
                             } else {
                                 Text(
                                     text = if (searchQuery.isNotEmpty()) stringResource(R.string.manage_no_search_results) else stringResource(R.string.manage_no_apps),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    style = COUITheme.textStyles.body1,
+                                    color = COUITheme.colorScheme.onSurfaceVariantSummary
                                 )
                             }
                         }
@@ -272,7 +270,7 @@ fun AppManageBody(
                             label = appInfo.label,
                             packageName = appInfo.app.packageName,
                             summaryRow = {
-                                val patchColor = if (isLocal) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                                val patchColor = if (isLocal) COUITheme.colorScheme.primary else COUITheme.colorScheme.onSurfaceVariantSummary
 
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     val modeLabel = if (isLocal) {
@@ -362,7 +360,7 @@ fun AppManageBody(
                                                 }
                                                 result.selected.forEach {
                                                     Log.d(TAG, "Activate ${it.app.packageName} for $targetAppPkg")
-                                                    ConfigManager.activateModule(targetAppPkg, Module(it.app.packageName, it.app.sourceDir))
+                                                    ConfigManager.activateModule(targetAppPkg, LoadedModule(it.app.packageName, it.app.sourceDir))
                                                 }
                                                 if (ShizukuApi.isReady) {
                                                     // Notify both removed and newly added modules so they do not
@@ -510,35 +508,23 @@ fun AppManageFab(
     if (shouldSelectDirectory.value) {
         OverlayDialog(
             title = stringResource(R.string.patch_select_dir_title),
+            summary = stringResource(R.string.patch_select_dir_text),
             show = shouldSelectDirectory.value,
             onDismissRequest = { shouldSelectDirectory.value = false },
-            titleColor = MaterialTheme.colorScheme.onSurface,
-            summaryColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
         ) {
-            Column {
-                Text(
-                    text = stringResource(R.string.patch_select_dir_text),
-                    modifier = Modifier.padding(bottom = 16.dp),
-                )
-                Row(horizontalArrangement = Arrangement.SpaceBetween) {
-                    TextButton(
-                        text = stringResource(android.R.string.cancel),
-                        onClick = { shouldSelectDirectory.value = false },
-                        modifier = Modifier.weight(1f),
-                    )
-                    Spacer(Modifier.width(20.dp))
-                    TextButton(
-                        text = stringResource(android.R.string.ok),
-                        onClick = {
-                            launcher.launch(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE))
-                            shouldSelectDirectory.value = false
-                        },
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.textButtonColors(),
-                    )
-                }
-            }
+            DialogButtonBar(
+                negative = DialogButtonBarAction(
+                    text = stringResource(android.R.string.cancel),
+                    onClick = { shouldSelectDirectory.value = false },
+                ),
+                positive = DialogButtonBarAction(
+                    text = stringResource(android.R.string.ok),
+                    onClick = {
+                        launcher.launch(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE))
+                        shouldSelectDirectory.value = false
+                    },
+                ),
+            )
         }
     }
 
@@ -547,34 +533,27 @@ fun AppManageFab(
             title = stringResource(R.string.screen_new_patch),
             show = showNewPatchDialog.value,
             onDismissRequest = { showNewPatchDialog.value = false },
-            titleColor = MaterialTheme.colorScheme.onSurface,
-            summaryColor = MaterialTheme.colorScheme.onSurfaceVariant,
-            backgroundColor = MaterialTheme.colorScheme.surfaceContainer,
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                TextButton(
+            DialogButtonBar(
+                neutral = DialogButtonBarAction(
                     text = stringResource(R.string.patch_from_storage),
-                    modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         navigator.navigate(Route.NewPatch(id = ACTION_STORAGE))
                         showNewPatchDialog.value = false
                     },
-                )
-                TextButton(
+                ),
+                positive = DialogButtonBarAction(
                     text = stringResource(R.string.patch_from_applist),
-                    modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         navigator.navigate(Route.NewPatch(id = ACTION_APPLIST))
                         showNewPatchDialog.value = false
                     },
-                )
-                Spacer(Modifier.height(4.dp))
-                TextButton(
+                ),
+                negative = DialogButtonBarAction(
                     text = stringResource(android.R.string.cancel),
-                    modifier = Modifier.fillMaxWidth(),
                     onClick = { showNewPatchDialog.value = false },
-                )
-            }
+                ),
+            )
         }
     }
 
@@ -602,7 +581,7 @@ fun AppManageFab(
         Icon(
             imageVector = Icons.Filled.Add,
             contentDescription = stringResource(R.string.add),
-            tint = MaterialTheme.colorScheme.onPrimary
+            tint = COUITheme.colorScheme.onPrimary
         )
     }
 }

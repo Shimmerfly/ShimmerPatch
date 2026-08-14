@@ -110,8 +110,8 @@ class NewPatchViewModel : ViewModel() {
 
     fun setUseManager(value: Boolean) {
         useManager = value
-        if (!value && sigBypassLevel > Constants.SIGBYPASS_HIGH) {
-            sigBypassLevel = Constants.SIGBYPASS_HIGH
+        if (!value && sigBypassLevel > Constants.SIGBYPASS_EXTREME) {
+            sigBypassLevel = Constants.SIGBYPASS_EXTREME
         }
     }
 
@@ -129,10 +129,9 @@ class NewPatchViewModel : ViewModel() {
     private fun submitPatch() {
         Log.d(TAG, "Submit Patch")
         if (useManager) embeddedModules = emptyList()
-        val patchSigBypassLevel = if (useManager) sigBypassLevel else sigBypassLevel.coerceAtMost(Constants.SIGBYPASS_HIGH)
+        val patchSigBypassLevel = sigBypassLevel.coerceIn(Constants.SIGBYPASS_NONE, Constants.SIGBYPASS_EXTREME)
         val patchHideLibs =
-            hideLibs &&
-                patchSigBypassLevel > Constants.SIGBYPASS_NONE
+            hideLibs && patchSigBypassLevel > Constants.SIGBYPASS_NONE
         val patchVersionCode = overrideVersionCodeValue.toIntOrNull()?.takeIf { it > 0 } ?: 1
         sigBypassLevel = patchSigBypassLevel
         hideLibs = patchHideLibs

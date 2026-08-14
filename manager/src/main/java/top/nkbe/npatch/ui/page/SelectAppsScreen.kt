@@ -1,13 +1,10 @@
 package top.nkbe.npatch.ui.page
 
-import androidx.compose.material.icons.automirrored.rounded.*
-
-import androidx.compose.animation.core.spring
-
 import android.content.pm.ApplicationInfo
 import android.os.Parcelable
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
@@ -48,15 +45,19 @@ import top.nkbe.npatch.ui.component.NPatchTopAppBar
 import top.nkbe.npatch.ui.util.backgroundAwareHazeStyle
 import top.nkbe.npatch.ui.viewmodel.SelectAppsViewModel
 import androidx.compose.ui.state.ToggleableState
-import androidx.compose.material3.Checkbox
+import io.github.suqi8.coui.kmp.basic.Checkbox
 import dev.chrisbanes.haze.rememberHazeState
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import androidx.compose.material3.MaterialTheme
+import io.github.suqi8.coui.kmp.basic.FloatingActionButton
+import io.github.suqi8.coui.kmp.basic.Icon
+import io.github.suqi8.coui.kmp.basic.IconButton
+import io.github.suqi8.coui.kmp.basic.COUIScrollBehavior
+import io.github.suqi8.coui.kmp.basic.Text
+import io.github.suqi8.coui.kmp.basic.rememberPullToRefreshState
+import io.github.suqi8.coui.kmp.icon.COUIIcons
+import io.github.suqi8.coui.kmp.icon.extended.Back
+import io.github.suqi8.coui.kmp.theme.COUITheme
+import io.github.suqi8.coui.kmp.utils.overScrollVertical
+import io.github.suqi8.coui.kmp.utils.scrollEndHaptic
 
 @Parcelize
 sealed class SelectAppsResult : Parcelable {
@@ -87,7 +88,7 @@ fun SelectAppsScreen(
     val hazeState = rememberHazeState()
     val hazeStyle = backgroundAwareHazeStyle()
 
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = COUIScrollBehavior()
     val dynamicTopPadding by remember {
         derivedStateOf { 12.dp * (1f - scrollBehavior.state.collapsedFraction) }
     }
@@ -125,9 +126,9 @@ fun SelectAppsScreen(
                                 modifier = Modifier.graphicsLayer {
                                     if (layoutDirection == LayoutDirection.Rtl) scaleX = -1f
                                 },
-                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                imageVector = COUIIcons.Back,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurface
+                                tint = COUITheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -196,7 +197,7 @@ private fun MultiSelectFab(onClick: () -> Unit) {
         Icon(
             imageVector = Icons.Outlined.Done,
             contentDescription = stringResource(R.string.add),
-            tint = MaterialTheme.colorScheme.onPrimary
+            tint = COUITheme.colorScheme.onPrimary
         )
     }
 }
@@ -222,8 +223,8 @@ private fun SelectAppsList(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-
-
+                .scrollEndHaptic()
+                .overScrollVertical()
                 .hazeSource(state = hazeState),
             contentPadding = contentPadding,
             overscrollEffect = null
@@ -260,8 +261,8 @@ private fun SelectAppsList(
                     trailingContent = if (multiSelect) {
                         {
                             Checkbox(
-                                checked = checked,
-                                onCheckedChange = null,
+                                state = if (checked) ToggleableState.On else ToggleableState.Off,
+                                onClick = null
                             )
                         }
                     } else null

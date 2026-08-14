@@ -1,7 +1,5 @@
 package top.nkbe.npatch.ui.page
 
-import androidx.compose.material.icons.automirrored.rounded.*
-
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.Image
@@ -22,7 +20,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Send
+import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.Security
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -49,14 +50,19 @@ import top.nkbe.npatch.R
 import top.nkbe.npatch.ui.component.NPatchScaffold
 import top.nkbe.npatch.ui.util.backgroundAwareCardColors
 import top.nkbe.npatch.ui.util.backgroundAwareColor
-import top.nkbe.npatch.ui.component.compat.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.Text
-import top.nkbe.npatch.ui.component.compat.TopAppBar
-import top.nkbe.npatch.ui.component.compat.ArrowPreference
-import androidx.compose.material3.MaterialTheme
+import io.github.suqi8.coui.kmp.basic.Card
+import io.github.suqi8.coui.kmp.basic.Icon
+import io.github.suqi8.coui.kmp.basic.IconButton
+import io.github.suqi8.coui.kmp.basic.COUIScrollBehavior
+import io.github.suqi8.coui.kmp.basic.Text
+import io.github.suqi8.coui.kmp.basic.TopAppBar
+import io.github.suqi8.coui.kmp.icon.COUIIcons
+import io.github.suqi8.coui.kmp.icon.extended.Back
+import io.github.suqi8.coui.kmp.preference.ArrowPreference
+import io.github.suqi8.coui.kmp.theme.COUITheme
+import io.github.suqi8.coui.kmp.utils.PressFeedbackType
+import io.github.suqi8.coui.kmp.utils.overScrollVertical
+import io.github.suqi8.coui.kmp.utils.scrollEndHaptic
 
 private data class AboutLink(
     val title: String,
@@ -70,7 +76,7 @@ private data class AboutLink(
 @Composable
 fun AboutScreen(onBack: () -> Unit) {
     val context = LocalContext.current
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val scrollBehavior = COUIScrollBehavior()
     val showTopBarContent by remember {
         derivedStateOf { scrollBehavior.state.collapsedFraction == 0f }
     }
@@ -84,9 +90,9 @@ fun AboutScreen(onBack: () -> Unit) {
                     if (showTopBarContent) {
                         IconButton(onClick = onBack) {
                             Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                imageVector = COUIIcons.Regular.Back,
                                 contentDescription = stringResource(R.string.nav_back),
-                                tint = MaterialTheme.colorScheme.onSurface
+                                tint = COUITheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -98,8 +104,8 @@ fun AboutScreen(onBack: () -> Unit) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-
-
+                .scrollEndHaptic()
+                .overScrollVertical()
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             contentPadding = PaddingValues(
                 start = 12.dp,
@@ -125,6 +131,12 @@ fun AboutScreen(onBack: () -> Unit) {
             }
 
             item {
+                LinksCard(
+                    onLinkClick = context::openUri
+                )
+            }
+
+            item {
                 AcknowledgmentsCard(
                     onLinkClick = context::openUri
                 )
@@ -135,9 +147,15 @@ fun AboutScreen(onBack: () -> Unit) {
 
 @Composable
 private fun ModuleIntroCard() {
-    Card(Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = backgroundAwareCardColors(),
+        showIndication = false,
+    ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
@@ -152,14 +170,14 @@ private fun ModuleIntroCard() {
                 text = "NPatch",
                 fontSize = 30.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary,
+                color = COUITheme.colorScheme.primary,
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(8.dp))
             Text(
                 text = stringResource(R.string.home_description),
-                fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = COUITheme.textStyles.body2.fontSize,
+                color = COUITheme.colorScheme.onSurfaceVariantSummary,
                 textAlign = TextAlign.Center
             )
         }
@@ -168,7 +186,10 @@ private fun ModuleIntroCard() {
 
 @Composable
 private fun AuthorCard(onClick: () -> Unit) {
-    Card(Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = backgroundAwareCardColors(),
+    ) {
         ArrowPreference(
             title = "NkBe",
             summary = stringResource(R.string.about_author_summary),
@@ -190,7 +211,11 @@ private fun AuthorCard(onClick: () -> Unit) {
 
 @Composable
 private fun DisclaimerCard() {
-    Card(Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = backgroundAwareCardColors(),
+        showIndication = false,
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -203,10 +228,39 @@ private fun DisclaimerCard() {
             Spacer(Modifier.height(10.dp))
             Text(
                 text = stringResource(R.string.about_disclaimer_body),
-                fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontSize = COUITheme.textStyles.body2.fontSize,
+                color = COUITheme.colorScheme.onSurfaceVariantSummary,
                 textAlign = TextAlign.Start
             )
+        }
+    }
+}
+
+@Composable
+private fun LinksCard(onLinkClick: (String) -> Unit) {
+    val links = rememberAboutLinks()
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = backgroundAwareCardColors(),
+        showIndication = false,
+    ) {
+        Column(modifier = Modifier.padding(vertical = 8.dp)) {
+            AboutSectionHeader(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                icon = Icons.Outlined.Public,
+                title = stringResource(R.string.about_links_title)
+            )
+            links.forEach { link ->
+                ArrowPreference(
+                    title = link.title,
+                    summary = link.summary,
+                    startAction = {
+                        LinkIcon(link)
+                    },
+                    onClick = { onLinkClick(link.url) }
+                )
+            }
         }
     }
 }
@@ -215,7 +269,11 @@ private fun DisclaimerCard() {
 private fun AcknowledgmentsCard(onLinkClick: (String) -> Unit) {
     val contributors = rememberAcknowledgmentLinks()
 
-    Card(Modifier.fillMaxWidth()) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = backgroundAwareCardColors(),
+        showIndication = false,
+    ) {
         Column(modifier = Modifier.padding(vertical = 8.dp)) {
             AboutSectionHeader(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -249,14 +307,14 @@ private fun AboutSectionHeader(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
+            tint = COUITheme.colorScheme.primary
         )
         Spacer(Modifier.width(8.dp))
         Text(
             text = title,
             fontSize = 18.sp,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface
+            color = COUITheme.colorScheme.onSurface
         )
     }
 }
@@ -268,7 +326,7 @@ private fun LinkIcon(link: AboutLink) {
             .padding(end = 12.dp)
             .size(42.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(backgroundAwareColor(MaterialTheme.colorScheme.primaryContainer)),
+            .background(backgroundAwareColor(COUITheme.colorScheme.primaryContainer)),
         contentAlignment = Alignment.Center
     ) {
         when {
@@ -295,7 +353,7 @@ private fun LinkIcon(link: AboutLink) {
                     imageVector = link.icon,
                     contentDescription = null,
                     modifier = Modifier.size(22.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    tint = COUITheme.colorScheme.onPrimaryContainer
                 )
             }
         }
@@ -310,6 +368,37 @@ private fun crossfadeModel(url: String): ImageRequest {
             .data(url)
             .crossfade(true)
             .build()
+    }
+}
+
+@Composable
+private fun rememberAboutLinks(): List<AboutLink> {
+    val websiteTitle = stringResource(R.string.about_official_website)
+    val websiteSummary = stringResource(R.string.about_link_website_summary)
+    val githubSummary = stringResource(R.string.about_link_github_summary)
+    val telegramSummary = stringResource(R.string.about_link_telegram_summary)
+
+    return remember(websiteTitle, websiteSummary, githubSummary, telegramSummary) {
+        listOf(
+            AboutLink(
+                title = websiteTitle,
+                summary = websiteSummary,
+                url = ABOUT_WEBSITE_URL,
+                icon = Icons.Outlined.Public
+            ),
+            AboutLink(
+                title = "GitHub",
+                summary = githubSummary,
+                url = GITHUB_URL,
+                icon = Icons.Outlined.Code
+            ),
+            AboutLink(
+                title = "Telegram",
+                summary = telegramSummary,
+                url = TELEGRAM_URL,
+                icon = Icons.AutoMirrored.Outlined.Send
+            )
+        )
     }
 }
 
@@ -382,6 +471,7 @@ private fun Context.openUri(uri: String) {
     startActivity(Intent(Intent.ACTION_VIEW, uri.toUri()))
 }
 
+private const val ABOUT_WEBSITE_URL = "https://www.nkbe.top"
 private const val GITHUB_URL = "https://github.com/7723mod/NPatch"
 private const val TELEGRAM_URL = "https://t.me/NPatch"
 private const val AUTHOR_GITHUB_URL = "https://github.com/HSSkyBoy"

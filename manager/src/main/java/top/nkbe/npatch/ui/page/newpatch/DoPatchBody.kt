@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import nkbe.util.NeoPackageManager
 import nkbe.util.NeoPackageManager.AppInfo
 import nkbe.util.ShizukuApi
@@ -51,15 +52,20 @@ import top.nkbe.npatch.ui.util.lastItemIndex
 import top.nkbe.npatch.ui.viewmodel.NewPatchViewModel
 import top.nkbe.npatch.ui.viewmodel.NewPatchViewModel.PatchState
 import top.nkbe.npatch.ui.viewmodel.NewPatchViewModel.ViewAction
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import top.nkbe.npatch.ui.component.compat.SmallTitle
-import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.Text
-import top.nkbe.npatch.ui.component.compat.TextButton
-import top.nkbe.npatch.ui.component.compat.OverlayDialog
-import androidx.compose.material3.MaterialTheme
+import io.github.suqi8.coui.kmp.basic.ButtonDefaults
+import io.github.suqi8.coui.kmp.basic.Card
+import io.github.suqi8.coui.kmp.basic.CircularProgressIndicator
+import io.github.suqi8.coui.kmp.basic.Icon
+import io.github.suqi8.coui.kmp.basic.SmallTitle
+import io.github.suqi8.coui.kmp.basic.SnackbarResult
+import io.github.suqi8.coui.kmp.basic.Text
+import io.github.suqi8.coui.kmp.layout.DialogButtonBar
+import io.github.suqi8.coui.kmp.layout.DialogButtonBarAction
+import io.github.suqi8.coui.kmp.overlay.OverlayDialog
+import io.github.suqi8.coui.kmp.overlay.OverlayLoadingDialog
+import io.github.suqi8.coui.kmp.theme.COUITheme
+import io.github.suqi8.coui.kmp.utils.overScrollVertical
+import io.github.suqi8.coui.kmp.utils.scrollEndHaptic
 
 private const val TAG = "NewPatchPage"
 
@@ -88,10 +94,11 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            Column(
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 12.dp),
+                colors = backgroundAwareCardColors(),
             ) {
                 Row(
                     modifier = Modifier
@@ -105,7 +112,7 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                             Icons.Outlined.CheckCircle else Icons.Outlined.ErrorOutline,
                         contentDescription = null,
                         tint = if (viewModel.patchState == PatchState.FINISHED)
-                            MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+                            COUITheme.colorScheme.primary else COUITheme.colorScheme.error,
                         modifier = Modifier.size(32.dp)
                     )
                     Column {
@@ -114,12 +121,12 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                                 stringResource(R.string.patch_start) + " ✓"
                             else
                                 stringResource(R.string.copy_error),
-                            style = MaterialTheme.typography.headlineSmall,
+                            style = COUITheme.textStyles.headline1,
                         )
                         Text(
                             text = viewModel.patchApp.app.packageName,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = COUITheme.textStyles.body2,
+                            color = COUITheme.colorScheme.onSurfaceVariantSummary,
                         )
                     }
                 }
@@ -132,10 +139,11 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            Column(
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 12.dp),
+                colors = backgroundAwareCardColors(COUITheme.colorScheme.surfaceVariant),
             ) {
                 Row(
                     modifier = Modifier
@@ -148,12 +156,12 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                     Column {
                         Text(
                             text = stringResource(R.string.patch_start) + "…",
-                            style = MaterialTheme.typography.headlineSmall,
+                            style = COUITheme.textStyles.headline1,
                         )
                         Text(
                             text = viewModel.patchApp.app.packageName,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = COUITheme.textStyles.body2,
+                            color = COUITheme.colorScheme.onSurfaceVariantSummary,
                         )
                     }
                 }
@@ -162,7 +170,7 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
 
         // ── 日誌輸出區域 ──
         SmallTitle(text = "Log")
-        Box(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
@@ -178,17 +186,18 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                         }
                     }
                 ),
+            colors = backgroundAwareCardColors(),
         ) {
             ShimmerAnimation(enabled = viewModel.patchState == PatchState.PATCHING) {
-                ProvideTextStyle(MaterialTheme.typography.labelSmall.copy(fontFamily = FontFamily.Monospace)) {
+                ProvideTextStyle(COUITheme.textStyles.footnote1.copy(fontFamily = FontFamily.Monospace)) {
                     val scrollState = rememberLazyListState()
                     LazyColumn(
                         state = scrollState,
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(RoundedCornerShape(16.dp))
-
-
+                            .scrollEndHaptic()
+                            .overScrollVertical()
                             .padding(horizontal = 16.dp, vertical = 16.dp),
                         overscrollEffect = null
                     ) {
@@ -203,7 +212,7 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                                 )
                                 Log.ERROR -> Text(
                                     text = line,
-                                    color = MaterialTheme.colorScheme.error,
+                                    color = COUITheme.colorScheme.error,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(vertical = 4.dp)
@@ -289,7 +298,7 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                                 else NewPatchViewModel.InstallMethod.SHIZUKU
                             Log.d(TAG, "Installation method: $installation")
                         },
-                        colors = ButtonDefaults.textButtonColors(),
+                        colors = ButtonDefaults.textButtonColorsPrimary(),
                     )
                 }
             }
@@ -315,7 +324,7 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                             val cm = lspApp.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             cm.setPrimaryClip(ClipData.newPlainText("NPatch", viewModel.logs.joinToString(separator = "\n") { it.second }))
                         },
-                        colors = ButtonDefaults.textButtonColors(),
+                        colors = ButtonDefaults.textButtonColorsPrimary(),
                     )
                 }
             }
@@ -332,31 +341,20 @@ fun UninstallConfirmationDialog(
     val show = remember { mutableStateOf(true) }
     OverlayDialog(
         title = stringResource(R.string.uninstall),
+        summary = stringResource(R.string.patch_uninstall_text),
         show = show.value,
         onDismissRequest = { show.value = false; onDismiss() },
     ) {
-        Column {
-            Text(
-                text = stringResource(R.string.patch_uninstall_text),
-                modifier = Modifier.padding(bottom = 16.dp),
-            )
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                TextButton(
-                    text = stringResource(android.R.string.cancel),
-                    onClick = { show.value = false; onDismiss() },
-                    modifier = Modifier.weight(1f),
-                )
-                Spacer(Modifier.width(20.dp))
-                TextButton(
-                    text = stringResource(android.R.string.ok),
-                    onClick = { show.value = false; onConfirm() },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.textButtonColors(),
-                )
-            }
-        }
+        DialogButtonBar(
+            negative = DialogButtonBarAction(
+                text = stringResource(android.R.string.cancel),
+                onClick = { show.value = false; onDismiss() },
+            ),
+            positive = DialogButtonBarAction(
+                text = stringResource(android.R.string.ok),
+                onClick = { show.value = false; onConfirm() },
+            ),
+        )
     }
 }
 
@@ -379,16 +377,6 @@ fun InstallDialog(
     }
     var installing by remember { mutableStateOf(0) }
     var installStarted by remember { mutableStateOf(false) }
-    val uninstallLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.StartActivityForResult(),
-    ) {
-        if (checkIsApkFixedByLSP(context, patchApp.app.packageName)) {
-            onFinish(PackageInstaller.STATUS_FAILURE, "Original application was not uninstalled")
-        } else {
-            uninstallFirst = false
-        }
-    }
-
     suspend fun doInstall() {
         Log.i(TAG, "Installing ${patchApp.app.packageName} with $method")
         installStarted = true
@@ -410,7 +398,34 @@ fun InstallDialog(
         }
     }
 
-    LaunchedEffect(uninstallFirst, method) {
+    val uninstallLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult(),
+    ) {
+        scope.launch(kotlinx.coroutines.Dispatchers.IO) {
+            var checkCount = 0
+            var stillInstalled = true
+            while (checkCount < 10) {
+                if (!checkIsApkFixedByLSP(context, patchApp.app.packageName)) {
+                    stillInstalled = false
+                    break
+                }
+                kotlinx.coroutines.delay(300)
+                checkCount++
+            }
+            withContext(kotlinx.coroutines.Dispatchers.Main) {
+                if (stillInstalled) {
+                    onFinish(PackageInstaller.STATUS_FAILURE, "Original application was not uninstalled")
+                } else {
+                    uninstallFirst = false
+                    if (!installStarted) {
+                        doInstall()
+                    }
+                }
+            }
+        }
+    }
+
+    LaunchedEffect(Unit) {
         if (!uninstallFirst && !installStarted) {
             doInstall()
         }
@@ -429,8 +444,15 @@ fun InstallDialog(
                         Log.i(TAG, "Uninstallation end: $status, $message")
                         if (status == PackageInstaller.STATUS_SUCCESS) {
                             uninstallFirst = false
+                            if (!installStarted) {
+                                doInstall()
+                            }
                         } else {
-                            onFinish(status, message)
+                            uninstallLauncher.launch(
+                                Intent(Intent.ACTION_DELETE).apply {
+                                    data = "package:${patchApp.app.packageName}".toUri()
+                                },
+                            )
                         }
                     }
                 } else {
@@ -446,18 +468,10 @@ fun InstallDialog(
 
     if (installing != 0) {
         val showInstalling = remember { mutableStateOf(true) }
-        OverlayDialog(
-            title = stringResource(if (installing == 1) R.string.installing else R.string.uninstalling),
+        OverlayLoadingDialog(
+            text = stringResource(if (installing == 1) R.string.installing else R.string.uninstalling),
             show = showInstalling.value,
             onDismissRequest = {},
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                CircularProgressIndicator(modifier = Modifier.padding(16.dp).size(48.dp))
-            }
-        }
+        )
     }
 }

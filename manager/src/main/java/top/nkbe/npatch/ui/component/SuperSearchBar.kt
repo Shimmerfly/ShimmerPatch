@@ -2,13 +2,8 @@
 
 package top.nkbe.npatch.ui.component
 
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.unit.dp
-import androidx.compose.material.icons.Icons
 import android.R
 import android.annotation.SuppressLint
-import androidx.compose.material.icons.rounded.*
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -60,6 +55,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
@@ -70,9 +66,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.zIndex
 import androidx.navigationevent.NavigationEventInfo
@@ -82,10 +80,14 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.blur.HazeBlurStyle
 import dev.chrisbanes.haze.blur.blurEffect
 import dev.chrisbanes.haze.hazeEffect
-import androidx.compose.material3.Icon
-import top.nkbe.npatch.ui.component.compat.InputField
-import androidx.compose.material3.Text
-import androidx.compose.material3.MaterialTheme
+import io.github.suqi8.coui.kmp.basic.Icon
+import io.github.suqi8.coui.kmp.basic.InputField
+import io.github.suqi8.coui.kmp.basic.Text
+import io.github.suqi8.coui.kmp.icon.COUIIcons
+import io.github.suqi8.coui.kmp.icon.basic.Search
+import io.github.suqi8.coui.kmp.icon.basic.SearchCleanup
+import io.github.suqi8.coui.kmp.theme.COUITheme.colorScheme
+import io.github.suqi8.coui.kmp.utils.overScrollVertical
 import top.nkbe.npatch.ui.util.BG_SURFACE_ALPHA
 import top.nkbe.npatch.ui.util.LocalBackgroundImagePath
 
@@ -257,7 +259,7 @@ fun SearchStatus.SearchPager(
         modifier = Modifier
             .fillMaxSize()
             .zIndex(5f)
-            .background(MaterialTheme.colorScheme.surface.copy(alpha = surfaceAlpha))
+            .background(colorScheme.surface.copy(alpha = surfaceAlpha))
     ) {
         Row(
             Modifier
@@ -266,9 +268,9 @@ fun SearchStatus.SearchPager(
                 .then(
                     if (!searchStatus.isCollapsed()) {
                         if (hasBackgroundImage) {
-                            Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = BG_SURFACE_ALPHA))
+                            Modifier.background(colorScheme.surface.copy(alpha = BG_SURFACE_ALPHA))
                         } else {
-                            Modifier.background(MaterialTheme.colorScheme.surface)
+                            Modifier.background(colorScheme.surface)
                         }
                     } else Modifier
                 ),
@@ -281,9 +283,9 @@ fun SearchStatus.SearchPager(
                         .weight(1f)
                         .then(
                             if (hasBackgroundImage) {
-                                Modifier.background(MaterialTheme.colorScheme.surface.copy(alpha = BG_SURFACE_ALPHA))
+                                Modifier.background(colorScheme.surface.copy(alpha = BG_SURFACE_ALPHA))
                             } else {
-                                Modifier.background(MaterialTheme.colorScheme.surface)
+                                Modifier.background(colorScheme.surface)
                             }
                         )
                 ) {
@@ -298,7 +300,7 @@ fun SearchStatus.SearchPager(
                 Text(
                     text = stringResource(R.string.cancel),
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = colorScheme.primary,
                     modifier = Modifier
                         .padding(start = 4.dp, end = 16.dp, top = searchBarTopPadding)
                         .semantics { role = Role.Button }
@@ -339,7 +341,7 @@ fun SearchStatus.SearchPager(
                 SearchStatus.ResultStatus.SHOW -> LazyColumn(
                     Modifier
                         .fillMaxSize()
-                        ,
+                        .overScrollVertical(),
                 ) {
                     result()
                 }
@@ -365,12 +367,12 @@ fun SearchBar(
         label = "",
         leadingIcon = {
             Icon(
-                imageVector = Icons.Rounded.Search,
+                imageVector = COUIIcons.Basic.Search,
                 contentDescription = null,
                 modifier = Modifier
                     .size(44.dp)
                     .padding(start = 16.dp, end = 8.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = colorScheme.onSurfaceContainerHigh,
             )
         },
         trailingIcon = {
@@ -380,8 +382,8 @@ fun SearchBar(
                 exit = fadeOut() + scaleOut(),
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.Close,
-                    tint = MaterialTheme.colorScheme.onSurface,
+                    imageVector = COUIIcons.Basic.SearchCleanup,
+                    tint = colorScheme.onSurface,
                     contentDescription = null,
                     modifier = Modifier
                         .size(44.dp)
@@ -435,12 +437,12 @@ fun SearchBarFake(
         label = label,
         leadingIcon = {
             Icon(
-                imageVector = Icons.Rounded.Search,
+                imageVector = COUIIcons.Basic.Search,
                 contentDescription = null,
                 modifier = Modifier
                     .size(44.dp)
                     .padding(start = 16.dp, end = 8.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = colorScheme.onSurfaceContainerHigh,
             )
         },
         modifier = Modifier

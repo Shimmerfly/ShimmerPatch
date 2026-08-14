@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add">Add</string>
     <string name="install">Install</string>
@@ -10,8 +10,6 @@
     <string name="modules">Modules</string>
     <string name="shizuku_available">Shizuku service available</string>
     <string name="shizuku_unavailable">Shizuku service not connected</string>
-    <string name="status_active">Active</string>
-    <string name="status_inactive">Inactive</string>
     <string name="screen_home">Home</string>
     <string name="screen_repo">Repo</string>
     <string name="off">Off</string>
@@ -30,29 +28,6 @@
     <string name="home_support">Support</string>
     <string name="home_about">About NPatch</string>
     <string name="home_description">NPatch is a free non-root Xposed framework based on Vector.</string>
-    <string name="home_contribute">Take part</string>
-    <string name="home_review_change">Review a change</string>
-    <string name="home_discussions">Discussions</string>
-    <string name="home_test_canary">Test a canary build</string>
-    <string name="home_report_problem">Report a problem</string>
-    <string name="home_recent_activity">Recent activity</string>
-    <string name="home_activity_summary">%1$d commits by %2$d people</string>
-    <string name="home_activity_rest">Taking a rest — saved activity. Pull to refresh.</string>
-    <string name="home_activity_offline">Could not load project activity. Pull to retry.</string>
-    <string name="home_project_stats">%1$s stars · %2$s forks</string>
-    <string name="home_appearance_theme">Theme</string>
-    <string name="home_appearance_color">Color</string>
-    <string name="home_appearance_amoled">AMOLED black</string>
-    <string name="home_appearance_amoled_summary">Use true black for dark background surfaces</string>
-    <string name="home_appearance_ambience">Header ambience</string>
-    <string name="home_ambience_circuit">Circuit</string>
-    <string name="home_ambience_none">None</string>
-    <string name="ambience_snow">Snow</string>
-    <string name="ambience_maze">Maze</string>
-    <string name="ambience_circuit">Circuit</string>
-    <string name="ambience_matrix">Code rain</string>
-    <string name="ambience_none">Still</string>
-    <string name="home_appearance_navigation">Navigation</string>
 
     <!-- About Screen -->
     <string name="about_view_source_code"><![CDATA[View source code at %1$s]]></string>
@@ -77,9 +52,6 @@
     <!-- Manage Screen -->
     <string name="screen_manage">Manage</string>
     <string name="manage_loading">Loading</string>
-    <string name="manage_running">Running</string>
-    <string name="manage_not_running">Not running</string>
-    <string name="manage_active_of">%1$d of %2$d active</string>
     <string name="manage_search">Search</string>
     <string name="manage_no_search_results">No search results</string>
     <string name="manage_no_apps">No patched apps yet</string>
@@ -136,6 +108,8 @@
     <string name="patch_sigbypasslv1_desc">Adds Java IO and native openat/openat64 redirection so signature-related file reads use the original APK</string>
     <string name="patch_sigbypasslv2">High</string>
     <string name="patch_sigbypasslv2_desc">Builds on Basic by restoring the original AppComponentFactory and hooking getPackageArchiveInfo / hasSigningCertificate for stricter verification paths</string>
+    <string name="patch_sigbypasslv3">Extreme</string>
+    <string name="patch_sigbypasslv3_desc">Builds on High by hooking the PackageInfo(Parcel) constructor so signatures are replaced across binder unparceling paths</string>
     <string name="patch_new_package">Patch New PackageName</string>
     <string name="hint_patch_new_package">Input a new package for app</string>
     <string name="patch_override_version_code">Override version code</string>
@@ -146,7 +120,7 @@
     <string name="patch_use_microg">Force enable MicroG support</string>
     <string name="patch_use_microg_desc">Redirect GMS requests to the community version of MicroG (such as ReVanced GmsCore). Applicable to Google apps like YouTube, requires manually installing the corresponding MicroG service.</string>
     <string name="patch_output_log_to_media">Output Log to Media Directory</string>
-    <string name="patch_output_log_to_media_desc">Output the Xposed logs and framework startup logs of the module running to the Media directory.</string>
+    <string name="patch_output_log_to_media_desc">Captures Xposed API logs, framework events, and Java/Kotlin crashes.</string>
     <string name="patch_hide_libs">Exempt environment checks</string>
     <string name="patch_hide_libs_desc">Sanitize ART and sensitive system library visibility for apps that perform basic runtime environment checks.</string>
     <string name="patch_start">Start Patch</string>
@@ -300,7 +274,6 @@
     <string name="module_release_load_more">Show older versions</string>
     <string name="module_release_no_more">No more release</string>
     <string name="repo_load_failed">Failed to load module repo: %s</string>
-    <string name="repo_retry">Retry</string>
     <string name="repo_loading_mirror">Loading mirror repository…</string>
     <plurals name="module_release_assets_download_count">
         <item quantity="one">%d download</item>

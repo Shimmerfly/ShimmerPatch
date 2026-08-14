@@ -17,7 +17,6 @@ import top.nkbe.npatch.manager.ManagerIntegrity
 import top.nkbe.npatch.manager.ModuleScopeSyncStore
 import nkbe.util.NeoPackageManager
 import nkbe.util.ShizukuApi
-import top.nkbe.npatch.util.SB
 import java.io.File
 
 lateinit var lspApp: LSPApplication
@@ -70,10 +69,6 @@ class LSPApplication : Application() {
         AppBroadcastReceiver.register(this)
         globalScope.launch { 
             NeoPackageManager.fetchAppList() 
-            
-            if (SB.hasConflict(this@LSPApplication)) {
-                SB.triggerConflict(this@LSPApplication)
-            }
         }
     }
 

@@ -70,14 +70,14 @@ import top.nkbe.npatch.config.Configs
 import top.nkbe.npatch.ui.component.NPatchScaffold
 import top.nkbe.npatch.ui.util.backgroundAwareCardColors
 import top.nkbe.npatch.ui.util.backgroundAwareColor
-import top.nkbe.npatch.ui.component.compat.Button
-import androidx.compose.material3.ButtonDefaults
-import top.nkbe.npatch.ui.component.compat.Card
-import androidx.compose.material3.Icon
-import top.nkbe.npatch.ui.component.compat.SmallTitle
-import androidx.compose.material3.Text
-import top.nkbe.npatch.ui.component.compat.TextButton
-import androidx.compose.material3.MaterialTheme
+import io.github.suqi8.coui.kmp.basic.Button
+import io.github.suqi8.coui.kmp.basic.ButtonDefaults
+import io.github.suqi8.coui.kmp.basic.Card
+import io.github.suqi8.coui.kmp.basic.Icon
+import io.github.suqi8.coui.kmp.basic.SmallTitle
+import io.github.suqi8.coui.kmp.basic.Text
+import io.github.suqi8.coui.kmp.basic.TextButton
+import io.github.suqi8.coui.kmp.theme.COUITheme
 
 private val welcomeShizukuListener: (Int, Int) -> Unit = { _, grantResult ->
     ShizukuApi.isPermissionGranted = grantResult == PackageManager.PERMISSION_GRANTED
@@ -214,16 +214,16 @@ private fun WelcomeIntroPage() {
                 Spacer(Modifier.height(18.dp))
                 Text(
                     text = stringResource(R.string.app_name),
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = COUITheme.textStyles.title1,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = COUITheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center
                 )
                 Spacer(Modifier.height(6.dp))
                 Text(
                     text = versionLabel,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = COUITheme.textStyles.body2,
+                    color = COUITheme.colorScheme.onSurfaceVariantSummary,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.semantics {
                         contentDescription = versionLabel
@@ -232,15 +232,15 @@ private fun WelcomeIntroPage() {
                 Spacer(Modifier.height(18.dp))
                 Text(
                     text = stringResource(R.string.welcome_intro_content),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = COUITheme.textStyles.body1,
+                    color = COUITheme.colorScheme.onSurfaceVariantSummary,
                     textAlign = TextAlign.Center
                 )
                 Spacer(Modifier.height(10.dp))
                 Text(
                     text = stringResource(R.string.welcome_intro_detail),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = COUITheme.textStyles.body2,
+                    color = COUITheme.colorScheme.onSurfaceVariantSummary,
                     textAlign = TextAlign.Start
                 )
             }
@@ -325,18 +325,18 @@ private fun OptionalFeatureCard() {
     }
 
     val isGranted = ShizukuApi.isPermissionGranted
-    val warningContainer = if (MaterialTheme.colorScheme.surface.luminance() > 0.5f) {
+    val warningContainer = if (COUITheme.colorScheme.surface.luminance() > 0.5f) {
         Color(0xFFFFE08A)
     } else {
         Color(0xFF5C4800)
     }
-    val warningContent = if (MaterialTheme.colorScheme.surface.luminance() > 0.5f) {
+    val warningContent = if (COUITheme.colorScheme.surface.luminance() > 0.5f) {
         Color(0xFF5A4300)
     } else {
         Color(0xFFFFF1BF)
     }
-    val containerColor = if (isGranted) MaterialTheme.colorScheme.primaryContainer else warningContainer
-    val contentColor = if (isGranted) MaterialTheme.colorScheme.onPrimaryContainer else warningContent
+    val containerColor = if (isGranted) COUITheme.colorScheme.primaryContainer else warningContainer
+    val contentColor = if (isGranted) COUITheme.colorScheme.onPrimaryContainer else warningContent
     val shizukuApiVersion = ShizukuApi.getVersionOrNull()
     val shizukuStatusDescription = shizukuApiVersion?.let {
         stringResource(R.string.home_api_version) + " $it"
@@ -368,20 +368,20 @@ private fun OptionalFeatureCard() {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(R.string.welcome_optional_title),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = COUITheme.textStyles.title3,
                     color = contentColor
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text = stringResource(if (isGranted) R.string.shizuku_available else R.string.shizuku_unavailable),
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = COUITheme.textStyles.body1,
                     color = contentColor.copy(alpha = 0.92f)
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text = shizukuApiVersion?.let { "API $it" }
                         ?: stringResource(R.string.home_shizuku_warning),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = COUITheme.textStyles.body2,
                     color = contentColor.copy(alpha = 0.82f),
                     modifier = Modifier.semantics {
                         contentDescription = shizukuStatusDescription
@@ -390,7 +390,7 @@ private fun OptionalFeatureCard() {
                 Spacer(Modifier.height(8.dp))
                 Text(
                     text = stringResource(R.string.welcome_optional_summary),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = COUITheme.textStyles.body2,
                     fontSize = 13.sp,
                     color = contentColor.copy(alpha = 0.9f)
                 )
@@ -416,8 +416,8 @@ private fun WelcomeDisclaimerPage() {
             Column(Modifier.padding(18.dp)) {
                 Text(
                     text = stringResource(R.string.welcome_disclaimer_content),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = COUITheme.textStyles.body1,
+                    color = COUITheme.colorScheme.onSurfaceVariantSummary
                 )
             }
         }
@@ -452,28 +452,28 @@ private fun WelcomePageHeader(
             modifier = Modifier
                 .size(46.dp)
                 .clip(RoundedCornerShape(14.dp))
-                .background(backgroundAwareColor(MaterialTheme.colorScheme.primaryContainer)),
+                .background(backgroundAwareColor(COUITheme.colorScheme.primaryContainer)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
+                tint = COUITheme.colorScheme.onPrimaryContainer
             )
         }
         Spacer(Modifier.width(12.dp))
         Column {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleLarge,
+                style = COUITheme.textStyles.title2,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface
+                color = COUITheme.colorScheme.onSurface
             )
             Spacer(Modifier.height(2.dp))
             Text(
                 text = summary,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = COUITheme.textStyles.body2,
+                color = COUITheme.colorScheme.onSurfaceVariantSummary
             )
         }
     }
@@ -502,20 +502,20 @@ private fun PermissionStatusCard(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary
+                tint = COUITheme.colorScheme.primary
             )
             Spacer(Modifier.width(14.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    style = COUITheme.textStyles.title3,
+                    color = COUITheme.colorScheme.onSurface
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text = summary,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = COUITheme.textStyles.body2,
+                    color = COUITheme.colorScheme.onSurfaceVariantSummary
                 )
             }
             Spacer(Modifier.width(12.dp))
@@ -523,13 +523,13 @@ private fun PermissionStatusCard(
                 Icon(
                     imageVector = Icons.Outlined.CheckCircle,
                     contentDescription = stringResource(R.string.welcome_permission_granted),
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = COUITheme.colorScheme.primary
                 )
             } else {
                 Text(
                     text = stringResource(R.string.welcome_permission_authorize),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
+                    style = COUITheme.textStyles.body2,
+                    color = COUITheme.colorScheme.primary
                 )
             }
         }
@@ -559,12 +559,12 @@ private fun WelcomeBottomBar(
         Button(
             onClick = onNext,
             enabled = page != 1 || permissionsReady,
-            colors = ButtonDefaults.buttonColors(),
+            colors = ButtonDefaults.buttonColorsPrimary(),
             insideMargin = PaddingValues(horizontal = 22.dp, vertical = 13.dp)
         ) {
             Text(
                 text = stringResource(if (page == 2) R.string.welcome_btn_finish else R.string.welcome_btn_next),
-                style = MaterialTheme.typography.labelLarge
+                style = COUITheme.textStyles.button
             )
         }
     }

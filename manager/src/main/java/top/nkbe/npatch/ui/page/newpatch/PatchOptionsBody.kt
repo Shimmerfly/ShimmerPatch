@@ -26,20 +26,13 @@ import top.nkbe.npatch.ui.component.settings.SettingsEditor
 import top.nkbe.npatch.ui.util.backgroundAwareCardColors
 import top.nkbe.npatch.ui.viewmodel.NewPatchViewModel
 import top.nkbe.npatch.ui.viewmodel.NewPatchViewModel.ViewAction
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarScrollBehavior
-import top.nkbe.npatch.ui.component.compat.DropdownEntry
-import top.nkbe.npatch.ui.component.compat.DropdownItem
-import top.nkbe.npatch.ui.component.compat.SmallTitle
-import top.nkbe.npatch.ui.component.compat.OverlayDropdownPreference
-import top.nkbe.npatch.ui.component.compat.SwitchPreference
-import androidx.compose.material3.MaterialTheme
+import io.github.suqi8.coui.kmp.basic.*
+import io.github.suqi8.coui.kmp.preference.OverlayDropdownPreference
+import io.github.suqi8.coui.kmp.preference.SwitchPreference
+import io.github.suqi8.coui.kmp.theme.COUITheme
 
 @Composable
-fun ConfiguringTopBar(scrollBehavior: TopAppBarScrollBehavior, onBackClick: () -> Unit) {
+fun ConfiguringTopBar(scrollBehavior: ScrollBehavior, onBackClick: () -> Unit) {
     NPatchTopAppBar(
         title = stringResource(R.string.screen_new_patch),
         scrollBehavior = scrollBehavior,
@@ -65,11 +58,11 @@ fun ConfiguringFab() {
             Icon(
                 imageVector = Icons.Outlined.AutoFixHigh,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimary
+                tint = COUITheme.colorScheme.onPrimary
             )
             Text(
                 text = stringResource(R.string.patch_start),
-                color = MaterialTheme.colorScheme.onPrimary
+                color = COUITheme.colorScheme.onPrimary
             )
         }
     }
@@ -81,6 +74,7 @@ fun sigBypassLvTitle(level: Int): String {
         0 -> stringResource(R.string.patch_sigbypasslv0)
         1 -> stringResource(R.string.patch_sigbypasslv1)
         2 -> stringResource(R.string.patch_sigbypasslv2)
+        3 -> stringResource(R.string.patch_sigbypasslv3)
         else -> error("Invalid sigBypassLv: $level")
     }
 }
@@ -91,6 +85,7 @@ fun sigBypassLvDesc(level: Int): String {
         0 -> stringResource(R.string.patch_sigbypasslv0_desc)
         1 -> stringResource(R.string.patch_sigbypasslv1_desc)
         2 -> stringResource(R.string.patch_sigbypasslv2_desc)
+        3 -> stringResource(R.string.patch_sigbypasslv3_desc)
         else -> error("Invalid sigBypassLv: $level")
     }
 }
@@ -98,6 +93,7 @@ fun sigBypassLvDesc(level: Int): String {
 @Composable
 fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit) {
     val viewModel = viewModel<NewPatchViewModel>()
+    val cardShape = RoundedCornerShape(24.dp)
     val itemShape = RoundedCornerShape(16.dp)
 
     Column(
@@ -109,28 +105,32 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit) {
         SmallTitle(text = stringResource(R.string.patch_mode))
 
         // ── 應用資訊 ──
-        Column(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(bottom = 12.dp),
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 12.dp)
+                .clip(cardShape),
+            colors = backgroundAwareCardColors(),
         ) {
             Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
-                Text(text = viewModel.patchApp.label, style = MaterialTheme.typography.headlineSmall)
+                Text(text = viewModel.patchApp.label, style = COUITheme.textStyles.headline1)
                 Text(
                     text = viewModel.patchApp.app.packageName,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = COUITheme.textStyles.body2,
+                    color = COUITheme.colorScheme.onSurfaceVariantSummary,
                 )
             }
         }
 
         // ── 修補模式選擇 ──
-        Column(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp)
-                .padding(bottom = 16.dp),
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 16.dp)
+                .clip(cardShape),
+            colors = backgroundAwareCardColors(),
         ) {
             SelectionColumn(Modifier.padding(8.dp)) {
                 SelectionItem(
@@ -159,8 +159,8 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit) {
                             modifier = Modifier
                                 .padding(top = 8.dp)
                                 .clickable(onClick = onAddEmbed),
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.bodyMedium
+                            color = COUITheme.colorScheme.primary,
+                            style = COUITheme.textStyles.body2
                         )
                     }
                 )
@@ -169,11 +169,13 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit) {
 
         // ── 進階配置 ──
         SmallTitle(text = stringResource(R.string.patch_advanced))
-        Column(
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp)
-                .padding(bottom = 16.dp),
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 16.dp)
+                .clip(cardShape),
+            colors = backgroundAwareCardColors(),
         ) {
             Column(Modifier.padding(vertical = 4.dp)) {
                 SettingsEditor(
@@ -239,10 +241,9 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit) {
                                 viewModel.sigBypassLevel > Constants.SIGBYPASS_NONE
                     }
                 )
-                val maxSigBypassLevel = Constants.SIGBYPASS_HIGH
                 val sigBypassEntries = listOf(
                     DropdownEntry(
-                        items = (Constants.SIGBYPASS_NONE..maxSigBypassLevel).map { level ->
+                        items = (Constants.SIGBYPASS_NONE..Constants.SIGBYPASS_EXTREME).map { level ->
                             DropdownItem(
                                 text = sigBypassLvTitle(level),
                                 summary = sigBypassLvDesc(level),

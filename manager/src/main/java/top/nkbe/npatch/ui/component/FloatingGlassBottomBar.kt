@@ -1,11 +1,10 @@
 package top.nkbe.npatch.ui.component
 
-import androidx.compose.ui.semantics.role
-
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,14 +17,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -48,7 +41,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -61,7 +53,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastCoerceIn
 import androidx.compose.ui.util.fastRoundToInt
@@ -82,6 +73,9 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import top.nkbe.npatch.ui.component.miuix.animation.DampedDragAnimation
 import top.nkbe.npatch.ui.component.miuix.animation.InteractiveHighlight
+import io.github.suqi8.coui.kmp.basic.Icon
+import io.github.suqi8.coui.kmp.basic.Text
+import io.github.suqi8.coui.kmp.theme.COUITheme
 import kotlin.math.abs
 import kotlin.math.sign
 
@@ -89,10 +83,6 @@ private val LocalFloatingBottomBarTabScale = staticCompositionLocalOf { { 1f } }
 private val FloatingBottomBarItemMinWidth = 76.dp
 private val FloatingBottomBarHorizontalPadding = 4.dp
 private val FloatingBottomBarVerticalPadding = 4.dp
-
-@Composable
-fun floatingGlassBottomBarContentPadding(): Dp =
-    88.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
 @Composable
 fun RowScope.FloatingGlassBottomBarItem(
@@ -148,11 +138,9 @@ fun FloatingGlassBottomBar(
         return
     }
 
-    // Respect the app-selected theme instead of the device theme. Otherwise a
-    // forced dark/light mode gets the wrong glass shadow and contrast.
-    val isInLightTheme = MaterialTheme.colorScheme.surface.luminance() > 0.5f
-    val accentColor = MaterialTheme.colorScheme.primary
-    val containerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.18f)
+    val isInLightTheme = !isSystemInDarkTheme()
+    val accentColor = COUITheme.colorScheme.primary
+    val containerColor = COUITheme.colorScheme.surfaceContainer.copy(alpha = 0.18f)
 
     val tabsBackdrop = rememberLayerBackdrop()
     val density = LocalDensity.current
@@ -408,9 +396,9 @@ private fun FloatingGlassBottomBarFallback(
 ) {
     val hasBackgroundImage = LocalBackgroundImagePath.current.isNotEmpty()
     val barColor = if (hasBackgroundImage) {
-        MaterialTheme.colorScheme.surfaceContainer.copy(alpha = BG_SURFACE_ALPHA)
+        COUITheme.colorScheme.surfaceContainer.copy(alpha = BG_SURFACE_ALPHA)
     } else {
-        MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.94f)
+        COUITheme.colorScheme.surfaceContainer.copy(alpha = 0.94f)
     }
     Box(
         modifier = modifier.width(IntrinsicSize.Min),
@@ -440,7 +428,7 @@ fun FloatingGlassBottomBarIcon(
     Icon(
         imageVector = if (selected) selectedIcon else unselectedIcon,
         contentDescription = null,
-        tint = MaterialTheme.colorScheme.onSurface
+        tint = COUITheme.colorScheme.onSurface
     )
 }
 
@@ -452,7 +440,7 @@ fun FloatingGlassBottomBarLabel(
         text = label,
         fontSize = 11.sp,
         lineHeight = 14.sp,
-        color = MaterialTheme.colorScheme.onSurface,
+        color = COUITheme.colorScheme.onSurface,
         maxLines = 1,
         softWrap = false,
         overflow = TextOverflow.Visible

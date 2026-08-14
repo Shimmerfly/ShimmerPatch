@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add">收入爪下</string>
     <string name="install">塞进窝里</string>
@@ -99,6 +99,8 @@
     <string name="patch_sigbypasslv1_desc">在 Java IO 和 Native 层的暗道里摆上障眼法，把翻找签名文件的爪子偷偷引向原版 APK 喵</string>
     <string name="patch_sigbypasslv2">深度幻术 (High)</string>
     <string name="patch_sigbypasslv2_desc">在 Basic 的基础上召回原版 App工厂，顺便把 getPackageArchiveInfo 这些更刁钻的盘查路线也用猫尾巴挡住喵</string>
+    <string name="patch_sigbypasslv3">终极变脸 (Extreme)</string>
+    <string name="patch_sigbypasslv3_desc">在 High 的基础上直捣黄龙！直接在 PackageInfo 反序列化的大门上画个假猫脸，连 Binder 护卫队都能骗过去喵</string>
     <string name="patch_override_version_code">改写喵龄</string>
     <string name="patch_override_version_code_desc">把喵龄改成自定义值，默认 1。这样更多时候都能强行塞回去，App通常察觉不到喵。</string>
     <string name="patch_custom_version_code">自定义喵龄</string>

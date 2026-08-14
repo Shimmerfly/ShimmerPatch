@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="add">新增</string>
     <string name="install">安裝</string>
@@ -10,8 +10,6 @@
     <string name="modules">模組</string>
     <string name="shizuku_available">Shizuku 服務可用</string>
     <string name="shizuku_unavailable">Shizuku 服務未連線</string>
-    <string name="status_active">運作中</string>
-    <string name="status_inactive">未運作</string>
     <string name="screen_home">首頁</string>
     <string name="screen_repo">倉庫</string>
     <string name="off">關閉</string>
@@ -30,29 +28,6 @@
     <string name="home_support">支援</string>
     <string name="home_about">關於 NPatch</string>
     <string name="home_description">NPatch 是一款免費且迭代自 LSPatch 的，基於 Vector 核心的免 Root 的 Xposed 框架。</string>
-    <string name="home_contribute">參與專案</string>
-    <string name="home_review_change">審查變更</string>
-    <string name="home_discussions">參與討論</string>
-    <string name="home_test_canary">測試 Canary 版本</string>
-    <string name="home_report_problem">回報問題</string>
-    <string name="home_recent_activity">最近活動</string>
-    <string name="home_activity_summary">%1$d 次提交，%2$d 位貢獻者</string>
-    <string name="home_activity_rest">正在休息——已保留活動記錄。下拉重新整理。</string>
-    <string name="home_activity_offline">無法載入專案活動，請下拉重試。</string>
-    <string name="home_project_stats">%1$s 個星標 · %2$s 個分支</string>
-    <string name="home_appearance_theme">主題</string>
-    <string name="home_appearance_color">色彩</string>
-    <string name="home_appearance_amoled">AMOLED 純黑</string>
-    <string name="home_appearance_amoled_summary">在暗色模式中使用純黑背景表面</string>
-    <string name="home_appearance_ambience">頂部氛圍</string>
-    <string name="home_ambience_circuit">電路</string>
-    <string name="home_ambience_none">無</string>
-    <string name="ambience_snow">雪花</string>
-    <string name="ambience_maze">迷宮</string>
-    <string name="ambience_circuit">電路</string>
-    <string name="ambience_matrix">程式碼雨</string>
-    <string name="ambience_none">靜止</string>
-    <string name="home_appearance_navigation">導覽</string>
     
     <!-- About Screen -->
     <string name="about_view_source_code"><![CDATA[查看原始碼 %1$s]]></string>
@@ -77,9 +52,6 @@
     <!-- Manage Screen -->
     <string name="screen_manage">管理</string>
     <string name="manage_loading">正在加載</string>
-    <string name="manage_running">運行中</string>
-    <string name="manage_not_running">未運行</string>
-    <string name="manage_active_of">%1$d / %2$d 已啟用</string>
     <string name="manage_search">搜尋</string>
     <string name="manage_no_search_results">暫無搜尋結果</string>
     <string name="manage_no_apps">還沒有打包的應用程式</string>
@@ -133,6 +105,8 @@
     <string name="patch_sigbypasslv1_desc">增加 Java IO 與 Native openat/openat64 重定向，讓簽名相關的檔案讀取改為存取原始 APK</string>
     <string name="patch_sigbypasslv2">High</string>
     <string name="patch_sigbypasslv2_desc">基於 Basic，恢復原始 AppComponentFactory，並 hook getPackageArchiveInfo 與 hasSigningCertificate 等更嚴格的校驗路徑</string>
+    <string name="patch_sigbypasslv3">Extreme</string>
+    <string name="patch_sigbypasslv3_desc">基於 High，hook PackageInfo(Parcel) 構造函數，覆蓋 Binder 反序列化取得簽名資訊的路徑</string>
     <string name="patch_override_version_code">覆蓋版本編號</string>
     <string name="patch_override_version_code_desc">將打包應用程式的版本編號改成自訂值，預設為 1\n允許更多情境下的降級安裝，一般來說，這不會影響應用程式實際感知的版本編號。</string>
     <string name="patch_custom_version_code">自訂版本編號</string>
@@ -143,7 +117,7 @@
     <string name="patch_use_microg">強制啟用 MicroG 支援</string>
     <string name="patch_use_microg_desc">重新導向 GMS 請求至社群版 MicroG。適用於 YouTube 等 Google 應用程式，需自行安裝對應的 MicroG 服務。</string>
     <string name="patch_output_log_to_media">日誌輸出到 Media 目錄</string>
-    <string name="patch_output_log_to_media_desc">將模組運行的 Xposed 日誌及框架啟動日誌輸出至 Media 目錄</string>
+    <string name="patch_output_log_to_media_desc">記錄 Xposed API 日誌、框架事件及 Java/Kotlin 崩潰</string>
     <string name="patch_hide_libs">豁免環境校驗</string>
     <string name="patch_hide_libs_desc">為執行基礎執行環境校驗的應用程式收斂 ART 與敏感系統函式庫的可見性。</string>
     <string name="patch_start">開始打包</string>
@@ -291,7 +265,6 @@
     <string name="module_release_load_more">顯示較舊版本</string>
     <string name="module_release_no_more">沒有更多版本了</string>
     <string name="repo_load_failed">無法載入模組庫：%s</string>
-    <string name="repo_retry">重試</string>
     <string name="repo_loading_mirror">正在載入鏡像模組庫…</string>
     <plurals name="module_release_assets_download_count">
         <item quantity="one">%d 次下載</item>

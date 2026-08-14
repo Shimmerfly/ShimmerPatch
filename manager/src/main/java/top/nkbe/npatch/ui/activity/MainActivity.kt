@@ -12,8 +12,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -44,8 +42,6 @@ import top.nkbe.npatch.ui.page.MainTab
 import top.nkbe.npatch.ui.page.MainScreen
 import top.nkbe.npatch.ui.page.Navigator
 import top.nkbe.npatch.ui.page.NewPatchScreen
-import top.nkbe.npatch.ui.page.RepositoryDetailScreen
-import top.nkbe.npatch.ui.page.RepositoryScopeFilterScreen
 import top.nkbe.npatch.ui.page.Route
 import top.nkbe.npatch.ui.page.SelectAppsScreen
 import top.nkbe.npatch.ui.page.WelcomeScreen
@@ -57,6 +53,8 @@ import top.nkbe.npatch.ui.util.LocalCardBackgroundAlpha
 import top.nkbe.npatch.ui.util.LocalFloatingGlassBottomBar
 import top.nkbe.npatch.ui.util.LocalFloatingGlassBottomBarBlur
 import top.nkbe.npatch.ui.util.LocalSnackbarHost
+import io.github.suqi8.coui.kmp.basic.SnackbarHostState
+import io.github.suqi8.coui.kmp.theme.COUITheme
 
 class MainActivity : ComponentActivity() {
 
@@ -91,8 +89,6 @@ class MainActivity : ComponentActivity() {
                     useMonet = false,
                     customColor = DEFAULT_CUSTOM_COLOR,
                     themeMode = ThemeMode.SYSTEM,
-                    amoledBlack = false,
-                    headerAmbience = "circuit",
                     useFloatingGlassBottomBar = false,
                     useFloatingGlassBottomBarBlur = supportsFloatingGlassBottomBarBlur,
                     cardBackgroundAlphaPercent = DEFAULT_CARD_BACKGROUND_ALPHA_PERCENT,
@@ -124,8 +120,7 @@ class MainActivity : ComponentActivity() {
             LSPTheme(
                 isDarkTheme = isDark,
                 useMonet = themeState.useMonet,
-                customColor = themeState.customColor,
-                amoledBlack = themeState.amoledBlack,
+                customColor = themeState.customColor
             ) {
                 CompositionLocalProvider(
                     LocalBackgroundImagePath provides themeState.backgroundImageUri,
@@ -155,7 +150,7 @@ class MainActivity : ComponentActivity() {
                                 Box(
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .background(MaterialTheme.colorScheme.background)
+                                        .background(COUITheme.colorScheme.background)
                                 )
                             }
                         }
@@ -215,20 +210,6 @@ class MainActivity : ComponentActivity() {
                                         SelectAppsScreen(
                                             multiSelect = route.multiSelect,
                                             initialSelected = route.initialSelected
-                                        )
-                                    }
-
-                                    entry<Route.RepoDetail> { route ->
-                                        RepositoryDetailScreen(
-                                            packageName = route.packageName,
-                                            onBack = { navigator.pop() }
-                                        )
-                                    }
-
-                                    entry<Route.RepoScopeFilter> { route ->
-                                        RepositoryScopeFilterScreen(
-                                            selectedPackageName = route.selectedPackageName,
-                                            onBack = { navigator.pop() }
                                         )
                                     }
                                 }

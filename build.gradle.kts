@@ -27,29 +27,27 @@ val commitCount = runCatching {
     val repo = FileRepository(rootProject.file(".git"))
     val refId = repo.refDatabase.exactRef("refs/remotes/origin/miuix")?.objectId
     if (refId != null) Git(repo).log().add(refId).call().count() else 0
-}.getOrElse {0}.coerceAtLeast(1)
+}.getOrElse {0}
 
-val (coreCommitCount, coreLatestTag) = runCatching {
+val coreCommitCount = runCatching {
     FileRepositoryBuilder().setGitDir(rootProject.file("core/.git"))
         .setWorkTree(rootProject.file("core"))
         .build().use { repo ->
             val git = Git(repo)
-            val count = git.log().add(repo.resolve("HEAD")).call().count()
-            val ver = git.describe().setTags(true).setAbbrev(0).call()?.removePrefix("v") ?: "2.0"
-            count to ver
+            git.log().add(repo.resolve("HEAD")).call().count()
         }
-}.getOrNull() ?: (3068 to "2.1")
+}.getOrDefault(3083)
 
 val defaultManagerPackageName by extra("top.nkbe.npatch")
 val apiCode by extra(102)
 val verCode by extra(commitCount)
 val verName by extra("1.0.7")
 val coreVerCode by extra(coreCommitCount)
-val coreVerName by extra(coreLatestTag)
+val coreVerName by extra("v2.2-core")
 val androidMinSdkVersion by extra(28)
 val androidTargetSdkVersion by extra(37)
 val androidCompileSdkVersion by extra(37)
-val androidCompileNdkVersion by extra("29.0.13599879")
+val androidCompileNdkVersion by extra("29.0.13846066")
 val androidBuildToolsVersion by extra("37.0.0")
 val androidSourceCompatibility by extra(JavaVersion.VERSION_21)
 val androidTargetCompatibility by extra(JavaVersion.VERSION_21)

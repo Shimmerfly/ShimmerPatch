@@ -87,9 +87,13 @@ import io.github.suqi8.coui.kmp.basic.SmallTitle
 import io.github.suqi8.coui.kmp.basic.Text
 import io.github.suqi8.coui.kmp.basic.TextButton
 import io.github.suqi8.coui.kmp.basic.TextField
-import io.github.suqi8.coui.kmp.basic.TopAppBar
+import top.nkbe.npatch.ui.component.NPatchTopAppBar
+import top.nkbe.npatch.ui.util.backgroundAwareHazeStyle
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import io.github.suqi8.coui.kmp.preference.ArrowPreference
 import io.github.suqi8.coui.kmp.preference.OverlayDropdownPreference
+import io.github.suqi8.coui.kmp.preference.SwitchPreference
 import io.github.suqi8.coui.kmp.layout.DialogButtonBar
 import io.github.suqi8.coui.kmp.layout.DialogButtonBarAction
 import io.github.suqi8.coui.kmp.overlay.OverlayDialog
@@ -106,6 +110,8 @@ private const val TAG = "SettingsScreen"
 @Composable
 fun SettingsScreen() {
     val scrollBehavior = COUIScrollBehavior()
+    val hazeState = rememberHazeState()
+    val hazeStyle = backgroundAwareHazeStyle()
     val useFloatingGlassBottomBar = LocalFloatingGlassBottomBar.current
     val bottomContentPadding = if (useFloatingGlassBottomBar) {
         68.dp + 12.dp + 8.dp + 28.dp +
@@ -115,10 +121,11 @@ fun SettingsScreen() {
     }
     NPatchScaffold(
         topBar = {
-            TopAppBar(
-                color = Color.Transparent,
+            NPatchTopAppBar(
                 title = stringResource(R.string.screen_settings),
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                hazeState = hazeState,
+                hazeStyle = hazeStyle,
             )
         }
     ) { innerPadding ->
@@ -126,6 +133,7 @@ fun SettingsScreen() {
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
+                .hazeSource(state = hazeState)
                 .scrollEndHaptic()
                 .overScrollVertical()
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -255,9 +263,30 @@ private fun DnsPreference() {
 fun AppearanceSettings() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val supportsFloatingGlassBottomBarBlur = ThemeConfig.isFloatingGlassBottomBarBlurSupported()
     val themeState by ThemeConfig.getThemeFlow(context).collectAsState(
-        initial = ThemeSettings()
+        initial = ThemeSettings(
+            backgroundImageUri = "",
+            useMonet = false,
+            customColor = DEFAULT_CUSTOM_COLOR,
+            themeMode = ThemeMode.SYSTEM,
+            useFloatingGlassBottomBar = false,
+            useFloatingGlassBottomBarBlur = supportsFloatingGlassBottomBarBlur,
+            cardBackgroundAlphaPercent = DEFAULT_CARD_BACKGROUND_ALPHA_PERCENT,
+        )
     )
+    val bgImageUri = themeState.backgroundImageUri
+    val useMonet = themeState.useMonet
+    val customColor = themeState.customColor
+    val useFloatingGlassBottomBar = themeState.useFloatingGlassBottomBar
+    val useFloatingGlassBottomBarBlur = themeState.useFloatingGlassBottomBarBlur
+    val cardBackgroundAlphaPercent = themeState.cardBackgroundAlphaPercent
+    var cardBackgroundAlphaSlider by remember(cardBackgroundAlphaPercent) {
+        mutableFloatStateOf(cardBackgroundAlphaPercent.toFloat())
+    }
+    val scrollState = rememberScrollState()
+    val snackbarHost = LocalSnackbarHost.current
+    val unknownErrorText = stringResource(R.string.error_unknown)
     val themeModeItems = listOf(
         stringResource(R.string.settings_theme_mode_system),
         stringResource(R.string.settings_theme_mode_light),
@@ -267,6 +296,20 @@ fun AppearanceSettings() {
         ThemeMode.SYSTEM -> 0
         ThemeMode.LIGHT -> 1
         ThemeMode.DARK -> 2
+    }
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        uri ?: return@rememberLauncherForActivityResult
+        scope.launch {
+            runCatching {
+                BackgroundImageStorage.persistFromUri(context, uri)
+            }.onSuccess { storedPath ->
+                context.dataStore.edit { prefs -> prefs[ThemeConfig.BG_IMAGE_URI] = storedPath }
+            }.onFailure { throwable ->
+                Log.e(TAG, "Failed to persist background image", throwable)
+                snackbarHost.showSnackbar(unknownErrorText)
+            }
+        }
     }
 
     OverlayDropdownPreference(
@@ -287,6 +330,195 @@ fun AppearanceSettings() {
             }
         }
     )
+
+    SwitchPreference(
+        title = stringResource(R.string.settings_monet_dynamic_color),
+        summary = stringResource(R.string.settings_monet_dynamic_color_summary),
+        checked = useMonet,
+        startAction = {
+            SettingsStartIcon(Icons.Outlined.Palette)
+        },
+        onCheckedChange = { isChecked ->
+            scope.launch { context.dataStore.edit { it[ThemeConfig.USE_MONET] = isChecked } }
+        }
+    )
+
+    SwitchPreference(
+        title = stringResource(R.string.settings_floating_glass_bottom_bar),
+        summary = stringResource(R.string.settings_floating_glass_bottom_bar_summary),
+        checked = useFloatingGlassBottomBar,
+        startAction = {
+            SettingsStartIcon(Icons.Outlined.Dashboard)
+        },
+        onCheckedChange = { isChecked ->
+            scope.launch { context.dataStore.edit { it[ThemeConfig.USE_FLOATING_GLASS_BOTTOM_BAR] = isChecked } }
+        }
+    )
+
+    AnimatedVisibility(visible = useFloatingGlassBottomBar) {
+        SwitchPreference(
+            title = stringResource(R.string.settings_floating_glass_bottom_bar_blur),
+            summary = stringResource(R.string.settings_floating_glass_bottom_bar_blur_summary),
+            checked = useFloatingGlassBottomBarBlur,
+            startAction = {
+                SettingsStartIcon(Icons.Outlined.BlurCircular)
+            },
+            onCheckedChange = { isChecked ->
+                scope.launch { context.dataStore.edit { it[ThemeConfig.USE_FLOATING_GLASS_BOTTOM_BAR_BLUR] = isChecked } }
+            }
+        )
+    }
+
+    BasicComponent(
+        modifier = Modifier,
+        title = stringResource(R.string.settings_custom_background_image),
+        startAction = {
+            SettingsStartIcon(Icons.Outlined.Image)
+        },
+        endActions = {
+            if (bgImageUri.isNotEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable {
+                            scope.launch {
+                                BackgroundImageStorage.clear(context)
+                                context.dataStore.edit { it[ThemeConfig.BG_IMAGE_URI] = "" }
+                            }
+                        }
+                        .background(COUITheme.colorScheme.error.copy(alpha = 0.1f))
+                        .padding(horizontal = 12.dp, vertical = 6.dp)
+                ) {
+                    Text(
+                        text = stringResource(R.string.settings_clear),
+                        color = COUITheme.colorScheme.error,
+                        style = COUITheme.textStyles.body2
+                    )
+                }
+            }
+        },
+        onClick = { imagePickerLauncher.launch(arrayOf("image/*")) }
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 10.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            SettingsStartIcon(Icons.Outlined.Palette)
+            Spacer(Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.settings_card_background_alpha),
+                    style = COUITheme.textStyles.body1,
+                    color = COUITheme.colorScheme.onSurface
+                )
+                Text(
+                    text = stringResource(R.string.settings_card_background_alpha_summary),
+                    style = COUITheme.textStyles.body2,
+                    color = COUITheme.colorScheme.onSurfaceVariantSummary
+                )
+            }
+            Text(
+                text = "${cardBackgroundAlphaSlider.roundToInt()}%",
+                style = COUITheme.textStyles.body2,
+                color = COUITheme.colorScheme.onSurfaceVariantSummary
+            )
+        }
+        Slider(
+            value = cardBackgroundAlphaSlider,
+            onValueChange = { value ->
+                cardBackgroundAlphaSlider = value.roundToInt()
+                    .coerceIn(CARD_BACKGROUND_ALPHA_MIN, CARD_BACKGROUND_ALPHA_MAX)
+                    .toFloat()
+            },
+            valueRange = CARD_BACKGROUND_ALPHA_MIN.toFloat()..CARD_BACKGROUND_ALPHA_MAX.toFloat(),
+            steps = CARD_BACKGROUND_ALPHA_MAX - CARD_BACKGROUND_ALPHA_MIN - 1,
+            onValueChangeFinished = {
+                val percent = cardBackgroundAlphaSlider.roundToInt()
+                    .coerceIn(CARD_BACKGROUND_ALPHA_MIN, CARD_BACKGROUND_ALPHA_MAX)
+                scope.launch {
+                    context.dataStore.edit { it[ThemeConfig.CARD_BACKGROUND_ALPHA_PERCENT] = percent }
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 12.dp)
+        )
+    }
+
+    AnimatedVisibility(visible = !useMonet) {
+        Column {
+            Text(
+                text = stringResource(R.string.settings_builtin_theme_color),
+                style = COUITheme.textStyles.body2,
+                color = COUITheme.colorScheme.onSurfaceVariantSummary,
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(scrollState)
+                    .padding(horizontal = 20.dp, vertical = 12.dp)
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                val colorPalettes = listOf(
+                    DEFAULT_CUSTOM_COLOR to stringResource(R.string.settings_color_cherry_blossom),
+                    0xFF007AFF to stringResource(R.string.settings_color_default_blue),
+                    0xFF34C759 to stringResource(R.string.settings_color_fresh_green),
+                    0xFFAF52DE to stringResource(R.string.settings_color_elegant_purple),
+                    0xFFFF9500 to stringResource(R.string.settings_color_vibrant_orange),
+                    0xFF00BCD4 to stringResource(R.string.settings_color_cyan),
+                    0xFF81C784 to stringResource(R.string.settings_color_mint_green),
+                    0xFFF06292 to stringResource(R.string.settings_color_pink),
+                    0xFFD81B60 to stringResource(R.string.settings_color_deep_pink),
+                    0xFF64B5F6 to stringResource(R.string.settings_color_ice_blue),
+                    0xFFE91E63 to stringResource(R.string.settings_color_rose)
+                )
+
+                colorPalettes.forEach { (colorHex, colorName) ->
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        modifier = Modifier.width(74.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(46.dp)
+                                .clip(CircleShape)
+                                .background(Color(colorHex.toInt()))
+                                .clickable {
+                                    scope.launch { context.dataStore.edit { it[ThemeConfig.CUSTOM_COLOR] = colorHex.toInt() } }
+                                },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (customColor == colorHex.toInt()) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Check,
+                                    contentDescription = "Selected",
+                                    tint = Color.White,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                        }
+                        Text(
+                            text = colorName,
+                            style = COUITheme.textStyles.footnote1,
+                            color = COUITheme.colorScheme.onSurfaceVariantSummary,
+                            textAlign = TextAlign.Center,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Composable

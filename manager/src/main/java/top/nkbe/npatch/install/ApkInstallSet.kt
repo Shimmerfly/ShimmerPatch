@@ -3,6 +3,7 @@ package top.nkbe.npatch.install
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.content.pm.PackageInfoCompat
+import top.nkbe.npatch.patch.util.ApkSignatureHelper
 import top.nkbe.npatch.patch.util.ManifestParser
 import java.io.File
 import java.io.IOException
@@ -37,47 +38,60 @@ data class ApkInstallSet(
                 throw IOException("APK install set contains duplicate files")
             }
 
-            val packageManager = context.packageManager
-            val parsed = canonicalFiles.map { file ->
-                val packageInfo = packageManager.getPackageArchiveInfo(
-                    file.absolutePath,
-                    PackageManager.GET_SIGNING_CERTIFICATES,
-                ) ?: throw IOException("Unable to parse APK: ${file.name}")
-                ParsedApk(
+            // Step 1: Parse all APKs via ManifestParser (works for both base and split APKs).
+            // We intentionally avoid calling PackageManager.getPackageArchiveInfo() on split
+            // config APKs, because Android's PackageParser cannot parse them in isolation
+            // (they lack a full resources.arsc / <application> node), which would return null
+            // and cause a misleading "Unable to parse APK" failure.
+            val manifestInfos = canonicalFiles.map { file ->
+                val info = readManifestInfo(file)
+                ManifestInfo(
                     file = file,
-                    packageName = packageInfo.packageName,
-                    versionCode = PackageInfoCompat.getLongVersionCode(packageInfo),
-                    splitName = readSplitName(file),
-                    signerDigest = packageInfo.signingInfo
-                        ?.apkContentsSigners
-                        ?.map { signature -> sha256(signature.toByteArray()) }
-                        ?.sorted()
-                        ?.joinToString(":")
-                        .orEmpty(),
+                    packageName = info.packageName
+                        ?: throw IOException("APK manifest has no package name: ${file.name}"),
+                    splitName = info.splitName,
                 )
             }
 
-            val baseCandidates = parsed.filter { it.splitName.isNullOrBlank() }
+            // Step 2: Identify the base APK (the one without a split name).
+            val baseCandidates = manifestInfos.filter { it.splitName.isNullOrBlank() }
             if (baseCandidates.size != 1) {
                 throw IOException("APK install set must contain exactly one base APK")
             }
-            val base = baseCandidates.single()
-            parsed.filterNot { it === base }.forEach { split ->
-                if (split.packageName != base.packageName) {
+            val baseInfo = baseCandidates.single()
+
+            // Step 3: Parse base APK with system PackageManager to get versionCode + signature.
+            val packageManager = context.packageManager
+            val basePackageInfo = packageManager.getPackageArchiveInfo(
+                baseInfo.file.absolutePath,
+                PackageManager.GET_SIGNING_CERTIFICATES,
+            ) ?: throw IOException("Unable to parse base APK: ${baseInfo.file.name}")
+
+            val baseVersionCode = PackageInfoCompat.getLongVersionCode(basePackageInfo)
+            val baseSignerDigest = basePackageInfo.signingInfo
+                ?.apkContentsSigners
+                ?.map { signature -> sha256(signature.toByteArray()) }
+                ?.sorted()
+                ?.joinToString(":")
+                .orEmpty()
+
+            // Step 4: Validate split APKs using ManifestParser results + ApkSignatureHelper.
+            manifestInfos.filterNot { it === baseInfo }.forEach { split ->
+                if (split.packageName != baseInfo.packageName) {
                     throw IOException(
-                        "Mixed packages in APK set: ${base.packageName} and ${split.packageName}",
+                        "Mixed packages in APK set: ${baseInfo.packageName} and ${split.packageName}",
                     )
                 }
-                if (split.versionCode != base.versionCode) {
-                    throw IOException(
-                        "Mixed version codes in APK set: ${base.versionCode} and ${split.versionCode}",
-                    )
-                }
-                if (split.signerDigest != base.signerDigest) {
+                // Verify split APK signature matches the base APK using ApkSignatureHelper,
+                // which reads the signing certificate directly from the APK file without going
+                // through Android's PackageParser.
+                val splitSignerDigest = readSignerDigest(split.file)
+                if (splitSignerDigest != baseSignerDigest) {
                     throw IOException("APK signatures do not match: ${split.file.name}")
                 }
             }
-            val duplicateSplit = parsed
+
+            val duplicateSplit = manifestInfos
                 .mapNotNull { it.splitName?.takeIf(String::isNotBlank) }
                 .groupingBy(String::lowercase)
                 .eachCount()
@@ -87,8 +101,8 @@ data class ApkInstallSet(
                 throw IOException("Duplicate APK split: ${duplicateSplit.key}")
             }
 
-            val ordered = listOf(base) + parsed
-                .filterNot { it === base }
+            val ordered = listOf(baseInfo) + manifestInfos
+                .filterNot { it === baseInfo }
                 .sortedBy { it.splitName?.lowercase() }
             val entries = ordered.map { apk ->
                 Entry(
@@ -99,20 +113,28 @@ data class ApkInstallSet(
                         ?: "base.apk",
                 )
             }
-            return ApkInstallSet(base.packageName, base.versionCode, entries)
+            return ApkInstallSet(baseInfo.packageName, baseVersionCode, entries)
         }
 
-        private fun readSplitName(file: File): String? = ZipFile(file).use { zip ->
-            val manifest = zip.getEntry("AndroidManifest.xml")
-                ?: throw IOException("APK has no AndroidManifest.xml: ${file.name}")
-            zip.getInputStream(manifest).use { input ->
-                val parsed = ManifestParser.parseManifestFile(input)
-                    ?: throw IOException("Unable to parse AndroidManifest.xml: ${file.name}")
-                if (parsed.packageName.isNullOrBlank()) {
-                    throw IOException("APK manifest has no package name: ${file.name}")
+        private fun readManifestInfo(file: File): ManifestParser.Pair =
+            ZipFile(file).use { zip ->
+                val manifest = zip.getEntry("AndroidManifest.xml")
+                    ?: throw IOException("APK has no AndroidManifest.xml: ${file.name}")
+                zip.getInputStream(manifest).use { input ->
+                    ManifestParser.parseManifestFile(input)
+                        ?: throw IOException("Unable to parse AndroidManifest.xml: ${file.name}")
                 }
-                parsed.splitName
             }
+
+        /**
+         * Reads the signer digest of an APK file using [ApkSignatureHelper], which parses the
+         * APK signing block directly without relying on Android's PackageParser. This allows it
+         * to handle split config APKs that the system PackageManager cannot parse standalone.
+         */
+        private fun readSignerDigest(file: File): String {
+            val signInfo = ApkSignatureHelper.getApkSignInfo(file.absolutePath)
+                ?: throw IOException("Unable to read APK signature: ${file.name}")
+            return sha256(signInfo.toByteArray(Charsets.UTF_8))
         }
 
         private fun splitSessionName(splitName: String): String {
@@ -126,12 +148,10 @@ data class ApkInstallSet(
             .digest(bytes)
             .joinToString("") { byte -> "%02x".format(byte.toInt() and 0xff) }
 
-        private data class ParsedApk(
+        private data class ManifestInfo(
             val file: File,
             val packageName: String,
-            val versionCode: Long,
             val splitName: String?,
-            val signerDigest: String,
         )
     }
 }

@@ -214,7 +214,7 @@ public class NPatch {
             outputDir.mkdirs();
 
             File outputFile = new File(outputDir, String.format(
-                    Locale.getDefault(), "%s-%d-npatched.apk",
+                    Locale.ROOT, "%s-%d-npatched.apk",
                     FilenameUtils.getBaseName(apkFileName),
                     LSPConfig.instance.VERSION_CODE)
             ).getAbsoluteFile();

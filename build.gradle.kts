@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "top.nkbe.npatch"
-version = "1.0.0"
+version = "1.0.1"
 
 android {
     namespace = "top.nkbe.npatch.remote"

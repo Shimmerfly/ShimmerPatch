@@ -31,7 +31,7 @@ NPatch Remote API 不是另一套 Xposed API，也不取代 libxposed。
 
 ```kotlin
 dependencies {
-    implementation(files("libs/npatch-remote-api-v1.0.0-release.aar"))
+    implementation(files("libs/npatch-remote-api-v1.0.1-release.aar"))
     implementation("io.github.libxposed:interface:102.0.0")
 }
 ```
@@ -79,7 +79,7 @@ AAR 输出在 `build/outputs/aar/`。也可以运行 `publishReleasePublicationT
 
 ## 兼容性
 
-- SDK：`1.0.0`
+- SDK：`1.0.1`
 - libxposed interface：`102.0.0`
 - NPatch：`1.0.7` 或更高
 - Android：API 28+（Android 9 或更高）

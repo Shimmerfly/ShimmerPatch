@@ -161,6 +161,19 @@ public final class NPatchRemoteClient {
         return service.deleteRemoteFile(name);
     }
 
+    /**
+     * Returns the underlying {@link IXposedService} binder interface.
+     *
+     * <p>Allows advanced module apps to invoke standard API 102 methods directly (such as
+     * querying scope, inspecting running targets, or requesting hot reload) over the
+     * authenticated Manager connection.</p>
+     *
+     * @return the raw {@link IXposedService} instance
+     */
+    public IXposedService getService() {
+        return service;
+    }
+
     private static IBinder requestBinder(
             Context context,
             String method,

@@ -31,7 +31,7 @@ Download the AAR from [Releases](https://github.com/7723mod/NPatch-Remote-API/re
 
 ```kotlin
 dependencies {
-    implementation(files("libs/npatch-remote-api-v1.0.0-release.aar"))
+    implementation(files("libs/npatch-remote-api-v1.0.1-release.aar"))
     implementation("io.github.libxposed:interface:102.0.0")
 }
 ```
@@ -79,7 +79,7 @@ The AAR is written to `build/outputs/aar/`. You can also run `publishReleasePubl
 
 ## Compatibility
 
-- SDK: `1.0.0`
+- SDK: `1.0.1`
 - libxposed interface: `102.0.0`
 - NPatch: `1.0.7` or newer
 - Android: API 28+ (Android 9 or higher)

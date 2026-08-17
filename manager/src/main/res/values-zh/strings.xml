@@ -107,6 +107,10 @@
     <string name="patch_sigbypasslv2_desc">基于 Basic，恢复原始 AppComponentFactory，并 hook getPackageArchiveInfo 与 hasSigningCertificate 等更严格的校验路径</string>
     <string name="patch_sigbypasslv3">Extreme</string>
     <string name="patch_sigbypasslv3_desc">基于 High，hook PackageInfo(Parcel) 构造函数，覆盖 Binder 反序列化得到签名信息的路径</string>
+    <string name="patch_sigbypasslv4">Seccomp</string>
+    <string name="patch_sigbypasslv4_desc">在 ARM64 上启用 seccomp v2 过滤与 trusted thread 文件重定向，参考了 FunPatchApp 的实现方案</string>
+    <string name="patch_sigbypasslv5">Stealth</string>
+    <string name="patch_sigbypasslv5_desc">使用 xhook 重定向应用原生库的 GOT/PLT，同时保留 PackageInfo 签名伪装</string>
     <string name="patch_override_version_code">覆写版本号</string>
     <string name="patch_override_version_code_desc">将修补的 App 版本号重写为自定义值，默认为 1\n这将允许更多场景下的降级安装，并且通常来说这不会影响应用实际感知到的版本号</string>
     <string name="patch_custom_version_code">自定义版本号</string>
@@ -118,8 +122,9 @@
     <string name="patch_use_microg_desc">重新导向 GMS 请求至社区版 MicroG。适用于 YouTube 等 Google 应用程序，需自行安装对应的 MicroG 服务。</string>
     <string name="patch_output_log_to_media">输出日志到 Media 目录</string>
     <string name="patch_output_log_to_media_desc">记录 Xposed API 日志、框架事件及 Java/Kotlin 崩溃</string>
-    <string name="patch_hide_libs">豁免环境校验</string>
-    <string name="patch_hide_libs_desc">为执行基础运行环境校验的应用收敛 ART 与敏感系统库的可见性。</string>
+    <string name="patch_inject_dex">注入 Loader DEX (子进程支持)</string>
+    <string name="patch_inject_dex_desc">将 loader dex 物理写入主 dex 序列。仅当装载的模块明确需要 Hook 独立子进程/沙箱组件时开启此特例选项。</string>
+    <string name="patch_subprocess_detected_hint">检测到目标应用包含 %1$d 个独立子进程/沙箱组件。若模块需要 Hook 这些子进程，建议开启「注入 Loader DEX」。</string>
     <string name="patch_start">开始打包</string>
     <string name="patch_return">返回</string>
     <string name="patch_uninstall_text">由于签名不同，安装修补的应用前需要先卸载原应用。\n确保您已备份好个人数据。</string>

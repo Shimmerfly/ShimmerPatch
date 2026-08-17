@@ -90,6 +90,9 @@
     <string name="patch_integrated">合体模式</string>
     <string name="patch_integrated_desc">直接把挂件缝进App里。离了管理器也能跑，但没法随时调教配置喵。\n适合送去没有猫猫的陌生人家里住。</string>
     <string name="patch_embed_modules">缝入挂件</string>
+    <string name="patch_inject_dex">注入 Loader DEX (子進程支援)</string>
+    <string name="patch_inject_dex_desc">將 loader dex 物理寫入主 dex 序列。僅當裝載的模組明確需要 Hook 獨立子進程/沙箱組件時開啟此特例選項。</string>
+    <string name="patch_subprocess_detected_hint">偵測到目標應用包含 %1$d 個獨立子進程/沙箱組件。若模組需要 Hook 這些子進程，建議開啟「注入 Loader DEX」。</string>
     <string name="patch_advanced">高阶喵技</string>
     <string name="patch_debuggable">开启猫眼（调试）</string>
     <string name="patch_sigbypass">伪装术</string>
@@ -101,6 +104,10 @@
     <string name="patch_sigbypasslv2_desc">在 Basic 的基础上召回原版 App工厂，顺便把 getPackageArchiveInfo 这些更刁钻的盘查路线也用猫尾巴挡住喵</string>
     <string name="patch_sigbypasslv3">终极变脸 (Extreme)</string>
     <string name="patch_sigbypasslv3_desc">在 High 的基础上直捣黄龙！直接在 PackageInfo 反序列化的大门上画个假猫脸，连 Binder 护卫队都能骗过去喵</string>
+    <string name="patch_sigbypasslv4">瞬移猫步 (Seccomp)</string>
+    <string name="patch_sigbypasslv4_desc">限 ARM64 爬架！布下 seccomp 魔法阵并召唤神秘信任猫丝线。偷偷抄了隔壁 FunPatchApp 家的独门捕鼠绝技喵</string>
+    <string name="patch_sigbypasslv5">隐身猫步 (Stealth)</string>
+    <string name="patch_sigbypasslv5_desc">用 xhook 悄悄挪动应用原生库的 GOT/PLT，同时保留 PackageInfo 签名伪装喵</string>
     <string name="patch_override_version_code">改写喵龄</string>
     <string name="patch_override_version_code_desc">把喵龄改成自定义值，默认 1。这样更多时候都能强行塞回去，App通常察觉不到喵。</string>
     <string name="patch_custom_version_code">自定义喵龄</string>

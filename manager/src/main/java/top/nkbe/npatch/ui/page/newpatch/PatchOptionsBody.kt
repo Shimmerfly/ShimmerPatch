@@ -167,6 +167,35 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit) {
             }
         }
 
+        // ── 獨立子進程檢測提示 ──
+        if (viewModel.hasSubProcesses) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 12.dp)
+                    .clip(cardShape),
+                colors = backgroundAwareCardColors(),
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = null,
+                        tint = COUITheme.colorScheme.primary
+                    )
+                    Text(
+                        text = stringResource(R.string.patch_subprocess_detected_hint, viewModel.subProcessCount),
+                        style = COUITheme.textStyles.body2,
+                        color = COUITheme.colorScheme.onSurfaceVariantSummary
+                    )
+                }
+            }
+        }
+
         // ── 進階配置 ──
         SmallTitle(text = stringResource(R.string.patch_advanced))
         Card(
@@ -216,6 +245,13 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit) {
                     onCheckedChange = { viewModel.injectProvider = it }
                 )
                 SwitchPreference(
+                    title = stringResource(R.string.patch_inject_dex),
+                    summary = stringResource(R.string.patch_inject_dex_desc),
+                    startAction = { Icon(Icons.Outlined.AccountTree, null) },
+                    checked = viewModel.injectDex,
+                    onCheckedChange = { viewModel.injectDex = it }
+                )
+                SwitchPreference(
                     title = stringResource(R.string.patch_use_microg),
                     summary = stringResource(R.string.patch_use_microg_desc),
                     startAction = { Icon(Icons.Outlined.CloudSync, null) },
@@ -229,30 +265,16 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit) {
                     checked = viewModel.outputLog,
                     onCheckedChange = { viewModel.outputLog = it }
                 )
-                SwitchPreference(
-                    title = stringResource(R.string.patch_hide_libs),
-                    summary = stringResource(R.string.patch_hide_libs_desc),
-                    startAction = { Icon(Icons.Outlined.VisibilityOff, null) },
-                    checked = viewModel.hideLibs &&
-                        viewModel.sigBypassLevel > Constants.SIGBYPASS_NONE,
-                    onCheckedChange = {
-                        viewModel.hideLibs =
-                            it &&
-                                viewModel.sigBypassLevel > Constants.SIGBYPASS_NONE
-                    }
-                )
+                val maxSigBypassLevel = Constants.SIGBYPASS_EXTREME
                 val sigBypassEntries = listOf(
                     DropdownEntry(
-                        items = (Constants.SIGBYPASS_NONE..Constants.SIGBYPASS_EXTREME).map { level ->
+                        items = (Constants.SIGBYPASS_NONE..maxSigBypassLevel).map { level ->
                             DropdownItem(
                                 text = sigBypassLvTitle(level),
                                 summary = sigBypassLvDesc(level),
                                 selected = viewModel.sigBypassLevel == level,
                                 onClick = {
                                     viewModel.sigBypassLevel = level
-                                    if (level == Constants.SIGBYPASS_NONE) {
-                                        viewModel.hideLibs = false
-                                    }
                                 }
                             )
                         }

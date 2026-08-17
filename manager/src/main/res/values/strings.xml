@@ -110,6 +110,10 @@
     <string name="patch_sigbypasslv2_desc">Builds on Basic by restoring the original AppComponentFactory and hooking getPackageArchiveInfo / hasSigningCertificate for stricter verification paths</string>
     <string name="patch_sigbypasslv3">Extreme</string>
     <string name="patch_sigbypasslv3_desc">Builds on High by hooking the PackageInfo(Parcel) constructor so signatures are replaced across binder unparceling paths</string>
+    <string name="patch_sigbypasslv4">Seccomp</string>
+    <string name="patch_sigbypasslv4_desc">Enables seccomp v2 filtering and trusted-thread file redirection on ARM64, referencing the implementation approach used by FunPatchApp</string>
+    <string name="patch_sigbypasslv5">Stealth</string>
+    <string name="patch_sigbypasslv5_desc">Redirects APK access through app-library GOT/PLT entries with xhook while retaining PackageInfo signature spoofing</string>
     <string name="patch_new_package">Patch New PackageName</string>
     <string name="hint_patch_new_package">Input a new package for app</string>
     <string name="patch_override_version_code">Override version code</string>
@@ -121,8 +125,9 @@
     <string name="patch_use_microg_desc">Redirect GMS requests to the community version of MicroG (such as ReVanced GmsCore). Applicable to Google apps like YouTube, requires manually installing the corresponding MicroG service.</string>
     <string name="patch_output_log_to_media">Output Log to Media Directory</string>
     <string name="patch_output_log_to_media_desc">Captures Xposed API logs, framework events, and Java/Kotlin crashes.</string>
-    <string name="patch_hide_libs">Exempt environment checks</string>
-    <string name="patch_hide_libs_desc">Sanitize ART and sensitive system library visibility for apps that perform basic runtime environment checks.</string>
+    <string name="patch_inject_dex">Inject Loader DEX (Sub-process Support)</string>
+    <string name="patch_inject_dex_desc">Physically inject the loader DEX into the main DEX sequence. Only enable this special opt-in workaround if your modules need to hook isolated or multi-process components.</string>
+    <string name="patch_subprocess_detected_hint">Detected %1$d isolated or multi-process component(s). If your module needs to hook these sub-processes, consider enabling “Inject Loader DEX”.</string>
     <string name="patch_start">Start Patch</string>
     <string name="patch_return">Return</string>
     <string name="patch_uninstall_text">Due to different signatures, you need to uninstall the original app before installing the patched one.\nMake sure you have backed up personal data.</string>

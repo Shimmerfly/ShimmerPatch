@@ -25,9 +25,13 @@ buildscript {
 
 val commitCount = runCatching {
     val repo = FileRepository(rootProject.file(".git"))
-    val refId = repo.refDatabase.exactRef("refs/remotes/origin/miuix")?.objectId
-    if (refId != null) Git(repo).log().add(refId).call().count() else 0
-}.getOrElse {0}
+    val refId = repo.refDatabase.exactRef("refs/remotes/origin/neo")?.objectId
+        ?: repo.refDatabase.exactRef("refs/heads/neo")?.objectId
+        ?: repo.refDatabase.exactRef("refs/remotes/origin/miuix")?.objectId
+        ?: repo.refDatabase.exactRef("refs/heads/miuix")?.objectId
+        ?: repo.resolve("HEAD")
+    if (refId != null) Git(repo).log().add(refId).call().count() else 741
+}.getOrElse { 741 }
 
 val coreCommitCount = runCatching {
     FileRepositoryBuilder().setGitDir(rootProject.file("core/.git"))

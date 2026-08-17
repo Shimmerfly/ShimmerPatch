@@ -5,7 +5,7 @@ import android.system.ErrnoException;
 import android.system.OsConstants;
 import android.util.Log;
 
-import org.lsposed.lspd.models.PreLoadedApk;
+import org.matrix.vector.ipc.LoadedModule;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -139,7 +139,7 @@ public class ModuleLoader {
                     exceptionPassthrough
             );
         } catch (IOException | NumberFormatException e) {
-            Log.w(TAG, "Can not read " + MODERN_MODULE_PROP + " in " + apkFile, e);
+            Log.w(TAG, "Can not read modern module metadata in " + apkFile, e);
             return new ApiVersions(
                     fallbackMinApiVersion,
                     fallbackMinApiVersion,
@@ -192,13 +192,13 @@ public class ModuleLoader {
         return ModulePipeline.UNSUPPORTED;
     }
 
-    public static PreLoadedApk loadModule(String path) {
+    public static LoadedModule loadModule(String path) {
         return loadModule(path, 0);
     }
 
-    public static PreLoadedApk loadModule(String path, int fallbackMinApiVersion) {
+    public static LoadedModule loadModule(String path, int fallbackMinApiVersion) {
         if (path == null) return null;
-        var file = new PreLoadedApk();
+        var file = new LoadedModule();
         var preLoadedDexes = new ArrayList<SharedMemory>();
         var moduleClassNames = new ArrayList<String>(1);
         var moduleLibraryNames = new ArrayList<String>(1);
@@ -209,7 +209,7 @@ public class ModuleLoader {
             apiVersions = readApiVersions(apkFile, fallbackMinApiVersion);
             var pipeline = determinePipeline(apkFile, apiVersions);
             if (pipeline == ModulePipeline.UNSUPPORTED) {
-                Log.w(TAG, "Unsupported Xposed module API or missing init entries: " + path);
+                Log.w(TAG, "Unsupported Xposed LoadedModule API or missing init entries: " + path);
                 return null;
             }
 
@@ -228,14 +228,14 @@ public class ModuleLoader {
         }
         if (preLoadedDexes.isEmpty() && moduleLibraryNames.isEmpty()) return null;
         if (moduleClassNames.isEmpty() && moduleLibraryNames.isEmpty()) return null;
-        file.preLoadedDexes = preLoadedDexes;
-        file.moduleClassNames = moduleClassNames;
-        file.moduleLibraryNames = moduleLibraryNames;
-        file.legacy = isLegacy;
-        file.minApiVersion = apiVersions.minApiVersion;
-        file.targetApiVersion = apiVersions.targetApiVersion;
-        file.autoHotReload = apiVersions.autoHotReload;
-        file.exceptionPassthrough = apiVersions.exceptionPassthrough;
+        file.code = new org.matrix.vector.ipc.ModuleCode();
+        file.code.preLoadedDexes = preLoadedDexes;
+        file.code.moduleClassNames = moduleClassNames;
+        file.code.moduleLibraryNames = moduleLibraryNames;
+        file.code.legacy = isLegacy;
+        file.code.targetApiVersion = apiVersions.targetApiVersion;
+        file.code.autoHotReload = apiVersions.autoHotReload;
+        file.code.exceptionPassthrough = apiVersions.exceptionPassthrough;
         return file;
     }
 }

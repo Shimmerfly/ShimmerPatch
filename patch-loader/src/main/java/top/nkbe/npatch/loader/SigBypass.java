@@ -371,12 +371,10 @@ public class SigBypass {
 
     private static void replacePackageInfo(Context context, PackageInfo packageInfo, boolean moduleCaller) {
         if (packageInfo == null) return;
-        if (!stealthModeActive) {
-            if (moduleCaller) {
-                replaceModuleApplicationInfoPaths(context, packageInfo.applicationInfo);
-            } else {
-                replaceApplicationInfoPaths(context, packageInfo.applicationInfo);
-            }
+        if (moduleCaller) {
+            replaceModuleApplicationInfoPaths(context, packageInfo.applicationInfo);
+        } else {
+            replaceApplicationInfoPaths(context, packageInfo.applicationInfo);
         }
         replaceSigningDetails(context, packageInfo);
     }
@@ -856,10 +854,6 @@ public class SigBypass {
             hookPackageParserGeneratePackageInfo(context);
             hookApplicationInfoConstructor(context);
             hookGetPackageInfo(context);
-        }
-
-        } else if (hookLevel >= Constants.SIGBYPASS_BASIC && redirectApkPath == null) {
-            XLog.w(TAG, "Original APK unavailable, native signature bypass disabled");
         }
     }
 }

@@ -87,7 +87,7 @@ public class NPatch {
     @Parameter(names = {"-d", "--debuggable"}, description = "Set app to be debuggable")
     private boolean debuggableFlag = false;
 
-    @Parameter(names = {"-l", "--sigbypasslv"}, description = "Signature bypass mode. 0: None, 1: Basic, 2: High, 3: Extreme. default 1")
+    @Parameter(names = {"-l", "--sigbypasslv"}, description = "Signature bypass mode. 0: None, 1: Basic, 2: High, 3: Extreme, 4: Seccomp, 5: Stealth. Stealth requires --manager. default 1")
     private int sigbypassLevel = 1;
 
     @Parameter(names = {"--provider"}, description = "Inject Provider to manager data files")
@@ -185,8 +185,12 @@ public class NPatch {
             help = true;
         }
         if (sigbypassLevel < Constants.SIGBYPASS_NONE ||
-                sigbypassLevel > Constants.SIGBYPASS_EXTREME) {
-            logger.e("Signature bypass level must be between 0 and 3\n");
+                sigbypassLevel > Constants.SIGBYPASS_STEALTH) {
+            logger.e("Signature bypass level must be between 0 and 5\n");
+            help = true;
+        }
+        if (!useManager && sigbypassLevel > Constants.SIGBYPASS_SECCOMP) {
+            logger.e("Stealth signature bypass mode cannot be used in integrated mode\n");
             help = true;
         }
         this.logger = logger;
@@ -362,7 +366,9 @@ public class NPatch {
                     outputLog,
                     newPackage,
                     useMicroG,
-                    hideLibs && sigbypassLevel > Constants.SIGBYPASS_NONE);
+                    hideLibs
+                            && sigbypassLevel > Constants.SIGBYPASS_NONE
+                            && sigbypassLevel != Constants.SIGBYPASS_STEALTH);
             final var configBytes = new Gson().toJson(config).getBytes(StandardCharsets.UTF_8);
             final var metadata = Base64.getEncoder().encodeToString(configBytes);
             try (var is = new ByteArrayInputStream(modifyManifestFile(manifestEntry.open(), metadata, minSdkVersion, pair.packageName, newPackage, originalSignature))) {
@@ -633,16 +639,15 @@ public class NPatch {
         // 處理注入 Provider 的邏輯
         if (isInjectProvider){
             String injectedAuthority = targetPackage + ".MTDataFilesProvider";
-            HashMap<String,String> providerMap = new HashMap<>();
-            providerMap.put("name","bin.mt.file.content.MTDataFilesProvider");
-            providerMap.put("permission","android.permission.MANAGE_DOCUMENTS");
-            providerMap.put("exported","true");
-            providerMap.put("authorities", injectedAuthority);
-            providerMap.put("grantUriPermissions","true");
+            List<AttributeItem> providerAttrs = new ArrayList<>();
+            providerAttrs.add(new AttributeItem("name", "bin.mt.file.content.MTDataFilesProvider"));
+            providerAttrs.add(new AttributeItem("permission", "android.permission.MANAGE_DOCUMENTS"));
+            providerAttrs.add(new AttributeItem("exported", true));
+            providerAttrs.add(new AttributeItem("authorities", injectedAuthority));
+            providerAttrs.add(new AttributeItem("grantUriPermissions", true));
 
             property.addDeleteProviderAuthorities(injectedAuthority);
-            property.addProvider(providerMap,"android.content.action.DOCUMENTS_PROVIDER");
-
+            property.addProvider(providerAttrs, "android.content.action.DOCUMENTS_PROVIDER");
         }
 
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {

@@ -52,6 +52,7 @@ class NewPatchViewModel : ViewModel() {
     var injectProvider by mutableStateOf(false)
     var useMicroG by mutableStateOf(false)
     var outputLog by mutableStateOf(true)
+    var usesCleartextTraffic by mutableStateOf(false)
     var injectDex by mutableStateOf(false)
     var hasSubProcesses by mutableStateOf(false)
     var subProcessCount by mutableStateOf(0)
@@ -106,6 +107,7 @@ class NewPatchViewModel : ViewModel() {
         injectProvider = false
         useMicroG = false
         outputLog = true
+        usesCleartextTraffic = false
         injectDex = false
         hasSubProcesses = false
         subProcessCount = 0
@@ -157,7 +159,21 @@ class NewPatchViewModel : ViewModel() {
         val patchVersionCode = overrideVersionCodeValue.toIntOrNull()?.takeIf { it > 0 } ?: 1
         sigBypassLevel = patchSigBypassLevel
         overrideVersionCodeValue = patchVersionCode.toString()
-        val config = PatchConfig(useManager, debuggable, overrideVersionCode, patchVersionCode, patchSigBypassLevel, null, null, injectProvider, outputLog, newPackageName, useMicroG, false)
+        val config = PatchConfig(
+            useManager,
+            debuggable,
+            overrideVersionCode,
+            patchVersionCode,
+            patchSigBypassLevel,
+            null,
+            null,
+            injectProvider,
+            outputLog,
+            newPackageName,
+            useMicroG,
+            false,
+            usesCleartextTraffic
+        )
         patchOptions = Patcher.Options(
             newPackageName = newPackageName,
             config = config,

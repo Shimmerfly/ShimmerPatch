@@ -122,12 +122,15 @@
     <string name="patch_use_microg_desc">重新导向 GMS 请求至社区版 MicroG。适用于 YouTube 等 Google 应用程序，需自行安装对应的 MicroG 服务。</string>
     <string name="patch_output_log_to_media">输出日志到 Media 目录</string>
     <string name="patch_output_log_to_media_desc">记录 Xposed API 日志、框架事件及 Java/Kotlin 崩溃</string>
-    <string name="patch_inject_dex">注入 Loader DEX (子进程支持)</string>
+    <string name="patch_hide_libs">豁免环境校验</string>
+    <string name="patch_hide_libs_desc">为执行基础运行环境校验的应用收敛 ART 与敏感系统库的可见性。</string>
+    <string name="patch_inject_dex">注入加載器 DEX</string>
     <string name="patch_inject_dex_desc">将 loader dex 物理写入主 dex 序列。仅当装载的模块明确需要 Hook 独立子进程/沙箱组件时开启此特例选项。</string>
     <string name="patch_subprocess_detected_hint">检测到目标应用包含 %1$d 个独立子进程/沙箱组件。若模块需要 Hook 这些子进程，建议开启「注入 Loader DEX」。</string>
     <string name="patch_start">开始打包</string>
     <string name="patch_return">返回</string>
     <string name="patch_uninstall_text">由于签名不同，安装修补的应用前需要先卸载原应用。\n确保您已备份好个人数据。</string>
+    <string name="patch_ignore_risk_install">无视风险，继续安装</string>
     <string name="patch_install_successfully">安装成功</string>
     <string name="patch_install_failed">安装失败</string>
     <string name="patch_no_xposed_module">未找到 Xposed 模块</string>

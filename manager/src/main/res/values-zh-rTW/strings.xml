@@ -122,12 +122,15 @@
     <string name="patch_use_microg_desc">重新導向 GMS 請求至社群版 MicroG。適用於 YouTube 等 Google 應用程式，需自行安裝對應的 MicroG 服務。</string>
     <string name="patch_output_log_to_media">日誌輸出到 Media 目錄</string>
     <string name="patch_output_log_to_media_desc">記錄 Xposed API 日誌、框架事件及 Java/Kotlin 崩潰</string>
-    <string name="patch_inject_dex">注入 Loader DEX (子進程支援)</string>
+    <string name="patch_hide_libs">豁免環境校驗</string>
+    <string name="patch_hide_libs_desc">為執行基礎執行環境校驗的應用程式收斂 ART 與敏感系統函式庫的可見性。</string>
+    <string name="patch_inject_dex">注入加载器 DEX</string>
     <string name="patch_inject_dex_desc">將 loader dex 物理寫入主 dex 序列。僅當裝載的模組明確需要 Hook 獨立子進程/沙箱組件時開啟此特例選項。</string>
     <string name="patch_subprocess_detected_hint">偵測到目標應用包含 %1$d 個獨立子進程/沙箱組件。若模組需要 Hook 這些子進程，建議開啟「注入 Loader DEX」。</string>
     <string name="patch_start">開始打包</string>
     <string name="patch_return">返回</string>
     <string name="patch_uninstall_text">由於簽名不同，安裝前需要先解除安裝原程式。\n確保您已備份好個人資料。</string>
+    <string name="patch_ignore_risk_install">無視風險，繼續安裝</string>
     <string name="patch_install_successfully">安裝成功</string>
     <string name="patch_install_failed">安裝失敗</string>
     <string name="patch_no_xposed_module">未找到 Xposed 模組</string>

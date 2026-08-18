@@ -48,6 +48,8 @@ class NewPatchViewModel : ViewModel() {
     var debuggable by mutableStateOf(false)
     var overrideVersionCode by mutableStateOf(false)
     var overrideVersionCodeValue by mutableStateOf("1")
+    var overrideTargetSdk by mutableStateOf(false)
+    var overrideTargetSdkValue by mutableStateOf("28")
     var sigBypassLevel by mutableStateOf(2)
     var injectProvider by mutableStateOf(false)
     var useMicroG by mutableStateOf(false)
@@ -103,6 +105,8 @@ class NewPatchViewModel : ViewModel() {
         debuggable = false
         overrideVersionCode = false
         overrideVersionCodeValue = "1"
+        overrideTargetSdk = false
+        overrideTargetSdkValue = "28"
         sigBypassLevel = 2
         injectProvider = false
         useMicroG = false
@@ -157,8 +161,10 @@ class NewPatchViewModel : ViewModel() {
         if (useManager) embeddedModules = emptyList()
         val patchSigBypassLevel = if (useManager) sigBypassLevel else sigBypassLevel.coerceAtMost(Constants.SIGBYPASS_EXTREME)
         val patchVersionCode = overrideVersionCodeValue.toIntOrNull()?.takeIf { it > 0 } ?: 1
+        val patchTargetSdk = overrideTargetSdkValue.toIntOrNull()?.takeIf { it > 0 } ?: 28
         sigBypassLevel = patchSigBypassLevel
         overrideVersionCodeValue = patchVersionCode.toString()
+        overrideTargetSdkValue = patchTargetSdk.toString()
         val config = PatchConfig(
             useManager,
             debuggable,
@@ -172,7 +178,9 @@ class NewPatchViewModel : ViewModel() {
             newPackageName,
             useMicroG,
             false,
-            usesCleartextTraffic
+            usesCleartextTraffic,
+            overrideTargetSdk,
+            patchTargetSdk
         )
         patchOptions = Patcher.Options(
             newPackageName = newPackageName,

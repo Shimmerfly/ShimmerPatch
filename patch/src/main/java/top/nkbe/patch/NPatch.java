@@ -129,6 +129,12 @@ public class NPatch {
     @Parameter(names = {"--versioncode"}, description = "Custom versionCode used when --allowdown is enabled. default 1")
     private int overrideVersionCodeValue = 1;
 
+    @Parameter(names = {"--override-target-sdk"}, description = "Override patched app's target SDK version")
+    private boolean overrideTargetSdk = false;
+
+    @Parameter(names = {"--target-sdk"}, description = "Custom target SDK version value")
+    private int overrideTargetSdkValue = 28;
+
     @Parameter(names = {"-v", "--verbose"}, description = "Verbose output")
     private boolean verbose = false;
 
@@ -372,7 +378,9 @@ public class NPatch {
                     hideLibs
                             && sigbypassLevel > Constants.SIGBYPASS_NONE
                             && sigbypassLevel != Constants.SIGBYPASS_STEALTH,
-                    usesCleartextTraffic);
+                    usesCleartextTraffic,
+                    overrideTargetSdk,
+                    overrideTargetSdkValue);
             final var configBytes = new Gson().toJson(config).getBytes(StandardCharsets.UTF_8);
             final var metadata = Base64.getEncoder().encodeToString(configBytes);
             try (var is = new ByteArrayInputStream(modifyManifestFile(manifestEntry.open(), metadata, minSdkVersion, pair.packageName, newPackage, originalSignature))) {
@@ -602,6 +610,10 @@ public class NPatch {
 
         if (overrideVersionCode) {
             property.addManifestAttribute(new AttributeItem(NodeValue.Manifest.VERSION_CODE, overrideVersionCodeValue));
+        }
+
+        if (overrideTargetSdk) {
+            property.addUsesSdkAttribute(new AttributeItem(NodeValue.UsesSDK.TARGET_SDK_VERSION, overrideTargetSdkValue));
         }
 
         if (minSdkVersion > 0)

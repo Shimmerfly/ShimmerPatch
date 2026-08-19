@@ -19,3 +19,4 @@ libxposed
 /out
 /.idea
 *.log
+.kotlin

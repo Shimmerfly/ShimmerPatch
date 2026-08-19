@@ -39,7 +39,6 @@ fun RepositoryScreen(
                 scrollBehavior = scrollBehavior,
             )
         },
-        hazeState = hazeState,
     ) { innerPadding ->
         Box(
             modifier = Modifier

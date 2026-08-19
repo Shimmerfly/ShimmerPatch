@@ -42,8 +42,6 @@ import top.nkbe.npatch.ui.page.MainTab
 import top.nkbe.npatch.ui.page.MainScreen
 import top.nkbe.npatch.ui.page.Navigator
 import top.nkbe.npatch.ui.page.NewPatchScreen
-import top.nkbe.npatch.ui.page.RepositoryDetailScreen
-import top.nkbe.npatch.ui.page.RepositoryScopeFilterScreen
 import top.nkbe.npatch.ui.page.Route
 import top.nkbe.npatch.ui.page.SelectAppsScreen
 import top.nkbe.npatch.ui.page.WelcomeScreen

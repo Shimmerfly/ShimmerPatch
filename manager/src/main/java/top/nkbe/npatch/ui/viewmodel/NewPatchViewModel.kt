@@ -203,8 +203,6 @@ class NewPatchViewModel : ViewModel() {
             logger.e(t.message.orEmpty())
             logger.e(t.stackTraceToString())
             PatchState.ERROR
-        } finally {
-            NeoPackageManager.cleanTmpApkDir()
         }
     }
 }

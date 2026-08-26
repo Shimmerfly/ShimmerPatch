@@ -914,7 +914,7 @@ namespace lspd {
     }
 
     int open_sanitized_proc_file(const char* pathname, const void* caller_pc) {
-        if (pathname == nullptr) {
+        if (pathname == nullptr || strncmp(pathname, "/proc/", 6) != 0) {
             return -1;
         }
         if (minimal_file_hook_mode) {
@@ -963,8 +963,8 @@ namespace lspd {
     }
 
     static const char* resolve_redirect_path(const char* pathname) {
-        if (pathname == nullptr) {
-            return nullptr;
+        if (pathname == nullptr || pathname[0] != '/') {
+            return pathname;
         }
 
         {

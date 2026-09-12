@@ -232,7 +232,7 @@ abstract class GitCommitHashValueSource : ValueSource<String, GitCommitHashValue
 val versionCodeProvider =
     providers.of(GitCommitCountValueSource::class.java) {
         parameters.workingDirectory.set(rootDir.parentFile.absolutePath)
-        parameters.ref.set("refs/remotes/origin/miuix")
+        parameters.ref.set("refs/remotes/origin/master")
     }
 val versionHashProvider =
     providers.of(GitCommitHashValueSource::class.java) {

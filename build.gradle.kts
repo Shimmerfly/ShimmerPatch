@@ -15,8 +15,9 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    androidResources.enable = false
+
     buildFeatures {
-        androidResources = false
         buildConfig = false
     }
 

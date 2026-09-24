@@ -12,19 +12,6 @@ val verName = rootProject.extra["verName"] as String
 val coreVerCode = rootProject.extra["coreVerCode"] as Int
 val coreVerName = rootProject.extra["coreVerName"] as String
 
-fun decodeSha256Hex(value: String): ByteArray {
-    require(value.length == 64) { "Manager signature digest must be 64 hex chars: $value" }
-    return ByteArray(value.length / 2) { index ->
-        value.substring(index * 2, index * 2 + 2).toInt(16).toByte()
-    }
-}
-
-fun encodeAllowlistEntry(value: String): String {
-    val key = 0x5A
-    val obfuscated = decodeSha256Hex(value).map { byte -> (byte.toInt() xor key).toByte() }.toByteArray()
-    return Base64.getEncoder().encodeToString(obfuscated)
-}
-
 plugins {
     alias(libs.plugins.agp.app)
     alias(libs.plugins.kotlin.serialization)
@@ -94,25 +81,46 @@ androidComponents {
         val configuredSignature = providers.environmentVariable("SHIMMERPATCH_MANAGER_SIGNATURE_SHA256")
             .orElse(providers.gradleProperty("shimmerpatchManagerSignatureSha256"))
         val signingConfig = android.buildTypes.getByName(requireNotNull(variant.buildType)).signingConfig
-        val signatureAllowlist = configuredSignature.orElse(providers.provider {
-            val config = requireNotNull(signingConfig) { "Missing manager signing config for ${variant.name}" }
-            val storeFile = requireNotNull(config.storeFile) { "Missing manager signing keystore for ${variant.name}" }
-            val store = KeyStore.getInstance(config.storeType ?: KeyStore.getDefaultType())
-            storeFile.inputStream().use { store.load(it, config.storePassword?.toCharArray()) }
-            val certificate = requireNotNull(store.getCertificate(config.keyAlias)) {
-                "Missing manager signing certificate for ${variant.name}"
+        // Resolve the signing values now, and keep the provider body free of project and script
+        // references: the configuration cache cannot serialise either of them.
+        val signatureConfig = requireNotNull(signingConfig) { "Missing manager signing config for ${variant.name}" }
+        val keystorePath = requireNotNull(signatureConfig.storeFile) { "Missing manager signing keystore for ${variant.name}" }.path
+        val keystoreType = signatureConfig.storeType ?: KeyStore.getDefaultType()
+        val keystorePassword = signatureConfig.storePassword ?: ""
+        val keystoreAlias = signatureConfig.keyAlias
+        val variantName = variant.name
+        val configuredValue = configuredSignature.orNull
+        val signatureAllowlist = providers.provider {
+            val fingerprints = configuredValue ?: run {
+                val store = KeyStore.getInstance(keystoreType)
+                File(keystorePath).inputStream().use { store.load(it, keystorePassword.toCharArray()) }
+                val certificate = requireNotNull(store.getCertificate(keystoreAlias)) {
+                    "Missing manager signing certificate for $variantName"
+                }
+                MessageDigest.getInstance("SHA-256").digest(certificate.encoded)
+                    .joinToString("") { "%02X".format(Locale.ROOT, it) }
             }
-            MessageDigest.getInstance("SHA-256").digest(certificate.encoded)
-                .joinToString("") { "%02X".format(Locale.ROOT, it) }
-        })
-        requireNotNull(variant.buildConfigFields).put("MANAGER_SIGNATURE_SHA256_ALLOWLIST", signatureAllowlist.map { fingerprints ->
-            val encoded = fingerprints.split(',', ';', ' ', '\n', '\r', '\t')
-                .map { it.trim().uppercase(Locale.ROOT) }
-                .filter { it.isNotEmpty() }
+            fingerprints.split(',', ';', ' ', '\n', '\r', '\t')
+                .map { entry -> entry.trim().uppercase(Locale.ROOT) }
+                .filter { entry -> entry.isNotEmpty() }
                 .distinct()
-                .joinToString(",", transform = ::encodeAllowlistEntry)
-            BuildConfigField("String", "\"$encoded\"", "SHA-256 fingerprints for the selected signing certificate")
-        })
+                .joinToString(",") { entry ->
+                    // Store the digest obfuscated (XOR 0x5A, base64) so the fingerprint is not a
+                    // plain literal in the APK.
+                    require(entry.length == 64) { "Manager signature digest must be 64 hex chars: $entry" }
+                    val digest = ByteArray(32) { index ->
+                        entry.substring(index * 2, index * 2 + 2).toInt(16).toByte()
+                    }
+                    Base64.getEncoder()
+                        .encodeToString(ByteArray(32) { index -> (digest[index].toInt() xor 0x5A).toByte() })
+                }
+        }
+        requireNotNull(variant.buildConfigFields).put(
+            "MANAGER_SIGNATURE_SHA256_ALLOWLIST",
+            signatureAllowlist.map { encoded ->
+                BuildConfigField("String", "\"$encoded\"", "SHA-256 fingerprints for the selected signing certificate")
+            },
+        )
         // validateSigning also creates the default debug keystore on a fresh checkout.
         tasks.configureEach {
             if (name == "generate${variantCapped}BuildConfig") {
@@ -120,17 +128,21 @@ androidComponents {
             }
         }
 
+        // Plain files, so the task actions do not capture the project or the script.
+        val assetsSourceDir = rootProject.layout.projectDirectory.dir("out/assets/${variant.name}").asFile
+        val mergedAssetsDir = layout.buildDirectory.dir("intermediates/assets/$variantLowered/merge${variantCapped}Assets")
+        val staleLoaderDex = mergedAssetsDir.map { it.file("shimmerpatch/loader.dex") }.get().asFile
+
         val copyAssetsTaskProvider = tasks.register<Copy>("copy${variantCapped}Assets") {
             dependsOn(":meta-loader:copy$variantCapped")
             dependsOn(":patch-loader:copy$variantCapped")
 
-            val targetDir = layout.buildDirectory.dir("intermediates/assets/$variantLowered/merge${variantCapped}Assets")
             doFirst {
-                delete(targetDir.map { it.file("shimmerpatch/loader.dex") })
+                staleLoaderDex.delete()
             }
-            into(targetDir)
+            into(mergedAssetsDir)
 
-            from("${rootProject.projectDir}/out/assets/${variant.name}")
+            from(assetsSourceDir)
         }
 
         tasks.configureEach {

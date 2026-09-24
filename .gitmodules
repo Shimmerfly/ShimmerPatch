@@ -8,5 +8,5 @@
 	branch = core
 [submodule "remote-api"]
 	path = remote-api
-	url = https://github.com/Ujhhgtg/NPatch-Remote-API.git
-	branch = master
+	url = https://github.com/Shimmerfly/ShimmerPatch.git
+	branch = remote-api

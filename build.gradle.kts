@@ -3,11 +3,11 @@ plugins {
     id("maven-publish")
 }
 
-group = "top.nkbe.npatch"
+group = "moe.shimmerfly.shimmerpatch"
 version = "1.0.1"
 
 android {
-    namespace = "top.nkbe.npatch.remote"
+    namespace = "moe.shimmerfly.shimmerpatch.remote"
     compileSdk = 37
 
     defaultConfig {

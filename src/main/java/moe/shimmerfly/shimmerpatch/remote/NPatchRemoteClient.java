@@ -1,4 +1,4 @@
-package top.nkbe.npatch.remote;
+package moe.shimmerfly.shimmerpatch.remote;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -38,7 +38,7 @@ import io.github.libxposed.service.IXposedService;
  * framework-internal, read-only path and is intentionally not exposed by this module-app SDK.</p>
  */
 public final class NPatchRemoteClient {
-    public static final String DEFAULT_AUTHORITY = "top.nkbe.npatch.remote";
+    public static final String DEFAULT_AUTHORITY = "moe.shimmerfly.shimmerpatch.remote";
 
     /** @deprecated Use {@link #DEFAULT_AUTHORITY}. */
     @Deprecated

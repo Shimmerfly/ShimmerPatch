@@ -4,7 +4,7 @@
 	branch = android10-release
 [submodule "core"]
 	path = core
-	url = https://github.com/Shimmerfly/Vector.git
+	url = https://github.com/Shimmerfly/ShimmerPatch.git
 	branch = core
 [submodule "remote-api"]
 	path = remote-api

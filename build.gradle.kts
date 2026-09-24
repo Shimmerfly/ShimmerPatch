@@ -20,50 +20,57 @@ plugins {
     alias(libs.plugins.ktfmt)
 }
 
-/** A ValueSource that executes 'git rev-list --count' for the requested repository ref. */
+/**
+ * A ValueSource that executes 'git rev-list --count' for the first repository ref that resolves.
+ *
+ * The ref is not always `master`: the repository that includes this build owns the version code and
+ * may have renamed its default branch (this fork calls it `ShimmerPatch`), so the conventional
+ * names are probed behind the requested one. A ref that does not resolve is expected and must not
+ * print a fatal error into the build log, so every probe captures its stderr.
+ */
 abstract class GitCommitCountValueSource : ValueSource<String, GitCommitCountValueSource.Parameters> {
     interface Parameters : ValueSourceParameters {
         val workingDirectory: Property<String>
+
+        /** The ref to try first; the conventional default branches and HEAD follow. */
         val ref: Property<String>
     }
 
     @get:Inject abstract val execOperations: ExecOperations
 
     override fun obtain(): String {
-        val output = ByteArrayOutputStream()
-        val result = execOperations.exec {
-            commandLine(
-                "git",
-                "-C",
-                parameters.workingDirectory.get(),
-                "rev-list",
-                "--count",
-                parameters.ref.get(),
-            )
-            standardOutput = output
-            isIgnoreExitValue = true
+        val candidates =
+            listOf(
+                    parameters.ref.get(),
+                    "refs/remotes/origin/HEAD",
+                    "refs/remotes/origin/main",
+                    "refs/remotes/origin/master",
+                    "refs/heads/main",
+                    "refs/heads/master",
+                    "HEAD",
+                )
+                .distinct()
+
+        for (ref in candidates) {
+            val output = ByteArrayOutputStream()
+            val result = execOperations.exec {
+                commandLine(
+                    "git",
+                    "-C",
+                    parameters.workingDirectory.get(),
+                    "rev-list",
+                    "--count",
+                    ref,
+                )
+                standardOutput = output
+                errorOutput = ByteArrayOutputStream()
+                isIgnoreExitValue = true
+            }
+            if (result.exitValue == 0 && output.toString().isNotBlank()) {
+                return output.toString().trim()
+            }
         }
-        if (result.exitValue == 0 && output.toString().isNotBlank()) {
-            return output.toString().trim()
-        }
-        output.reset()
-        val fallbackResult = execOperations.exec {
-            commandLine(
-                "git",
-                "-C",
-                parameters.workingDirectory.get(),
-                "rev-list",
-                "--count",
-                "HEAD",
-            )
-            standardOutput = output
-            isIgnoreExitValue = true
-        }
-        return if (fallbackResult.exitValue == 0 && output.toString().isNotBlank()) {
-            output.toString().trim()
-        } else {
-            "744"
-        }
+        return "744"
     }
 }
 
@@ -90,9 +97,9 @@ abstract class GitLatestTagValueSource : ValueSource<String, ValueSourceParamete
 /**
  * Which build this is, in one string: what commit it came from and where it was built.
  *
- * The version code is the commit count on origin/master, so every branch build carries master's
- * number: a build flashed from a feature branch and one flashed from master both report "v2.0
- * (3052)" and cannot be told apart on the device. That is not hypothetical — it cost a real
+ * The version code is the commit count on the host repository's default branch, so every branch
+ * build carries the same number: a build flashed from a feature branch and one flashed from the
+ * default branch both report "v2.0 (3052)" and cannot be told apart on the device. That is not hypothetical — it cost a real
  * investigation to establish which of the two was installed.
  *
  * **The commit always comes first, and what follows always says where.** Both readers of this
@@ -232,7 +239,7 @@ abstract class GitCommitHashValueSource : ValueSource<String, GitCommitHashValue
 val versionCodeProvider =
     providers.of(GitCommitCountValueSource::class.java) {
         parameters.workingDirectory.set(rootDir.parentFile.absolutePath)
-        parameters.ref.set("refs/remotes/origin/master")
+        parameters.ref.set("refs/remotes/origin/HEAD")
     }
 val versionHashProvider =
     providers.of(GitCommitHashValueSource::class.java) {
@@ -257,7 +264,7 @@ val androidTargetSdkVersion = 37
 val androidMinSdkVersion = 27
 val androidBuildToolsVersion = "37.0.0"
 val androidCompileSdkVersion = 37
-val androidCompileNdkVersion = "29.0.13846066"
+val androidCompileNdkVersion = "30.0.16248370"
 val androidSourceCompatibility = JavaVersion.VERSION_21
 val androidTargetCompatibility = JavaVersion.VERSION_21
 
@@ -418,9 +425,12 @@ tasks.register<KtfmtFormatTask>("format") {
     // :daemon:ktfmtFormat, which formats the daemon (scripts included) in Meta style.
     exclude("daemon/**")
     dependsOn(":daemon:ktfmtFormat")
-    dependsOn(":manager:ktfmtFormat")
     dependsOn(":xposed:ktfmtFormat")
-    dependsOn(":zygisk:ktfmtFormat")
+    // `:manager` and `:zygisk` only exist in the Vector repository. This build is also consumed as
+    // an included build (e.g. by NPatch), where neither project exists.
+    listOf(":manager", ":zygisk")
+        .filter { rootProject.findProject(it) != null }
+        .forEach { dependsOn("$it:ktfmtFormat") }
 }
 
 ktfmt { kotlinLangStyle() }

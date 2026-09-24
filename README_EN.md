@@ -1,8 +1,8 @@
-# NPatch Remote API
+# ShimmerPatch Remote API
 
 English · [简体中文](README.md)
 
-NPatch Remote API is a lightweight Android SDK for the Xposed module settings UI. It lets a module app securely connect to NPatch Manager in Local mode and read and write Remote Preferences and Files in the NPatch Remote Store, partitioned by module package.
+ShimmerPatch Remote API is a lightweight Android SDK for the Xposed module settings UI. It lets a module app securely connect to ShimmerPatch Manager in Local mode and read and write Remote Preferences and Files in the ShimmerPatch Remote Store, partitioned by module package.
 
 ## What it does
 
@@ -13,17 +13,17 @@ NPatch Remote API is a lightweight Android SDK for the Xposed module settings UI
 
 ## Relationship to libxposed
 
-NPatch Remote API is not another Xposed API and does not replace libxposed.
+ShimmerPatch Remote API is not another Xposed API and does not replace libxposed.
 
-`XposedInterface` and `XposedService` belong to different processes, lifecycles, and responsibilities. NPatch Remote API does not participate in target-process injection and does not provide `XposedInterface`; it only adds a module-app entry point for obtaining the standard `XposedService` contract in NPatch Local mode.
+`XposedInterface` and `XposedService` belong to different processes, lifecycles, and responsibilities. ShimmerPatch Remote API does not participate in target-process injection and does not provide `XposedInterface`; it only adds a module-app entry point for obtaining the standard `XposedService` contract in ShimmerPatch Local mode.
 
 | Channel | Process | Purpose | Delivery |
 | --- | --- | --- | --- |
 | `XposedInterface` | Injected target app | Module entry, hooks, and target-process lifecycle | libxposed module lifecycle callbacks such as `XposedModule.attachFramework(...)` |
 | `XposedService` | Module or settings app | Scope, Remote Preferences, Remote Files, and hot reload | The module registers `<module-package>.XposedService`; `XposedServiceHelper.registerListener(...)` receives the Binder |
-| `NPatchRemoteClient` | Module settings app | Explicit/fallback connection in NPatch Local mode | Authenticated NPatch Manager ContentProvider, returning the same API 102 `IXposedService` contract |
+| `ShimmerPatchRemoteClient` | Module settings app | Explicit/fallback connection in ShimmerPatch Local mode | Authenticated ShimmerPatch Manager ContentProvider, returning the same API 102 `IXposedService` contract |
 
-Modules should prefer the standard libxposed `XposedServiceHelper.registerListener(...)` path. Use `NPatchRemoteClient` only when standard service delivery is unavailable, is not triggered, or the module explicitly needs to connect to NPatch Local Manager. It does not replace `XposedInterface` or define another hooking API.
+Modules should prefer the standard libxposed `XposedServiceHelper.registerListener(...)` path. Use `ShimmerPatchRemoteClient` only when standard service delivery is unavailable, is not triggered, or the module explicitly needs to connect to ShimmerPatch Local Manager. It does not replace `XposedInterface` or define another hooking API.
 
 ## Add the SDK
 
@@ -31,7 +31,7 @@ Download the AAR from [Releases](https://github.com/7723mod/NPatch-Remote-API/re
 
 ```kotlin
 dependencies {
-    implementation(files("libs/npatch-remote-api-v1.0.1-release.aar"))
+    implementation(files("libs/shimmerpatch-remote-api-v1.0.1-release.aar"))
     implementation("io.github.libxposed:interface:102.0.0")
 }
 ```
@@ -40,17 +40,17 @@ The SDK requires Android 9 (API 28) or higher. Building this repository requires
 
 ## Quick start
 
-Connecting may start the NPatch Manager process. Call the synchronous API from a worker thread, or use the asynchronous API from the UI; do not block the main thread on connection.
+Connecting may start the ShimmerPatch Manager process. Call the synchronous API from a worker thread, or use the asynchronous API from the UI; do not block the main thread on connection.
 
 ```java
-NPatchRemoteClient.connectAsync(getApplicationContext())
+ShimmerPatchRemoteClient.connectAsync(getApplicationContext())
         .thenAccept(client -> {
             SharedPreferences preferences =
                     client.getRemotePreferences("settings");
             preferences.edit().putBoolean("enabled", true).apply();
         })
         .exceptionally(error -> {
-            Log.e("Module", "NPatch Remote unavailable", error);
+            Log.e("Module", "ShimmerPatch Remote unavailable", error);
             return null;
         });
 ```
@@ -58,16 +58,16 @@ NPatchRemoteClient.connectAsync(getApplicationContext())
 If you build a Manager with a custom application ID, pass the module package name and its authority:
 
 ```java
-NPatchRemoteClient client = NPatchRemoteClient.connect(
+ShimmerPatchRemoteClient client = ShimmerPatchRemoteClient.connect(
         context,
         context.getPackageName(),
         "your.manager.application.id.remote"
 );
 ```
 
-For the complete integration guide, API behavior, and security boundary, see the NPatch website:
+For the complete integration guide, API behavior, and security boundary, see the ShimmerPatch website:
 
-- [NPatch Remote API Developer Guide](https://npatch.nkbe.top/en/guide/remote-api.html)
+- [ShimmerPatch Remote API Developer Guide](https://shimmerpatch.nkbe.top/en/guide/remote-api.html)
 
 ## Build
 
@@ -81,7 +81,7 @@ The AAR is written to `build/outputs/aar/`. You can also run `publishReleasePubl
 
 - SDK: `1.0.1`
 - libxposed interface: `102.0.0`
-- NPatch: `1.0.7` or newer
+- ShimmerPatch: `1.0.7` or newer
 - Android: API 28+ (Android 9 or higher)
 
 ## License

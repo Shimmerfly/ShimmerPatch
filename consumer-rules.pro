@@ -1,1 +1,1 @@
--keep public class moe.shimmerfly.shimmerpatch.remote.NPatchRemoteClient { public *; }
+-keep public class moe.shimmerfly.shimmerpatch.remote.ShimmerPatchRemoteClient { public *; }

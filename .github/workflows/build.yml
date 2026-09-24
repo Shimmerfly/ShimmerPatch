@@ -24,7 +24,7 @@ jobs:
       - run: ./gradlew assembleRelease
       - uses: actions/upload-artifact@v4
         with:
-          name: npatch-remote-api
+          name: shimmerpatch-remote-api
           path: build/outputs/aar/*.aar
       - name: Publish tagged release
         if: startsWith(github.ref, 'refs/tags/v')

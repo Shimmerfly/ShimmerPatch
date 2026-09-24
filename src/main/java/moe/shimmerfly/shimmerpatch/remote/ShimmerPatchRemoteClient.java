@@ -31,13 +31,13 @@ import java.util.concurrent.CompletableFuture;
 import io.github.libxposed.service.IXposedService;
 
 /**
- * Public NPatch client for module applications that cannot receive the normal libxposed provider
+ * Public ShimmerPatch client for module applications that cannot receive the normal libxposed provider
  * callback in local patching mode.
  *
  * <p>Writes use the standard {@link IXposedService} contract. Injected target access is a
  * framework-internal, read-only path and is intentionally not exposed by this module-app SDK.</p>
  */
-public final class NPatchRemoteClient {
+public final class ShimmerPatchRemoteClient {
     public static final String DEFAULT_AUTHORITY = "moe.shimmerfly.shimmerpatch.remote";
 
     /** @deprecated Use {@link #DEFAULT_AUTHORITY}. */
@@ -50,7 +50,7 @@ public final class NPatchRemoteClient {
     private static final long CONNECT_TIMEOUT_SECONDS = 3;
     private static final ExecutorService CONNECTION_EXECUTOR =
             Executors.newCachedThreadPool(runnable -> {
-                Thread thread = new Thread(runnable, "NPatch-RemoteConnect");
+                Thread thread = new Thread(runnable, "ShimmerPatch-RemoteConnect");
                 thread.setDaemon(true);
                 return thread;
             });
@@ -58,38 +58,38 @@ public final class NPatchRemoteClient {
     private final IXposedService service;
     private final Map<String, RemotePreferences> preferences = new ConcurrentHashMap<>();
 
-    private NPatchRemoteClient(IXposedService service) {
+    private ShimmerPatchRemoteClient(IXposedService service) {
         this.service = service;
     }
 
-    public static NPatchRemoteClient connect(Context context) {
+    public static ShimmerPatchRemoteClient connect(Context context) {
         return connect(context, context.getPackageName());
     }
 
-    public static NPatchRemoteClient connect(Context context, String modulePackageName) {
+    public static ShimmerPatchRemoteClient connect(Context context, String modulePackageName) {
         return connect(context, modulePackageName, DEFAULT_AUTHORITY);
     }
 
-    public static NPatchRemoteClient connect(
+    public static ShimmerPatchRemoteClient connect(
             Context context,
             String modulePackageName,
             String authority
     ) {
-        return new NPatchRemoteClient(connectService(context, modulePackageName, authority));
+        return new ShimmerPatchRemoteClient(connectService(context, modulePackageName, authority));
     }
 
-    public static CompletableFuture<NPatchRemoteClient> connectAsync(Context context) {
+    public static CompletableFuture<ShimmerPatchRemoteClient> connectAsync(Context context) {
         return connectAsync(context, context.getPackageName());
     }
 
-    public static CompletableFuture<NPatchRemoteClient> connectAsync(
+    public static CompletableFuture<ShimmerPatchRemoteClient> connectAsync(
             Context context,
             String modulePackageName
     ) {
         return connectAsync(context, modulePackageName, DEFAULT_AUTHORITY);
     }
 
-    public static CompletableFuture<NPatchRemoteClient> connectAsync(
+    public static CompletableFuture<ShimmerPatchRemoteClient> connectAsync(
             Context context,
             String modulePackageName,
             String authority
@@ -117,7 +117,7 @@ public final class NPatchRemoteClient {
         );
         IXposedService service = IXposedService.Stub.asInterface(binder);
         if (service == null) {
-            throw new IllegalStateException("NPatch remote service returned an invalid binder");
+            throw new IllegalStateException("ShimmerPatch remote service returned an invalid binder");
         }
         return service;
     }
@@ -201,22 +201,22 @@ public final class NPatchRemoteClient {
             result = call.get(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         } catch (TimeoutException exception) {
             call.cancel(true);
-            throw new IllegalStateException("NPatch remote service connection timed out", exception);
+            throw new IllegalStateException("ShimmerPatch remote service connection timed out", exception);
         } catch (InterruptedException exception) {
             call.cancel(true);
             Thread.currentThread().interrupt();
-            throw new IllegalStateException("NPatch remote service connection interrupted", exception);
+            throw new IllegalStateException("ShimmerPatch remote service connection interrupted", exception);
         } catch (ExecutionException exception) {
             Throwable cause = exception.getCause();
             if (cause instanceof SecurityException) {
                 throw (SecurityException) cause;
             }
-            throw new IllegalStateException("NPatch remote service is unavailable", cause);
+            throw new IllegalStateException("ShimmerPatch remote service is unavailable", cause);
         }
         IBinder binder = result == null ? null : result.getBinder(KEY_BINDER);
         if (binder == null) {
             throw new SecurityException(
-                    "NPatch rejected the remote service request for " + modulePackageName);
+                    "ShimmerPatch rejected the remote service request for " + modulePackageName);
         }
         return binder;
     }
@@ -224,7 +224,7 @@ public final class NPatchRemoteClient {
     private static final class RemotePreferences implements SharedPreferences {
         private static final ExecutorService EXECUTOR =
                 Executors.newSingleThreadExecutor(runnable -> {
-                    Thread thread = new Thread(runnable, "NPatch-RemoteApi");
+                    Thread thread = new Thread(runnable, "ShimmerPatch-RemoteApi");
                     thread.setDaemon(true);
                     return thread;
                 });
@@ -248,7 +248,7 @@ public final class NPatchRemoteClient {
                     values = Collections.emptyMap();
                 }
             } catch (RemoteException exception) {
-                throw new IllegalStateException("Cannot read NPatch remote preferences", exception);
+                throw new IllegalStateException("Cannot read ShimmerPatch remote preferences", exception);
             }
         }
 

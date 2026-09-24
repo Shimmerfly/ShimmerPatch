@@ -41,14 +41,14 @@ publishing {
     publications {
         register<MavenPublication>("release") {
             groupId = project.group.toString()
-            artifactId = "npatch-remote-api"
+            artifactId = "shimmerpatch-remote-api"
             version = project.version.toString()
             afterEvaluate {
                 from(components["release"])
             }
             pom {
-                name = "NPatch Remote API"
-                description = "Authenticated NPatch Manager remote storage client for Xposed module apps"
+                name = "ShimmerPatch Remote API"
+                description = "Authenticated ShimmerPatch Manager remote storage client for Xposed module apps"
                 url = "https://github.com/7723mod/NPatch-Remote-API"
                 licenses {
                     license {

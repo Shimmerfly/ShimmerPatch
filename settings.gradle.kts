@@ -17,4 +17,4 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "NPatch-Remote-API"
+rootProject.name = "ShimmerPatch-Remote-API"

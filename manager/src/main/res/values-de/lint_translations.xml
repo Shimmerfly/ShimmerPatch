@@ -101,7 +101,7 @@
     <string name="settings_language_system">Systemeinstellung verwenden</string>
     <string name="settings_storage_directory">Speicherverzeichnis ändern</string>
     <string name="settings_output_full_log">Manager-Protokoll auf Medien ausgeben</string>
-    <string name="settings_output_full_log_summary">Schreiben Sie Managerprotokolle zum Debuggen in Android/media/top.nkbe.npatch/log</string>
+    <string name="settings_output_full_log_summary">Schreiben Sie Managerprotokolle zum Debuggen in Android/media/moe.shimmerfly.shimmerpatch/log</string>
     <string name="settings_view_welcome">Anleitung ansehen</string>
     <string name="settings_view_welcome_summary">Lesen Sie den Willkommens- und Berechtigungsleitfaden</string>
     <string name="settings_manager_cache">Manager-Cache leeren</string>

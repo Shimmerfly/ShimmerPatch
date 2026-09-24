@@ -102,7 +102,7 @@
     <string name="settings_language_system">Seguiu el sistema</string>
     <string name="settings_storage_directory">canviar el directori d\'emmagatzematge</string>
     <string name="settings_output_full_log">Registre del gestor de sortida als mitjans</string>
-    <string name="settings_output_full_log_summary">Escriu registres del gestor a Android/media/top.nkbe.npatch/log per a la depuració</string>
+    <string name="settings_output_full_log_summary">Escriu registres del gestor a Android/media/moe.shimmerfly.shimmerpatch/log per a la depuració</string>
     <string name="settings_view_welcome">Veure guia</string>
     <string name="settings_view_welcome_summary">Reviseu la guia de benvinguda i permís</string>
     <string name="settings_manager_cache">Esborra la memòria cau del gestor</string>

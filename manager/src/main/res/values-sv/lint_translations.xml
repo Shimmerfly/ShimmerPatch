@@ -102,7 +102,7 @@
     <string name="settings_language_system">Följ System</string>
     <string name="settings_storage_directory">ändra lagringskatalog</string>
     <string name="settings_output_full_log">Utdatahanterarens logg till media</string>
-    <string name="settings_output_full_log_summary">Skriv managerloggar till Android/media/top.nkbe.npatch/log för felsökning</string>
+    <string name="settings_output_full_log_summary">Skriv managerloggar till Android/media/moe.shimmerfly.shimmerpatch/log för felsökning</string>
     <string name="settings_view_welcome">Se guide</string>
     <string name="settings_view_welcome_summary">Läs välkomst- och tillståndsguiden</string>
     <string name="settings_manager_cache">Rensa managercache</string>

@@ -7,7 +7,7 @@ Reference working copies used on 2026-09-12:
 - WeKit: `650febaa3717eddd39f5f29a4dfa6dfd37875cb1`
 - InstallerX-Revived: `f6ffcd8ea84e629bc14160414e7343f07a4d3d76`
 
-Paths in the following table are relative to each reference project's `app/src/main/java`. Destination paths are under `manager/src/main/java/top/nkbe/npatch/ui`.
+Paths in the following table are relative to each reference project's `app/src/main/java`. Destination paths are under `manager/src/main/java/moe/shimmerfly/shimmerpatch/ui`.
 
 | Source | Destination / adaptation |
 | --- | --- |
@@ -62,7 +62,7 @@ Direct Miuix dependencies are restricted to `miuix-nav-android`, `miuix-blur-and
 ANDROID_HOME=/path/to/android-sdk ./gradlew :manager:assembleDebug :manager:assembleDebugAndroidTest
 adb -s emulator-5580 install -r manager/build/outputs/apk/debug/manager-debug.apk
 adb -s emulator-5580 install -r manager/build/outputs/apk/androidTest/debug/manager-debug-androidTest.apk
-adb -s emulator-5580 shell am instrument -w top.nkbe.npatch.test/androidx.test.runner.AndroidJUnitRunner
+adb -s emulator-5580 shell am instrument -w moe.shimmerfly.shimmerpatch.test/androidx.test.runner.AndroidJUnitRunner
 ```
 
 Runtime review should cover first-run and review-mode welcome, all main tabs, search focus/IME dismissal, selection, menu actions, dialog buttons and predictive back, app shortcuts, custom backgrounds, light/dark themes, large fonts, and last-item clearance beneath both navigation modes.

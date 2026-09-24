@@ -82,7 +82,7 @@ android {
     // In-app language selection must work offline without Play language-split downloads.
     bundle.language.enableSplit = false
 
-    namespace = "top.nkbe.npatch"
+    namespace = "moe.shimmerfly.shimmerpatch"
 
 }
 

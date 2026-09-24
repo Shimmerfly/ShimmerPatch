@@ -16,7 +16,7 @@ extensions.configure<com.android.build.api.dsl.ApplicationExtension> {
             proguardFiles("proguard-rules.pro")
         }
     }
-    namespace = "top.nkbe.npatch.metaloader"
+    namespace = "moe.shimmerfly.shimmerpatch.metaloader"
 }
 
 androidComponents.onVariants { variant ->

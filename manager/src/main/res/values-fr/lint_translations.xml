@@ -99,7 +99,7 @@
     <string name="settings_language_system">Suivre le système</string>
     <string name="settings_storage_directory">changer le répertoire de stockage</string>
     <string name="settings_output_full_log">Enregistrer les journaux du gestionnaire dans le dossier Media</string>
-    <string name="settings_output_full_log_summary">Écrire les journaux du gestionnaire sur Android/media/top.nkbe.npatch/log pour le débogage</string>
+    <string name="settings_output_full_log_summary">Écrire les journaux du gestionnaire sur Android/media/moe.shimmerfly.shimmerpatch/log pour le débogage</string>
     <string name="settings_view_welcome">Voir le guide</string>
     <string name="settings_view_welcome_summary">Consultez le guide de bienvenue et d\'autorisation</string>
     <string name="settings_manager_cache">Vider le cache du gestionnaire</string>

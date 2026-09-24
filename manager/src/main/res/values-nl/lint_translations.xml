@@ -100,7 +100,7 @@
     <string name="settings_language_system">Volg Systeem</string>
     <string name="settings_storage_directory">wijzig de opslagmap</string>
     <string name="settings_output_full_log">Uitvoerbeheer logt in op media</string>
-    <string name="settings_output_full_log_summary">Schrijf managerlogboeken naar Android/media/top.nkbe.npatch/log voor foutopsporing</string>
+    <string name="settings_output_full_log_summary">Schrijf managerlogboeken naar Android/media/moe.shimmerfly.shimmerpatch/log voor foutopsporing</string>
     <string name="settings_view_welcome">Bekijk gids</string>
     <string name="settings_view_welcome_summary">Bekijk de welkomst- en toestemmingsgids</string>
     <string name="settings_manager_cache">Beheerscache wissen</string>

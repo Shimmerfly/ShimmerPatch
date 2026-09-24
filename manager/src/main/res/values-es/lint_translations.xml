@@ -100,7 +100,7 @@
     <string name="settings_language_system">Seguir el sistema</string>
     <string name="settings_storage_directory">cambiar directorio de almacenamiento</string>
     <string name="settings_output_full_log">Registro del administrador de salida en los medios</string>
-    <string name="settings_output_full_log_summary">Escriba registros del administrador en Android/media/top.nkbe.npatch/log para depurar</string>
+    <string name="settings_output_full_log_summary">Escriba registros del administrador en Android/media/moe.shimmerfly.shimmerpatch/log para depurar</string>
     <string name="settings_view_welcome">Ver guía</string>
     <string name="settings_view_welcome_summary">Revisa la guía de bienvenida y permisos.</string>
     <string name="settings_manager_cache">Borrar caché del administrador</string>

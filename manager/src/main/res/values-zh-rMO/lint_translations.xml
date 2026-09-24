@@ -31,7 +31,7 @@
     <string name="patch_extract_package_mismatch">套件名稱不符：外殼套件名稱為「%1$s」，但解壓的原包套件名稱為「%2$s」。\n\n是否仍繼續使用解壓出的 APK？</string>
     <string name="settings_language_system">跟隨系統</string>
     <string name="settings_output_full_log">輸出管理器日誌到 Media</string>
-    <string name="settings_output_full_log_summary">將管理器日誌寫入 Android/media/top.nkbe.npatch/log 以便調試</string>
+    <string name="settings_output_full_log_summary">將管理器日誌寫入 Android/media/moe.shimmerfly.shimmerpatch/log 以便調試</string>
     <string name="settings_manager_cache">清除管理器快取</string>
     <string name="settings_manager_cache_summary">清除模組同步快取、倉庫快取與臨時修補檔案，同時保留基礎設定</string>
     <string name="settings_manager_cache_dialog_text">這會清除管理器端的同步狀態與臨時檔案，但會保留儲存目錄、簽名金鑰庫、語言與主題設定。</string>

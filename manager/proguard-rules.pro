@@ -11,20 +11,20 @@
 -keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
 -keep class com.beust.jcommander.** { *; }
 -keep interface com.beust.jcommander.** { *; }
--keep class top.nkbe.npatch.patch.NPatch { *; }
--keepclassmembers class top.nkbe.npatch.patch.NPatch {
+-keep class moe.shimmerfly.shimmerpatch.patch.NPatch { *; }
+-keepclassmembers class moe.shimmerfly.shimmerpatch.patch.NPatch {
     @com.beust.jcommander.Parameter <fields>;
 }
 
--keepclassmembers class top.nkbe.npatch.database.dao.** { *; }
--keep class top.nkbe.npatch.database.entity.** { *; }
--keep class top.nkbe.npatch.manager.ConfigProvider { *; }
--keep class top.nkbe.npatch.Patcher$Options { *; }
--keep class top.nkbe.npatch.share.LSPConfig { *; }
--keep class top.nkbe.npatch.share.PatchConfig { *; }
+-keepclassmembers class moe.shimmerfly.shimmerpatch.database.dao.** { *; }
+-keep class moe.shimmerfly.shimmerpatch.database.entity.** { *; }
+-keep class moe.shimmerfly.shimmerpatch.manager.ConfigProvider { *; }
+-keep class moe.shimmerfly.shimmerpatch.Patcher$Options { *; }
+-keep class moe.shimmerfly.shimmerpatch.share.LSPConfig { *; }
+-keep class moe.shimmerfly.shimmerpatch.share.PatchConfig { *; }
 -keep class org.lsposed.lspd.nativebridge.** { *; }
 -keep class org.lsposed.hiddenapibypass.** { *; }
--keep class top.nkbe.npatch.loader.SigBypass { *; }
+-keep class moe.shimmerfly.shimmerpatch.loader.SigBypass { *; }
 -dontwarn com.google.auto.value.AutoValue$Builder
 -dontwarn com.google.auto.value.AutoValue
 -dontwarn org.lsposed.hiddenapibypass.**
@@ -32,11 +32,11 @@
 -dontwarn retrofit2.**
 -dontwarn okio.**
 
--keep class nkbe.util.NeoPackageManager$AppInfo { *; }
--keep class nkbe.util.NeoPackageManager$PatchedType { *; }
--keep class nkbe.util.ModuleMetadataSnapshot { *; }
--keep class nkbe.util.ModulePipeline { *; }
--keep class top.nkbe.npatch.config.KeystorePreset { *; }
+-keep class moe.shimmerfly.shimmerpatch.util.NeoPackageManager$AppInfo { *; }
+-keep class moe.shimmerfly.shimmerpatch.util.NeoPackageManager$PatchedType { *; }
+-keep class moe.shimmerfly.shimmerpatch.util.ModuleMetadataSnapshot { *; }
+-keep class moe.shimmerfly.shimmerpatch.util.ModulePipeline { *; }
+-keep class moe.shimmerfly.shimmerpatch.config.KeystorePreset { *; }
 
 # APK Signature & Patching engine reflection/ASN1 requirements
 -keep class com.android.apksig.** { *; }
@@ -49,5 +49,5 @@
 -dontwarn com.wind.meditor.**
 -keep class pxb.android.axml.** { *; }
 -dontwarn pxb.android.axml.**
--keep class top.nkbe.npatch.patch.** { *; }
+-keep class moe.shimmerfly.shimmerpatch.patch.** { *; }
 

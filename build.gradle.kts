@@ -51,7 +51,7 @@ val coreCommitCount = runCatching {
         }
 }.getOrDefault(3083)
 
-val defaultManagerPackageName = "top.nkbe.npatch"
+val defaultManagerPackageName = "moe.shimmerfly.shimmerpatch"
 val apiCode = 102
 val verCode = commitCount
 val verName = "1.0.7"

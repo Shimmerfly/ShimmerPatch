@@ -110,7 +110,7 @@
              Keep their established exported/permission behavior during Lint-only cleanup. -->
         <provider
             android:name=".manager.ConfigProvider"
-            android:authorities="top.nkbe.npatch.manager.provider.config"
+            android:authorities="${applicationId}.manager.provider.config"
             tools:ignore="ExportedContentProvider"
             android:exported="true"
             android:enabled="true" />

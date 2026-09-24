@@ -100,7 +100,7 @@
     <string name="settings_language_system">Segui il sistema</string>
     <string name="settings_storage_directory">cambiare la directory di archiviazione</string>
     <string name="settings_output_full_log">Il gestore di output accede al supporto</string>
-    <string name="settings_output_full_log_summary">Scrivi i log del gestore su Android/media/top.nkbe.npatch/log per il debug</string>
+    <string name="settings_output_full_log_summary">Scrivi i log del gestore su Android/media/moe.shimmerfly.shimmerpatch/log per il debug</string>
     <string name="settings_view_welcome">Visualizza la guida</string>
     <string name="settings_view_welcome_summary">Consulta la guida di benvenuto e autorizzazione</string>
     <string name="settings_manager_cache">Cancella la cache del gestore</string>

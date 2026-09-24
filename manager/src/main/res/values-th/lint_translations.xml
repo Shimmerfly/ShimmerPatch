@@ -101,7 +101,7 @@
     <string name="settings_language_system">ติดตามระบบ</string>
     <string name="settings_storage_directory">เปลี่ยนไดเร็กทอรีที่เก็บข้อมูล</string>
     <string name="settings_output_full_log">ตัวจัดการเอาต์พุตบันทึกลงในสื่อบันทึก</string>
-    <string name="settings_output_full_log_summary">เขียนบันทึกของผู้จัดการไปที่ Android/media/top.nkbe.npatch/log เพื่อการดีบัก</string>
+    <string name="settings_output_full_log_summary">เขียนบันทึกของผู้จัดการไปที่ Android/media/moe.shimmerfly.shimmerpatch/log เพื่อการดีบัก</string>
     <string name="settings_view_welcome">ดูคำแนะนำ</string>
     <string name="settings_view_welcome_summary">ทบทวนคำแนะนำการต้อนรับและการอนุญาต</string>
     <string name="settings_manager_cache">ล้างแคชของผู้จัดการ</string>

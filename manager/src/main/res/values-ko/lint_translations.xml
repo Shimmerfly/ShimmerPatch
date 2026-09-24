@@ -99,7 +99,7 @@
     <string name="settings_language_system">팔로우 시스템</string>
     <string name="settings_storage_directory">저장 디렉토리 변경</string>
     <string name="settings_output_full_log">미디어에 대한 출력 관리자 로그</string>
-    <string name="settings_output_full_log_summary">디버깅을 위해 Android/media/top.nkbe.npatch/log에 관리자 로그를 작성합니다.</string>
+    <string name="settings_output_full_log_summary">디버깅을 위해 Android/media/moe.shimmerfly.shimmerpatch/log에 관리자 로그를 작성합니다.</string>
     <string name="settings_view_welcome">가이드 보기</string>
     <string name="settings_view_welcome_summary">환영 및 권한 가이드를 검토하세요.</string>
     <string name="settings_manager_cache">관리자 캐시 지우기</string>

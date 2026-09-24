@@ -102,7 +102,7 @@
     <string name="settings_language_system">Jälgi süsteemi</string>
     <string name="settings_storage_directory">muutke salvestuskataloogi</string>
     <string name="settings_output_full_log">Väljundihalduri logi meediumisse</string>
-    <string name="settings_output_full_log_summary">Kirjutage silumiseks halduri logid saidile Android/media/top.nkbe.npatch/log</string>
+    <string name="settings_output_full_log_summary">Kirjutage silumiseks halduri logid saidile Android/media/moe.shimmerfly.shimmerpatch/log</string>
     <string name="settings_view_welcome">Vaata juhendit</string>
     <string name="settings_view_welcome_summary">Vaadake üle tervitus- ja lubade juhend</string>
     <string name="settings_manager_cache">Tühjendage halduri vahemälu</string>

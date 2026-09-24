@@ -102,7 +102,7 @@
     <string name="settings_language_system">Podążaj za systemem</string>
     <string name="settings_storage_directory">zmień katalog przechowywania</string>
     <string name="settings_output_full_log">Dziennik menedżera wyjściowego na nośnik</string>
-    <string name="settings_output_full_log_summary">Zapisz dzienniki menedżera w systemie Android/media/top.nkbe.npatch/log w celu debugowania</string>
+    <string name="settings_output_full_log_summary">Zapisz dzienniki menedżera w systemie Android/media/moe.shimmerfly.shimmerpatch/log w celu debugowania</string>
     <string name="settings_view_welcome">Zobacz przewodnik</string>
     <string name="settings_view_welcome_summary">Zapoznaj się z przewodnikiem dotyczącym powitania i uprawnień</string>
     <string name="settings_manager_cache">Wyczyść pamięć podręczną menedżera</string>

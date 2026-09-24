@@ -101,7 +101,7 @@
     <string name="settings_language_system">Theo dõi hệ thống</string>
     <string name="settings_storage_directory">thay đổi thư mục lưu trữ</string>
     <string name="settings_output_full_log">Trình quản lý đầu ra đăng nhập vào phương tiện truyền thông</string>
-    <string name="settings_output_full_log_summary">Ghi nhật ký trình quản lý vào Android/media/top.nkbe.npatch/log để gỡ lỗi</string>
+    <string name="settings_output_full_log_summary">Ghi nhật ký trình quản lý vào Android/media/moe.shimmerfly.shimmerpatch/log để gỡ lỗi</string>
     <string name="settings_view_welcome">Xem hướng dẫn</string>
     <string name="settings_view_welcome_summary">Xem lại hướng dẫn chào mừng và cấp phép</string>
     <string name="settings_manager_cache">Xóa bộ nhớ đệm của người quản lý</string>

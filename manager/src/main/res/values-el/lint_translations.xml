@@ -102,7 +102,7 @@
     <string name="settings_language_system">Ακολουθήστε το Σύστημα</string>
     <string name="settings_storage_directory">αλλαγή καταλόγου αποθήκευσης</string>
     <string name="settings_output_full_log">Καταγραφή διαχείρισης εξόδου στα μέσα</string>
-    <string name="settings_output_full_log_summary">Γράψτε αρχεία καταγραφής διαχειριστή στο Android/media/top.nkbe.npatch/log για εντοπισμό σφαλμάτων</string>
+    <string name="settings_output_full_log_summary">Γράψτε αρχεία καταγραφής διαχειριστή στο Android/media/moe.shimmerfly.shimmerpatch/log για εντοπισμό σφαλμάτων</string>
     <string name="settings_view_welcome">Προβολή οδηγού</string>
     <string name="settings_view_welcome_summary">Διαβάστε τον οδηγό υποδοχής και άδειας</string>
     <string name="settings_manager_cache">Εκκαθάριση προσωρινής μνήμης διαχειριστή</string>

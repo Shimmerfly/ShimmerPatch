@@ -103,7 +103,7 @@
     <string name="settings_language_system">Urmăriți sistemul</string>
     <string name="settings_storage_directory">schimba directorul de stocare</string>
     <string name="settings_output_full_log">Jurnalul managerului de ieșire pe media</string>
-    <string name="settings_output_full_log_summary">Scrieți jurnalele managerului pe Android/media/top.nkbe.npatch/log pentru depanare</string>
+    <string name="settings_output_full_log_summary">Scrieți jurnalele managerului pe Android/media/moe.shimmerfly.shimmerpatch/log pentru depanare</string>
     <string name="settings_view_welcome">Vezi ghidul</string>
     <string name="settings_view_welcome_summary">Consultați ghidul de bun venit și permisiuni</string>
     <string name="settings_manager_cache">Ștergeți memoria cache a managerului</string>

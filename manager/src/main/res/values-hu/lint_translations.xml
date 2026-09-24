@@ -102,7 +102,7 @@
     <string name="settings_language_system">Kövesse a rendszert</string>
     <string name="settings_storage_directory">módosítsa a tárolási könyvtárat</string>
     <string name="settings_output_full_log">Kimenetkezelő napló a médiára</string>
-    <string name="settings_output_full_log_summary">Írjon kezelői naplókat az Android/media/top.nkbe.npatch/log fájlba hibakereséshez</string>
+    <string name="settings_output_full_log_summary">Írjon kezelői naplókat az Android/media/moe.shimmerfly.shimmerpatch/log fájlba hibakereséshez</string>
     <string name="settings_view_welcome">Útmutató megtekintése</string>
     <string name="settings_view_welcome_summary">Tekintse át az üdvözlő és engedélyezési útmutatót</string>
     <string name="settings_manager_cache">Kezelői gyorsítótár törlése</string>

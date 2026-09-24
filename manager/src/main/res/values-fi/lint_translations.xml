@@ -102,7 +102,7 @@
     <string name="settings_language_system">Seuraa järjestelmää</string>
     <string name="settings_storage_directory">muuttaa tallennushakemistoa</string>
     <string name="settings_output_full_log">Tulostushallinnan loki mediaan</string>
-    <string name="settings_output_full_log_summary">Kirjoita hallintalokit osoitteeseen Android/media/top.nkbe.npatch/log virheenkorjausta varten</string>
+    <string name="settings_output_full_log_summary">Kirjoita hallintalokit osoitteeseen Android/media/moe.shimmerfly.shimmerpatch/log virheenkorjausta varten</string>
     <string name="settings_view_welcome">Katso opas</string>
     <string name="settings_view_welcome_summary">Tutustu tervetulo- ja lupaoppaaseen</string>
     <string name="settings_manager_cache">Tyhjennä johtajan välimuisti</string>

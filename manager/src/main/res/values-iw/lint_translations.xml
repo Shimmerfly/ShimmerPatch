@@ -104,7 +104,7 @@
     <string name="settings_language_system">עקוב אחר מערכת</string>
     <string name="settings_storage_directory">לשנות את ספריית האחסון</string>
     <string name="settings_output_full_log">יומן מנהל פלט למדיה</string>
-    <string name="settings_output_full_log_summary">כתוב יומני מנהל ל-Android/media/top.nkbe.npatch/log לצורך ניפוי באגים</string>
+    <string name="settings_output_full_log_summary">כתוב יומני מנהל ל-Android/media/moe.shimmerfly.shimmerpatch/log לצורך ניפוי באגים</string>
     <string name="settings_view_welcome">צפו במדריך</string>
     <string name="settings_view_welcome_summary">עיין במדריך הברכה וההרשאה</string>
     <string name="settings_manager_cache">נקה את המטמון של המנהל</string>

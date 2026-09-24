@@ -102,7 +102,7 @@
     <string name="settings_language_system">Følg System</string>
     <string name="settings_storage_directory">endre lagringskatalog</string>
     <string name="settings_output_full_log">Output manager-logg til media</string>
-    <string name="settings_output_full_log_summary">Skriv lederlogger til Android/media/top.nkbe.npatch/log for feilsøking</string>
+    <string name="settings_output_full_log_summary">Skriv lederlogger til Android/media/moe.shimmerfly.shimmerpatch/log for feilsøking</string>
     <string name="settings_view_welcome">Se guide</string>
     <string name="settings_view_welcome_summary">Se gjennom velkomst- og tillatelsesguiden</string>
     <string name="settings_manager_cache">Tøm managerbufferen</string>

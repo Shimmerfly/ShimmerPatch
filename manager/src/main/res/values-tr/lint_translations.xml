@@ -100,7 +100,7 @@
     <string name="settings_language_system">Sistemi Takip Et</string>
     <string name="settings_storage_directory">depolama dizinini değiştir</string>
     <string name="settings_output_full_log">Medyaya çıkış yöneticisi günlüğü</string>
-    <string name="settings_output_full_log_summary">Hata ayıklama için yönetici günlüklerini Android/media/top.nkbe.npatch/log dosyasına yazın</string>
+    <string name="settings_output_full_log_summary">Hata ayıklama için yönetici günlüklerini Android/media/moe.shimmerfly.shimmerpatch/log dosyasına yazın</string>
     <string name="settings_view_welcome">Kılavuzu görüntüle</string>
     <string name="settings_view_welcome_summary">Hoş geldiniz ve izin kılavuzunu inceleyin</string>
     <string name="settings_manager_cache">Yönetici önbelleğini temizle</string>

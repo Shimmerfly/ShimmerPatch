@@ -101,7 +101,7 @@
     <string name="settings_language_system">Ikuti Sistem</string>
     <string name="settings_storage_directory">mengubah direktori penyimpanan</string>
     <string name="settings_output_full_log">Manajer keluaran log ke media</string>
-    <string name="settings_output_full_log_summary">Tulis log manajer ke Android/media/top.nkbe.npatch/log untuk debugging</string>
+    <string name="settings_output_full_log_summary">Tulis log manajer ke Android/media/moe.shimmerfly.shimmerpatch/log untuk debugging</string>
     <string name="settings_view_welcome">Lihat panduan</string>
     <string name="settings_view_welcome_summary">Tinjau panduan selamat datang dan izin</string>
     <string name="settings_manager_cache">Hapus cache manajer</string>

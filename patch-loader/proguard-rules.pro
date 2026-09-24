@@ -1,18 +1,18 @@
 # This DEX delegates to the meta loader, which is compiled separately.
--repackageclasses top.nkbe.npatch.internal.loader
+-repackageclasses moe.shimmerfly.shimmerpatch.internal.loader
 
 -keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
 -allowaccessmodification
 -renamesourcefileattribute SourceFile
 
 # Native code loads this entry by its original binary name and invokes onLoad().
--keep class top.nkbe.npatch.loader.LSPApplication {
+-keep class moe.shimmerfly.shimmerpatch.loader.LSPApplication {
     public static void onLoad();
 }
 
 # Gson serializes/deserializes these by field name across patcher, manager and loader.
--keep class top.nkbe.npatch.share.PatchConfig { *; }
--keep class top.nkbe.npatch.share.LSPConfig { *; }
+-keep class moe.shimmerfly.shimmerpatch.share.PatchConfig { *; }
+-keep class moe.shimmerfly.shimmerpatch.share.LSPConfig { *; }
 
 # JNI registration uses literal bridge class names.
 -keep class org.lsposed.lspd.nativebridge.** { *; }

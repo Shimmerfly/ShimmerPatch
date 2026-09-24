@@ -102,7 +102,7 @@
     <string name="settings_language_system">Volg System</string>
     <string name="settings_storage_directory">verander stoorgids</string>
     <string name="settings_output_full_log">Uitsetbestuurder log na media</string>
-    <string name="settings_output_full_log_summary">Skryf bestuurderloglêers na Android/media/top.nkbe.npatch/log vir ontfouting</string>
+    <string name="settings_output_full_log_summary">Skryf bestuurderloglêers na Android/media/moe.shimmerfly.shimmerpatch/log vir ontfouting</string>
     <string name="settings_view_welcome">Bekyk gids</string>
     <string name="settings_view_welcome_summary">Hersien die verwelkomings- en toestemmingsgids</string>
     <string name="settings_manager_cache">Vee bestuurderkas uit</string>

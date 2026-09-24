@@ -106,7 +106,7 @@
     <string name="settings_language_system">اتبع النظام</string>
     <string name="settings_storage_directory">تغيير دليل التخزين</string>
     <string name="settings_output_full_log">سجل مدير الإخراج إلى الوسائط</string>
-    <string name="settings_output_full_log_summary">اكتب سجلات المدير إلى Android/media/top.nkbe.npatch/log لتصحيح الأخطاء</string>
+    <string name="settings_output_full_log_summary">اكتب سجلات المدير إلى Android/media/moe.shimmerfly.shimmerpatch/log لتصحيح الأخطاء</string>
     <string name="settings_view_welcome">عرض الدليل</string>
     <string name="settings_view_welcome_summary">قم بمراجعة دليل الترحيب والإذن</string>
     <string name="settings_manager_cache">مسح ذاكرة التخزين المؤقت للمدير</string>

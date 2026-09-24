@@ -102,7 +102,7 @@
     <string name="settings_language_system">सिस्टम का पालन करें</string>
     <string name="settings_storage_directory">भंडारण निर्देशिका बदलें</string>
     <string name="settings_output_full_log">मीडिया में आउटपुट मैनेजर लॉग</string>
-    <string name="settings_output_full_log_summary">डिबगिंग के लिए Android/media/top.nkbe.npatch/log पर प्रबंधक लॉग लिखें</string>
+    <string name="settings_output_full_log_summary">डिबगिंग के लिए Android/media/moe.shimmerfly.shimmerpatch/log पर प्रबंधक लॉग लिखें</string>
     <string name="settings_view_welcome">गाइड देखें</string>
     <string name="settings_view_welcome_summary">स्वागत और अनुमति मार्गदर्शिका की समीक्षा करें</string>
     <string name="settings_manager_cache">प्रबंधक कैश साफ़ करें</string>

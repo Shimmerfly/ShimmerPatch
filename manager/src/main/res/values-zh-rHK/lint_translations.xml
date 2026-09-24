@@ -92,7 +92,7 @@
     <string name="settings_language">語言</string>
     <string name="settings_language_system">跟隨系統</string>
     <string name="settings_output_full_log">輸出管理器日誌到 Media</string>
-    <string name="settings_output_full_log_summary">將管理器日誌寫入 Android/media/top.nkbe.npatch/log 以便調試</string>
+    <string name="settings_output_full_log_summary">將管理器日誌寫入 Android/media/moe.shimmerfly.shimmerpatch/log 以便調試</string>
     <string name="settings_view_welcome">查看導覽介面</string>
     <string name="settings_view_welcome_summary">重新查看歡迎與權限導覽</string>
     <string name="settings_manager_cache">清除管理器快取</string>

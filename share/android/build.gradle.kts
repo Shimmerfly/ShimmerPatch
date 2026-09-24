@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "top.nkbe.npatch.share"
+    namespace = "moe.shimmerfly.shimmerpatch.share"
 
     androidResources.enable = false
 

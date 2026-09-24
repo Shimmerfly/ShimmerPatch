@@ -1,0 +1,31 @@
+package moe.shimmerfly.shimmerpatch.database.dao
+
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import moe.shimmerfly.shimmerpatch.database.entity.LoadedModule
+
+@Dao
+interface ModuleDao {
+
+    @Query("SELECT * FROM LoadedModule WHERE pkgName = :pkgName")
+    suspend fun getModule(pkgName: String): LoadedModule?
+
+    @Query("SELECT * FROM LoadedModule")
+    suspend fun getAll(): List<LoadedModule>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(LoadedModule: LoadedModule)
+
+    @Update
+    suspend fun update(LoadedModule: LoadedModule)
+
+    @Query("UPDATE LoadedModule SET apkPath = :apkPath WHERE pkgName = :pkgName")
+    suspend fun updatePath(pkgName: String, apkPath: String)
+
+    @Delete
+    suspend fun delete(LoadedModule: LoadedModule)
+}

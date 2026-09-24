@@ -102,7 +102,7 @@
     <string name="settings_language_system">Следовать за системой</string>
     <string name="settings_storage_directory">изменить каталог хранения</string>
     <string name="settings_output_full_log">Журнал диспетчера вывода на носитель</string>
-    <string name="settings_output_full_log_summary">Запись журналов менеджера в Android/media/top.nkbe.npatch/log для отладки.</string>
+    <string name="settings_output_full_log_summary">Запись журналов менеджера в Android/media/moe.shimmerfly.shimmerpatch/log для отладки.</string>
     <string name="settings_view_welcome">Посмотреть руководство</string>
     <string name="settings_view_welcome_summary">Ознакомьтесь с руководством по приветствию и разрешениям.</string>
     <string name="settings_manager_cache">Очистить кеш менеджера</string>

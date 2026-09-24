@@ -1,10 +1,10 @@
 -dontobfuscate
 -keep class com.beust.jcommander.** { *; }
--keep class top.nkbe.npatch.Patcher$Options { *; }
--keep class top.nkbe.npatch.share.LSPConfig { *; }
--keep class top.nkbe.npatch.share.PatchConfig { *; }
+-keep class moe.shimmerfly.shimmerpatch.Patcher$Options { *; }
+-keep class moe.shimmerfly.shimmerpatch.share.LSPConfig { *; }
+-keep class moe.shimmerfly.shimmerpatch.share.PatchConfig { *; }
 -keep class org.lsposed.lspd.nativebridge.** { *; }
--keep class top.nkbe.npatch.loader.SigBypass { *; }
+-keep class moe.shimmerfly.shimmerpatch.loader.SigBypass { *; }
 -keepclassmembers class org.lsposed.patch.NPatch {
     private <fields>;
 }

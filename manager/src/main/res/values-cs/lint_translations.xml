@@ -104,7 +104,7 @@
     <string name="settings_language_system">Sledujte systém</string>
     <string name="settings_storage_directory">změnit adresář úložiště</string>
     <string name="settings_output_full_log">Protokol správce výstupu na médium</string>
-    <string name="settings_output_full_log_summary">Zapisujte protokoly správce na Android/media/top.nkbe.npatch/log pro ladění</string>
+    <string name="settings_output_full_log_summary">Zapisujte protokoly správce na Android/media/moe.shimmerfly.shimmerpatch/log pro ladění</string>
     <string name="settings_view_welcome">Zobrazit průvodce</string>
     <string name="settings_view_welcome_summary">Prostudujte si průvodce uvítáním a povolením</string>
     <string name="settings_manager_cache">Vymazat mezipaměť správce</string>

@@ -102,7 +102,7 @@
     <string name="settings_language_system">පද්ධතිය අනුගමනය කරන්න</string>
     <string name="settings_storage_directory">ගබඩා නාමාවලිය වෙනස් කරන්න</string>
     <string name="settings_output_full_log">ප්‍රතිදාන කළමනාකරු මාධ්‍ය වෙත ලොග් වන්න</string>
-    <string name="settings_output_full_log_summary">නිදොස්කරණය සඳහා Android/media/top.nkbe.npatch/log වෙත කළමනාකරු ලොග් ලියන්න</string>
+    <string name="settings_output_full_log_summary">නිදොස්කරණය සඳහා Android/media/moe.shimmerfly.shimmerpatch/log වෙත කළමනාකරු ලොග් ලියන්න</string>
     <string name="settings_view_welcome">මාර්ගෝපදේශය බලන්න</string>
     <string name="settings_view_welcome_summary">පිළිගැනීමේ සහ අවසර මාර්ගෝපදේශය සමාලෝචනය කරන්න</string>
     <string name="settings_manager_cache">කළමනාකරු හැඹිලිය හිස් කරන්න</string>

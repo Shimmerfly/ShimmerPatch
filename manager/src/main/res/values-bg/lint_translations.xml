@@ -102,7 +102,7 @@
     <string name="settings_language_system">Следвайте системата</string>
     <string name="settings_storage_directory">промяна на директорията за съхранение</string>
     <string name="settings_output_full_log">Дневник на мениджъра на изхода към носител</string>
-    <string name="settings_output_full_log_summary">Запишете регистрационни файлове на мениджъра в Android/media/top.nkbe.npatch/log за отстраняване на грешки</string>
+    <string name="settings_output_full_log_summary">Запишете регистрационни файлове на мениджъра в Android/media/moe.shimmerfly.shimmerpatch/log за отстраняване на грешки</string>
     <string name="settings_view_welcome">Вижте ръководството</string>
     <string name="settings_view_welcome_summary">Прегледайте ръководството за добре дошли и разрешения</string>
     <string name="settings_manager_cache">Изчистване на кеша на мениджъра</string>

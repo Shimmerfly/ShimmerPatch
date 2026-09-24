@@ -103,7 +103,7 @@
     <string name="settings_language_system">Slijedite sustav</string>
     <string name="settings_storage_directory">promijeniti direktorij za pohranu</string>
     <string name="settings_output_full_log">Zapis upravitelja izlaza na medij</string>
-    <string name="settings_output_full_log_summary">Zapišite zapisnike upravitelja na Android/media/top.nkbe.npatch/log za otklanjanje pogrešaka</string>
+    <string name="settings_output_full_log_summary">Zapišite zapisnike upravitelja na Android/media/moe.shimmerfly.shimmerpatch/log za otklanjanje pogrešaka</string>
     <string name="settings_view_welcome">Pogledajte vodič</string>
     <string name="settings_view_welcome_summary">Pregledajte vodič za dobrodošlicu i dopuštenja</string>
     <string name="settings_manager_cache">Očisti predmemoriju upravitelja</string>

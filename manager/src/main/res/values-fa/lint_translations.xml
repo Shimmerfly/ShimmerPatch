@@ -102,7 +102,7 @@
     <string name="settings_language_system">سیستم را دنبال کنید</string>
     <string name="settings_storage_directory">دایرکتوری ذخیره سازی را تغییر دهید</string>
     <string name="settings_output_full_log">ورود مدیر خروجی به رسانه</string>
-    <string name="settings_output_full_log_summary">گزارش های مدیر را برای اشکال زدایی در Android/media/top.nkbe.npatch/log بنویسید</string>
+    <string name="settings_output_full_log_summary">گزارش های مدیر را برای اشکال زدایی در Android/media/moe.shimmerfly.shimmerpatch/log بنویسید</string>
     <string name="settings_view_welcome">مشاهده راهنما</string>
     <string name="settings_view_welcome_summary">راهنمای استقبال و مجوز را مرور کنید</string>
     <string name="settings_manager_cache">حافظه پنهان مدیر را پاک کنید</string>

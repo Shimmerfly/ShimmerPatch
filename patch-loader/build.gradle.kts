@@ -43,7 +43,7 @@ extensions.configure<com.android.build.api.dsl.ApplicationExtension> {
             useLegacyPackaging = true
         }
     }
-    namespace = "top.nkbe.npatch.loader"
+    namespace = "moe.shimmerfly.shimmerpatch.loader"
 }
 
 androidComponents.onVariants { variant ->

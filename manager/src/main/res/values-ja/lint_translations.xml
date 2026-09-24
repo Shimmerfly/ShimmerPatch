@@ -100,7 +100,7 @@
     <string name="settings_language_system">システム設定に従う</string>
     <string name="settings_storage_directory">保存ディレクトリを変更する</string>
     <string name="settings_output_full_log">マネージャーのログをメディアに出力する</string>
-    <string name="settings_output_full_log_summary">デバッグのためにマネージャーのログを Android/media/top.nkbe.npatch/log に書き込みます</string>
+    <string name="settings_output_full_log_summary">デバッグのためにマネージャーのログを Android/media/moe.shimmerfly.shimmerpatch/log に書き込みます</string>
     <string name="settings_view_welcome">ガイドを見る</string>
     <string name="settings_view_welcome_summary">初期設定と権限のガイドをもう一度表示する</string>
     <string name="settings_manager_cache">マネージャーのキャッシュをクリアする</string>

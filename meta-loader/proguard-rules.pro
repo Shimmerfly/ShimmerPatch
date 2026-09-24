@@ -1,3 +1,6 @@
+# This DEX is the patch loader's parent; their obfuscated classes must not collide.
+-repackageclasses top.nkbe.npatch.internal.metaloader
+
 -keep class top.nkbe.npatch.metaloader.LSPAppComponentFactoryStub {
     public static byte[] dex;
     public static boolean hideLibs;

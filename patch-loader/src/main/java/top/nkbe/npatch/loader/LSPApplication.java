@@ -1,5 +1,6 @@
 package top.nkbe.npatch.loader;
 
+import android.annotation.SuppressLint;
 import static top.nkbe.npatch.share.Constants.CONFIG_ASSET_PATH;
 import static top.nkbe.npatch.share.Constants.PROVIDER_DEX_ASSET_PATH;
 
@@ -64,6 +65,7 @@ import hidden.HiddenApiBridge;
  * Updated by NkBe
  */
 @SuppressWarnings("unused")
+@SuppressLint({"ObsoleteSdkInt"})
 public class LSPApplication {
 
     private static final String TAG = "NPatch";

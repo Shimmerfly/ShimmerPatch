@@ -40,7 +40,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 
-@SuppressLint("UnsafeDynamicallyLoadedCode")
+@SuppressLint({"UnsafeDynamicallyLoadedCode", "PrivateApi", "DiscouragedPrivateApi", "SdCardPath", "ObsoleteSdkInt"})
 public class LSPAppComponentFactoryStub extends AppComponentFactory {
     private static final String TAG = "NPatch-MetaLoader";
     private static final Object BOOTSTRAP_LOCK = new Object();
@@ -69,6 +69,7 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
         SKIPPED_APP_ZYGOTE
     }
 
+    @SuppressLint("NewApi")
     @Override
     public ClassLoader instantiateClassLoader(
             ClassLoader classLoader,

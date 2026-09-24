@@ -1,3 +1,6 @@
+# This DEX delegates to the meta loader, which is compiled separately.
+-repackageclasses top.nkbe.npatch.internal.loader
+
 -keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
 -allowaccessmodification
 -renamesourcefileattribute SourceFile

@@ -1,5 +1,6 @@
 package top.nkbe.npatch.service;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+@SuppressLint({"SdCardPath"})
 public class IntegrApplicationService extends IFrameworkService.Stub {
 
     private static final String TAG = "NPatch";

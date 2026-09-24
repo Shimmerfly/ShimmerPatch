@@ -1,5 +1,6 @@
 package top.nkbe.npatch.loader;
 
+import android.annotation.SuppressLint;
 import static top.nkbe.npatch.share.Constants.ORIGINAL_APK_ASSET_PATH;
 
 import android.content.Context;
@@ -32,6 +33,7 @@ import java.security.MessageDigest;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
@@ -41,6 +43,7 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
+@SuppressLint({"PrivateApi"})
 public class SigBypass {
 
     private static final String TAG = "NPatch-SigBypass";
@@ -119,7 +122,7 @@ public class SigBypass {
             var entries = apk.entries();
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
-                String name = entry.getName().toLowerCase();
+                String name = entry.getName().toLowerCase(Locale.getDefault());
                 if (name.contains("qihoo")
                         || name.contains("qihu")
                         || name.contains("360")

@@ -1,5 +1,6 @@
 package top.nkbe.npatch.service;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -31,6 +32,7 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+@SuppressLint({"SdCardPath"})
 public class NeoLocalApplicationService extends IFrameworkService.Stub {
     private static final String TAG = "NPatch";
     private static final String AUTHORITY = "top.nkbe.npatch.manager.provider.config";

@@ -1,5 +1,6 @@
 package top.nkbe.npatch.loader;
 
+import android.annotation.SuppressLint;
 import static top.nkbe.npatch.share.Constants.ORIGINAL_APK_ASSET_PATH;
 
 import android.content.pm.ApplicationInfo;
@@ -26,6 +27,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+@SuppressLint({"SetWorldReadable"})
 public class OriginApkHelper {
 
     private static final String TAG = "NPatch-ApkHelper";

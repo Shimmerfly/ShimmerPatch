@@ -1,5 +1,6 @@
 package top.nkbe.npatch.loader;
 
+import android.annotation.SuppressLint;
 import android.app.ActivityThread;
 import android.app.Application;
 import android.app.LoadedApk;
@@ -46,6 +47,7 @@ import org.matrix.vector.impl.core.VectorServiceClient;
 import top.nkbe.npatch.share.LSPConfig;
 import org.matrix.vector.nativebridge.NativeAPI;
 
+@SuppressLint({"PrivateApi", "ObsoleteSdkInt"})
 public class LSPLoader {
     private static final String TAG = "NPatch-Loader";
     private static final Set<String> enhancedLoadedModules = new LinkedHashSet<>();

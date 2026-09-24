@@ -13,13 +13,13 @@
     <string name="error_unknown">Ismeretlen hiba</string>
     <string name="home_shizuku_warning">Néhány funkció nem elérhető</string>
     <string name="home_api_version">API verzió</string>
-    <string name="home_npatch_version">NPatch verzió</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch verzió</string>
     <string name="home_framework_version">Keretrendszer verziója</string>
     <string name="home_system_version">Rendszer verzió</string>
     <string name="home_device">Eszköz</string>
     <string name="home_system_abi">Rendszer ABI</string>
     <string name="home_info_copied">Vágólapra másolva</string>
-    <string name="home_description">A NPatch egy ingyenes, nem root Xposed keretrendszer, amely a Vector alapú.</string>
+    <string name="home_description">A ShimmerPatch egy ingyenes, nem root Xposed keretrendszer, amely a Vector alapú.</string>
     <string name="screen_manage">Kezelés</string>
     <string name="manage_loading">Betöltés</string>
     <string name="manage_no_apps">Még nincsenek patchelt alkalmazások</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Válasszon ki egy telepített alkalmazást</string>
     <string name="patch_mode">Patch mód</string>
     <string name="patch_local">Helyi</string>
-    <string name="patch_local_desc">Javítja az alkalmazásokat modulok beágyazása nélkül.\nA Xposed hatótávolság dinamikusan módosítható anélkül, hogy újra kellene javítani.\nEz a mód csak helyileg használható a NPatch Managerrel.</string>
+    <string name="patch_local_desc">Javítja az alkalmazásokat modulok beágyazása nélkül.\nA Xposed hatótávolság dinamikusan módosítható anélkül, hogy újra kellene javítani.\nEz a mód csak helyileg használható a ShimmerPatch Managerrel.</string>
     <string name="patch_integrated">Integrált</string>
-    <string name="patch_integrated_desc">Patcheljen egy alkalmazást beágyazott modulokkal.\nA patchelt alkalmazás futhat a Manager nélkül, de nem kezelhető dinamikusan.\nAz integrált\nhordozható, patchelt alkalmazások olyan eszközökön használhatók, amelyeken nincs telepítve az NPatch Manager.</string>
+    <string name="patch_integrated_desc">Patcheljen egy alkalmazást beágyazott modulokkal.\nA patchelt alkalmazás futhat a Manager nélkül, de nem kezelhető dinamikusan.\nAz integrált\nhordozható, patchelt alkalmazások olyan eszközökön használhatók, amelyeken nincs telepítve az ShimmerPatch Manager.</string>
     <string name="patch_embed_modules">Modulok beágyazása</string>
     <string name="patch_debuggable">Hibakeresés</string>
     <string name="patch_sigbypass">Aláírás megkerülése</string>

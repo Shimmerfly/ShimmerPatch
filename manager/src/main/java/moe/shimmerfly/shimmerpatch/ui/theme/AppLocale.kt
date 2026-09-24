@@ -19,7 +19,7 @@ import java.util.Locale
 
 private val LocalLanguageTag = staticCompositionLocalOf { "" }
 
-/** Applies NPatch's in-app locale to Compose without changing the host process locale. */
+/** Applies ShimmerPatch's in-app locale to Compose without changing the host process locale. */
 @Composable
 fun LocalizedContent(languageTag: String, content: @Composable () -> Unit) {
     LocalLanguageTagProvider(languageTag, content)

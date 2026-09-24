@@ -23,7 +23,7 @@ class RemoteApiProvider : ContentProvider() {
         const val METHOD_GET_INJECTED_SERVICE = "getInjectedRemoteService"
         const val KEY_MODULE_PACKAGE = "modulePackageName"
         const val KEY_BINDER = "binder"
-        private const val TAG = "NPatchRemoteApi"
+        private const val TAG = "ShimmerPatchRemoteApi"
     }
 
     override fun onCreate(): Boolean = true

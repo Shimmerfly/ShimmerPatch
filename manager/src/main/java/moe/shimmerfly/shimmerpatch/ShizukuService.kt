@@ -24,7 +24,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import moe.shimmerfly.shimmerpatch.util.IntentSenderHelper
 
-class ShizukuService : INPatchShizukuService.Stub() {
+class ShizukuService : IShimmerPatchShizukuService.Stub() {
 
     private val iPackageManager: IPackageManager
         get() = IPackageManager.Stub.asInterface(SystemServiceHelper.getSystemService("package"))

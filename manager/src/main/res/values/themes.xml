@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Based on InstallerX-Revived's launch theme; see docs/UI_SOURCES.md. -->
-    <style name="Theme.NPatch" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.ShimmerPatch" parent="android:Theme.Material.Light.NoActionBar" />
 
-    <style name="Theme.NPatch.Starting" parent="Theme.SplashScreen">
+    <style name="Theme.ShimmerPatch.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@android:color/background_light</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
-        <item name="postSplashScreenTheme">@style/Theme.NPatch</item>
+        <item name="postSplashScreenTheme">@style/Theme.ShimmerPatch</item>
     </style>
 </resources>

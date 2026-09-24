@@ -21,8 +21,8 @@ public class MetadataReplacementTest {
         byte[] xml = manifest();
         for (int i = 0; i < 3; i++) {
             ModificationProperty changes = new ModificationProperty();
-            changes.addDeleteMetaData("npatch");
-            changes.addMetaData(new ModificationProperty.MetaData("npatch", "new-" + i));
+            changes.addDeleteMetaData("shimmerpatch");
+            changes.addMetaData(new ModificationProperty.MetaData("shimmerpatch", "new-" + i));
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             new ManifestEditor(new ByteArrayInputStream(xml), output, changes).processManifest();
             xml = output.toByteArray();
@@ -30,13 +30,13 @@ public class MetadataReplacementTest {
             assertEquals("Replacing metadata must not leave a nameless node", 2, metadata.size());
             assertEquals("keep", metadata.get(0).get("name"));
             assertEquals("untouched", metadata.get(0).get("value"));
-            assertEquals("npatch", metadata.get(1).get("name"));
+            assertEquals("shimmerpatch", metadata.get(1).get("name"));
             assertEquals("new-" + i, metadata.get(1).get("value"));
         }
     }
 
     @Test public void deletingMetadataDoesNotRemoveUnrelatedEntries() throws Exception {
-        ModificationProperty changes = new ModificationProperty().addDeleteMetaData("npatch");
+        ModificationProperty changes = new ModificationProperty().addDeleteMetaData("shimmerpatch");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         new ManifestEditor(new ByteArrayInputStream(manifest()), output, changes).processManifest();
         List<Map<String, Object>> metadata = metadata(output.toByteArray());
@@ -50,7 +50,7 @@ public class MetadataReplacementTest {
         NodeVisitor root = writer.child(null, "manifest");
         root.attr(null, "package", -1, NodeVisitor.TYPE_STRING, "test.repatch");
         NodeVisitor app = root.child(null, "application");
-        addMetadata(app, "npatch", "old");
+        addMetadata(app, "shimmerpatch", "old");
         addMetadata(app, "keep", "untouched");
         app.end(); root.end(); writer.end();
         return writer.toByteArray();

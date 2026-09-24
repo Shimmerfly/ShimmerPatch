@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">لاگ پچ را کپی کنید</string>
     <string name="welcome_ui_step">مرحله %1$d از %2$d</string>
     <string name="screen_home">صفحه اصلی</string>
-    <string name="home_shizuku_optional_summary">پسوند اختیاری، توسط NPatch مورد نیاز نیست.</string>
-    <string name="home_about">درباره NPatch</string>
-    <string name="about_author_summary">نگهدارنده NPatch</string>
+    <string name="home_shizuku_optional_summary">پسوند اختیاری، توسط ShimmerPatch مورد نیاز نیست.</string>
+    <string name="home_about">درباره ShimmerPatch</string>
+    <string name="about_author_summary">نگهدارنده ShimmerPatch</string>
     <string name="about_disclaimer_title">سلب مسئولیت</string>
-    <string name="about_disclaimer_body">NPatch فقط برای یادگیری، تحقیق و کار سازگاری برنامه قانونی ارائه شده است. لطفاً به قوانین محلی، شرایط برنامه و حقوق توسعه دهندگان اصلی احترام بگذارید. شما مسئول نحوه استفاده از برنامه ها و ماژول های اصلاح شده در دستگاه خود هستید.</string>
+    <string name="about_disclaimer_body">ShimmerPatch فقط برای یادگیری، تحقیق و کار سازگاری برنامه قانونی ارائه شده است. لطفاً به قوانین محلی، شرایط برنامه و حقوق توسعه دهندگان اصلی احترام بگذارید. شما مسئول نحوه استفاده از برنامه ها و ماژول های اصلاح شده در دستگاه خود هستید.</string>
     <string name="about_links_title">پیوندها</string>
     <string name="about_official_website">وب سایت</string>
     <string name="about_link_website_summary">از وب سایت NkBe دیدن کنید</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">تشکر ویژه (بدون سفارش)</string>
     <string name="about_ack_rovo89_summary">بنیانگذار چارچوب Xposed؛ مبتکر و پیشگام کل اکوسیستم مدولار.</string>
     <string name="about_ack_lsposed_team_summary">با تشکر از تیم LSPosed برای مشارکت مداوم آنها در اکوسیستم Xposed و تکنیک های تزریق سطح پایین.</string>
-    <string name="about_ack_jingmatrix_summary">نویسنده Vector، که معماری چارچوب برجسته‌اش، پایه و اساس حیاتی و الهام‌بخشی برای NPatch ایجاد کرد.</string>
+    <string name="about_ack_jingmatrix_summary">نویسنده Vector، که معماری چارچوب برجسته‌اش، پایه و اساس حیاتی و الهام‌بخشی برای ShimmerPatch ایجاد کرد.</string>
     <string name="about_ack_lspatch_summary">یک پیشگام در راه حل های وصله بدون ریشه، اثبات امکان بارگذاری محیط پویا Xposed از طریق پیاده سازی سمت مدیر.</string>
     <string name="about_ack_libxposed_summary">نیروی محرکه پشت استانداردسازی Xposed API، ایمنی نوع و قراردادهای واضح را به دنیای توسعه ماژول می آورد.</string>
     <string name="about_ack_winter_summary">اولین حامی مالی من؛ از شما برای چنین تشویق زودهنگام و مستقیم تشکر می کنم.</string>
@@ -79,7 +79,7 @@
     <string name="screen_select_modules">ماژول‌ها را انتخاب کنید</string>
     <string name="welcome_version">نسخه %1$s</string>
     <string name="welcome_intro_content">یک ابزار مدرن تزریق ماژول Xposed و ابزار وصله APK که برای محیط های بدون ریشه طراحی شده است.</string>
-    <string name="welcome_intro_detail">NPatch با تغییر فایل‌های APK لودر Xposed را تزریق می‌کند. حالت محلی با مدیر کار می کند تا ماژول ها را بارگیری کند و دامنه ها را به صورت پویا مدیریت کند، بدون اینکه مدیر در پس زمینه در حال اجرا باشد. حالت یکپارچه ماژول‌ها را مستقیماً در برنامه مورد نظر برای استفاده مستقل در دستگاه‌های بدون مدیر تعبیه می‌کند. Shizuku فقط برخی از ویژگی های راحتی را باز می کند و برای وصله هسته NPatch، بارگیری ماژول یا مدیریت اولیه مورد نیاز نیست.</string>
+    <string name="welcome_intro_detail">ShimmerPatch با تغییر فایل‌های APK لودر Xposed را تزریق می‌کند. حالت محلی با مدیر کار می کند تا ماژول ها را بارگیری کند و دامنه ها را به صورت پویا مدیریت کند، بدون اینکه مدیر در پس زمینه در حال اجرا باشد. حالت یکپارچه ماژول‌ها را مستقیماً در برنامه مورد نظر برای استفاده مستقل در دستگاه‌های بدون مدیر تعبیه می‌کند. Shizuku فقط برخی از ویژگی های راحتی را باز می کند و برای وصله هسته ShimmerPatch، بارگیری ماژول یا مدیریت اولیه مورد نیاز نیست.</string>
     <string name="welcome_permission_title">پیکربندی مجوزهای مورد نیاز</string>
     <string name="welcome_permission_summary">قبل از شروع، مجوزهای دسترسی اولیه را برای کارکردن ویژگی‌های اصلی اعطا کنید.</string>
     <string name="welcome_permission_storage_title">دسترسی به فضای ذخیره سازی</string>
@@ -87,7 +87,7 @@
     <string name="welcome_permission_applist_title">لیست برنامه را بخوانید</string>
     <string name="welcome_permission_applist_summary">برای خواندن برنامه های نصب شده استفاده می شود تا بتوانید اهداف وصله را به دقت انتخاب کنید.</string>
     <string name="welcome_optional_title">پسوند اختیاری: Shizuku</string>
-    <string name="welcome_optional_summary">فقط پسوند اختیاری حتی بدون Shizuku، ویژگی های اصلی NPatch همچنان به طور معمول کار می کنند.</string>
+    <string name="welcome_optional_summary">فقط پسوند اختیاری حتی بدون Shizuku، ویژگی های اصلی ShimmerPatch همچنان به طور معمول کار می کنند.</string>
     <string name="welcome_permission_granted">داده شده است</string>
     <string name="welcome_permission_authorize">اجازه دسترسی</string>
     <string name="welcome_disclaimer_title">نکات استفاده و سلب مسئولیت</string>
@@ -114,7 +114,7 @@
     <string name="settings_other_settings">تنظیمات دیگر</string>
     <string name="settings_network">شبکه</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS توسط درخواست های شبکه NPatch استفاده می شود</string>
+    <string name="settings_dns_summary">DNS توسط درخواست های شبکه ShimmerPatch استفاده می شود</string>
     <string name="settings_dns_tencent">تنسنت DoH</string>
     <string name="settings_dns_google">گوگل DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

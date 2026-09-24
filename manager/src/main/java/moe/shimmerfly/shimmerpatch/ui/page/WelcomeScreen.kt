@@ -38,8 +38,8 @@ import moe.shimmerfly.shimmerpatch.BuildConfig
 import moe.shimmerfly.shimmerpatch.R
 import moe.shimmerfly.shimmerpatch.config.Configs
 import moe.shimmerfly.shimmerpatch.ui.component.ExpressiveBackButton
-import moe.shimmerfly.shimmerpatch.ui.component.NPatchScaffold
-import moe.shimmerfly.shimmerpatch.ui.component.NPatchTopAppBar
+import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchScaffold
+import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchTopAppBar
 import moe.shimmerfly.shimmerpatch.ui.component.m3.BaseItemContainer
 import moe.shimmerfly.shimmerpatch.ui.component.m3.BaseWidget
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SegmentedColumn
@@ -91,10 +91,10 @@ fun WelcomeScreen(reviewMode: Boolean, onFinish: () -> Unit, onReturn: () -> Uni
         onDispose { ShizukuApi.removeRequestPermissionResultListener(welcomeShizukuListener) }
     }
 
-    NPatchScaffold(
+    ShimmerPatchScaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            NPatchTopAppBar(
+            ShimmerPatchTopAppBar(
                 title = stringResource(when (pagerState.currentPage) {
                     1 -> R.string.welcome_permission_title
                     2 -> R.string.welcome_disclaimer_title

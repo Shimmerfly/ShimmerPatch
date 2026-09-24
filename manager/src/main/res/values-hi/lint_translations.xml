@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">पैच लॉग कॉपी करें</string>
     <string name="welcome_ui_step">%2$d का चरण %1$d</string>
     <string name="screen_home">घर</string>
-    <string name="home_shizuku_optional_summary">वैकल्पिक विस्तार, NPatch द्वारा आवश्यक नहीं है।</string>
-    <string name="home_about">NPatch के बारे में</string>
-    <string name="about_author_summary">NPatch अनुरक्षक</string>
+    <string name="home_shizuku_optional_summary">वैकल्पिक विस्तार, ShimmerPatch द्वारा आवश्यक नहीं है।</string>
+    <string name="home_about">ShimmerPatch के बारे में</string>
+    <string name="about_author_summary">ShimmerPatch अनुरक्षक</string>
     <string name="about_disclaimer_title">अस्वीकरण</string>
-    <string name="about_disclaimer_body">NPatch केवल सीखने, अनुसंधान और वैध ऐप संगतता कार्य के लिए प्रदान किया जाता है। कृपया स्थानीय कानूनों, ऐप की शर्तों और मूल डेवलपर्स के अधिकारों का सम्मान करें। आपके डिवाइस पर पैच किए गए ऐप्स और मॉड्यूल का उपयोग कैसे किया जाता है, इसके लिए आप जिम्मेदार हैं।</string>
+    <string name="about_disclaimer_body">ShimmerPatch केवल सीखने, अनुसंधान और वैध ऐप संगतता कार्य के लिए प्रदान किया जाता है। कृपया स्थानीय कानूनों, ऐप की शर्तों और मूल डेवलपर्स के अधिकारों का सम्मान करें। आपके डिवाइस पर पैच किए गए ऐप्स और मॉड्यूल का उपयोग कैसे किया जाता है, इसके लिए आप जिम्मेदार हैं।</string>
     <string name="about_links_title">कड़ियाँ</string>
     <string name="about_official_website">वेबसाइट</string>
     <string name="about_link_website_summary">NkBe की वेबसाइट पर जाएँ</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">विशेष धन्यवाद (अनियंत्रित)</string>
     <string name="about_ack_rovo89_summary">Xposed फ्रेमवर्क के संस्थापक; संपूर्ण मॉड्यूलर पारिस्थितिकी तंत्र के प्रवर्तक और अग्रणी।</string>
     <string name="about_ack_lsposed_team_summary">Xposed पारिस्थितिकी तंत्र और निम्न-स्तरीय इंजेक्शन तकनीकों में उनके निरंतर योगदान के लिए LSPosed टीम को धन्यवाद।</string>
-    <string name="about_ack_jingmatrix_summary">Vector के लेखक, जिनकी उत्कृष्ट रूपरेखा वास्तुकला ने NPatch के लिए एक महत्वपूर्ण आधार और प्रेरणा प्रदान की।</string>
+    <string name="about_ack_jingmatrix_summary">Vector के लेखक, जिनकी उत्कृष्ट रूपरेखा वास्तुकला ने ShimmerPatch के लिए एक महत्वपूर्ण आधार और प्रेरणा प्रदान की।</string>
     <string name="about_ack_lspatch_summary">रूटलेस पैचिंग समाधानों में अग्रणी, प्रबंधक-पक्ष कार्यान्वयन के माध्यम से गतिशील Xposed पर्यावरण लोडिंग की व्यवहार्यता साबित करता है।</string>
     <string name="about_ack_libxposed_summary">Xposed API मानकीकरण के पीछे प्रेरक शक्ति, मॉड्यूल विकास की दुनिया में प्रकार की सुरक्षा और स्पष्ट परंपराएँ लाना।</string>
     <string name="about_ack_winter_summary">मेरा पहला वित्तीय समर्थक; इतने शीघ्र और सीधे प्रोत्साहन के लिए धन्यवाद।</string>
@@ -79,7 +79,7 @@
     <string name="screen_select_modules">मॉड्यूल का चयन करें</string>
     <string name="welcome_version">संस्करण %1$s</string>
     <string name="welcome_intro_content">एक आधुनिक Xposed मॉड्यूल इंजेक्शन और APK पैचिंग टूल रूटलेस वातावरण के लिए डिज़ाइन किया गया है।</string>
-    <string name="welcome_intro_detail">NPatch, APK फ़ाइलों को संशोधित करके Xposed लोडर को इंजेक्ट करता है। स्थानीय मोड मॉड्यूल को लोड करने और प्रबंधक को पृष्ठभूमि में चालू रखे बिना गतिशील रूप से स्कोप प्रबंधित करने के लिए प्रबंधक के साथ काम करता है। एकीकृत मोड प्रबंधक के बिना उपकरणों पर स्टैंडअलोन उपयोग के लिए मॉड्यूल को सीधे लक्ष्य ऐप में एम्बेड करता है। Shizuku केवल कुछ सुविधा सुविधाओं को अनलॉक करता है और NPatch कोर पैचिंग, मॉड्यूल लोडिंग या बुनियादी प्रबंधन के लिए आवश्यक नहीं है।</string>
+    <string name="welcome_intro_detail">ShimmerPatch, APK फ़ाइलों को संशोधित करके Xposed लोडर को इंजेक्ट करता है। स्थानीय मोड मॉड्यूल को लोड करने और प्रबंधक को पृष्ठभूमि में चालू रखे बिना गतिशील रूप से स्कोप प्रबंधित करने के लिए प्रबंधक के साथ काम करता है। एकीकृत मोड प्रबंधक के बिना उपकरणों पर स्टैंडअलोन उपयोग के लिए मॉड्यूल को सीधे लक्ष्य ऐप में एम्बेड करता है। Shizuku केवल कुछ सुविधा सुविधाओं को अनलॉक करता है और ShimmerPatch कोर पैचिंग, मॉड्यूल लोडिंग या बुनियादी प्रबंधन के लिए आवश्यक नहीं है।</string>
     <string name="welcome_permission_title">आवश्यक अनुमतियाँ कॉन्फ़िगर करें</string>
     <string name="welcome_permission_summary">आरंभ करने से पहले, मुख्य सुविधाओं को चालू रखने के लिए बुनियादी पहुँच अनुमतियाँ प्रदान करें।</string>
     <string name="welcome_permission_storage_title">भंडारण पहुंच</string>
@@ -87,7 +87,7 @@
     <string name="welcome_permission_applist_title">ऐप सूची पढ़ें</string>
     <string name="welcome_permission_applist_summary">इंस्टॉल किए गए ऐप्स को पढ़ने के लिए उपयोग किया जाता है ताकि आप सटीक रूप से पैच लक्ष्य चुन सकें।</string>
     <string name="welcome_optional_title">वैकल्पिक विस्तार: Shizuku</string>
-    <string name="welcome_optional_summary">केवल वैकल्पिक विस्तार. Shizuku के बिना भी, NPatch की मुख्य विशेषताएं अभी भी सामान्य रूप से काम करती हैं।</string>
+    <string name="welcome_optional_summary">केवल वैकल्पिक विस्तार. Shizuku के बिना भी, ShimmerPatch की मुख्य विशेषताएं अभी भी सामान्य रूप से काम करती हैं।</string>
     <string name="welcome_permission_granted">मान लिया</string>
     <string name="welcome_permission_authorize">पहुंच प्रदान करें</string>
     <string name="welcome_disclaimer_title">उपयोग नोट्स और अस्वीकरण</string>
@@ -114,7 +114,7 @@
     <string name="settings_other_settings">अन्य सेटिंग्स</string>
     <string name="settings_network">नेटवर्क</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS का उपयोग NPatch नेटवर्क अनुरोधों द्वारा किया जाता है</string>
+    <string name="settings_dns_summary">DNS का उपयोग ShimmerPatch नेटवर्क अनुरोधों द्वारा किया जाता है</string>
     <string name="settings_dns_tencent">टेनसेंट DoH</string>
     <string name="settings_dns_google">गूगल DoH</string>
     <string name="settings_dns_cloudflare">क्लाउडफ्लेयर DoH</string>

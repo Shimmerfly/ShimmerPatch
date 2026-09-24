@@ -6,7 +6,7 @@
 
 Rootless implementation of LSPosed framework, integrating Xposed API by inserting dex and so into the target APK.
 
-We sincerely invite you to join our [Telegram](https://t.me/NPatch) group to get more information and updates about NPatch.
+We sincerely invite you to join our [Telegram](https://t.me/NPatch) group to get more information and updates about ShimmerPatch.
 
 ## Supported Versions
 
@@ -22,8 +22,8 @@ Note: debug builds are only available in Github Actions
 ## Usage
 
 + Through jar
-1. Download `npatch.jar`
-1. Run `java -jar npatch.jar`
+1. Download `shimmerpatch.jar`
+1. Run `java -jar shimmerpatch.jar`
 
 + Through manager
 1. Download and install `manager.apk` on an Android device
@@ -46,4 +46,4 @@ You can contribute translation [here](https://crowdin.com/project/lspatch_jingma
 
 ## License
 
-NPatch is licensed under the **GNU General Public License v3 (GPL-3)** (http://www.gnu.org/copyleft/gpl.html).
+ShimmerPatch is licensed under the **GNU General Public License v3 (GPL-3)** (http://www.gnu.org/copyleft/gpl.html).

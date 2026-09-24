@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">پیچ لاگ کاپی کریں۔</string>
     <string name="welcome_ui_step">%2$d کا مرحلہ %1$d</string>
     <string name="screen_home">گھر</string>
-    <string name="home_shizuku_optional_summary">اختیاری توسیع، NPatch کو درکار نہیں ہے۔</string>
-    <string name="home_about">NPatch کے بارے میں</string>
-    <string name="about_author_summary">NPatch دیکھ بھال کرنے والا</string>
+    <string name="home_shizuku_optional_summary">اختیاری توسیع، ShimmerPatch کو درکار نہیں ہے۔</string>
+    <string name="home_about">ShimmerPatch کے بارے میں</string>
+    <string name="about_author_summary">ShimmerPatch دیکھ بھال کرنے والا</string>
     <string name="about_disclaimer_title">ڈس کلیمر</string>
-    <string name="about_disclaimer_body">NPatch صرف سیکھنے، تحقیق، اور جائز ایپ مطابقت کے کام کے لیے فراہم کیا جاتا ہے۔ براہ کرم مقامی قوانین، ایپ کی شرائط اور اصل ڈویلپرز کے حقوق کا احترام کریں۔ آپ اس کے ذمہ دار ہیں کہ آپ کے آلے پر پیچ شدہ ایپس اور ماڈیولز کیسے استعمال ہوتے ہیں۔</string>
+    <string name="about_disclaimer_body">ShimmerPatch صرف سیکھنے، تحقیق، اور جائز ایپ مطابقت کے کام کے لیے فراہم کیا جاتا ہے۔ براہ کرم مقامی قوانین، ایپ کی شرائط اور اصل ڈویلپرز کے حقوق کا احترام کریں۔ آپ اس کے ذمہ دار ہیں کہ آپ کے آلے پر پیچ شدہ ایپس اور ماڈیولز کیسے استعمال ہوتے ہیں۔</string>
     <string name="about_links_title">لنکس</string>
     <string name="about_official_website">ویب سائٹ</string>
     <string name="about_link_website_summary">NkBe کی ویب سائٹ وزٹ کریں۔</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">خصوصی شکریہ (غیر ترتیب شدہ)</string>
     <string name="about_ack_rovo89_summary">Xposed فریم ورک کے بانی؛ پورے ماڈیولر ماحولیاتی نظام کا موجد اور علمبردار۔</string>
     <string name="about_ack_lsposed_team_summary">Xposed ماحولیاتی نظام اور کم درجے کی انجیکشن تکنیک میں مسلسل تعاون کے لیے LSPosed ٹیم کا شکریہ۔</string>
-    <string name="about_ack_jingmatrix_summary">Vector کے مصنف، جن کے شاندار فریم ورک فن تعمیر نے NPatch کے لیے ایک اہم بنیاد اور تحریک فراہم کی۔</string>
+    <string name="about_ack_jingmatrix_summary">Vector کے مصنف، جن کے شاندار فریم ورک فن تعمیر نے ShimmerPatch کے لیے ایک اہم بنیاد اور تحریک فراہم کی۔</string>
     <string name="about_ack_lspatch_summary">روٹ لیس پیچنگ سلوشنز کا علمبردار، مینیجر سائیڈ کے نفاذ کے ذریعے متحرک Xposed ماحول کی لوڈنگ کی فزیبلٹی کو ثابت کرتا ہے۔</string>
     <string name="about_ack_libxposed_summary">Xposed API معیار سازی کے پیچھے محرک قوت، ماڈیول کی ترقی کی دنیا میں قسم کی حفاظت اور واضح کنونشنز لاتی ہے۔</string>
     <string name="about_ack_winter_summary">میرا پہلا مالی معاون؛ اتنی ابتدائی اور براہ راست حوصلہ افزائی کے لیے آپ کا شکریہ۔</string>
@@ -79,7 +79,7 @@
     <string name="screen_select_modules">ماڈیولز منتخب کریں</string>
     <string name="welcome_version">ورژن %1$s</string>
     <string name="welcome_intro_content">ایک جدید Xposed ماڈیول انجیکشن اور APK پیچنگ ٹول بغیر جڑ کے ماحول کے لیے ڈیزائن کیا گیا ہے۔</string>
-    <string name="welcome_intro_detail">NPatch APK فائلوں میں ترمیم کرکے Xposed لوڈر کو انجیکشن لگاتا ہے۔ لوکل موڈ مینیجر کو پس منظر میں چلائے بغیر ماڈیول لوڈ کرنے اور دائرہ کار کو متحرک طور پر منظم کرنے کے لیے مینیجر کے ساتھ کام کرتا ہے۔ انٹیگریٹڈ موڈ ماڈیولز کو براہ راست ٹارگٹ ایپ میں ایمبیڈ کرتا ہے تاکہ مینیجر کے بغیر آلات پر اسٹینڈ اکیلا استعمال کیا جا سکے۔ Shizuku صرف کچھ سہولت کی خصوصیات کو کھولتا ہے اور NPatch کور پیچنگ، ماڈیول لوڈنگ، یا بنیادی انتظام کے لیے اس کی ضرورت نہیں ہے۔</string>
+    <string name="welcome_intro_detail">ShimmerPatch APK فائلوں میں ترمیم کرکے Xposed لوڈر کو انجیکشن لگاتا ہے۔ لوکل موڈ مینیجر کو پس منظر میں چلائے بغیر ماڈیول لوڈ کرنے اور دائرہ کار کو متحرک طور پر منظم کرنے کے لیے مینیجر کے ساتھ کام کرتا ہے۔ انٹیگریٹڈ موڈ ماڈیولز کو براہ راست ٹارگٹ ایپ میں ایمبیڈ کرتا ہے تاکہ مینیجر کے بغیر آلات پر اسٹینڈ اکیلا استعمال کیا جا سکے۔ Shizuku صرف کچھ سہولت کی خصوصیات کو کھولتا ہے اور ShimmerPatch کور پیچنگ، ماڈیول لوڈنگ، یا بنیادی انتظام کے لیے اس کی ضرورت نہیں ہے۔</string>
     <string name="welcome_permission_title">مطلوبہ اجازتوں کو ترتیب دیں۔</string>
     <string name="welcome_permission_summary">شروع کرنے سے پہلے، بنیادی خصوصیات کو کام کرتے رہنے کے لیے بنیادی رسائی کی اجازت دیں۔</string>
     <string name="welcome_permission_storage_title">اسٹوریج تک رسائی</string>
@@ -87,7 +87,7 @@
     <string name="welcome_permission_applist_title">ایپ کی فہرست پڑھیں</string>
     <string name="welcome_permission_applist_summary">انسٹال کردہ ایپس کو پڑھنے کے لیے استعمال کیا جاتا ہے تاکہ آپ پیچ کے اہداف کو درست طریقے سے منتخب کر سکیں۔</string>
     <string name="welcome_optional_title">اختیاری توسیع: Shizuku</string>
-    <string name="welcome_optional_summary">صرف اختیاری توسیع۔ Shizuku کے بغیر بھی، NPatch بنیادی خصوصیات اب بھی عام طور پر کام کرتی ہیں۔</string>
+    <string name="welcome_optional_summary">صرف اختیاری توسیع۔ Shizuku کے بغیر بھی، ShimmerPatch بنیادی خصوصیات اب بھی عام طور پر کام کرتی ہیں۔</string>
     <string name="welcome_permission_granted">عطا کیا</string>
     <string name="welcome_permission_authorize">رسائی فراہم کریں۔</string>
     <string name="welcome_disclaimer_title">استعمال کے نوٹس اور ڈس کلیمر</string>
@@ -114,7 +114,7 @@
     <string name="settings_other_settings">دیگر ترتیبات</string>
     <string name="settings_network">نیٹ ورک</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS NPatch نیٹ ورک کی درخواستوں کے ذریعے استعمال کیا جاتا ہے۔</string>
+    <string name="settings_dns_summary">DNS ShimmerPatch نیٹ ورک کی درخواستوں کے ذریعے استعمال کیا جاتا ہے۔</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">گوگل DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

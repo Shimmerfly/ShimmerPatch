@@ -33,11 +33,11 @@ object DiagnosticLogExporter {
         val appContext = context.applicationContext
         val outputDirectory = File(appContext.cacheDir, "diagnostics").apply { mkdirs() }
         outputDirectory.listFiles()
-            ?.filter { it.isFile && it.name.startsWith("npatch-diagnostics-") }
+            ?.filter { it.isFile && it.name.startsWith("shimmerpatch-diagnostics-") }
             ?.forEach(File::delete)
 
         val timestamp = utcFormat("yyyyMMdd-HHmmss").format(Date())
-        val outputFile = File(outputDirectory, "npatch-diagnostics-${safeSegment(targetPackageName)}-$timestamp.zip")
+        val outputFile = File(outputDirectory, "shimmerpatch-diagnostics-${safeSegment(targetPackageName)}-$timestamp.zip")
         val errors = mutableListOf<String>()
         var collectedFiles = 0
         var skippedFiles = 0
@@ -49,7 +49,7 @@ object DiagnosticLogExporter {
 
                 val mediaRoot = File(Environment.getExternalStorageDirectory(), "Android/media")
                 val result = zip.addLogDirectory(
-                    directory = File(mediaRoot, "$targetPackageName/npatch/log"),
+                    directory = File(mediaRoot, "$targetPackageName/shimmerpatch/log"),
                     zipPrefix = "app/${safeSegment(targetPackageName)}",
                     remainingBytes = MAX_TOTAL_LOG_BYTES,
                 )
@@ -82,7 +82,7 @@ object DiagnosticLogExporter {
     private fun buildMetadata(context: Context, targetPackageName: String): String {
         val packageInfo = context.packageManager.getPackageInfo(targetPackageName, 0)
         return buildString {
-            appendLine("NPatch patched-app diagnostic package")
+            appendLine("ShimmerPatch patched-app diagnostic package")
             appendLine("Generated (UTC): ${utcFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(Date())}")
             appendLine("Patched application: $targetPackageName")
             appendLine("Application version: ${packageInfo.versionName} (${PackageInfoCompat.getLongVersionCode(packageInfo)})")

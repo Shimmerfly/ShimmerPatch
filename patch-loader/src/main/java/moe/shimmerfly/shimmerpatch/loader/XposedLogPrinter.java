@@ -23,13 +23,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Writes structured NPatch framework, Legacy API, Modern API, and Java crash events to Media asynchronously.
+ * Writes structured ShimmerPatch framework, Legacy API, Modern API, and Java crash events to Media asynchronously.
  * Direct module calls to {@code android.util.Log}, native fatal signals, and system tombstones are
  * deliberately outside this pipeline.
  */
 public class XposedLogPrinter extends LogPrinter {
 
-    private static final String TAG = "NPatch-LogWriter";
+    private static final String TAG = "ShimmerPatch-LogWriter";
     private final int priority;
     private final String tag;
 
@@ -115,7 +115,7 @@ public class XposedLogPrinter extends LogPrinter {
 
     private static void ensureWorkerStarted() {
         if (WORKER_STARTED.compareAndSet(false, true)) {
-            Thread worker = new Thread(XposedLogPrinter::drainLogLoop, "NPatch-LogFlusher");
+            Thread worker = new Thread(XposedLogPrinter::drainLogLoop, "ShimmerPatch-LogFlusher");
             worker.setDaemon(true);
             worker.setPriority(Thread.MIN_PRIORITY);
             worker.start();
@@ -149,7 +149,7 @@ public class XposedLogPrinter extends LogPrinter {
 
                         String pkgName = ActivityThread.currentPackageName();
                         if (pkgName != null && !pkgName.isEmpty()) {
-                            File f = new File(Environment.getExternalStorageDirectory() + "/Android/media/" + pkgName + "/npatch/log/");
+                            File f = new File(Environment.getExternalStorageDirectory() + "/Android/media/" + pkgName + "/shimmerpatch/log/");
                             if (f.isDirectory() || f.mkdirs()) {
                                 File logFile = new File(f, currentDate + ".log");
                                 writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(logFile, true), StandardCharsets.UTF_8), 8192);

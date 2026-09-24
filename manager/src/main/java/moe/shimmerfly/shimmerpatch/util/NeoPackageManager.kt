@@ -53,7 +53,7 @@ object NeoPackageManager {
 
     enum class PatchedType(val displayName: String) {
         NONE(""),
-        NPATCH("NPatch"),
+        SHIMMERPATCH("ShimmerPatch"),
         LSPATCH("LSPatch"),
         FPA("FPA"),
         EMBEDDED("Embedded APK");
@@ -96,12 +96,12 @@ object NeoPackageManager {
                 val className = app.className.orEmpty()
 
                 // Tier 1: Manifest Meta-Data (Outermost explicit marker)
-                if (meta?.containsKey("npatch") == true) return PatchedType.NPATCH
+                if (meta?.containsKey("shimmerpatch") == true) return PatchedType.SHIMMERPATCH
                 if (meta?.containsKey("lspatch") == true) return PatchedType.LSPATCH
                 if (meta?.containsKey("fpa") == true) return PatchedType.FPA
 
                 // Tier 2: AppComponentFactory & Application class name
-                if (factory.contains("moe.shimmerfly.shimmerpatch") || className.contains("moe.shimmerfly.shimmerpatch")) return PatchedType.NPATCH
+                if (factory.contains("moe.shimmerfly.shimmerpatch") || className.contains("moe.shimmerfly.shimmerpatch")) return PatchedType.SHIMMERPATCH
                 if (factory.contains("org.lsposed.lspatch") || className.contains("org.lsposed.lspatch")) return PatchedType.LSPATCH
                 if (factory.startsWith("fpa.") || className.startsWith("fpa.") || factory.contains("fun.fpa") || className.contains("fun.fpa")) return PatchedType.FPA
 
@@ -653,7 +653,7 @@ object NeoPackageManager {
         return runCatching {
             ZipFile(sourceFile).use { zip ->
                 when {
-                    zip.getEntry("assets/npatch/config.json") != null || zip.getEntry("assets/npatch/loader.bin") != null || zip.getEntry("assets/npatch/origin.apk") != null -> PatchedType.NPATCH
+                    zip.getEntry("assets/shimmerpatch/config.json") != null || zip.getEntry("assets/shimmerpatch/loader.bin") != null || zip.getEntry("assets/shimmerpatch/origin.apk") != null -> PatchedType.SHIMMERPATCH
                     zip.getEntry("assets/lspatch/config.json") != null || zip.getEntry("assets/lspatch/loader.bin") != null || zip.getEntry("assets/lspatch/origin.apk") != null -> PatchedType.LSPATCH
                     zip.getEntry("fpa/config.json") != null || zip.getEntry("extra/core.dex") != null || zip.getEntry("fpa/source.apk") != null || zip.getEntry("fpa/o_app.apk") != null -> PatchedType.FPA
                     zip.getEntry("assets/origin.apk") != null -> PatchedType.EMBEDDED
@@ -676,8 +676,8 @@ object NeoPackageManager {
 
             val targetType = detectPatchedTypeDeep(patchedApp)
             val candidatePaths = when (targetType) {
-                PatchedType.NPATCH -> listOf(
-                    "assets/npatch/origin.apk",
+                PatchedType.SHIMMERPATCH -> listOf(
+                    "assets/shimmerpatch/origin.apk",
                     "assets/origin.apk",
                     "assets/lspatch/origin.apk",
                     "fpa/source.apk",
@@ -686,7 +686,7 @@ object NeoPackageManager {
                 PatchedType.LSPATCH -> listOf(
                     "assets/lspatch/origin.apk",
                     "assets/origin.apk",
-                    "assets/npatch/origin.apk",
+                    "assets/shimmerpatch/origin.apk",
                     "fpa/source.apk",
                     "fpa/o_app.apk"
                 )
@@ -694,12 +694,12 @@ object NeoPackageManager {
                     "fpa/source.apk",
                     "fpa/o_app.apk",
                     "assets/origin.apk",
-                    "assets/npatch/origin.apk",
+                    "assets/shimmerpatch/origin.apk",
                     "assets/lspatch/origin.apk"
                 )
                 PatchedType.EMBEDDED, PatchedType.NONE -> listOf(
                     "assets/origin.apk",
-                    "assets/npatch/origin.apk",
+                    "assets/shimmerpatch/origin.apk",
                     "assets/lspatch/origin.apk",
                     "fpa/source.apk",
                     "fpa/o_app.apk"

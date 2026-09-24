@@ -6,7 +6,7 @@ import moe.shimmerfly.shimmerpatch.lspApp
 import java.io.File
 
 enum class KeystorePreset(val prefValue: String) {
-    NPATCH("npatch"),
+    SHIMMERPATCH("shimmerpatch"),
     FPA("fpa"),
     CUSTOM("custom");
 
@@ -35,11 +35,11 @@ object MyKeyStore {
     }
 
     suspend fun reset() {
-        installBuiltin("npatch.key")
+        installBuiltin("shimmerpatch.key")
         Configs.keyStorePassword = "123456"
         Configs.keyStoreAlias = "key0"
         Configs.keyStoreAliasPassword = "123456"
-        Configs.keyStorePreset = KeystorePreset.NPATCH
+        Configs.keyStorePreset = KeystorePreset.SHIMMERPATCH
     }
 
     suspend fun setBuiltinFpa() {

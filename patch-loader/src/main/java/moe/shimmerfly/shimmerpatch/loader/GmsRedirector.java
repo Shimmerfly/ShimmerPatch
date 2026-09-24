@@ -17,7 +17,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
 public class GmsRedirector {
-    private static final String TAG = "NPatch-GmsRedirect";
+    private static final String TAG = "ShimmerPatch-GmsRedirect";
     private static final String REAL_GMS = Constants.REAL_GMS_PACKAGE_NAME;
 
     // 鎖定社群主流的 MicroG 套件名稱

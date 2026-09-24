@@ -18,7 +18,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 final class ModuleNativeCache {
-    private static final String TAG = "NPatch-NativeCache";
+    private static final String TAG = "ShimmerPatch-NativeCache";
     private static final String READY_FILE = ".ready";
 
     private ModuleNativeCache() {}

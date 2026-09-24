@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Kopiraj dnevnik zakrpa</string>
     <string name="welcome_ui_step">Korak %1$d od %2$d</string>
     <string name="screen_home">Dom</string>
-    <string name="home_shizuku_optional_summary">Izborno proširenje, nije potrebno za NPatch.</string>
-    <string name="home_about">O NPatch</string>
-    <string name="about_author_summary">NPatch održavatelj</string>
+    <string name="home_shizuku_optional_summary">Izborno proširenje, nije potrebno za ShimmerPatch.</string>
+    <string name="home_about">O ShimmerPatch</string>
+    <string name="about_author_summary">ShimmerPatch održavatelj</string>
     <string name="about_disclaimer_title">Odricanje od odgovornosti</string>
-    <string name="about_disclaimer_body">NPatch pruža se samo za učenje, istraživanje i legitiman rad na kompatibilnosti aplikacija. Poštujte lokalne zakone, uvjete aplikacije i prava izvornih programera. Vi ste odgovorni za to kako se zakrpane aplikacije i moduli koriste na vašem uređaju.</string>
+    <string name="about_disclaimer_body">ShimmerPatch pruža se samo za učenje, istraživanje i legitiman rad na kompatibilnosti aplikacija. Poštujte lokalne zakone, uvjete aplikacije i prava izvornih programera. Vi ste odgovorni za to kako se zakrpane aplikacije i moduli koriste na vašem uređaju.</string>
     <string name="about_links_title">Linkovi</string>
     <string name="about_official_website">web stranica</string>
     <string name="about_link_website_summary">Posjetite web stranicu NkBe</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Posebna zahvala (nenaručeno)</string>
     <string name="about_ack_rovo89_summary">Osnivač Xposed Frameworka; začetnik i pionir cjelokupnog modularnog ekosustava.</string>
     <string name="about_ack_lsposed_team_summary">Uz zahvalu timu LSPosed za njihov kontinuirani doprinos ekosustavu Xposed i tehnikama ubrizgavanja niske razine.</string>
-    <string name="about_ack_jingmatrix_summary">Autor Vector, čija je izvanredna arhitektura okvira pružila vitalnu osnovu i inspiraciju za NPatch.</string>
+    <string name="about_ack_jingmatrix_summary">Autor Vector, čija je izvanredna arhitektura okvira pružila vitalnu osnovu i inspiraciju za ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Pionir u rješenjima za krpanje bez korijena, dokazujući izvedivost dinamičkog učitavanja okruženja Xposed putem implementacije na strani upravitelja.</string>
     <string name="about_ack_libxposed_summary">Pokretačka snaga standardizacije Xposed API, koja donosi sigurnost tipa i jasne konvencije u svijet razvoja modula.</string>
     <string name="about_ack_winter_summary">Moj prvi financijski podupiratelj; hvala vam na tako ranom i izravnom ohrabrenju.</string>
@@ -80,7 +80,7 @@
     <string name="screen_select_modules">Odaberite module</string>
     <string name="welcome_version">Verzija %1$s</string>
     <string name="welcome_intro_content">Moderni Xposed modul za ubrizgavanje i APK alat za krpanje dizajniran za okruženja bez korijena.</string>
-    <string name="welcome_intro_detail">NPatch ubacuje Xposed loader modificirajući APK datoteke. Lokalni način rada radi s upraviteljem za učitavanje modula i dinamičko upravljanje opsegom, bez održavanja rada upravitelja u pozadini. Integrirani način rada ugrađuje module izravno u ciljnu aplikaciju za samostalnu upotrebu na uređajima bez upravitelja. Shizuku otključava samo neke praktične značajke i nije potreban za NPatch krpanje jezgre, učitavanje modula ili osnovno upravljanje.</string>
+    <string name="welcome_intro_detail">ShimmerPatch ubacuje Xposed loader modificirajući APK datoteke. Lokalni način rada radi s upraviteljem za učitavanje modula i dinamičko upravljanje opsegom, bez održavanja rada upravitelja u pozadini. Integrirani način rada ugrađuje module izravno u ciljnu aplikaciju za samostalnu upotrebu na uređajima bez upravitelja. Shizuku otključava samo neke praktične značajke i nije potreban za ShimmerPatch krpanje jezgre, učitavanje modula ili osnovno upravljanje.</string>
     <string name="welcome_permission_title">Konfigurirajte potrebna dopuštenja</string>
     <string name="welcome_permission_summary">Prije početka dodijelite osnovna dopuštenja pristupa kako bi osnovne značajke nastavile raditi.</string>
     <string name="welcome_permission_storage_title">Pristup pohrani</string>
@@ -88,7 +88,7 @@
     <string name="welcome_permission_applist_title">Pročitajte popis aplikacija</string>
     <string name="welcome_permission_applist_summary">Koristi se za čitanje instaliranih aplikacija kako biste mogli točno odabrati ciljeve zakrpa.</string>
     <string name="welcome_optional_title">Dodatni nastavak: Shizuku</string>
-    <string name="welcome_optional_summary">Samo izborni nastavak. Čak i bez Shizuku, osnovne značajke NPatch i dalje rade normalno.</string>
+    <string name="welcome_optional_summary">Samo izborni nastavak. Čak i bez Shizuku, osnovne značajke ShimmerPatch i dalje rade normalno.</string>
     <string name="welcome_permission_granted">Dopušteno</string>
     <string name="welcome_permission_authorize">Odobri pristup</string>
     <string name="welcome_disclaimer_title">Napomene o korištenju i odricanje od odgovornosti</string>
@@ -115,7 +115,7 @@
     <string name="settings_other_settings">Ostale postavke</string>
     <string name="settings_network">mreža</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS koristi mrežni zahtjev NPatch</string>
+    <string name="settings_dns_summary">DNS koristi mrežni zahtjev ShimmerPatch</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

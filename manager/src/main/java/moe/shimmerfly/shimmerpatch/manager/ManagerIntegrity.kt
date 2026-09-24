@@ -15,7 +15,7 @@ import java.util.Base64
 import java.util.Locale
 
 object ManagerIntegrity {
-    private const val TAG = "NPatch-Integrity"
+    private const val TAG = "ShimmerPatch-Integrity"
     private const val SYSTEM_PACKAGE_INFO_CREATOR = "android.content.pm.PackageInfo\$1"
     private const val SYSTEM_PM_PROXY = "android.content.pm.IPackageManager\$Stub\$Proxy"
     private const val SIGNATURE_KEY = 0x5A

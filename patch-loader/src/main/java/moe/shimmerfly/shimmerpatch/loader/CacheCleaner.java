@@ -13,8 +13,8 @@ import java.util.Map;
 
 public class CacheCleaner {
 
-    private static final String TAG = "NPatch-Cache";
-    private static final String STAMP_FILE_NAME = ".npatch_patch_stamp";
+    private static final String TAG = "ShimmerPatch-Cache";
+    private static final String STAMP_FILE_NAME = ".shimmerpatch_patch_stamp";
 
     public static boolean handlePatchUpgrade(ApplicationInfo appInfo, String patchedApkPath) {
         if (appInfo == null || appInfo.dataDir == null || patchedApkPath == null) {
@@ -64,7 +64,7 @@ public class CacheCleaner {
     }
 
     /**
-     * Removes stale libnpatch-*.so temp files left in cache/ by meta-loader.
+     * Removes stale libshimmerpatch-*.so temp files left in cache/ by meta-loader.
      * Keeps the newest one because the current process has it loaded via System.load().
      */
     public static void sweepLibNpatchCache(ApplicationInfo appInfo) {
@@ -72,7 +72,7 @@ public class CacheCleaner {
 
         File cacheDir = new File(appInfo.dataDir, "cache");
         File[] children = cacheDir.listFiles((dir, name) ->
-                name.startsWith("libnpatch-") && name.endsWith(".so"));
+                name.startsWith("libshimmerpatch-") && name.endsWith(".so"));
         if (children == null || children.length <= 1) return;
 
         File newest = children[0];
@@ -84,14 +84,14 @@ public class CacheCleaner {
                 .filter(f -> !f.equals(keep))
                 .forEach(f -> {
                     if (!f.delete()) {
-                        Log.w(TAG, "Failed to delete stale libnpatch: " + f);
+                        Log.w(TAG, "Failed to delete stale libshimmerpatch: " + f);
                     }
                 });
     }
 
     public static void sweepLegacyNpatchCache(ApplicationInfo appInfo) {
         if (appInfo == null || appInfo.dataDir == null) return;
-        deleteRecursive(new File(appInfo.dataDir, "cache/npatch"));
+        deleteRecursive(new File(appInfo.dataDir, "cache/shimmerpatch"));
     }
 
     public static void sweepModuleNativeCache(ApplicationInfo appInfo, Map<String, String> activeModuleApkPaths) {
@@ -166,11 +166,11 @@ public class CacheCleaner {
         deleteRecursive(new File(codeCache, "native"));
         deleteRecursive(new File(codeCache, "mods"));
         deleteRecursive(new File(cacheRoot, "native"));
-        deleteRecursive(new File(cacheRoot, "npatch"));
+        deleteRecursive(new File(cacheRoot, "shimmerpatch"));
 
-        // Sweep all but the newest libnpatch-*.so (current process has it mmaped).
+        // Sweep all but the newest libshimmerpatch-*.so (current process has it mmaped).
         File[] libs = cacheRoot.listFiles((dir, name) ->
-                name.startsWith("libnpatch-") && name.endsWith(".so"));
+                name.startsWith("libshimmerpatch-") && name.endsWith(".so"));
         if (libs != null && libs.length > 1) {
             File newest = libs[0];
             for (File f : libs) {

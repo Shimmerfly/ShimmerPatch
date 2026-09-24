@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Copiați jurnalul de corecție</string>
     <string name="welcome_ui_step">Pasul %1$d din %2$d</string>
     <string name="screen_home">Acasă</string>
-    <string name="home_shizuku_optional_summary">Extensie opțională, care nu este cerută de NPatch.</string>
-    <string name="home_about">Despre NPatch</string>
-    <string name="about_author_summary">NPatch întreținător</string>
+    <string name="home_shizuku_optional_summary">Extensie opțională, care nu este cerută de ShimmerPatch.</string>
+    <string name="home_about">Despre ShimmerPatch</string>
+    <string name="about_author_summary">ShimmerPatch întreținător</string>
     <string name="about_disclaimer_title">Disclaimer</string>
-    <string name="about_disclaimer_body">NPatch este oferit numai pentru învățare, cercetare și activități legitime de compatibilitate cu aplicațiile. Vă rugăm să respectați legile locale, termenii aplicației și drepturile dezvoltatorilor originali. Sunteți responsabil pentru modul în care aplicațiile și modulele corelate sunt utilizate pe dispozitiv.</string>
+    <string name="about_disclaimer_body">ShimmerPatch este oferit numai pentru învățare, cercetare și activități legitime de compatibilitate cu aplicațiile. Vă rugăm să respectați legile locale, termenii aplicației și drepturile dezvoltatorilor originali. Sunteți responsabil pentru modul în care aplicațiile și modulele corelate sunt utilizate pe dispozitiv.</string>
     <string name="about_links_title">Legături</string>
     <string name="about_official_website">Site-ul web</string>
     <string name="about_link_website_summary">Vizitați site-ul NkBe</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Mulțumiri speciale (necomandate)</string>
     <string name="about_ack_rovo89_summary">Fondator al Xposed Framework; inițiatorul și pionierul întregului ecosistem modular.</string>
     <string name="about_ack_lsposed_team_summary">Mulțumim echipei LSPosed pentru contribuția lor continuă la ecosistemul Xposed și tehnicile de injecție la nivel scăzut.</string>
-    <string name="about_ack_jingmatrix_summary">Autor al cărții Vector, a cărui arhitectură cadru remarcabilă a oferit o bază vitală și o inspirație pentru NPatch.</string>
+    <string name="about_ack_jingmatrix_summary">Autor al cărții Vector, a cărui arhitectură cadru remarcabilă a oferit o bază vitală și o inspirație pentru ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Un pionier în soluțiile de patch-uri fără rădăcină, care demonstrează fezabilitatea încărcării dinamice a mediului Xposed prin implementarea managerului.</string>
     <string name="about_ack_libxposed_summary">Forța motrice din spatele standardizării Xposed API, aducând siguranța tipului și convențiile clare în lumea dezvoltării modulelor.</string>
     <string name="about_ack_winter_summary">Primul meu susținător financiar; mulțumesc pentru încurajări atât de timpurii și directe.</string>
@@ -80,7 +80,7 @@
     <string name="screen_select_modules">Selectați modulele</string>
     <string name="welcome_version">Versiunea %1$s</string>
     <string name="welcome_intro_content">Un instrument modern de injectare a modulului Xposed și un instrument de corecție APK conceput pentru medii fără rădăcini.</string>
-    <string name="welcome_intro_detail">NPatch injectează încărcătorul Xposed prin modificarea fișierelor APK. Modul local funcționează cu managerul pentru a încărca module și a gestiona domeniile în mod dinamic, fără a menține managerul să ruleze în fundal. Modul integrat încorporează modulele direct în aplicația țintă pentru utilizare independentă pe dispozitive fără manager. Shizuku deblochează doar unele funcții comode și nu este necesar pentru corecțiile de bază NPatch, încărcarea modulelor sau gestionarea de bază.</string>
+    <string name="welcome_intro_detail">ShimmerPatch injectează încărcătorul Xposed prin modificarea fișierelor APK. Modul local funcționează cu managerul pentru a încărca module și a gestiona domeniile în mod dinamic, fără a menține managerul să ruleze în fundal. Modul integrat încorporează modulele direct în aplicația țintă pentru utilizare independentă pe dispozitive fără manager. Shizuku deblochează doar unele funcții comode și nu este necesar pentru corecțiile de bază ShimmerPatch, încărcarea modulelor sau gestionarea de bază.</string>
     <string name="welcome_permission_title">Configurați permisiunile necesare</string>
     <string name="welcome_permission_summary">Înainte de a începe, acordați permisiuni de acces de bază pentru ca funcțiile de bază să funcționeze.</string>
     <string name="welcome_permission_storage_title">Acces la stocare</string>
@@ -88,7 +88,7 @@
     <string name="welcome_permission_applist_title">Citiți Lista de aplicații</string>
     <string name="welcome_permission_applist_summary">Folosit pentru a citi aplicațiile instalate, astfel încât să puteți alege cu precizie ținte de corecție.</string>
     <string name="welcome_optional_title">Extensie opțională: Shizuku</string>
-    <string name="welcome_optional_summary">Doar extensie opțională. Chiar și fără Shizuku, caracteristicile de bază NPatch încă funcționează normal.</string>
+    <string name="welcome_optional_summary">Doar extensie opțională. Chiar și fără Shizuku, caracteristicile de bază ShimmerPatch încă funcționează normal.</string>
     <string name="welcome_permission_granted">De acord</string>
     <string name="welcome_permission_authorize">Acordați acces</string>
     <string name="welcome_disclaimer_title">Note de utilizare și declinare a răspunderii</string>
@@ -115,7 +115,7 @@
     <string name="settings_other_settings">Alte setări</string>
     <string name="settings_network">Rețea</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS utilizat de solicitările de rețea NPatch</string>
+    <string name="settings_dns_summary">DNS utilizat de solicitările de rețea ShimmerPatch</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

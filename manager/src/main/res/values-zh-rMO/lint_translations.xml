@@ -39,7 +39,7 @@
     <string name="settings_manager_cache_failed">清除管理器快取失敗</string>
     <string name="settings_network">網路</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">NPatch 網路請求使用的 DNS</string>
+    <string name="settings_dns_summary">ShimmerPatch 網路請求使用的 DNS</string>
     <string name="settings_dns_tencent">騰訊 DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

@@ -75,14 +75,14 @@ jobs:
       - name: Upload Release artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: npatch-release-${{ github.sha }}
+          name: shimmerpatch-release-${{ github.sha }}
           path: out/release/*
           retention-days: 14
 
       - name: Upload Debug artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: npatch-debug-${{ github.sha }}
+          name: shimmerpatch-debug-${{ github.sha }}
           path: out/debug/*
           retention-days: 7
 

@@ -13,13 +13,13 @@
     <string name="error_unknown">Ukjent feil</string>
     <string name="home_shizuku_warning">Noen funksjoner er utilgjengelige</string>
     <string name="home_api_version">API-versjon</string>
-    <string name="home_npatch_version">NPatch-versjon</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch-versjon</string>
     <string name="home_framework_version">Rammeversjon</string>
     <string name="home_system_version">Systemversjon</string>
     <string name="home_device">Enhet</string>
     <string name="home_system_abi">System ABI</string>
     <string name="home_info_copied">Kopiert til utklippstavlen</string>
-    <string name="home_description">NPatch er et gratis ikke-root Xposed rammeverk basert på Vector.</string>
+    <string name="home_description">ShimmerPatch er et gratis ikke-root Xposed rammeverk basert på Vector.</string>
     <string name="screen_manage">Få til</string>
     <string name="manage_loading">Laster</string>
     <string name="manage_no_apps">Ingen lappede apper ennå</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Velg en installert app</string>
     <string name="patch_mode">Patch-modus</string>
     <string name="patch_local">Lokalt</string>
-    <string name="patch_local_desc">Lapper apper uten å bygge inn moduler.\nXposed-omfanget kan endres dynamisk uten å måtte lappe på nytt.\nDenne modusen kan bare brukes lokalt med NPatch Manager.</string>
+    <string name="patch_local_desc">Lapper apper uten å bygge inn moduler.\nXposed-omfanget kan endres dynamisk uten å måtte lappe på nytt.\nDenne modusen kan bare brukes lokalt med ShimmerPatch Manager.</string>
     <string name="patch_integrated">Integrert</string>
-    <string name="patch_integrated_desc">Patch en app med innebygde moduler.\nDen lappede appen kan kjøres uten administratoren, men kan ikke administreres dynamisk.\nIntegrerte lappede apper kan brukes på enheter som ikke har NPatch Manager installert.</string>
+    <string name="patch_integrated_desc">Patch en app med innebygde moduler.\nDen lappede appen kan kjøres uten administratoren, men kan ikke administreres dynamisk.\nIntegrerte lappede apper kan brukes på enheter som ikke har ShimmerPatch Manager installert.</string>
     <string name="patch_embed_modules">Bygg inn moduler</string>
     <string name="patch_debuggable">Kan feilsøkes</string>
     <string name="patch_sigbypass">Signaturomkjøring</string>

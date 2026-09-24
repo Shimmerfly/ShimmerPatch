@@ -13,13 +13,13 @@
     <string name="error_unknown">Eroare necunoscută</string>
     <string name="home_shizuku_warning">Unele funcții nu sunt disponibile</string>
     <string name="home_api_version">Versiunea API</string>
-    <string name="home_npatch_version">Versiunea NPatch</string>
+    <string name="home_shimmerpatch_version">Versiunea ShimmerPatch</string>
     <string name="home_framework_version">Versiunea cadru</string>
     <string name="home_system_version">Versiunea de sistem</string>
     <string name="home_device">Dispozitiv</string>
     <string name="home_system_abi">Sistem ABI</string>
     <string name="home_info_copied">Copiat în clipboard</string>
-    <string name="home_description">NPatch este un cadru gratuit non-root Xposed bazat pe Vector.</string>
+    <string name="home_description">ShimmerPatch este un cadru gratuit non-root Xposed bazat pe Vector.</string>
     <string name="screen_manage">Gestionați</string>
     <string name="manage_loading">Se încarcă</string>
     <string name="manage_no_apps">Nicio aplicație corecţionată încă</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Selectați o aplicație instalată</string>
     <string name="patch_mode">Modul Patch</string>
     <string name="patch_local">Local</string>
-    <string name="patch_local_desc">Corectează aplicațiile fără a încorpora module.\nDomeniul de aplicare Xposed poate fi schimbat dinamic fără a fi nevoie de re-patch.\nAcest mod poate fi utilizat numai local cu NPatch Manager.</string>
+    <string name="patch_local_desc">Corectează aplicațiile fără a încorpora module.\nDomeniul de aplicare Xposed poate fi schimbat dinamic fără a fi nevoie de re-patch.\nAcest mod poate fi utilizat numai local cu ShimmerPatch Manager.</string>
     <string name="patch_integrated">Integrat</string>
-    <string name="patch_integrated_desc">Corectați o aplicație cu module încorporate.\nAplicația corectată poate rula fără manager, dar nu poate fi gestionată dinamic.\nAplicațiile integrate cu corecții pot fi utilizate pe dispozitivele care nu au NPatch Manager instalat.</string>
+    <string name="patch_integrated_desc">Corectați o aplicație cu module încorporate.\nAplicația corectată poate rula fără manager, dar nu poate fi gestionată dinamic.\nAplicațiile integrate cu corecții pot fi utilizate pe dispozitivele care nu au ShimmerPatch Manager instalat.</string>
     <string name="patch_embed_modules">Încorporați module</string>
     <string name="patch_debuggable">Depanabil</string>
     <string name="patch_sigbypass">Ocolire semnătură</string>

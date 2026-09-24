@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Копіювати журнал виправлень</string>
     <string name="welcome_ui_step">Крок %1$d з %2$d</string>
     <string name="screen_home">додому</string>
-    <string name="home_shizuku_optional_summary">Додаткове розширення, не потрібне NPatch.</string>
-    <string name="home_about">Про NPatch</string>
-    <string name="about_author_summary">Супроводжувач NPatch</string>
+    <string name="home_shizuku_optional_summary">Додаткове розширення, не потрібне ShimmerPatch.</string>
+    <string name="home_about">Про ShimmerPatch</string>
+    <string name="about_author_summary">Супроводжувач ShimmerPatch</string>
     <string name="about_disclaimer_title">Відмова від відповідальності</string>
-    <string name="about_disclaimer_body">NPatch надається лише для навчання, досліджень і законної роботи щодо сумісності програм. Поважайте місцеві закони, умови додатків і права оригінальних розробників. Ви несете відповідальність за використання виправлених програм і модулів на вашому пристрої.</string>
+    <string name="about_disclaimer_body">ShimmerPatch надається лише для навчання, досліджень і законної роботи щодо сумісності програм. Поважайте місцеві закони, умови додатків і права оригінальних розробників. Ви несете відповідальність за використання виправлених програм і модулів на вашому пристрої.</string>
     <string name="about_links_title">Посилання</string>
     <string name="about_official_website">Веб-сайт</string>
     <string name="about_link_website_summary">Відвідайте веб-сайт NkBe</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Особлива подяка (без замовлення)</string>
     <string name="about_ack_rovo89_summary">Засновник Xposed Framework; засновник і піонер усієї модульної екосистеми.</string>
     <string name="about_ack_lsposed_team_summary">Дякуємо команді LSPosed за їхній постійний внесок в екосистему Xposed і техніку введення низького рівня.</string>
-    <string name="about_ack_jingmatrix_summary">Автор Vector, чия видатна фреймворкова архітектура стала життєво важливою основою та джерелом натхнення для NPatch.</string>
+    <string name="about_ack_jingmatrix_summary">Автор Vector, чия видатна фреймворкова архітектура стала життєво важливою основою та джерелом натхнення для ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Піонер у безкорінних рішеннях для виправлення, що доводить можливість динамічного завантаження середовища Xposed через реалізацію на стороні менеджера.</string>
     <string name="about_ack_libxposed_summary">Рушійна сила стандартизації Xposed API, яка забезпечує безпеку типів і чіткі конвенції у світі розробки модулів.</string>
     <string name="about_ack_winter_summary">Мій перший фінансовий прибічник; дякую за таке раннє та пряме підбадьорення.</string>
@@ -81,7 +81,7 @@
     <string name="screen_select_modules">Виберіть модулі</string>
     <string name="welcome_version">Версія %1$s</string>
     <string name="welcome_intro_content">Сучасний інструмент ін’єкції модулів Xposed і виправлення APK, розроблений для середовищ без корінь.</string>
-    <string name="welcome_intro_detail">NPatch вводить завантажувач Xposed, змінюючи файли APK. Локальний режим працює з диспетчером, щоб завантажувати модулі та динамічно керувати областями, не затримуючи диспетчер працювати у фоновому режимі. Інтегрований режим вбудовує модулі безпосередньо в цільову програму для автономного використання на пристроях без диспетчера. Shizuku відкриває лише деякі зручні функції та не потрібен для виправлення ядра NPatch, завантаження модулів або базового керування.</string>
+    <string name="welcome_intro_detail">ShimmerPatch вводить завантажувач Xposed, змінюючи файли APK. Локальний режим працює з диспетчером, щоб завантажувати модулі та динамічно керувати областями, не затримуючи диспетчер працювати у фоновому режимі. Інтегрований режим вбудовує модулі безпосередньо в цільову програму для автономного використання на пристроях без диспетчера. Shizuku відкриває лише деякі зручні функції та не потрібен для виправлення ядра ShimmerPatch, завантаження модулів або базового керування.</string>
     <string name="welcome_permission_title">Налаштуйте необхідні дозволи</string>
     <string name="welcome_permission_summary">Перш ніж почати, надайте базові дозволи доступу, щоб основні функції працювали.</string>
     <string name="welcome_permission_storage_title">Доступ до сховища</string>
@@ -89,7 +89,7 @@
     <string name="welcome_permission_applist_title">Читайте список програм</string>
     <string name="welcome_permission_applist_summary">Використовується для читання встановлених програм, щоб ви могли точно вибрати цілі виправлення.</string>
     <string name="welcome_optional_title">Додаткове розширення: Shizuku</string>
-    <string name="welcome_optional_summary">Лише додаткове розширення. Навіть без Shizuku основні функції NPatch працюють нормально.</string>
+    <string name="welcome_optional_summary">Лише додаткове розширення. Навіть без Shizuku основні функції ShimmerPatch працюють нормально.</string>
     <string name="welcome_permission_granted">Зрозуміло</string>
     <string name="welcome_permission_authorize">Надати доступ</string>
     <string name="welcome_disclaimer_title">Примітки щодо використання та застереження</string>
@@ -116,7 +116,7 @@
     <string name="settings_other_settings">Інші налаштування</string>
     <string name="settings_network">Мережа</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS використовується мережевими запитами NPatch</string>
+    <string name="settings_dns_summary">DNS використовується мережевими запитами ShimmerPatch</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

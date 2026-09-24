@@ -13,13 +13,13 @@
     <string name="error_unknown">Tuntematon virhe</string>
     <string name="home_shizuku_warning">Jotkut toiminnot eivät ole käytettävissä</string>
     <string name="home_api_version">API-versio</string>
-    <string name="home_npatch_version">NPatch-versio</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch-versio</string>
     <string name="home_framework_version">Framework-versio</string>
     <string name="home_system_version">Järjestelmän versio</string>
     <string name="home_device">Laite</string>
     <string name="home_system_abi">Järjestelmä ABI</string>
     <string name="home_info_copied">Kopioitu leikepöydälle</string>
-    <string name="home_description">NPatch on ilmainen ei-juuritason Xposed-kehys, joka perustuu Vector:hen.</string>
+    <string name="home_description">ShimmerPatch on ilmainen ei-juuritason Xposed-kehys, joka perustuu Vector:hen.</string>
     <string name="screen_manage">Hallitse</string>
     <string name="manage_loading">Ladataan</string>
     <string name="manage_no_apps">Ei vielä korjattuja sovelluksia</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Valitse asennettu sovellus</string>
     <string name="patch_mode">Patch-tila</string>
     <string name="patch_local">Paikallinen</string>
-    <string name="patch_local_desc">Korjaa sovelluksia ilman moduuleita.\nXposed-skooppi voidaan muuttaa dynaamisesti ilman, että sitä tarvitsee korjata.\nTätä tilaa voidaan käyttää vain paikallisesti NPatch Managerin kanssa.</string>
+    <string name="patch_local_desc">Korjaa sovelluksia ilman moduuleita.\nXposed-skooppi voidaan muuttaa dynaamisesti ilman, että sitä tarvitsee korjata.\nTätä tilaa voidaan käyttää vain paikallisesti ShimmerPatch Managerin kanssa.</string>
     <string name="patch_integrated">Integroitu</string>
-    <string name="patch_integrated_desc">Korjaa sovellus, jossa on upotettuja moduuleja.\nKorjattu sovellus voi toimia ilman hallintaa, mutta sitä ei voida hallita dynaamisesti.\nIntegroituja korjattuja sovelluksia voidaan käyttää laitteissa, joihin ei ole asennettu NPatch Manageria.</string>
+    <string name="patch_integrated_desc">Korjaa sovellus, jossa on upotettuja moduuleja.\nKorjattu sovellus voi toimia ilman hallintaa, mutta sitä ei voida hallita dynaamisesti.\nIntegroituja korjattuja sovelluksia voidaan käyttää laitteissa, joihin ei ole asennettu ShimmerPatch Manageria.</string>
     <string name="patch_embed_modules">Upota moduulit</string>
     <string name="patch_debuggable">Virheenkorjaus</string>
     <string name="patch_sigbypass">Allekirjoituksen ohitus</string>

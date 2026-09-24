@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Kopiera patchlogg</string>
     <string name="welcome_ui_step">Steg %1$d av %2$d</string>
     <string name="screen_home">Hem</string>
-    <string name="home_shizuku_optional_summary">Valfri förlängning, krävs inte av NPatch.</string>
-    <string name="home_about">Om NPatch</string>
-    <string name="about_author_summary">NPatch underhållare</string>
+    <string name="home_shizuku_optional_summary">Valfri förlängning, krävs inte av ShimmerPatch.</string>
+    <string name="home_about">Om ShimmerPatch</string>
+    <string name="about_author_summary">ShimmerPatch underhållare</string>
     <string name="about_disclaimer_title">Ansvarsfriskrivning</string>
-    <string name="about_disclaimer_body">NPatch tillhandahålls endast för lärande, forskning och legitimt appkompatibilitetsarbete. Vänligen respektera lokala lagar, appvillkor och de ursprungliga utvecklarnas rättigheter. Du ansvarar för hur patchade appar och moduler används på din enhet.</string>
+    <string name="about_disclaimer_body">ShimmerPatch tillhandahålls endast för lärande, forskning och legitimt appkompatibilitetsarbete. Vänligen respektera lokala lagar, appvillkor och de ursprungliga utvecklarnas rättigheter. Du ansvarar för hur patchade appar och moduler används på din enhet.</string>
     <string name="about_links_title">Länkar</string>
     <string name="about_official_website">Webbplats</string>
     <string name="about_link_website_summary">Besök webbplatsen för NkBe</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Speciellt tack (oordnad)</string>
     <string name="about_ack_rovo89_summary">Grundare av Xposed Framework; upphovsmannen och pionjären bakom hela det modulära ekosystemet.</string>
     <string name="about_ack_lsposed_team_summary">Tack till LSPosed-teamet för deras kontinuerliga bidrag till Xposed-ekosystemet och lågnivåinjektionstekniker.</string>
-    <string name="about_ack_jingmatrix_summary">Författare till Vector, vars enastående ramarkitektur gav en viktig grund och inspiration för NPatch.</string>
+    <string name="about_ack_jingmatrix_summary">Författare till Vector, vars enastående ramarkitektur gav en viktig grund och inspiration för ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">En pionjär inom rotlösa patchlösningar som bevisar genomförbarheten av dynamisk Xposed-miljöladdning via implementering på chefssidan.</string>
     <string name="about_ack_libxposed_summary">Drivkraften bakom Xposed API standardisering, vilket ger typsäkerhet och tydliga konventioner till modulutvecklingsvärlden.</string>
     <string name="about_ack_winter_summary">Min allra första ekonomiska supporter; tack för så tidiga och direkta uppmuntran.</string>
@@ -79,7 +79,7 @@
     <string name="screen_select_modules">Välj moduler</string>
     <string name="welcome_version">Version %1$s</string>
     <string name="welcome_intro_content">Ett modernt Xposed-modulinjektions- och APK-patchverktyg designat för rotlösa miljöer.</string>
-    <string name="welcome_intro_detail">NPatch injicerar Xposed-lastaren genom att modifiera APK-filer. Lokalt läge arbetar med hanteraren för att ladda moduler och hantera scopes dynamiskt, utan att hålla managern igång i bakgrunden. Integrerat läge bäddar in moduler direkt i målappen för fristående användning på enheter utan manager. Shizuku låser bara upp vissa bekvämlighetsfunktioner och krävs inte för NPatch-kärnpatchning, modulladdning eller grundläggande hantering.</string>
+    <string name="welcome_intro_detail">ShimmerPatch injicerar Xposed-lastaren genom att modifiera APK-filer. Lokalt läge arbetar med hanteraren för att ladda moduler och hantera scopes dynamiskt, utan att hålla managern igång i bakgrunden. Integrerat läge bäddar in moduler direkt i målappen för fristående användning på enheter utan manager. Shizuku låser bara upp vissa bekvämlighetsfunktioner och krävs inte för ShimmerPatch-kärnpatchning, modulladdning eller grundläggande hantering.</string>
     <string name="welcome_permission_title">Konfigurera nödvändiga behörigheter</string>
     <string name="welcome_permission_summary">Innan du börjar, ge grundläggande åtkomstbehörigheter för att hålla kärnfunktionerna i funktion.</string>
     <string name="welcome_permission_storage_title">Tillgång till lagring</string>
@@ -87,7 +87,7 @@
     <string name="welcome_permission_applist_title">Läs applistan</string>
     <string name="welcome_permission_applist_summary">Används för att läsa installerade appar så att du kan välja patchmål exakt.</string>
     <string name="welcome_optional_title">Valfri förlängning: Shizuku</string>
-    <string name="welcome_optional_summary">Endast valfri förlängning. Även utan Shizuku fungerar NPatch kärnfunktioner fortfarande normalt.</string>
+    <string name="welcome_optional_summary">Endast valfri förlängning. Även utan Shizuku fungerar ShimmerPatch kärnfunktioner fortfarande normalt.</string>
     <string name="welcome_permission_granted">Beviljas</string>
     <string name="welcome_permission_authorize">Bevilja åtkomst</string>
     <string name="welcome_disclaimer_title">Användningsanmärkningar och ansvarsfriskrivning</string>
@@ -114,7 +114,7 @@
     <string name="settings_other_settings">Andra inställningar</string>
     <string name="settings_network">Nätverk</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS används av NPatch nätverksbegäranden</string>
+    <string name="settings_dns_summary">DNS används av ShimmerPatch nätverksbegäranden</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

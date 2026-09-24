@@ -55,8 +55,8 @@ import moe.shimmerfly.shimmerpatch.manager.ManagerLogger
 import moe.shimmerfly.shimmerpatch.network.DnsProvider
 import moe.shimmerfly.shimmerpatch.network.NetworkDns
 import moe.shimmerfly.shimmerpatch.ui.activity.MainActivity
-import moe.shimmerfly.shimmerpatch.ui.component.NPatchScaffold
-import moe.shimmerfly.shimmerpatch.ui.component.NPatchTopAppBar
+import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchScaffold
+import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchTopAppBar
 import moe.shimmerfly.shimmerpatch.ui.component.rememberMaterial3BlurBackdrop
 import moe.shimmerfly.shimmerpatch.ui.component.m3AppBarBlur
 import moe.shimmerfly.shimmerpatch.ui.component.m3AppBarColor
@@ -80,10 +80,10 @@ fun SettingsScreen(contentPadding: PaddingValues = PaddingValues()) {
     val scrollState = rememberScrollState()
     val layoutDirection = LocalLayoutDirection.current
     val backdrop = rememberMaterial3BlurBackdrop(enabled = LocalFloatingGlassBottomBarBlur.current)
-    NPatchScaffold(
+    ShimmerPatchScaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            NPatchTopAppBar(
+            ShimmerPatchTopAppBar(
                 title = stringResource(R.string.screen_settings),
                 modifier = Modifier.m3AppBarBlur(backdrop),
                 color = backdrop.m3AppBarColor(),
@@ -663,7 +663,7 @@ private fun KeyStorePreference() {
     DropDownMenuWidget(
         title = stringResource(R.string.settings_keystore), icon = Icons.Outlined.Key,
         options = listOf(
-            DropdownOption(0, "NPatch"),
+            DropdownOption(0, "ShimmerPatch"),
             DropdownOption(1, "FPA"),
             DropdownOption(2, stringResource(R.string.settings_keystore_custom)),
         ),

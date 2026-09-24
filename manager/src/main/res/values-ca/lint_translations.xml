@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Copia el registre de pedaços</string>
     <string name="welcome_ui_step">Pas %1$d de %2$d</string>
     <string name="screen_home">a casa</string>
-    <string name="home_shizuku_optional_summary">Extensió opcional, no requerida per NPatch.</string>
-    <string name="home_about">Sobre NPatch</string>
-    <string name="about_author_summary">Mantenidor NPatch</string>
+    <string name="home_shizuku_optional_summary">Extensió opcional, no requerida per ShimmerPatch.</string>
+    <string name="home_about">Sobre ShimmerPatch</string>
+    <string name="about_author_summary">Mantenidor ShimmerPatch</string>
     <string name="about_disclaimer_title">Exempció de responsabilitat</string>
-    <string name="about_disclaimer_body">NPatch només es proporciona per a l\'aprenentatge, la investigació i el treball legítim de compatibilitat d\'aplicacions. Respecteu les lleis locals, els termes de l\'aplicació i els drets dels desenvolupadors originals. Sou responsable de com s\'utilitzen les aplicacions i els mòduls pegats al vostre dispositiu.</string>
+    <string name="about_disclaimer_body">ShimmerPatch només es proporciona per a l\'aprenentatge, la investigació i el treball legítim de compatibilitat d\'aplicacions. Respecteu les lleis locals, els termes de l\'aplicació i els drets dels desenvolupadors originals. Sou responsable de com s\'utilitzen les aplicacions i els mòduls pegats al vostre dispositiu.</string>
     <string name="about_links_title">Enllaços</string>
     <string name="about_official_website">Lloc web</string>
     <string name="about_link_website_summary">Visiteu el lloc web de NkBe</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Agraïment especial (sense comanda)</string>
     <string name="about_ack_rovo89_summary">Fundador del Framework Xposed; el creador i pioner de tot l\'ecosistema modular.</string>
     <string name="about_ack_lsposed_team_summary">Gràcies a l\'equip LSPosed per les seves contínues contribucions a l\'ecosistema Xposed i tècniques d\'injecció de baix nivell.</string>
-    <string name="about_ack_jingmatrix_summary">Autor de Vector, l\'arquitectura de marc excepcional del qual va proporcionar una base i una inspiració vitals per a NPatch.</string>
+    <string name="about_ack_jingmatrix_summary">Autor de Vector, l\'arquitectura de marc excepcional del qual va proporcionar una base i una inspiració vitals per a ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Un pioner en solucions de pegat sense arrels, que demostra la viabilitat de la càrrega dinàmica de l\'entorn Xposed mitjançant la implementació del gestor.</string>
     <string name="about_ack_libxposed_summary">La força impulsora de l\'estandardització Xposed API, aportant seguretat de tipus i convencions clares al món del desenvolupament de mòduls.</string>
     <string name="about_ack_winter_summary">El meu primer suport financer; gràcies per l\'ànim tan ràpid i directe.</string>
@@ -79,7 +79,7 @@
     <string name="screen_select_modules">Seleccioneu mòduls</string>
     <string name="welcome_version">Versió %1$s</string>
     <string name="welcome_intro_content">Una moderna eina d\'injecció de mòduls Xposed i eina de pegat APK dissenyada per a entorns sense arrels.</string>
-    <string name="welcome_intro_detail">NPatch injecta el carregador Xposed modificant els fitxers APK. El mode local funciona amb el gestor per carregar mòduls i gestionar els àmbits de manera dinàmica, sense mantenir el gestor en execució en segon pla. El mode integrat incorpora mòduls directament a l\'aplicació de destinació per utilitzar-los autònoms en dispositius sense el gestor. Shizuku només desbloqueja algunes funcions de comoditat i no és necessari per a l\'aplicació de pedaços bàsics de NPatch, la càrrega de mòduls o la gestió bàsica.</string>
+    <string name="welcome_intro_detail">ShimmerPatch injecta el carregador Xposed modificant els fitxers APK. El mode local funciona amb el gestor per carregar mòduls i gestionar els àmbits de manera dinàmica, sense mantenir el gestor en execució en segon pla. El mode integrat incorpora mòduls directament a l\'aplicació de destinació per utilitzar-los autònoms en dispositius sense el gestor. Shizuku només desbloqueja algunes funcions de comoditat i no és necessari per a l\'aplicació de pedaços bàsics de ShimmerPatch, la càrrega de mòduls o la gestió bàsica.</string>
     <string name="welcome_permission_title">Configureu els permisos necessaris</string>
     <string name="welcome_permission_summary">Abans de començar, concediu permisos d\'accés bàsics per mantenir les funcions bàsiques en funcionament.</string>
     <string name="welcome_permission_storage_title">Accés a l\'emmagatzematge</string>
@@ -87,7 +87,7 @@
     <string name="welcome_permission_applist_title">Llegeix la llista d\'aplicacions</string>
     <string name="welcome_permission_applist_summary">S\'utilitza per llegir les aplicacions instal·lades perquè pugueu triar objectius de pedaç amb precisió.</string>
     <string name="welcome_optional_title">Extensió opcional: Shizuku</string>
-    <string name="welcome_optional_summary">Només extensió opcional. Fins i tot sense Shizuku, les funcions bàsiques de NPatch encara funcionen amb normalitat.</string>
+    <string name="welcome_optional_summary">Només extensió opcional. Fins i tot sense Shizuku, les funcions bàsiques de ShimmerPatch encara funcionen amb normalitat.</string>
     <string name="welcome_permission_granted">D\'acord</string>
     <string name="welcome_permission_authorize">Concedeix l\'accés</string>
     <string name="welcome_disclaimer_title">Notes d\'ús i exempció de responsabilitat</string>
@@ -114,7 +114,7 @@
     <string name="settings_other_settings">Altres configuracions</string>
     <string name="settings_network">Xarxa</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS utilitzat per les sol·licituds de xarxa NPatch</string>
+    <string name="settings_dns_summary">DNS utilitzat per les sol·licituds de xarxa ShimmerPatch</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

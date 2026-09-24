@@ -8,11 +8,11 @@
     <string name="patch_ui_copy_log">パッチログをコピーする</string>
     <string name="welcome_ui_step">ステップ %1$d / %2$d</string>
     <string name="screen_home">ホーム</string>
-    <string name="home_shizuku_optional_summary">任意の拡張機能です。NPatch の利用に必須ではありません。</string>
-    <string name="home_about">NPatchについて</string>
-    <string name="about_author_summary">NPatch メンテナー</string>
+    <string name="home_shizuku_optional_summary">任意の拡張機能です。ShimmerPatch の利用に必須ではありません。</string>
+    <string name="home_about">ShimmerPatchについて</string>
+    <string name="about_author_summary">ShimmerPatch メンテナー</string>
     <string name="about_disclaimer_title">免責事項</string>
-    <string name="about_disclaimer_body">NPatch は、学習、研究、および正規のアプリ互換性作業のためにのみ提供されます。現地の法律、アプリの規約、および元の開発者の権利を尊重してください。パッチを適用したアプリとモジュールがデバイス上でどのように使用されるかについては、お客様の責任となります。</string>
+    <string name="about_disclaimer_body">ShimmerPatch は、学習、研究、および正規のアプリ互換性作業のためにのみ提供されます。現地の法律、アプリの規約、および元の開発者の権利を尊重してください。パッチを適用したアプリとモジュールがデバイス上でどのように使用されるかについては、お客様の責任となります。</string>
     <string name="about_links_title">リンク</string>
     <string name="about_official_website">ウェブサイト</string>
     <string name="about_link_website_summary">NkBeのウェブサイトにアクセスしてください</string>
@@ -21,7 +21,7 @@
     <string name="about_acknowledgments_title">謝辞（順不同）</string>
     <string name="about_ack_rovo89_summary">Xposed フレームワークの創設者。モジュラーエコシステム全体の創始者であり先駆者です。</string>
     <string name="about_ack_lsposed_team_summary">Xposed エコシステムと低レベル インジェクション技術への継続的な貢献に対する LSPosed チームに感謝します。</string>
-    <string name="about_ack_jingmatrix_summary">Vector の著者。その優れたフレームワーク アーキテクチャは、NPatch に重要な基盤とインスピレーションを提供しました。</string>
+    <string name="about_ack_jingmatrix_summary">Vector の著者。その優れたフレームワーク アーキテクチャは、ShimmerPatch に重要な基盤とインスピレーションを提供しました。</string>
     <string name="about_ack_lspatch_summary">ルートレスパッチ適用ソリューションのパイオニアであり、マネージャー側実装による動的な Xposed 環境読み込みの実現可能性を証明しています。</string>
     <string name="about_ack_libxposed_summary">Xposed API 標準化の原動力となり、モジュール開発の世界にタイプセーフティと明確な規約をもたらします。</string>
     <string name="about_ack_winter_summary">私の最初の経済的支援者。このような早い時期からの直接的な励ましに感謝します。</string>
@@ -77,7 +77,7 @@
     <string name="screen_select_modules">モジュールを選択</string>
     <string name="welcome_version">バージョン %1$s</string>
     <string name="welcome_intro_content">ルートレス環境向けに設計された最新の Xposed モジュール インジェクションおよび APK パッチ適用ツール。</string>
-    <string name="welcome_intro_detail">NPatch は、APK ファイルを変更することで Xposed ローダーを挿入します。ローカル モードは、マネージャーをバックグラウンドで実行し続けることなく、マネージャーと連携してモジュールをロードし、スコープを動的に管理します。統合モードでは、マネージャーなしでデバイス上でスタンドアロンで使用できるように、モジュールをターゲット アプリに直接埋め込みます。 Shizuku は一部の便利な機能のロックを解除するだけであり、NPatch コアのパッチ適用、モジュールのロード、または基本的な管理には必要ありません。</string>
+    <string name="welcome_intro_detail">ShimmerPatch は、APK ファイルを変更することで Xposed ローダーを挿入します。ローカル モードは、マネージャーをバックグラウンドで実行し続けることなく、マネージャーと連携してモジュールをロードし、スコープを動的に管理します。統合モードでは、マネージャーなしでデバイス上でスタンドアロンで使用できるように、モジュールをターゲット アプリに直接埋め込みます。 Shizuku は一部の便利な機能のロックを解除するだけであり、ShimmerPatch コアのパッチ適用、モジュールのロード、または基本的な管理には必要ありません。</string>
     <string name="welcome_permission_title">必要な権限を構成する</string>
     <string name="welcome_permission_summary">開始する前に、コア機能を動作し続けるために基本的なアクセス許可を付与します。</string>
     <string name="welcome_permission_storage_title">ストレージアクセス</string>
@@ -85,7 +85,7 @@
     <string name="welcome_permission_applist_title">アプリリストを読む</string>
     <string name="welcome_permission_applist_summary">パッチのターゲットを正確に選択できるように、インストールされているアプリを読み取るために使用されます。</string>
     <string name="welcome_optional_title">任意の拡張機能: Shizuku</string>
-    <string name="welcome_optional_summary">オプションの拡張機能のみ。 Shizuku がなくても、NPatch のコア機能は正常に動作します。</string>
+    <string name="welcome_optional_summary">オプションの拡張機能のみ。 Shizuku がなくても、ShimmerPatch のコア機能は正常に動作します。</string>
     <string name="welcome_permission_granted">許可済み</string>
     <string name="welcome_permission_authorize">アクセスを許可する</string>
     <string name="welcome_disclaimer_title">使用上の注意と免責事項</string>
@@ -112,7 +112,7 @@
     <string name="settings_other_settings">その他の設定</string>
     <string name="settings_network">ネットワーク</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS は NPatch ネットワーク リクエストによって使用されます</string>
+    <string name="settings_dns_summary">DNS は ShimmerPatch ネットワーク リクエストによって使用されます</string>
     <string name="settings_dns_tencent">テンセント DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">クラウドフレア DoH</string>

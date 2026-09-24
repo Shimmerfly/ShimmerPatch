@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Têketina patchê kopî bikin</string>
     <string name="welcome_ui_step">Gav %1$d ya %2$d</string>
     <string name="screen_home">Home</string>
-    <string name="home_shizuku_optional_summary">Berfirehkirina vebijarkî, ji hêla NPatch ve ne hewce ye.</string>
-    <string name="home_about">Li ser NPatch</string>
-    <string name="about_author_summary">parêzgerê NPatch</string>
+    <string name="home_shizuku_optional_summary">Berfirehkirina vebijarkî, ji hêla ShimmerPatch ve ne hewce ye.</string>
+    <string name="home_about">Li ser ShimmerPatch</string>
+    <string name="about_author_summary">parêzgerê ShimmerPatch</string>
     <string name="about_disclaimer_title">Disclaimer</string>
-    <string name="about_disclaimer_body">NPatch tenê ji bo fêrbûn, lêkolîn û xebata lihevhatina serîlêdanê ya rewa tê peyda kirin. Ji kerema xwe qanûnên herêmî, şertên sepanê, û mafên pêşdebirên orîjînal rêz bigirin. Hûn berpirsiyar in ka serîlêdan û modulên patched çawa li ser cîhaza we têne bikar anîn.</string>
+    <string name="about_disclaimer_body">ShimmerPatch tenê ji bo fêrbûn, lêkolîn û xebata lihevhatina serîlêdanê ya rewa tê peyda kirin. Ji kerema xwe qanûnên herêmî, şertên sepanê, û mafên pêşdebirên orîjînal rêz bigirin. Hûn berpirsiyar in ka serîlêdan û modulên patched çawa li ser cîhaza we têne bikar anîn.</string>
     <string name="about_links_title">Girêdanên</string>
     <string name="about_official_website">Website</string>
     <string name="about_link_website_summary">Serdana malpera NkBe bikin</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Spasiyên taybetî (nefermî)</string>
     <string name="about_ack_rovo89_summary">Damezrînerê Çarçoveya Xposed; destpêker û pêşengê tevahiya ekosîstema modular.</string>
     <string name="about_ack_lsposed_team_summary">Bi spasiya Tîma LSPosed ji bo tevkariyên wan ên domdar ên ji bo ekosîstema Xposed û teknîkên derzîlêdanê yên asta nizm.</string>
-    <string name="about_ack_jingmatrix_summary">Nivîskarê Vector, ku mîmariya çarçoweya wî ya berbiçav ji bo NPatch bingehek girîng û îlhamek peyda kir.</string>
+    <string name="about_ack_jingmatrix_summary">Nivîskarê Vector, ku mîmariya çarçoweya wî ya berbiçav ji bo ShimmerPatch bingehek girîng û îlhamek peyda kir.</string>
     <string name="about_ack_lspatch_summary">Pêşengek di çareseriyên paçkirina bê root de, îsbatkirina barkirina jîngeha dînamîkî ya Xposed bi navgîniya bicîhkirina alîgirê rêveberê ve îsbat dike.</string>
     <string name="about_ack_libxposed_summary">Hêza ajotinê ya li pişt standardkirina Xposed API, ewlehiya celeb û peymanên zelal tîne cîhana pêşkeftina modulê.</string>
     <string name="about_ack_winter_summary">Piştgiriya min a yekem a aborî; spas ji bo teşwîqa zû û rasterast.</string>
@@ -79,7 +79,7 @@
     <string name="screen_select_modules">Modulan hilbijêrin</string>
     <string name="welcome_version">Guhertoya %1$s</string>
     <string name="welcome_intro_content">Derzkirinek modulek Xposed ya nûjen û amûrek pêvekirina APK ku ji bo hawîrdorên bê root hatî çêkirin.</string>
-    <string name="welcome_intro_detail">NPatch bi guheztina pelên APK barkerê Xposed derzî dike. Moda herêmî bi rêveberê re dixebite ku modulan bar bike û qadan bi dînamîkî rêve bibe, bêyî ku rêveber li paşde bixebite. Moda yekbûyî modulan rasterast di sepana armancê de vedihewîne ji bo karanîna serbixwe li ser cîhazên bêyî rêveber. Shizuku tenê hin taybetmendiyên rehetiyê vedike û ji bo lêxistina bingehîn a NPatch, barkirina modul, an rêveberiya bingehîn ne hewce ye.</string>
+    <string name="welcome_intro_detail">ShimmerPatch bi guheztina pelên APK barkerê Xposed derzî dike. Moda herêmî bi rêveberê re dixebite ku modulan bar bike û qadan bi dînamîkî rêve bibe, bêyî ku rêveber li paşde bixebite. Moda yekbûyî modulan rasterast di sepana armancê de vedihewîne ji bo karanîna serbixwe li ser cîhazên bêyî rêveber. Shizuku tenê hin taybetmendiyên rehetiyê vedike û ji bo lêxistina bingehîn a ShimmerPatch, barkirina modul, an rêveberiya bingehîn ne hewce ye.</string>
     <string name="welcome_permission_title">Destûrên Pêwîstî Mîheng bikin</string>
     <string name="welcome_permission_summary">Berî ku dest pê bikin, destûrên gihîştina bingehîn bidin da ku taybetmendiyên bingehîn bixebitin.</string>
     <string name="welcome_permission_storage_title">Storage Access</string>
@@ -87,7 +87,7 @@
     <string name="welcome_permission_applist_title">Lîsteya Appê bixwînin</string>
     <string name="welcome_permission_applist_summary">Ji bo xwendina sepanên sazkirî tê bikar anîn da ku hûn bi rast armancên patchê hilbijêrin.</string>
     <string name="welcome_optional_title">Berfirehkirina Bijarî: Shizuku</string>
-    <string name="welcome_optional_summary">Bi tenê dirêjkirina Bijarî. Tewra bêyî Shizuku, taybetmendiyên bingehîn ên NPatch hîn jî normal dixebitin.</string>
+    <string name="welcome_optional_summary">Bi tenê dirêjkirina Bijarî. Tewra bêyî Shizuku, taybetmendiyên bingehîn ên ShimmerPatch hîn jî normal dixebitin.</string>
     <string name="welcome_permission_granted">dayîn</string>
     <string name="welcome_permission_authorize">Destûrê bide</string>
     <string name="welcome_disclaimer_title">Têbiniyên Bikaranînê û Daxuyaniyê</string>
@@ -114,7 +114,7 @@
     <string name="settings_other_settings">Mîhengên din</string>
     <string name="settings_network">Network</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS ji hêla daxwazên torê yên NPatch ve tê bikar anîn</string>
+    <string name="settings_dns_summary">DNS ji hêla daxwazên torê yên ShimmerPatch ve tê bikar anîn</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

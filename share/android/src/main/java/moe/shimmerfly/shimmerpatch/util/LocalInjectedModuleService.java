@@ -10,14 +10,14 @@ import org.matrix.vector.ipc.IModuleService;
 import org.matrix.vector.ipc.IRemotePreferenceCallback;
 
 /**
- * Read-only injected-LoadedModule view of an {@link NPatchRemoteStore}.
+ * Read-only injected-LoadedModule view of an {@link ShimmerPatchRemoteStore}.
  *
  * <p>Vector API 101/102 deliberately keeps injected remote data read-only. LoadedModule applications
  * perform writes through {@code IXposedService}; this service only delivers snapshots, change
  * callbacks and read-only files to code running inside hooked targets.</p>
  */
 public final class LocalInjectedModuleService extends IModuleService.Stub {
-    private final NPatchRemoteStore store;
+    private final ShimmerPatchRemoteStore store;
     private final int allowedUid;
 
     public LocalInjectedModuleService(Context context, String packageName) {
@@ -25,14 +25,14 @@ public final class LocalInjectedModuleService extends IModuleService.Stub {
     }
 
     public LocalInjectedModuleService(Context context, String packageName, int allowedUid) {
-        store = NPatchRemoteStore.get(context, packageName);
+        store = ShimmerPatchRemoteStore.get(context, packageName);
         this.allowedUid = allowedUid;
     }
 
     @Override
     public long getFrameworkProperties() {
         enforceCaller();
-        return NPatchRemoteStore.CAP_REMOTE;
+        return ShimmerPatchRemoteStore.CAP_REMOTE;
     }
 
     @Override

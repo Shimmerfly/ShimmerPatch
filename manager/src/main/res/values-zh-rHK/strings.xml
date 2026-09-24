@@ -15,14 +15,14 @@
     <!-- Home Screen -->
     <string name="home_shizuku_warning">部分功能不可用</string>
     <string name="home_api_version">API 版本</string>
-    <string name="home_npatch_version">NPatch 版本</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch 版本</string>
     <string name="home_framework_version">框架版本</string>
     <string name="home_system_version">系統版本</string>
     <string name="home_device">裝置</string>
     <string name="home_system_abi">系統架构</string>
     <string name="home_info_copied">已複製到剪贴板</string>
-    <string name="home_about">關於 NPatch</string>
-    <string name="home_description">NPatch 是一款免费的迭代于 LSPatch 的，基于 Vector 核心的免 Root 的 Xposed 框架。</string>
+    <string name="home_about">關於 ShimmerPatch</string>
+    <string name="home_description">ShimmerPatch 是一款免费的迭代于 LSPatch 的，基于 Vector 核心的免 Root 的 Xposed 框架。</string>
     <!-- Manage Screen -->
     <string name="screen_manage">管理</string>
     <string name="manage_loading">載入中</string>
@@ -50,9 +50,9 @@
     <string name="patch_from_applist">選擇已安裝的應用程式程序</string>
     <string name="patch_mode">修补模式</string>
     <string name="patch_local">本地模式</string>
-    <string name="patch_local_desc">為未嵌入模組的應用程式打補丁。\nXposed 範圍可動態更改，無需重新打補丁。\n此模式下的應用程式只能在本地裝置上與 NPatch 管理器搭配使用。</string>
+    <string name="patch_local_desc">為未嵌入模組的應用程式打補丁。\nXposed 範圍可動態更改，無需重新打補丁。\n此模式下的應用程式只能在本地裝置上與 ShimmerPatch 管理器搭配使用。</string>
     <string name="patch_integrated">集成模式</string>
-    <string name="patch_integrated_desc">修补 App 并内置模組。\n经修补的應用程式可以在没有管理器的情况下运行，但不能动态管理配置。\n以集成模式修补的應用程式可在未安裝 NPatch 管理器的裝置上运行。</string>
+    <string name="patch_integrated_desc">修补 App 并内置模組。\n经修补的應用程式可以在没有管理器的情况下运行，但不能动态管理配置。\n以集成模式修补的應用程式可在未安裝 ShimmerPatch 管理器的裝置上运行。</string>
     <string name="patch_embed_modules">嵌入模組</string>
     <string name="patch_debuggable">可调试</string>
     <string name="patch_sigbypass">破解簽名校验</string>

@@ -14,7 +14,7 @@ import moe.shimmerfly.shimmerpatch.ui.util.LocalBackgroundImagePath
 
 /** A destination owns its complete surface, including the optional wallpaper, during transitions. */
 @Composable
-fun NPatchScaffold(
+fun ShimmerPatchScaffold(
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit = {},
     bottomBar: @Composable () -> Unit = {},

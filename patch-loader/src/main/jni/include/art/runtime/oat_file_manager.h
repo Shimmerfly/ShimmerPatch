@@ -17,8 +17,8 @@
  * Copyright (C) 2021 - 2022 LSPosed Contributors
  */
 
-#ifndef NPATCH_OAT_FILE_MANAGER_H
-#define NPATCH_OAT_FILE_MANAGER_H
+#ifndef SHIMMERPATCH_OAT_FILE_MANAGER_H
+#define SHIMMERPATCH_OAT_FILE_MANAGER_H
 
 #include <vector>
 
@@ -70,4 +70,4 @@ public:
 };
 }  // namespace art
 
-#endif  // NPATCH_OAT_FILE_MANAGER_H
+#endif  // SHIMMERPATCH_OAT_FILE_MANAGER_H

@@ -69,10 +69,10 @@ fun HomeScreen(navigator: Navigator, onManageShortcut: (Int) -> Unit = {}, conte
     }
     val apps = viewModel<AppManageViewModel>().appList.size
     val modules = viewModel<ModuleManageViewModel>().appList.size
-    NPatchScaffold(
+    ShimmerPatchScaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            NPatchTopAppBar(
+            ShimmerPatchTopAppBar(
                 title = stringResource(R.string.app_name),
                 scrollBehavior = scrollBehavior,
                 modifier = Modifier.m3AppBarBlur(backdrop),
@@ -154,7 +154,7 @@ private fun DeviceInformation() {
     }
     val fields = listOf(
         Triple(stringResource(R.string.home_api_version), "${LSPConfig.instance.API_CODE}", Icons.Outlined.Code),
-        Triple(stringResource(R.string.home_npatch_version), "${LSPConfig.instance.VERSION_NAME} (${LSPConfig.instance.VERSION_CODE})", Icons.Outlined.Tag),
+        Triple(stringResource(R.string.home_shimmerpatch_version), "${LSPConfig.instance.VERSION_NAME} (${LSPConfig.instance.VERSION_CODE})", Icons.Outlined.Tag),
         Triple(stringResource(R.string.home_framework_version), "${LSPConfig.instance.CORE_VERSION_NAME} (${LSPConfig.instance.CORE_VERSION_CODE})", Icons.Outlined.Layers),
         Triple(stringResource(R.string.home_system_version), system, Icons.Outlined.Android),
         Triple(stringResource(R.string.home_device), device, Icons.Outlined.Smartphone),
@@ -165,7 +165,7 @@ private fun DeviceInformation() {
             item {
                 BaseWidget(title = title, description = value, icon = icon, onClick = {
                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    clipboard.setPrimaryClip(ClipData.newPlainText("NPatch Info", fields.joinToString("\n") { "${it.first}: ${it.second}" }))
+                    clipboard.setPrimaryClip(ClipData.newPlainText("ShimmerPatch Info", fields.joinToString("\n") { "${it.first}: ${it.second}" }))
                     scope.launch { snackbar.showSnackbar(copied) }
                 })
             }

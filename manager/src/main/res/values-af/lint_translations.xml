@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Kopieer pleisterlogboek</string>
     <string name="welcome_ui_step">Stap %1$d van %2$d</string>
     <string name="screen_home">Tuis</string>
-    <string name="home_shizuku_optional_summary">Opsionele uitbreiding, nie deur NPatch vereis nie.</string>
-    <string name="home_about">Oor NPatch</string>
-    <string name="about_author_summary">NPatch onderhouer</string>
+    <string name="home_shizuku_optional_summary">Opsionele uitbreiding, nie deur ShimmerPatch vereis nie.</string>
+    <string name="home_about">Oor ShimmerPatch</string>
+    <string name="about_author_summary">ShimmerPatch onderhouer</string>
     <string name="about_disclaimer_title">Disclaimer</string>
-    <string name="about_disclaimer_body">NPatch word slegs verskaf vir leer, navorsing en wettige programversoenbaarheidswerk. Respekteer asseblief plaaslike wette, programbepalings en die regte van oorspronklike ontwikkelaars. Jy is verantwoordelik vir hoe gelapte programme en modules op jou toestel gebruik word.</string>
+    <string name="about_disclaimer_body">ShimmerPatch word slegs verskaf vir leer, navorsing en wettige programversoenbaarheidswerk. Respekteer asseblief plaaslike wette, programbepalings en die regte van oorspronklike ontwikkelaars. Jy is verantwoordelik vir hoe gelapte programme en modules op jou toestel gebruik word.</string>
     <string name="about_links_title">Skakels</string>
     <string name="about_official_website">Webwerf</string>
     <string name="about_link_website_summary">Besoek die webwerf van NkBe</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Spesiale dank (ongeorden)</string>
     <string name="about_ack_rovo89_summary">Stigter van die Xposed-raamwerk; die skepper en baanbreker van die hele modulêre ekosisteem.</string>
     <string name="about_ack_lsposed_team_summary">Met dank aan die LSPosed-span vir hul voortdurende bydraes tot die Xposed-ekosisteem en laevlak-inspuitingstegnieke.</string>
-    <string name="about_ack_jingmatrix_summary">Skrywer van Vector, wie se uitstaande raamwerkargitektuur \'n noodsaaklike grondslag en inspirasie vir NPatch verskaf het.</string>
+    <string name="about_ack_jingmatrix_summary">Skrywer van Vector, wie se uitstaande raamwerkargitektuur \'n noodsaaklike grondslag en inspirasie vir ShimmerPatch verskaf het.</string>
     <string name="about_ack_lspatch_summary">\'n Pionier in wortellose pleisteroplossings, wat die uitvoerbaarheid van dinamiese Xposed-omgewinglaai via bestuurder-kant-implementering bewys.</string>
     <string name="about_ack_libxposed_summary">Die dryfkrag agter Xposed API-standaardisering, wat tipe veiligheid en duidelike konvensies na die module-ontwikkelingswêreld bring.</string>
     <string name="about_ack_winter_summary">My heel eerste finansiële ondersteuner; dankie vir sulke vroeë en direkte aanmoediging.</string>
@@ -79,7 +79,7 @@
     <string name="screen_select_modules">Kies modules</string>
     <string name="welcome_version">Weergawe %1$s</string>
     <string name="welcome_intro_content">\'n Moderne Xposed-module-inspuiting en APK-pleisterinstrument wat ontwerp is vir wortellose omgewings.</string>
-    <string name="welcome_intro_detail">NPatch spuit die Xposed-laaier in deur APK-lêers te wysig. Plaaslike modus werk saam met die bestuurder om modules te laai en omvangs dinamies te bestuur, sonder om die bestuurder op die agtergrond aan die gang te hou. Geïntegreerde modus sluit modules direk in die teikentoepassing in vir selfstandige gebruik op toestelle sonder die bestuurder. Shizuku ontsluit slegs \'n paar geriefskenmerke en is nie nodig vir NPatch-kernpleistering, module-laai of basiese bestuur nie.</string>
+    <string name="welcome_intro_detail">ShimmerPatch spuit die Xposed-laaier in deur APK-lêers te wysig. Plaaslike modus werk saam met die bestuurder om modules te laai en omvangs dinamies te bestuur, sonder om die bestuurder op die agtergrond aan die gang te hou. Geïntegreerde modus sluit modules direk in die teikentoepassing in vir selfstandige gebruik op toestelle sonder die bestuurder. Shizuku ontsluit slegs \'n paar geriefskenmerke en is nie nodig vir ShimmerPatch-kernpleistering, module-laai of basiese bestuur nie.</string>
     <string name="welcome_permission_title">Stel vereiste toestemmings op</string>
     <string name="welcome_permission_summary">Voordat u begin, verleen basiese toegangstoestemmings om kernkenmerke te laat werk.</string>
     <string name="welcome_permission_storage_title">Berging Toegang</string>
@@ -87,7 +87,7 @@
     <string name="welcome_permission_applist_title">Lees toepassingslys</string>
     <string name="welcome_permission_applist_summary">Word gebruik om geïnstalleerde toepassings te lees sodat jy pleisterteikens akkuraat kan kies.</string>
     <string name="welcome_optional_title">Opsionele uitbreiding: Shizuku</string>
-    <string name="welcome_optional_summary">Slegs opsionele uitbreiding. Selfs sonder Shizuku, werk NPatch kernkenmerke steeds normaal.</string>
+    <string name="welcome_optional_summary">Slegs opsionele uitbreiding. Selfs sonder Shizuku, werk ShimmerPatch kernkenmerke steeds normaal.</string>
     <string name="welcome_permission_granted">Toegegee</string>
     <string name="welcome_permission_authorize">Verleen toegang</string>
     <string name="welcome_disclaimer_title">Gebruiksnotas en vrywaring</string>
@@ -114,7 +114,7 @@
     <string name="settings_other_settings">Ander instellings</string>
     <string name="settings_network">Netwerk</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS gebruik deur NPatch netwerkversoeke</string>
+    <string name="settings_dns_summary">DNS gebruik deur ShimmerPatch netwerkversoeke</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

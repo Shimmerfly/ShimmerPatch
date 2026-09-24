@@ -13,13 +13,13 @@
     <string name="error_unknown">অজানা ত্রুটি</string>
     <string name="home_shizuku_warning">কিছু ফাংশন অনুপলব্ধ</string>
     <string name="home_api_version">API সংস্করণ</string>
-    <string name="home_npatch_version">NPatch সংস্করণ</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch সংস্করণ</string>
     <string name="home_framework_version">ফ্রেমওয়ার্ক সংস্করণ</string>
     <string name="home_system_version">সিস্টেম সংস্করণ</string>
     <string name="home_device">যন্ত্র</string>
     <string name="home_system_abi">সিস্টেম ABI</string>
     <string name="home_info_copied">ক্লিপবোর্ডে কপি করা হয়েছে</string>
-    <string name="home_description">NPatch হল Vector ভিত্তিক একটি বিনামূল্যের নন-রুট Xposed ফ্রেমওয়ার্ক।</string>
+    <string name="home_description">ShimmerPatch হল Vector ভিত্তিক একটি বিনামূল্যের নন-রুট Xposed ফ্রেমওয়ার্ক।</string>
     <string name="screen_manage">পরিচালনা করুন</string>
     <string name="manage_loading">লোড হচ্ছে</string>
     <string name="manage_no_apps">এখনো কোনো প্যাচড অ্যাপস</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">একটি ইনস্টল করা অ্যাপ্লিকেশন নির্বাচন করুন</string>
     <string name="patch_mode">প্যাচ মোড</string>
     <string name="patch_local">স্থানীয়</string>
-    <string name="patch_local_desc">মডিউল এম্বেড না করে প্যাচ অ্যাপস।\nXposed সুযোগটি পুনরায় প্যাচ করার প্রয়োজন ছাড়াই গতিশীলভাবে পরিবর্তন করা যেতে পারে।\nএই মোড শুধুমাত্র স্থানীয়ভাবে NPatch ম্যানেজারের সাথে ব্যবহার করা যেতে পারে।</string>
+    <string name="patch_local_desc">মডিউল এম্বেড না করে প্যাচ অ্যাপস।\nXposed সুযোগটি পুনরায় প্যাচ করার প্রয়োজন ছাড়াই গতিশীলভাবে পরিবর্তন করা যেতে পারে।\nএই মোড শুধুমাত্র স্থানীয়ভাবে ShimmerPatch ম্যানেজারের সাথে ব্যবহার করা যেতে পারে।</string>
     <string name="patch_integrated">কই তুমি</string>
-    <string name="patch_integrated_desc">অন্তর্নির্মিত মডিউল সহ প্যাচ অ্যাপ্লিকেশন.\nপ্যাচ করা অ্যাপটি ম্যানেজার ছাড়া স্বাধীনভাবে চলতে পারে, কিন্তু এটি গতিশীলভাবে কনফিগারেশন পরিচালনা করতে পারে না।\nNPatch ম্যানেজার ইনস্টল করা ছাড়াই ডিভাইসে চালানোর প্রয়োজন এমন অ্যাপগুলির জন্য এই মোডটি উপযুক্ত।</string>
+    <string name="patch_integrated_desc">অন্তর্নির্মিত মডিউল সহ প্যাচ অ্যাপ্লিকেশন.\nপ্যাচ করা অ্যাপটি ম্যানেজার ছাড়া স্বাধীনভাবে চলতে পারে, কিন্তু এটি গতিশীলভাবে কনফিগারেশন পরিচালনা করতে পারে না।\nShimmerPatch ম্যানেজার ইনস্টল করা ছাড়াই ডিভাইসে চালানোর প্রয়োজন এমন অ্যাপগুলির জন্য এই মোডটি উপযুক্ত।</string>
     <string name="patch_embed_modules">করছি</string>
     <string name="patch_debuggable">ডিবাগযোগ্য</string>
     <string name="patch_sigbypass">স্বাক্ষর বাইপাস</string>

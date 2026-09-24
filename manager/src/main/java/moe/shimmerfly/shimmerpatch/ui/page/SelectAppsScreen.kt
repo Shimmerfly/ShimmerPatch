@@ -31,9 +31,9 @@ import moe.shimmerfly.shimmerpatch.ui.component.m3.topShape
 import moe.shimmerfly.shimmerpatch.ui.component.m3.middleShape
 import moe.shimmerfly.shimmerpatch.ui.component.m3.bottomShape
 import moe.shimmerfly.shimmerpatch.ui.component.m3.singleShape
-import moe.shimmerfly.shimmerpatch.ui.component.NPatchPullToRefresh
-import moe.shimmerfly.shimmerpatch.ui.component.NPatchScaffold
-import moe.shimmerfly.shimmerpatch.ui.component.NPatchTopAppBar
+import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchPullToRefresh
+import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchScaffold
+import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchTopAppBar
 import moe.shimmerfly.shimmerpatch.ui.component.SearchBar
 import moe.shimmerfly.shimmerpatch.ui.component.m3AppBarBlur
 import moe.shimmerfly.shimmerpatch.ui.component.m3AppBarColor
@@ -76,10 +76,10 @@ fun SelectAppsScreen(multiSelect: Boolean, initialSelected: List<String>?) {
 
     LaunchedEffect(multiSelect) { viewModel.filterAppList(false, appFilter) }
 
-    NPatchScaffold(
+    ShimmerPatchScaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            NPatchTopAppBar(
+            ShimmerPatchTopAppBar(
                 modifier = Modifier.m3AppBarBlur(backdrop),
                 color = backdrop.m3AppBarColor(),
                 title = title,
@@ -121,7 +121,7 @@ fun SelectAppsScreen(multiSelect: Boolean, initialSelected: List<String>?) {
             top = innerPadding.calculateTopPadding() + 8.dp,
             bottom = maxOf(innerPadding.calculateBottomPadding(), imeBottom) + if (multiSelect) 96.dp else 16.dp,
         )
-        NPatchPullToRefresh(
+        ShimmerPatchPullToRefresh(
             isRefreshing = viewModel.isRefreshing,
             scrollBehavior = scrollBehavior,
             onRefresh = { viewModel.filterAppList(true, appFilter) },

@@ -13,13 +13,13 @@
     <string name="error_unknown">שגיאה לא ידועה</string>
     <string name="home_shizuku_warning">חלק מהפונקציות אינן זמינות</string>
     <string name="home_api_version">גרסת API</string>
-    <string name="home_npatch_version">גרסת NPatch</string>
+    <string name="home_shimmerpatch_version">גרסת ShimmerPatch</string>
     <string name="home_framework_version">גרסת מסגרת</string>
     <string name="home_system_version">גרסת מערכת</string>
     <string name="home_device">התקן</string>
     <string name="home_system_abi">מערכת ABI</string>
     <string name="home_info_copied">הועתק ללוח</string>
-    <string name="home_description">NPatch היא מסגרת חינמית ללא שורש Xposed המבוססת על Vector.</string>
+    <string name="home_description">ShimmerPatch היא מסגרת חינמית ללא שורש Xposed המבוססת על Vector.</string>
     <string name="screen_manage">לנהל</string>
     <string name="manage_loading">טוען</string>
     <string name="manage_no_apps">עדיין אין אפליקציות מתוקנות</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">בחר אפליקציה מותקנת</string>
     <string name="patch_mode">מצב תיקון</string>
     <string name="patch_local">מְקוֹמִי</string>
-    <string name="patch_local_desc">מתקן אפליקציות ללא הטמעת מודולים.\nניתן לשנות את היקף Xposed באופן דינמי ללא צורך בתיקון מחדש.\nניתן להשתמש במצב זה רק באופן מקומי עם מנהל NPatch.</string>
+    <string name="patch_local_desc">מתקן אפליקציות ללא הטמעת מודולים.\nניתן לשנות את היקף Xposed באופן דינמי ללא צורך בתיקון מחדש.\nניתן להשתמש במצב זה רק באופן מקומי עם מנהל ShimmerPatch.</string>
     <string name="patch_integrated">מְשׁוּלָב</string>
-    <string name="patch_integrated_desc">תקן אפליקציה עם מודולים משובצים.\nהאפליקציה המתוקנת יכולה לפעול ללא המנהל, אך לא ניתן לנהל אותה באופן דינמי.\nניתן להשתמש באפליקציות מתוקנות משולבות במכשירים שלא מותקן בהם NPatch Manager.</string>
+    <string name="patch_integrated_desc">תקן אפליקציה עם מודולים משובצים.\nהאפליקציה המתוקנת יכולה לפעול ללא המנהל, אך לא ניתן לנהל אותה באופן דינמי.\nניתן להשתמש באפליקציות מתוקנות משולבות במכשירים שלא מותקן בהם ShimmerPatch Manager.</string>
     <string name="patch_embed_modules">הטמע מודולים</string>
     <string name="patch_debuggable">ניתן לניפוי באגים</string>
     <string name="patch_sigbypass">עוקף חתימה</string>

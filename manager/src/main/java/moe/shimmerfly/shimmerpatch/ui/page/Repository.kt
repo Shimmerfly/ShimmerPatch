@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import moe.shimmerfly.shimmerpatch.R
-import moe.shimmerfly.shimmerpatch.ui.component.NPatchScaffold
-import moe.shimmerfly.shimmerpatch.ui.component.NPatchTopAppBar
+import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchScaffold
+import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchTopAppBar
 import moe.shimmerfly.shimmerpatch.ui.page.Navigator
 
 /**
@@ -27,9 +27,9 @@ fun RepositoryScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
-    NPatchScaffold(
+    ShimmerPatchScaffold(
         topBar = {
-            NPatchTopAppBar(
+            ShimmerPatchTopAppBar(
                 title = stringResource(R.string.screen_repo),
                 scrollBehavior = scrollBehavior,
             )

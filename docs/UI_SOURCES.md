@@ -1,6 +1,6 @@
 # Material 3 Expressive UI
 
-The manager UI components follow WeKit and InstallerX-Revived. Device-information icon choices additionally follow KernelSU as requested. Business operations remain NPatch's. The copied components retain their upstream copyright and license headers; adaptations use the repository's GPL license.
+The manager UI components follow WeKit and InstallerX-Revived. Device-information icon choices additionally follow KernelSU as requested. Business operations remain ShimmerPatch's. The copied components retain their upstream copyright and license headers; adaptations use the repository's GPL license.
 
 Reference working copies used on 2026-09-12:
 
@@ -12,7 +12,7 @@ Paths in the following table are relative to each reference project's `app/src/m
 | Source | Destination / adaptation |
 | --- | --- |
 | WeKit `dev/ujhhgtg/wekit/ui/content/m3/ExpressiveCollapsingTopAppBar.kt` | `component/ExpressiveCollapsingTopAppBar.kt`; complete title layout, measurement, drag, typography interpolation and heading semantics copied. |
-| WeKit `ui/content/m3/ExpressiveBackButton.kt` | `component/ExpressiveBackButton.kt`; NPatch's existing Material arrow and localized back description. |
+| WeKit `ui/content/m3/ExpressiveBackButton.kt` | `component/ExpressiveBackButton.kt`; ShimmerPatch's existing Material arrow and localized back description. |
 | WeKit `ui/content/m3/{SegmentedColumn,BaseWidget,BaseItemContainer,SwitchWidget,RadioButtonWidget,M3Shape}.kt` | `component/m3/`; complete grouped item shapes, animations and widgets. Ordinary actions do not expose selection; switches and radio rows have one accessible state. |
 | WeKit `ui/content/m3/LazySegmentedItems.kt` | `component/m3/LazySegmentedItems.kt`; bounded language, DNS and installer lists share dynamic group corners and spacing. |
 | WeKit `ui/content/m3/DropDownMenuWidget.kt`, InstallerX `ui/page/main/widget/menu/GroupedDropdownMenuPopup.kt` | `component/m3/`; shared expressive selection and action menus, group/item shapes and leading icons. |
@@ -31,7 +31,7 @@ Paths in the following table are relative to each reference project's `app/src/m
 | InstallerX `ui/page/main/widget/setting/NavigationItemWidget.kt` | `page/SettingsScreen.kt`; shared settings action / chevron layout. |
 | WeKit `ui/agent/settings/PromptsScreen.kt` | `page/ManageScreen.kt`; PrimaryTabRow and one retained pager. |
 | InstallerX `ui/page/main/settings/config/apply/{ApplyPage,ApplyItemWidget}.kt` | `component/{SearchBar,AppItem}.kt`; real text input and app selection rows. |
-| InstallerX `ui/page/main/installer/dialog/inner/{InstallingDialog,PreparingDialog}.kt` / Material 3 pull-to-refresh | `page/newpatch/DoPatchBody.kt`, `component/{LoadingDialog,NPatchPullToRefresh}.kt`; wavy progress and expressive loading indicators. |
+| InstallerX `ui/page/main/installer/dialog/inner/{InstallingDialog,PreparingDialog}.kt` / Material 3 pull-to-refresh | `page/newpatch/DoPatchBody.kt`, `component/{LoadingDialog,ShimmerPatchPullToRefresh}.kt`; wavy progress and expressive loading indicators. |
 
 ## Design-system boundary
 
@@ -46,7 +46,7 @@ Direct Miuix dependencies are restricted to `miuix-nav-android`, `miuix-blur-and
 - Refresh containers wrap the app-bar nested-scroll connection, so list overscroll first expands the title and only the remaining distance reaches pull-to-refresh.
 - DataStore theme values are loaded once at the activity boundary. Preferences consume the loaded state, without rendering placeholder defaults on tab entry.
 - Cold startup keeps the system splash until the first themed composition is ready. The platform owns its exit transition; no placeholder frame or custom launch animation is inserted.
-- The splash drawable references the complete launcher artwork, including the NPatch wordmark, with one-sixth insets so the mark and lettering remain inside the system icon mask.
+- The splash drawable references the complete launcher artwork, including the ShimmerPatch wordmark, with one-sixth insets so the mark and lettering remain inside the system icon mask.
 - Scaffold measures the bottom navigation. Pages receive its actual height as scrollable end padding, keeping content behind blur while allowing the final item to scroll fully above navigation.
 - Process recreation returns interrupted native patch/picker flows to a stable destination; configuration changes preserve their live state and pending result channels.
 - Search uses one real input and one result tree. There is no fake input, IME-height focus reset, duplicate pager, or full-page visibility switch.

@@ -9,22 +9,22 @@ import android.util.Log;
 import org.matrix.vector.ipc.IModuleService;
 import org.matrix.vector.ipc.IRemotePreferenceCallback;
 import moe.shimmerfly.shimmerpatch.util.LocalInjectedModuleService;
-import moe.shimmerfly.shimmerpatch.util.NPatchRemoteStore;
+import moe.shimmerfly.shimmerpatch.util.ShimmerPatchRemoteStore;
 
 public class FallbackModuleServiceWrapper extends IModuleService.Stub {
-    private static final String TAG = "NPatch-FallbackWrapper";
+    private static final String TAG = "ShimmerPatch-FallbackWrapper";
     private final Object switchLock = new Object();
     private volatile IModuleService activeRemoteService;
     private final Context context;
     private final LocalInjectedModuleService localService;
-    private final NPatchRemoteStore localStore;
+    private final ShimmerPatchRemoteStore localStore;
     private final String modulePackageName;
 
     public FallbackModuleServiceWrapper(Context context, String modulePackageName, IModuleService remoteService) {
         this.context = context;
         this.modulePackageName = modulePackageName;
         this.localService = new LocalInjectedModuleService(context, modulePackageName);
-        this.localStore = NPatchRemoteStore.get(context, modulePackageName);
+        this.localStore = ShimmerPatchRemoteStore.get(context, modulePackageName);
         this.activeRemoteService = remoteService;
     }
 

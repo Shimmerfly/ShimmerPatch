@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">نسخ سجل التصحيح</string>
     <string name="welcome_ui_step">الخطوة %1$d من %2$d</string>
     <string name="screen_home">الصفحة الرئيسية</string>
-    <string name="home_shizuku_optional_summary">ملحق اختياري، غير مطلوب بواسطة NPatch.</string>
-    <string name="home_about">حول NPatch</string>
-    <string name="about_author_summary">مشرف NPatch</string>
+    <string name="home_shizuku_optional_summary">ملحق اختياري، غير مطلوب بواسطة ShimmerPatch.</string>
+    <string name="home_about">حول ShimmerPatch</string>
+    <string name="about_author_summary">مشرف ShimmerPatch</string>
     <string name="about_disclaimer_title">إخلاء المسؤولية</string>
-    <string name="about_disclaimer_body">يتم توفير NPatch فقط للتعلم والبحث وأعمال توافق التطبيقات المشروعة. يرجى احترام القوانين المحلية وشروط التطبيق وحقوق المطورين الأصليين. أنت مسؤول عن كيفية استخدام التطبيقات والوحدات المصححة على جهازك.</string>
+    <string name="about_disclaimer_body">يتم توفير ShimmerPatch فقط للتعلم والبحث وأعمال توافق التطبيقات المشروعة. يرجى احترام القوانين المحلية وشروط التطبيق وحقوق المطورين الأصليين. أنت مسؤول عن كيفية استخدام التطبيقات والوحدات المصححة على جهازك.</string>
     <string name="about_links_title">روابط</string>
     <string name="about_official_website">موقع الكتروني</string>
     <string name="about_link_website_summary">قم بزيارة الموقع الإلكتروني لـ NkBe</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">شكر خاص (غير مرتب)</string>
     <string name="about_ack_rovo89_summary">مؤسس إطار عمل Xposed؛ المنشئ والرائد للنظام البيئي المعياري بأكمله.</string>
     <string name="about_ack_lsposed_team_summary">مع الشكر لفريق LSPosed لمساهماتهم المستمرة في النظام البيئي Xposed وتقنيات الحقن منخفضة المستوى.</string>
-    <string name="about_ack_jingmatrix_summary">مؤلف Vector، الذي قدمت هندسته الهيكلية المتميزة أساسًا حيويًا وإلهامًا لـ NPatch.</string>
+    <string name="about_ack_jingmatrix_summary">مؤلف Vector، الذي قدمت هندسته الهيكلية المتميزة أساسًا حيويًا وإلهامًا لـ ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">رائدة في حلول التصحيح بدون جذور، مما يثبت جدوى تحميل بيئة Xposed الديناميكية عبر التنفيذ من جانب المدير.</string>
     <string name="about_ack_libxposed_summary">القوة الدافعة وراء توحيد Xposed API، مما يوفر سلامة النوع واتفاقيات واضحة لعالم تطوير الوحدات.</string>
     <string name="about_ack_winter_summary">أول داعم مالي لي؛ أشكركم على هذا التشجيع المبكر والمباشر.</string>
@@ -83,7 +83,7 @@
     <string name="screen_select_modules">حدد الوحدات</string>
     <string name="welcome_version">الإصدار %1$s</string>
     <string name="welcome_intro_content">حقن وحدة Xposed حديثة وأداة تصحيح APK مصممة للبيئات التي لا جذور لها.</string>
-    <string name="welcome_intro_detail">يقوم NPatch بإدخال محمل Xposed عن طريق تعديل ملفات APK. يعمل الوضع المحلي مع المدير لتحميل الوحدات وإدارة النطاقات ديناميكيًا، دون إبقاء المدير قيد التشغيل في الخلفية. يقوم الوضع المتكامل بتضمين الوحدات مباشرة في التطبيق المستهدف للاستخدام المستقل على الأجهزة بدون المدير. يفتح Shizuku فقط بعض ميزات الراحة وهو غير مطلوب للتصحيح الأساسي لـ NPatch أو تحميل الوحدة أو الإدارة الأساسية.</string>
+    <string name="welcome_intro_detail">يقوم ShimmerPatch بإدخال محمل Xposed عن طريق تعديل ملفات APK. يعمل الوضع المحلي مع المدير لتحميل الوحدات وإدارة النطاقات ديناميكيًا، دون إبقاء المدير قيد التشغيل في الخلفية. يقوم الوضع المتكامل بتضمين الوحدات مباشرة في التطبيق المستهدف للاستخدام المستقل على الأجهزة بدون المدير. يفتح Shizuku فقط بعض ميزات الراحة وهو غير مطلوب للتصحيح الأساسي لـ ShimmerPatch أو تحميل الوحدة أو الإدارة الأساسية.</string>
     <string name="welcome_permission_title">تكوين الأذونات المطلوبة</string>
     <string name="welcome_permission_summary">قبل البدء، امنح أذونات الوصول الأساسية للحفاظ على عمل الميزات الأساسية.</string>
     <string name="welcome_permission_storage_title">الوصول إلى التخزين</string>
@@ -91,7 +91,7 @@
     <string name="welcome_permission_applist_title">قراءة قائمة التطبيقات</string>
     <string name="welcome_permission_applist_summary">يستخدم لقراءة التطبيقات المثبتة حتى تتمكن من اختيار أهداف التصحيح بدقة.</string>
     <string name="welcome_optional_title">ملحق اختياري: Shizuku</string>
-    <string name="welcome_optional_summary">ملحق اختياري فقط. حتى بدون Shizuku، لا تزال الميزات الأساسية لـ NPatch تعمل بشكل طبيعي.</string>
+    <string name="welcome_optional_summary">ملحق اختياري فقط. حتى بدون Shizuku، لا تزال الميزات الأساسية لـ ShimmerPatch تعمل بشكل طبيعي.</string>
     <string name="welcome_permission_granted">منح</string>
     <string name="welcome_permission_authorize">منح الوصول</string>
     <string name="welcome_disclaimer_title">ملاحظات الاستخدام وإخلاء المسؤولية</string>
@@ -118,7 +118,7 @@
     <string name="settings_other_settings">إعدادات أخرى</string>
     <string name="settings_network">الشبكة</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS المستخدمة من قبل طلبات الشبكة NPatch</string>
+    <string name="settings_dns_summary">DNS المستخدمة من قبل طلبات الشبكة ShimmerPatch</string>
     <string name="settings_dns_tencent">تينسنت DoH</string>
     <string name="settings_dns_google">جوجل DoH</string>
     <string name="settings_dns_cloudflare">كلاود فلير DoH</string>

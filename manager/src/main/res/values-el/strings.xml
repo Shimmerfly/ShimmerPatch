@@ -13,13 +13,13 @@
     <string name="error_unknown">Άγνωστο σφάλμα</string>
     <string name="home_shizuku_warning">Ορισμένες λειτουργίες δεν είναι διαθέσιμες</string>
     <string name="home_api_version">Έκδοση API</string>
-    <string name="home_npatch_version">Έκδοση NPatch</string>
+    <string name="home_shimmerpatch_version">Έκδοση ShimmerPatch</string>
     <string name="home_framework_version">Έκδοση πλαισίου</string>
     <string name="home_system_version">Έκδοση συστήματος</string>
     <string name="home_device">Συσκευή</string>
     <string name="home_system_abi">Σύστημα ABI</string>
     <string name="home_info_copied">Αντιγράφηκε στο πρόχειρο</string>
-    <string name="home_description">Το NPatch είναι ένα δωρεάν πλαίσιο Xposed χωρίς ρίζα βασισμένο στο Vector.</string>
+    <string name="home_description">Το ShimmerPatch είναι ένα δωρεάν πλαίσιο Xposed χωρίς ρίζα βασισμένο στο Vector.</string>
     <string name="screen_manage">Διαχείριση</string>
     <string name="manage_loading">Φόρτωση</string>
     <string name="manage_no_apps">Δεν υπάρχουν ακόμα επιδιορθωμένες εφαρμογές</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Επιλέξτε μια εγκατεστημένη εφαρμογή</string>
     <string name="patch_mode">Λειτουργία ενημέρωσης κώδικα</string>
     <string name="patch_local">Τοπικός</string>
-    <string name="patch_local_desc">Επιδιορθώνει εφαρμογές χωρίς ενσωμάτωση λειτουργικών μονάδων.\nΤο εύρος Xposed μπορεί να αλλάξει δυναμικά χωρίς να χρειάζεται εκ νέου επιδιόρθωση.\nΑυτή η λειτουργία μπορεί να χρησιμοποιηθεί μόνο τοπικά με το NPatch Manager.</string>
+    <string name="patch_local_desc">Επιδιορθώνει εφαρμογές χωρίς ενσωμάτωση λειτουργικών μονάδων.\nΤο εύρος Xposed μπορεί να αλλάξει δυναμικά χωρίς να χρειάζεται εκ νέου επιδιόρθωση.\nΑυτή η λειτουργία μπορεί να χρησιμοποιηθεί μόνο τοπικά με το ShimmerPatch Manager.</string>
     <string name="patch_integrated">Ολοκληρωμένο</string>
-    <string name="patch_integrated_desc">Επιδιορθώστε μια εφαρμογή με ενσωματωμένες λειτουργικές μονάδες.\nΗ επιδιορθωμένη εφαρμογή μπορεί να εκτελεστεί χωρίς τον διαχειριστή, αλλά δεν είναι δυνατή η δυναμική διαχείριση της.\nΟι ενσωματωμένες ενημερωμένες εφαρμογές μπορούν να χρησιμοποιηθούν σε συσκευές που δεν έχουν εγκατεστημένο το NPatch Manager.</string>
+    <string name="patch_integrated_desc">Επιδιορθώστε μια εφαρμογή με ενσωματωμένες λειτουργικές μονάδες.\nΗ επιδιορθωμένη εφαρμογή μπορεί να εκτελεστεί χωρίς τον διαχειριστή, αλλά δεν είναι δυνατή η δυναμική διαχείριση της.\nΟι ενσωματωμένες ενημερωμένες εφαρμογές μπορούν να χρησιμοποιηθούν σε συσκευές που δεν έχουν εγκατεστημένο το ShimmerPatch Manager.</string>
     <string name="patch_embed_modules">Ενσωμάτωση λειτουργικών μονάδων</string>
     <string name="patch_debuggable">Δυνατότητα εντοπισμού σφαλμάτων</string>
     <string name="patch_sigbypass">Παράκαμψη υπογραφής</string>

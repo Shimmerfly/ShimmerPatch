@@ -13,13 +13,13 @@
     <string name="error_unknown">Ukendt fejl</string>
     <string name="home_shizuku_warning">Nogle funktioner er ikke tilgængelige</string>
     <string name="home_api_version">API-version</string>
-    <string name="home_npatch_version">NPatch version</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch version</string>
     <string name="home_framework_version">Rammeversion</string>
     <string name="home_system_version">Systemversion</string>
     <string name="home_device">Enhed</string>
     <string name="home_system_abi">System ABI</string>
     <string name="home_info_copied">Kopieret til udklipsholder</string>
-    <string name="home_description">NPatch er en gratis ikke-root Xposed ramme baseret på Vector.</string>
+    <string name="home_description">ShimmerPatch er en gratis ikke-root Xposed ramme baseret på Vector.</string>
     <string name="screen_manage">Administrer</string>
     <string name="manage_loading">Indlæser</string>
     <string name="manage_no_apps">Ingen lappede apps endnu</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Vælg en installeret app</string>
     <string name="patch_mode">Patch-tilstand</string>
     <string name="patch_local">Lokal</string>
-    <string name="patch_local_desc">Patcher apps uden indlejring af moduler.\nXposed-omfanget kan ændres dynamisk uden at skulle gen-patch.\nDenne tilstand kan kun bruges lokalt med NPatch Manager.</string>
+    <string name="patch_local_desc">Patcher apps uden indlejring af moduler.\nXposed-omfanget kan ændres dynamisk uden at skulle gen-patch.\nDenne tilstand kan kun bruges lokalt med ShimmerPatch Manager.</string>
     <string name="patch_integrated">Integreret</string>
-    <string name="patch_integrated_desc">Patch en app med indlejrede moduler.\nDen patchede app kan køre uden manageren, men kan ikke administreres dynamisk.\nIntegrerede patchede apps kan bruges på enheder, der ikke har NPatch Manager installeret.</string>
+    <string name="patch_integrated_desc">Patch en app med indlejrede moduler.\nDen patchede app kan køre uden manageren, men kan ikke administreres dynamisk.\nIntegrerede patchede apps kan bruges på enheder, der ikke har ShimmerPatch Manager installeret.</string>
     <string name="patch_embed_modules">Indlejre moduler</string>
     <string name="patch_debuggable">Debuggable</string>
     <string name="patch_sigbypass">Signatur bypass</string>

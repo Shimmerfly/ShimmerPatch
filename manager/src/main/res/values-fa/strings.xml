@@ -13,13 +13,13 @@
     <string name="error_unknown" />
     <string name="home_shizuku_warning">برخی از عملکردها در دسترس نیستند</string>
     <string name="home_api_version">نسخه API</string>
-    <string name="home_npatch_version">نسخه NPatch</string>
+    <string name="home_shimmerpatch_version">نسخه ShimmerPatch</string>
     <string name="home_framework_version">نسخه فریمورک</string>
     <string name="home_system_version">نسخه اندروید</string>
     <string name="home_device">مدل دستگاه</string>
     <string name="home_system_abi">نوع پردازنده</string>
     <string name="home_info_copied">در کلیپ بورد کپی شده</string>
-    <string name="home_description">NPatch یک فریمورک غیر روت رایگان Xposed بر اساس Vector است.</string>
+    <string name="home_description">ShimmerPatch یک فریمورک غیر روت رایگان Xposed بر اساس Vector است.</string>
     <string name="screen_manage">مدیریت</string>
     <string name="manage_loading">در حال بارگذاری …</string>
     <string name="manage_no_apps">هنوز هیچ برنامه ای پچ نشده</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">انتخاب یک برنامه نصب شده</string>
     <string name="patch_mode">حالت پچ</string>
     <string name="patch_local">محلی</string>
-    <string name="patch_local_desc">برنامه ها را بدون تعبیه ماژول ها وصله می کند.\nمحدوده Xposed را می توان به صورت پویا بدون نیاز به وصله مجدد تغییر داد.\nاین حالت فقط به صورت محلی با مدیر NPatch قابل استفاده است.</string>
+    <string name="patch_local_desc">برنامه ها را بدون تعبیه ماژول ها وصله می کند.\nمحدوده Xposed را می توان به صورت پویا بدون نیاز به وصله مجدد تغییر داد.\nاین حالت فقط به صورت محلی با مدیر ShimmerPatch قابل استفاده است.</string>
     <string name="patch_integrated">یکپارچه</string>
-    <string name="patch_integrated_desc">یک برنامه را با ماژول های تعبیه شده پچ کنید برنامه پچ شده می‌تواند بدون نیاز مدیر اجرا شود اما نمی توان آن را به‌ صورت پویا مدیریت کرد برنامه‌های پچ شده را می‌توان در دستگاه‌ هایی که مدیر NPatch در آن نصب نشده استفاده کرد</string>
+    <string name="patch_integrated_desc">یک برنامه را با ماژول های تعبیه شده پچ کنید برنامه پچ شده می‌تواند بدون نیاز مدیر اجرا شود اما نمی توان آن را به‌ صورت پویا مدیریت کرد برنامه‌های پچ شده را می‌توان در دستگاه‌ هایی که مدیر ShimmerPatch در آن نصب نشده استفاده کرد</string>
     <string name="patch_embed_modules">جاسازی ماژول ها</string>
     <string name="patch_debuggable">قابل اشکال زدایی</string>
     <string name="patch_sigbypass">دور زدن امضا</string>

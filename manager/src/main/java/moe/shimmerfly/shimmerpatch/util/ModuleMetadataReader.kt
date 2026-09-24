@@ -79,8 +79,8 @@ object ModuleMetadataReader {
         if (!apkFile.exists()) return null
 
         // For installed apps, we already have the metadata if it was passed in.
-        // We only need to check npatch metadata to exclude patched apps from the LoadedModule list.
-        if (appInfo.metaData?.containsKey("npatch") == true) {
+        // We only need to check shimmerpatch metadata to exclude patched apps from the LoadedModule list.
+        if (appInfo.metaData?.containsKey("shimmerpatch") == true) {
             return null
         }
 

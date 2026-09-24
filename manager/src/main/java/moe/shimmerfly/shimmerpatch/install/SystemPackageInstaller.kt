@@ -144,7 +144,7 @@ object SystemPackageInstaller {
     private fun createStatusIntent(context: Context, sessionId: Int, token: String): PendingIntent {
         val intent = Intent(context, InstallResultReceiver::class.java).apply {
             action = ACTION_INSTALL_STATUS
-            data = "npatch-install://result/$token".toUri()
+            data = "shimmerpatch-install://result/$token".toUri()
             putExtra(EXTRA_REQUEST_TOKEN, token)
         }
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or

@@ -15,13 +15,13 @@
     <!-- Home Screen -->
     <string name="home_shizuku_warning">Certaines fonctionnalités seront indisponibles</string>
     <string name="home_api_version">Version de l\'API</string>
-    <string name="home_npatch_version">Version de NPatch</string>
+    <string name="home_shimmerpatch_version">Version de ShimmerPatch</string>
     <string name="home_framework_version">Version du Framework</string>
     <string name="home_system_version">Version du système</string>
     <string name="home_device">Appareil</string>
     <string name="home_system_abi">Architecture du système</string>
     <string name="home_info_copied">Copié dans le presse-papier</string>
-    <string name="home_description">NPatch est un framework Xposed gratuit, sans accès root, basé sur Vector.</string>
+    <string name="home_description">ShimmerPatch est un framework Xposed gratuit, sans accès root, basé sur Vector.</string>
     <!-- Manage Screen -->
     <string name="screen_manage">Gérer</string>
     <string name="manage_loading">Chargement</string>
@@ -49,9 +49,9 @@
     <string name="patch_from_applist">Sélectionner une appli installée</string>
     <string name="patch_mode">Mode de patch</string>
     <string name="patch_local">Local</string>
-    <string name="patch_local_desc">Modifie les applications sans y intégrer de modules.\nLa portée de Xposed peut être modifiée dynamiquement sans appliquer de nouveau correctif.\nCe mode fonctionne uniquement sur cet appareil avec le gestionnaire NPatch.</string>
+    <string name="patch_local_desc">Modifie les applications sans y intégrer de modules.\nLa portée de Xposed peut être modifiée dynamiquement sans appliquer de nouveau correctif.\nCe mode fonctionne uniquement sur cet appareil avec le gestionnaire ShimmerPatch.</string>
     <string name="patch_integrated">Intégré</string>
-    <string name="patch_integrated_desc">Patcher une application avec des modules intégrés.\nL\'application corrigée peut fonctionner sans le gestionnaire mais ne peut pas être gérée dynamiquement.\nLes applications patchées intégrées peuvent être utilisées sur des appareils sur lesquels NPatch Manager n\'est pas installé.</string>
+    <string name="patch_integrated_desc">Patcher une application avec des modules intégrés.\nL\'application corrigée peut fonctionner sans le gestionnaire mais ne peut pas être gérée dynamiquement.\nLes applications patchées intégrées peuvent être utilisées sur des appareils sur lesquels ShimmerPatch Manager n\'est pas installé.</string>
     <string name="patch_embed_modules">Intégrer des modules</string>
     <string name="patch_debuggable">Débogable</string>
     <string name="patch_sigbypass">Contournement des signatures</string>

@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Javítási napló másolása</string>
     <string name="welcome_ui_step">A %2$d %1$d lépése</string>
     <string name="screen_home">Otthon</string>
-    <string name="home_shizuku_optional_summary">Opcionális bővítmény, a NPatch számára nem szükséges.</string>
-    <string name="home_about">A NPatch-ről</string>
-    <string name="about_author_summary">NPatch karbantartó</string>
+    <string name="home_shizuku_optional_summary">Opcionális bővítmény, a ShimmerPatch számára nem szükséges.</string>
+    <string name="home_about">A ShimmerPatch-ről</string>
+    <string name="about_author_summary">ShimmerPatch karbantartó</string>
     <string name="about_disclaimer_title">Jogi nyilatkozat</string>
-    <string name="about_disclaimer_body">A NPatch csak tanuláshoz, kutatáshoz és jogszerű alkalmazáskompatibilitási munkához használható. Kérjük, tartsa tiszteletben a helyi törvényeket, az alkalmazások feltételeit és az eredeti fejlesztők jogait. Ön felelős azért, hogy a javított alkalmazásokat és modulokat hogyan használják eszközén.</string>
+    <string name="about_disclaimer_body">A ShimmerPatch csak tanuláshoz, kutatáshoz és jogszerű alkalmazáskompatibilitási munkához használható. Kérjük, tartsa tiszteletben a helyi törvényeket, az alkalmazások feltételeit és az eredeti fejlesztők jogait. Ön felelős azért, hogy a javított alkalmazásokat és modulokat hogyan használják eszközén.</string>
     <string name="about_links_title">Linkek</string>
     <string name="about_official_website">Weboldal</string>
     <string name="about_link_website_summary">Látogassa meg az NkBe weboldalát</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Külön köszönet (sorrend nélkül)</string>
     <string name="about_ack_rovo89_summary">A Xposed Framework alapítója; az egész moduláris ökoszisztéma ötletgazdája és úttörője.</string>
     <string name="about_ack_lsposed_team_summary">Köszönet az LSPosed csapatának a Xposed ökoszisztémához való folyamatos hozzájárulásáért és az alacsony szintű befecskendezési technikákért.</string>
-    <string name="about_ack_jingmatrix_summary">A Vector szerzője, akinek kiemelkedő keretrendszere létfontosságú alapot és inspirációt adott a NPatch számára.</string>
+    <string name="about_ack_jingmatrix_summary">A Vector szerzője, akinek kiemelkedő keretrendszere létfontosságú alapot és inspirációt adott a ShimmerPatch számára.</string>
     <string name="about_ack_lspatch_summary">A gyökér nélküli javítási megoldások úttörője, amely bizonyítja a dinamikus Xposed környezetbetöltés megvalósíthatóságát menedzseroldali megvalósításon keresztül.</string>
     <string name="about_ack_libxposed_summary">A Xposed API szabványosítás hajtóereje, amely típusbiztonságot és egyértelmű konvenciókat hoz a modulfejlesztő világba.</string>
     <string name="about_ack_winter_summary">A legelső anyagi támogatóm; köszönöm ezt a korai és közvetlen biztatást.</string>
@@ -79,7 +79,7 @@
     <string name="screen_select_modules">Válassza ki a modulokat</string>
     <string name="welcome_version">%1$s verzió</string>
     <string name="welcome_intro_content">Modern Xposed modul-injektáló és APK foltozó eszköz gyökérmentes környezetekhez.</string>
-    <string name="welcome_intro_detail">A NPatch beadja a Xposed betöltőt a APK fájlok módosításával. A helyi mód a kezelővel együttműködve dinamikusan tölti be a modulokat és kezeli a hatóköröket anélkül, hogy a kezelő a háttérben futna. Az integrált mód közvetlenül a célalkalmazásba ágyazza be a modulokat, így a kezelő nélküli eszközökön önállóan is használható. A Shizuku csak néhány kényelmi funkciót nyit meg, és nem szükséges a NPatch magjavításhoz, a modulok betöltéséhez vagy az alapkezeléshez.</string>
+    <string name="welcome_intro_detail">A ShimmerPatch beadja a Xposed betöltőt a APK fájlok módosításával. A helyi mód a kezelővel együttműködve dinamikusan tölti be a modulokat és kezeli a hatóköröket anélkül, hogy a kezelő a háttérben futna. Az integrált mód közvetlenül a célalkalmazásba ágyazza be a modulokat, így a kezelő nélküli eszközökön önállóan is használható. A Shizuku csak néhány kényelmi funkciót nyit meg, és nem szükséges a ShimmerPatch magjavításhoz, a modulok betöltéséhez vagy az alapkezeléshez.</string>
     <string name="welcome_permission_title">A szükséges engedélyek konfigurálása</string>
     <string name="welcome_permission_summary">Mielőtt elkezdené, adjon alapvető hozzáférési engedélyeket, hogy az alapvető funkciók továbbra is működjenek.</string>
     <string name="welcome_permission_storage_title">Tárolási hozzáférés</string>
@@ -87,7 +87,7 @@
     <string name="welcome_permission_applist_title">Olvassa el az alkalmazáslistát</string>
     <string name="welcome_permission_applist_summary">A telepített alkalmazások olvasására szolgál, így pontosan kiválaszthatja a javítási célokat.</string>
     <string name="welcome_optional_title">Opcionális kiterjesztés: Shizuku</string>
-    <string name="welcome_optional_summary">Csak opcionális bővítmény. A NPatch alapfunkciói a Shizuku nélkül is normálisan működnek.</string>
+    <string name="welcome_optional_summary">Csak opcionális bővítmény. A ShimmerPatch alapfunkciói a Shizuku nélkül is normálisan működnek.</string>
     <string name="welcome_permission_granted">Megadva</string>
     <string name="welcome_permission_authorize">Adjon hozzáférést</string>
     <string name="welcome_disclaimer_title">Használati megjegyzések és felelősség kizárása</string>
@@ -114,7 +114,7 @@
     <string name="settings_other_settings">Egyéb beállítások</string>
     <string name="settings_network">Hálózat</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">A NPatch hálózati kérések által használt DNS</string>
+    <string name="settings_dns_summary">A ShimmerPatch hálózati kérések által használt DNS</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

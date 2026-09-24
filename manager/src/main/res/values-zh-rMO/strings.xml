@@ -15,21 +15,21 @@
 
     <!-- Home Screen -->
     <string name="home_shizuku_warning">Shizuku 酱没睡醒喵…</string>
-    <string name="home_shizuku_optional_summary">只是可选扩展喵，不会耽误 NPatch 的核心猫技。</string>
+    <string name="home_shizuku_optional_summary">只是可选扩展喵，不会耽误 ShimmerPatch 的核心猫技。</string>
     <string name="home_api_version">API 核心版本</string>
-    <string name="home_npatch_version">NPatch 版本</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch 版本</string>
     <string name="home_framework_version">猫猫核心版本</string>
     <string name="home_system_version">猫窝系统版本</string>
     <string name="home_device">猫爬架型号</string>
     <string name="home_system_abi">猫猫系统底层架构 (ABI)</string>
     <string name="home_info_copied">已揣入肉垫（剪贴板）</string>
-    <string name="home_about">关于 NPatch</string>
-    <string name="home_description">NPatch 是一款免費且迭代自 LSPatch 的，基於 Vector 核心的免 Root 的 Xposed 框架。</string>
+    <string name="home_about">关于 ShimmerPatch</string>
+    <string name="home_description">ShimmerPatch 是一款免費且迭代自 LSPatch 的，基於 Vector 核心的免 Root 的 Xposed 框架。</string>
 
     <!-- About Screen -->
-    <string name="about_author_summary">NPatch大猫猫的育猫师</string>
+    <string name="about_author_summary">ShimmerPatch大猫猫的育猫师</string>
     <string name="about_disclaimer_title">猫咪条约</string>
-    <string name="about_disclaimer_body">NPatch 仅供学习、研究以及合法的应用兼容性工作使用喵。请尊重当地法律、应用条款以及原开发者的权益。在你的猫爬架上运行修补 App 和挂件的后果需由你自己承担喵，开发者不负责任何猫窝坍塌、小鱼干数据丢失或其他意外伤害喵。</string>
+    <string name="about_disclaimer_body">ShimmerPatch 仅供学习、研究以及合法的应用兼容性工作使用喵。请尊重当地法律、应用条款以及原开发者的权益。在你的猫爬架上运行修补 App 和挂件的后果需由你自己承担喵，开发者不负责任何猫窝坍塌、小鱼干数据丢失或其他意外伤害喵。</string>
     <string name="about_links_title">喵星传送门</string>
     <string name="about_official_website">猫爬架官网</string>
     <string name="about_link_website_summary">传送到官方据点</string>
@@ -37,7 +37,7 @@
     <string name="about_link_telegram_summary">订阅喵星频道，掌握第一手动向</string>
     <string name="about_acknowledgments_title">全宇宙致谢（挨个蹭蹭）</string>
     <string name="about_ack_rovo89_summary">Xposed 框架的老祖宗，一切模块化捕猎生态的起源与猫薄荷奠基者喵。</string>
-    <string name="about_ack_jingmatrix_summary">Vector 大猫工匠，其优秀的框架工作为 NPatch 的快乐迭代提供了重要的骨架与启发喵。</string>
+    <string name="about_ack_jingmatrix_summary">Vector 大猫工匠，其优秀的框架工作为 ShimmerPatch 的快乐迭代提供了重要的骨架与启发喵。</string>
     <string name="about_ack_lsposed_team_summary">感谢 LSPosed 团队，是打造现代化 Xposed 钢筋骨架的顶级猫工匠。</string>
     <string name="about_ack_lspatch_summary">免 Root 修補方案的先行者，證明了在管理器側動態加載 Xposed 環境的可行性。</string>
     <string name="about_ack_libxposed_summary">感谢 LibXposed，为开发者的猫爪带来了秩序与类型安全。</string>
@@ -80,9 +80,9 @@
     <string name="patch_from_applist">从已住下的 Apps 里挑选</string>
     <string name="patch_mode">打包套路</string>
     <string name="patch_local">居家模式</string>
-    <string name="patch_local_desc">為未嵌入模組的應用程式打補丁。\nXposed 範圍可動態更改，無需重新打補丁。\n此模式下的應用程式只能在本地裝置上與 NPatch 管理器搭配使用。</string>
+    <string name="patch_local_desc">為未嵌入模組的應用程式打補丁。\nXposed 範圍可動態更改，無需重新打補丁。\n此模式下的應用程式只能在本地裝置上與 ShimmerPatch 管理器搭配使用。</string>
     <string name="patch_integrated">合体模式</string>
-    <string name="patch_integrated_desc">修補 App 並內建模組。\n經修補的應用可以在沒有管理器的情況下獨立執行，但不能動態管理配置。\n此模式適用於需要在未安裝 NPatch 管理器的裝置上執行的應用程式。</string>
+    <string name="patch_integrated_desc">修補 App 並內建模組。\n經修補的應用可以在沒有管理器的情況下獨立執行，但不能動態管理配置。\n此模式適用於需要在未安裝 ShimmerPatch 管理器的裝置上執行的應用程式。</string>
     <string name="patch_embed_modules">缝入挂件</string>
     <string name="patch_inject_dex">注入載入器 DEX (子進程支援)</string>
     <string name="patch_inject_dex_desc">將 載入器 DEX 物理寫入主 DEX 序列。僅當裝載的模組明確需要 Hook 獨立子進程/沙箱組件時開啟此特例選項。</string>
@@ -123,7 +123,7 @@
     <!-- Welcome Screen -->
         <string name="welcome_version">版本 %1$s</string>
     <string name="welcome_intro_content">專為免 Root 環境設計的現代化 Xposed 模組注入與應用修補工具。</string>
-    <string name="welcome_intro_detail">NPatch 能在不用 Root 的爬架上，通过悄悄改装 APK 把 Xposed 加载器塞进去喵。居家模式得搭配大猫猫管理器来随时调教挂件与领地，但撒欢时不需要管理器在后台守着喵；合体模式直接把挂件缝进 App 肚子里，适合送去没有管理器住的陌生人家里独立跑跳喵。Shizuku 酱只是帮忙开几个便利小后门，不是 NPatch 核心修补、挂件加载和基础管理的必需品喵。</string>
+    <string name="welcome_intro_detail">ShimmerPatch 能在不用 Root 的爬架上，通过悄悄改装 APK 把 Xposed 加载器塞进去喵。居家模式得搭配大猫猫管理器来随时调教挂件与领地，但撒欢时不需要管理器在后台守着喵；合体模式直接把挂件缝进 App 肚子里，适合送去没有管理器住的陌生人家里独立跑跳喵。Shizuku 酱只是帮忙开几个便利小后门，不是 ShimmerPatch 核心修补、挂件加载和基础管理的必需品喵。</string>
     <string name="welcome_permission_title">打通猫窝管道</string>
     <string name="welcome_permission_summary">开始撒欢前，请先解开以下爪印束缚以确保核心猫技正常施展喵。</string>
     <string name="welcome_permission_storage_title">翻找储藏室权限</string>
@@ -131,7 +131,7 @@
     <string name="welcome_permission_applist_title">清点住户名单</string>
     <string name="welcome_permission_applist_summary">用来打探已经住下哪些 Apps 邻居，方便你一爪子精准逮住想要修补的目标喵。</string>
     <string name="welcome_optional_title">可选扩展：Shizuku 酱</string>
-    <string name="welcome_optional_summary">Shizuku 僅為可選擴展，未連接也不影響 NPatch 核心功能。</string>
+    <string name="welcome_optional_summary">Shizuku 僅為可選擴展，未連接也不影響 ShimmerPatch 核心功能。</string>
     <string name="welcome_permission_granted">肉垫已盖章</string>
     <string name="welcome_permission_authorize">这就去按爪</string>
 

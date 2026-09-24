@@ -25,7 +25,7 @@ import kotlinx.coroutines.withTimeout
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.withTimeoutOrNull
-import moe.shimmerfly.shimmerpatch.INPatchShizukuService
+import moe.shimmerfly.shimmerpatch.IShimmerPatchShizukuService
 import moe.shimmerfly.shimmerpatch.ShizukuService
 import moe.shimmerfly.shimmerpatch.install.ApkInstallSet
 import moe.shimmerfly.shimmerpatch.config.Configs
@@ -39,19 +39,19 @@ import java.io.File
 object ShizukuApi {
     private const val TAG = "ShizukuApi"
     private const val PERMISSION_REQUEST_CODE = 114514
-    private const val USER_SERVICE_TAG = "npatch"
+    private const val USER_SERVICE_TAG = "shimmerpatch"
     private const val USER_SERVICE_VERSION = 1
     private const val USER_SERVICE_TIMEOUT_MS = 5000L
     private var initialized = false
     private val onReadyListeners = LinkedHashSet<() -> Unit>()
 
     @Volatile
-    private var userService: INPatchShizukuService? = null
-    private var userServiceDeferred = CompletableDeferred<INPatchShizukuService>()
+    private var userService: IShimmerPatchShizukuService? = null
+    private var userServiceDeferred = CompletableDeferred<IShimmerPatchShizukuService>()
 
     private val userServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, service: IBinder) {
-            val binder = INPatchShizukuService.Stub.asInterface(service)
+            val binder = IShimmerPatchShizukuService.Stub.asInterface(service)
             userService = binder
             userServiceDeferred.complete(binder)
         }
@@ -192,7 +192,7 @@ object ShizukuApi {
         Shizuku.bindUserService(args, userServiceConnection)
     }
 
-    private suspend fun getUserService(): INPatchShizukuService {
+    private suspend fun getUserService(): IShimmerPatchShizukuService {
         ensureReady()
         userService?.let { return it }
         if (userServiceDeferred.isCompleted) {
@@ -262,7 +262,7 @@ object ShizukuApi {
         return if (app == null) {
             false // Not installed
         } else {
-            app.metaData?.containsKey("npatch") != true
+            app.metaData?.containsKey("shimmerpatch") != true
         }
     }
 

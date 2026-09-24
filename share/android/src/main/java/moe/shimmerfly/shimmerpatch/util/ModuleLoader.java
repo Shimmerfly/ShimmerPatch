@@ -21,7 +21,7 @@ import java.util.zip.ZipFile;
 
 public class ModuleLoader {
 
-    private static final String TAG = "NPatch";
+    private static final String TAG = "ShimmerPatch";
     private static final String MODERN_JAVA_INIT = "META-INF/xposed/java_init.list";
     private static final String MODERN_NATIVE_INIT = "META-INF/xposed/native_init.list";
     private static final String MODERN_MODULE_PROP = "META-INF/xposed/module.prop";

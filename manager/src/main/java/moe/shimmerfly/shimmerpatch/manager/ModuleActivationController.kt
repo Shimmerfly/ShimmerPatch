@@ -21,7 +21,7 @@ object ModuleActivationController {
     private const val TAG = "ModuleActivationController"
 
     private val pushExecutor = Executors.newSingleThreadExecutor { runnable ->
-        Thread(runnable, "npatch-companion-push").apply { isDaemon = true }
+        Thread(runnable, "shimmerpatch-companion-push").apply { isDaemon = true }
     }
 
     fun activate(packageName: String): Result<Unit> {

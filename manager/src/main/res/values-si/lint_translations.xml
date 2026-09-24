@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">පැච් ලොගය පිටපත් කරන්න</string>
     <string name="welcome_ui_step">%2$d හි %1$d පියවර</string>
     <string name="screen_home">නිවස</string>
-    <string name="home_shizuku_optional_summary">විකල්ප දිගුව, NPatch විසින් අවශ්ය නොවේ.</string>
-    <string name="home_about">NPatch ගැන</string>
-    <string name="about_author_summary">NPatch නඩත්තු කරන්නා</string>
+    <string name="home_shizuku_optional_summary">විකල්ප දිගුව, ShimmerPatch විසින් අවශ්ය නොවේ.</string>
+    <string name="home_about">ShimmerPatch ගැන</string>
+    <string name="about_author_summary">ShimmerPatch නඩත්තු කරන්නා</string>
     <string name="about_disclaimer_title">වියාචනය</string>
-    <string name="about_disclaimer_body">NPatch සපයනු ලබන්නේ ඉගෙනීම, පර්යේෂණ සහ නීත්‍යානුකූල යෙදුම් අනුකූලතා කටයුතු සඳහා පමණි. කරුණාකර දේශීය නීති, යෙදුම් නියම සහ මුල් සංවර්ධකයින්ගේ අයිතිවාසිකම්වලට ගරු කරන්න. ඔබගේ උපාංගයේ පැච් කරන ලද යෙදුම් සහ මොඩියුල භාවිතා කරන ආකාරය සඳහා ඔබ වගකිව යුතුය.</string>
+    <string name="about_disclaimer_body">ShimmerPatch සපයනු ලබන්නේ ඉගෙනීම, පර්යේෂණ සහ නීත්‍යානුකූල යෙදුම් අනුකූලතා කටයුතු සඳහා පමණි. කරුණාකර දේශීය නීති, යෙදුම් නියම සහ මුල් සංවර්ධකයින්ගේ අයිතිවාසිකම්වලට ගරු කරන්න. ඔබගේ උපාංගයේ පැච් කරන ලද යෙදුම් සහ මොඩියුල භාවිතා කරන ආකාරය සඳහා ඔබ වගකිව යුතුය.</string>
     <string name="about_links_title">සබැඳි</string>
     <string name="about_official_website">වෙබ් අඩවිය</string>
     <string name="about_link_website_summary">NkBe වෙබ් අඩවියට පිවිසෙන්න</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">විශේෂ ස්තුතිය (ඇණවුම් කර නැත)</string>
     <string name="about_ack_rovo89_summary">Xposed රාමුවේ නිර්මාතෘ; සමස්ත මොඩියුලර් පරිසර පද්ධතියේ ආරම්භකයා සහ පුරෝගාමියා.</string>
     <string name="about_ack_lsposed_team_summary">Xposed පරිසර පද්ධතියට සහ පහත් මට්ටමේ එන්නත් කිරීමේ ක්‍රම සඳහා ඔවුන්ගේ අඛණ්ඩ දායකත්වය සඳහා LSPosed කණ්ඩායමට ස්තුතිවන්ත විය.</string>
-    <string name="about_ack_jingmatrix_summary">Vector හි කර්තෘ, එහි කැපී පෙනෙන රාමු ගෘහ නිර්මාණ ශිල්පය NPatch සඳහා අත්‍යවශ්‍ය පදනමක් සහ ආශ්වාදයක් සපයයි.</string>
+    <string name="about_ack_jingmatrix_summary">Vector හි කර්තෘ, එහි කැපී පෙනෙන රාමු ගෘහ නිර්මාණ ශිල්පය ShimmerPatch සඳහා අත්‍යවශ්‍ය පදනමක් සහ ආශ්වාදයක් සපයයි.</string>
     <string name="about_ack_lspatch_summary">කළමනාකරු පාර්ශ්ව ක්‍රියාත්මක කිරීම හරහා ගතික Xposed පරිසරය පැටවීමේ ශක්‍යතාව සනාථ කරමින් මුල් රහිත පැච් කිරීමේ විසඳුම්වල පුරෝගාමියෙකි.</string>
     <string name="about_ack_libxposed_summary">Xposed API ප්‍රමිතිකරණය පිටුපස ඇති ගාමක බලවේගය, මොඩියුල සංවර්ධන ලෝකයට වර්ගයේ ආරක්ෂාව සහ පැහැදිලි සම්මුතීන් ගෙන එයි.</string>
     <string name="about_ack_winter_summary">මගේ පළමු මුල්‍ය ආධාරකරුවා; එවැනි ඉක්මන් සහ සෘජු දිරිගැන්වීම සඳහා ඔබට ස්තුතියි.</string>
@@ -79,7 +79,7 @@
     <string name="screen_select_modules">මොඩියුල තෝරන්න</string>
     <string name="welcome_version">අනුවාදය %1$s</string>
     <string name="welcome_intro_content">මුල් රහිත පරිසරයන් සඳහා නිර්මාණය කර ඇති නවීන Xposed මොඩියුල එන්නත් සහ APK පැච් කිරීමේ මෙවලමක්.</string>
-    <string name="welcome_intro_detail">NPatch APK ගොනු වෙනස් කිරීම මගින් Xposed ලෝඩරය එන්නත් කරයි. කළමනාකරු පසුබිමේ ධාවනය නොකර මොඩියුල පූරණය කිරීමට සහ විෂය පථ ගතිකව කළමනාකරණය කිරීමට කළමනාකරු සමඟ දේශීය ප්‍රකාරය ක්‍රියා කරයි. ඒකාබද්ධ මාදිලිය කළමනාකරු නොමැතිව උපාංගවල ස්වාධීන භාවිතය සඳහා ඉලක්ක යෙදුමට සෘජුවම මොඩියුල ඇතුළත් කරයි. Shizuku සමහර පහසු විශේෂාංග පමණක් අගුළු හරින අතර NPatch core patching, module loading, හෝ මූලික කළමනාකරණය සඳහා අවශ්‍ය නොවේ.</string>
+    <string name="welcome_intro_detail">ShimmerPatch APK ගොනු වෙනස් කිරීම මගින් Xposed ලෝඩරය එන්නත් කරයි. කළමනාකරු පසුබිමේ ධාවනය නොකර මොඩියුල පූරණය කිරීමට සහ විෂය පථ ගතිකව කළමනාකරණය කිරීමට කළමනාකරු සමඟ දේශීය ප්‍රකාරය ක්‍රියා කරයි. ඒකාබද්ධ මාදිලිය කළමනාකරු නොමැතිව උපාංගවල ස්වාධීන භාවිතය සඳහා ඉලක්ක යෙදුමට සෘජුවම මොඩියුල ඇතුළත් කරයි. Shizuku සමහර පහසු විශේෂාංග පමණක් අගුළු හරින අතර ShimmerPatch core patching, module loading, හෝ මූලික කළමනාකරණය සඳහා අවශ්‍ය නොවේ.</string>
     <string name="welcome_permission_title">අවශ්‍ය අවසර වින්‍යාස කරන්න</string>
     <string name="welcome_permission_summary">ආරම්භ කිරීමට පෙර, මූලික විශේෂාංග ක්‍රියාකරවීමට මූලික ප්‍රවේශ අවසර ලබා දෙන්න.</string>
     <string name="welcome_permission_storage_title">ගබඩා ප්රවේශය</string>
@@ -87,7 +87,7 @@
     <string name="welcome_permission_applist_title">යෙදුම් ලැයිස්තුව කියවන්න</string>
     <string name="welcome_permission_applist_summary">ස්ථාපනය කර ඇති යෙදුම් කියවීමට භාවිතා කරයි, එවිට ඔබට නිවැරදිව පැච් ඉලක්ක තෝරාගත හැක.</string>
     <string name="welcome_optional_title">විකල්ප දිගුව: Shizuku</string>
-    <string name="welcome_optional_summary">විකල්ප දිගුව පමණි. Shizuku නොමැතිව වුවද, NPatch මූලික විශේෂාංග තවමත් සාමාන්‍යයෙන් ක්‍රියා කරයි.</string>
+    <string name="welcome_optional_summary">විකල්ප දිගුව පමණි. Shizuku නොමැතිව වුවද, ShimmerPatch මූලික විශේෂාංග තවමත් සාමාන්‍යයෙන් ක්‍රියා කරයි.</string>
     <string name="welcome_permission_granted">ලබා දුන්නා</string>
     <string name="welcome_permission_authorize">ප්රවේශය ලබා දෙන්න</string>
     <string name="welcome_disclaimer_title">භාවිත සටහන් සහ වියාචනය</string>
@@ -114,7 +114,7 @@
     <string name="settings_other_settings">වෙනත් සැකසුම්</string>
     <string name="settings_network">ජාලය</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">NPatch ජාල ඉල්ලීම් මගින් DNS භාවිතා කරයි</string>
+    <string name="settings_dns_summary">ShimmerPatch ජාල ඉල්ලීම් මගින් DNS භාවිතා කරයි</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

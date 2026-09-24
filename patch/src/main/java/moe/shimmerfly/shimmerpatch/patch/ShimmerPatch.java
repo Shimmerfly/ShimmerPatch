@@ -51,10 +51,10 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class NPatch {
+public class ShimmerPatch {
 
-    private static final String NPATCH_KEYSTORE_PASSWORD_ENC = "a2hpbm9s";
-    private static final String NPATCH_KEY_ALIAS_ENC = "MT8jag==";
+    private static final String SHIMMERPATCH_KEYSTORE_PASSWORD_ENC = "a2hpbm9s";
+    private static final String SHIMMERPATCH_KEY_ALIAS_ENC = "MT8jag==";
     private static final String FPA_KEYSTORE_PASSWORD_ENC = "a2hpbm9sbWI=";
     private static final String FPA_KEY_ALIAS_ENC = "Oyoq";
     private static final int SECRET_XOR_KEY = 0x5a;
@@ -111,7 +111,7 @@ public class NPatch {
     @Parameter(names = {"-k", "--keystore"}, arity = 4, description = "Set custom signature keystore. Followed by 4 arguments: keystore path, keystore password, keystore alias, keystore alias password")
     private List<String> keystoreArgs = null;
 
-    @Parameter(names = {"-npa", "--npatch-keystore"}, description = "Use built-in NPatch keystore")
+    @Parameter(names = {"-npa", "--shimmerpatch-keystore"}, description = "Use built-in ShimmerPatch keystore")
     private boolean useNpatchKeystore = false;
 
     @Parameter(names = {"-fpa", "--fpa-keystore"}, description = "Use built-in FPA keystore")
@@ -169,7 +169,7 @@ public class NPatch {
     private final JCommander jCommander;
     private final Logger logger;
 
-    public NPatch(Logger logger, String... args) {
+    public ShimmerPatch(Logger logger, String... args) {
         jCommander = JCommander.newBuilder().addObject(this).build();
         try {
             jCommander.parse(args);
@@ -207,13 +207,13 @@ public class NPatch {
     }
 
     public static void main(String... args) throws IOException {
-        NPatch npatch = new NPatch(new JavaLogger(), args);
-        if (npatch.help) {
-            npatch.jCommander.usage();
+        ShimmerPatch shimmerpatch = new ShimmerPatch(new JavaLogger(), args);
+        if (shimmerpatch.help) {
+            shimmerpatch.jCommander.usage();
             return;
         }
         try {
-            npatch.doCommandLine();
+            shimmerpatch.doCommandLine();
         } catch (PatchError e) {
             e.printStackTrace(System.err);
         }
@@ -230,7 +230,7 @@ public class NPatch {
             outputDir.mkdirs();
 
             File outputFile = new File(outputDir, String.format(
-                    Locale.US, "%s-%d-npatched.apk",
+                    Locale.US, "%s-%d-shimmerpatched.apk",
                     FilenameUtils.getBaseName(apkFileName),
                     LSPConfig.instance.VERSION_CODE)
             ).getAbsoluteFile();
@@ -313,8 +313,8 @@ public class NPatch {
             try {
                 var keyStore = KeyStore.getInstance("BKS");
                 if (useNpatchKeystore || (!useFpaKeystore && keystoreArgs == null)) {
-                    logger.i("Register apk signer with built-in NPatch keystore (V1+V2+V3, minSdk " + effectiveMinSdk + ")...");
-                    registerBuiltinSigner(keyStore, dstZFile, "assets/npatch.key", NPATCH_KEYSTORE_PASSWORD_ENC, NPATCH_KEY_ALIAS_ENC, effectiveMinSdk);
+                    logger.i("Register apk signer with built-in ShimmerPatch keystore (V1+V2+V3, minSdk " + effectiveMinSdk + ")...");
+                    registerBuiltinSigner(keyStore, dstZFile, "assets/shimmerpatch.key", SHIMMERPATCH_KEYSTORE_PASSWORD_ENC, SHIMMERPATCH_KEY_ALIAS_ENC, effectiveMinSdk);
                 } else if (useFpaKeystore) {
                     logger.i("Register apk signer with built-in FPA keystore (V1+V2+V3, minSdk " + effectiveMinSdk + ")...");
                     registerBuiltinSigner(keyStore, dstZFile, "assets/fpa_app.key", FPA_KEYSTORE_PASSWORD_ENC, FPA_KEY_ALIAS_ENC, effectiveMinSdk);
@@ -432,7 +432,7 @@ public class NPatch {
             }
 
             logger.i("Adding config...");
-            // save npatch config to asset..
+            // save shimmerpatch config to asset..
             try (var is = new ByteArrayInputStream(configBytes)) {
                 dstZFile.add(CONFIG_ASSET_PATH, is);
             } catch (Throwable e) {
@@ -441,7 +441,7 @@ public class NPatch {
 
             if (isInjectProvider){
                 try (var is = getClass().getClassLoader().getResourceAsStream("assets/mtprovider.dex")) {
-                    dstZFile.add("assets/npatch/mtprovider.dex", is);
+                    dstZFile.add("assets/shimmerpatch/mtprovider.dex", is);
                 } catch (Throwable e) {
                     throw new PatchError("Error when adding dex", e);
                 }
@@ -461,7 +461,7 @@ public class NPatch {
 
             logger.i("Adding native lib...");
             for (String arch : ARCHES) {
-                String entryName = "assets/npatch/so/" + arch + "/libnpatch.so";
+                String entryName = "assets/shimmerpatch/so/" + arch + "/libshimmerpatch.so";
                 try (var is = getClass().getClassLoader().getResourceAsStream(entryName)) {
                     if (is == null) {
                         throw new PatchError("Fatal: Could not find " + entryName + " in the patcher resources!");
@@ -678,11 +678,11 @@ public class NPatch {
 
         if (!modules.isEmpty()) {
             addOrReplaceMetaData(property, "xposedmodule", "true");
-            addOrReplaceMetaData(property, "xposeddescription", "NPatch Embed LoadedModule");
+            addOrReplaceMetaData(property, "xposeddescription", "ShimmerPatch Embed LoadedModule");
             addOrReplaceMetaData(property, "xposedminversion", "93");
         }
 
-        addOrReplaceMetaData(property, "npatch", metadata);
+        addOrReplaceMetaData(property, "shimmerpatch", metadata);
 
         // 注入 MicroG 偽裝簽名與權限
         if (useMicroG && originalSignature != null && !originalSignature.isEmpty()) {

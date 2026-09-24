@@ -29,14 +29,14 @@ import java.util.zip.ZipFile;
 @SuppressLint({"SdCardPath"})
 public class IntegrApplicationService extends IFrameworkService.Stub {
 
-    private static final String TAG = "NPatch";
+    private static final String TAG = "ShimmerPatch";
 
     private final List<LoadedModule> legacyModules = new ArrayList<>();
     private final List<LoadedModule> modernModules = new ArrayList<>();
 
     public IntegrApplicationService(Context context) {
         try {
-            String[] assetsList = context.getAssets().list("npatch/modules");
+            String[] assetsList = context.getAssets().list("shimmerpatch/modules");
             if (assetsList == null || assetsList.length == 0) {
                 return;
             }
@@ -60,7 +60,7 @@ public class IntegrApplicationService extends IFrameworkService.Stub {
                     Log.i(TAG, "Extracting embedded LoadedModule: " + packageName);
                     FileUtils.deleteFolderIfExists(Paths.get(modulePath));
                     Files.createDirectories(Paths.get(modulePath));
-                    try (var is = context.getAssets().open("npatch/modules/" + name)) {
+                    try (var is = context.getAssets().open("shimmerpatch/modules/" + name)) {
                         Files.copy(is, Paths.get(cacheApkPath));
                     }
                 }

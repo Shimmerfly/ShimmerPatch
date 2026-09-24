@@ -39,8 +39,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import moe.shimmerfly.shimmerpatch.util.ShizukuApi
 import moe.shimmerfly.shimmerpatch.R
-import moe.shimmerfly.shimmerpatch.ui.component.NPatchScaffold
-import moe.shimmerfly.shimmerpatch.ui.component.NPatchTopAppBar
+import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchScaffold
+import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchTopAppBar
 import moe.shimmerfly.shimmerpatch.ui.component.SearchBar
 import moe.shimmerfly.shimmerpatch.ui.component.m3AppBarBlur
 import moe.shimmerfly.shimmerpatch.ui.component.m3AppBarColor
@@ -92,11 +92,11 @@ fun ManageScreen(
         }
     }
 
-    NPatchScaffold(
+    ShimmerPatchScaffold(
         modifier = modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets.systemBars.union(WindowInsets.displayCutout).only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal),
         topBar = {
-            NPatchTopAppBar(
+            ShimmerPatchTopAppBar(
                 modifier = Modifier.m3AppBarBlur(backdrop),
                 color = backdrop.m3AppBarColor(),
                 title = stringResource(R.string.screen_manage),

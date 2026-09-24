@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Nukopijuokite pataisų žurnalą</string>
     <string name="welcome_ui_step">Žingsnis %1$d iš %2$d</string>
     <string name="screen_home">Pradžia</string>
-    <string name="home_shizuku_optional_summary">Pasirenkamas plėtinys, kurio NPatch nereikia.</string>
-    <string name="home_about">Apie NPatch</string>
-    <string name="about_author_summary">NPatch prižiūrėtojas</string>
+    <string name="home_shizuku_optional_summary">Pasirenkamas plėtinys, kurio ShimmerPatch nereikia.</string>
+    <string name="home_about">Apie ShimmerPatch</string>
+    <string name="about_author_summary">ShimmerPatch prižiūrėtojas</string>
     <string name="about_disclaimer_title">Atsisakymas</string>
-    <string name="about_disclaimer_body">NPatch skirtas tik mokymuisi, tyrinėjimui ir teisėtam programų suderinamumo darbui. Laikykitės vietinių įstatymų, programų sąlygų ir pradinių kūrėjų teisių. Jūs esate atsakingi už tai, kaip jūsų įrenginyje naudojamos pataisytos programos ir moduliai.</string>
+    <string name="about_disclaimer_body">ShimmerPatch skirtas tik mokymuisi, tyrinėjimui ir teisėtam programų suderinamumo darbui. Laikykitės vietinių įstatymų, programų sąlygų ir pradinių kūrėjų teisių. Jūs esate atsakingi už tai, kaip jūsų įrenginyje naudojamos pataisytos programos ir moduliai.</string>
     <string name="about_links_title">Nuorodos</string>
     <string name="about_official_website">Svetainė</string>
     <string name="about_link_website_summary">Apsilankykite NkBe svetainėje</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Ypatinga padėka (nesutvarkyta)</string>
     <string name="about_ack_rovo89_summary">Xposed Framework įkūrėjas; visos modulinės ekosistemos pradininkas ir pradininkas.</string>
     <string name="about_ack_lsposed_team_summary">Dėkojame LSPosed komandai už nuolatinį indėlį į Xposed ekosistemą ir žemo lygio įpurškimo metodus.</string>
-    <string name="about_ack_jingmatrix_summary">Vector autorius, kurio išskirtinė karkaso architektūra suteikė gyvybiškai svarbų pagrindą ir įkvėpė NPatch.</string>
+    <string name="about_ack_jingmatrix_summary">Vector autorius, kurio išskirtinė karkaso architektūra suteikė gyvybiškai svarbų pagrindą ir įkvėpė ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Bešaknių pataisų sprendimų pradininkas, įrodantis dinamiško Xposed aplinkos įkėlimo įgyvendinamumą naudojant valdytojo pusę.</string>
     <string name="about_ack_libxposed_summary">Varomoji Xposed API standartizavimo jėga, suteikianti modulių kūrimo pasauliui tipo saugumą ir aiškias taisykles.</string>
     <string name="about_ack_winter_summary">Mano pirmasis finansinis rėmėjas; ačiū už tokį ankstyvą ir tiesioginį paskatinimą.</string>
@@ -81,7 +81,7 @@
     <string name="screen_select_modules">Pasirinkite modulius</string>
     <string name="welcome_version">Versija %1$s</string>
     <string name="welcome_intro_content">Modernus Xposed modulio įpurškimo ir APK pataisymo įrankis, sukurtas aplinkai be šaknų.</string>
-    <string name="welcome_intro_detail">NPatch įveda Xposed įkroviklį modifikuodamas APK failus. Vietinis režimas veikia su valdytoju, kad įkeltų modulius ir tvarkytų apimtis dinamiškai, neleisdamas tvarkyklei veikti fone. Integruotas režimas įterpia modulius tiesiai į tikslinę programą, kad būtų galima naudoti atskirai įrenginiuose be valdytojo. Shizuku atrakina tik kai kurias patogumo funkcijas ir nėra reikalingas NPatch branduolių pataisymui, modulių įkėlimui ar pagrindiniam valdymui.</string>
+    <string name="welcome_intro_detail">ShimmerPatch įveda Xposed įkroviklį modifikuodamas APK failus. Vietinis režimas veikia su valdytoju, kad įkeltų modulius ir tvarkytų apimtis dinamiškai, neleisdamas tvarkyklei veikti fone. Integruotas režimas įterpia modulius tiesiai į tikslinę programą, kad būtų galima naudoti atskirai įrenginiuose be valdytojo. Shizuku atrakina tik kai kurias patogumo funkcijas ir nėra reikalingas ShimmerPatch branduolių pataisymui, modulių įkėlimui ar pagrindiniam valdymui.</string>
     <string name="welcome_permission_title">Konfigūruoti reikiamus leidimus</string>
     <string name="welcome_permission_summary">Prieš pradėdami, suteikite pagrindinius prieigos leidimus, kad pagrindinės funkcijos veiktų.</string>
     <string name="welcome_permission_storage_title">Prieiga prie saugyklos</string>
@@ -89,7 +89,7 @@
     <string name="welcome_permission_applist_title">Skaityti programų sąrašą</string>
     <string name="welcome_permission_applist_summary">Naudojamas įdiegtoms programoms skaityti, kad galėtumėte tiksliai pasirinkti pataisų taikinius.</string>
     <string name="welcome_optional_title">Pasirenkamas plėtinys: Shizuku</string>
-    <string name="welcome_optional_summary">Tik pasirenkamas plėtinys. Net ir be Shizuku pagrindinės NPatch funkcijos vis tiek veikia normaliai.</string>
+    <string name="welcome_optional_summary">Tik pasirenkamas plėtinys. Net ir be Shizuku pagrindinės ShimmerPatch funkcijos vis tiek veikia normaliai.</string>
     <string name="welcome_permission_granted">Suteikta</string>
     <string name="welcome_permission_authorize">Suteikite prieigą</string>
     <string name="welcome_disclaimer_title">Naudojimo pastabos ir atsisakymas</string>
@@ -116,7 +116,7 @@
     <string name="settings_other_settings">Kiti nustatymai</string>
     <string name="settings_network">Tinklas</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS naudojamas NPatch tinklo užklausose</string>
+    <string name="settings_dns_summary">DNS naudojamas ShimmerPatch tinklo užklausose</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

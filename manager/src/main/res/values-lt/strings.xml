@@ -13,13 +13,13 @@
     <string name="error_unknown">Nežinoma klaida</string>
     <string name="home_shizuku_warning">Kai kurios funkcijos nepasiekiamos</string>
     <string name="home_api_version">API versija</string>
-    <string name="home_npatch_version">NPatch versija</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch versija</string>
     <string name="home_framework_version">Framework versija</string>
     <string name="home_system_version">Sistemos versija</string>
     <string name="home_device">Įrenginys</string>
     <string name="home_system_abi">Sistema ABI</string>
     <string name="home_info_copied">Nukopijuota į mainų sritį</string>
-    <string name="home_description">NPatch yra nemokama ne šakninė Xposed sistema, pagrįsta Vector.</string>
+    <string name="home_description">ShimmerPatch yra nemokama ne šakninė Xposed sistema, pagrįsta Vector.</string>
     <string name="screen_manage">Tvarkykite</string>
     <string name="manage_loading">Įkeliama</string>
     <string name="manage_no_apps">Dar nėra pataisytų programų</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Pasirinkite įdiegtą programą</string>
     <string name="patch_mode">Patch režimas</string>
     <string name="patch_local">Vietinis</string>
-    <string name="patch_local_desc">Pataiso programas neįdėdami modulių.\nXposed taikymo sritį galima dinamiškai keisti, nereikia iš naujo pataisyti.\nŠį režimą galima naudoti tik vietoje su NPatch Manager.</string>
+    <string name="patch_local_desc">Pataiso programas neįdėdami modulių.\nXposed taikymo sritį galima dinamiškai keisti, nereikia iš naujo pataisyti.\nŠį režimą galima naudoti tik vietoje su ShimmerPatch Manager.</string>
     <string name="patch_integrated">Integruota</string>
-    <string name="patch_integrated_desc">Pataisykite programą su įterptais moduliais.\nPataisyta programa gali veikti be tvarkyklės, bet negali būti valdoma dinamiškai.\nIntegruotas pataisytas programas galima naudoti įrenginiuose, kuriuose nėra įdiegta NPatch Manager.</string>
+    <string name="patch_integrated_desc">Pataisykite programą su įterptais moduliais.\nPataisyta programa gali veikti be tvarkyklės, bet negali būti valdoma dinamiškai.\nIntegruotas pataisytas programas galima naudoti įrenginiuose, kuriuose nėra įdiegta ShimmerPatch Manager.</string>
     <string name="patch_embed_modules">Įterpti modulius</string>
     <string name="patch_debuggable">Derinamas</string>
     <string name="patch_sigbypass">Parašo apėjimas</string>

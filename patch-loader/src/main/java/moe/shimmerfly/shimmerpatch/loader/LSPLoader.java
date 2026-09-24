@@ -49,7 +49,7 @@ import org.matrix.vector.nativebridge.NativeAPI;
 
 @SuppressLint({"PrivateApi", "ObsoleteSdkInt"})
 public class LSPLoader {
-    private static final String TAG = "NPatch-Loader";
+    private static final String TAG = "ShimmerPatch-Loader";
     private static final Set<String> enhancedLoadedModules = new LinkedHashSet<>();
     private static final Map<String, ApplicationInfo> moduleRuntimeAppInfos = new ConcurrentHashMap<>();
     private static volatile boolean moduleSelfPathHooked;
@@ -67,7 +67,7 @@ public class LSPLoader {
 
     public static void initModules(LoadedApk loadedApk) {
         String ver = LSPConfig.instance.VERSION_NAME;
-        XposedBridge.FRAMEWORK_NAME = "NPatch";
+        XposedBridge.FRAMEWORK_NAME = "ShimmerPatch";
         XposedBridge.FRAMEWORK_VERSION = ver.startsWith("v") ? ver : "v" + ver;
         XposedBridge.FRAMEWORK_VERSION_NAME = XposedBridge.FRAMEWORK_VERSION;
         XposedBridge.FRAMEWORK_VERSION_CODE = LSPConfig.instance.VERSION_CODE;

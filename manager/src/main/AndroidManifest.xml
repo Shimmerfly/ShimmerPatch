@@ -40,7 +40,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:largeHeap="true"
-        android:theme="@style/Theme.NPatch">
+        android:theme="@style/Theme.ShimmerPatch">
         
         <!-- 专门为小米手机桌面卸载添加了提示，提升用户体验 -->
         <meta-data
@@ -52,7 +52,7 @@
 
         <activity
             android:name=".ui.activity.MainActivity"
-            android:theme="@style/Theme.NPatch.Starting"
+            android:theme="@style/Theme.ShimmerPatch.Starting"
             android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>

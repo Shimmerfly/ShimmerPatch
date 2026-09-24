@@ -13,13 +13,13 @@
     <string name="error_unknown">Невідома помилка</string>
     <string name="home_shizuku_warning">Деякі функції недоступні</string>
     <string name="home_api_version">Версія API</string>
-    <string name="home_npatch_version">Версія NPatch</string>
+    <string name="home_shimmerpatch_version">Версія ShimmerPatch</string>
     <string name="home_framework_version">Версія Framework</string>
     <string name="home_system_version">Версія системи</string>
     <string name="home_device">Пристрій</string>
     <string name="home_system_abi">Система ABI</string>
     <string name="home_info_copied">Скопійовано в буфер обміну</string>
-    <string name="home_description">NPatch — це безкоштовний некореневий фреймворк Xposed на основі Vector.</string>
+    <string name="home_description">ShimmerPatch — це безкоштовний некореневий фреймворк Xposed на основі Vector.</string>
     <string name="screen_manage">Керування</string>
     <string name="manage_loading">Завантаження</string>
     <string name="manage_no_apps">Ще немає виправлених програм</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Виберіть встановлену програму</string>
     <string name="patch_mode">Режим виправлення</string>
     <string name="patch_local">Місцеві</string>
-    <string name="patch_local_desc">Виправляє програми без вбудованих модулів.\nПриціл Xposed можна динамічно змінювати без необхідності повторного оновлення.\nЦей режим можна використовувати лише локально за допомогою NPatch Manager.</string>
+    <string name="patch_local_desc">Виправляє програми без вбудованих модулів.\nПриціл Xposed можна динамічно змінювати без необхідності повторного оновлення.\nЦей режим можна використовувати лише локально за допомогою ShimmerPatch Manager.</string>
     <string name="patch_integrated">Інтегрований</string>
-    <string name="patch_integrated_desc">Виправте додаток із вбудованими модулями.\nВиправлена програма може працювати без диспетчера, але нею не можна керувати динамічно.\nІнтегровані виправлені програми можна використовувати на пристроях, на яких не встановлено NPatch Manager.</string>
+    <string name="patch_integrated_desc">Виправте додаток із вбудованими модулями.\nВиправлена програма може працювати без диспетчера, але нею не можна керувати динамічно.\nІнтегровані виправлені програми можна використовувати на пристроях, на яких не встановлено ShimmerPatch Manager.</string>
     <string name="patch_embed_modules">Вставляти модулі</string>
     <string name="patch_debuggable">Налагоджується</string>
     <string name="patch_sigbypass">Обхід підпису</string>

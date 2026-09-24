@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Sao chép nhật ký vá</string>
     <string name="welcome_ui_step">Bước %1$d của %2$d</string>
     <string name="screen_home">Trang chủ</string>
-    <string name="home_shizuku_optional_summary">Tiện ích mở rộng tùy chọn, NPatch không yêu cầu.</string>
-    <string name="home_about">Giới thiệu về NPatch</string>
-    <string name="about_author_summary">Người bảo trì NPatch</string>
+    <string name="home_shizuku_optional_summary">Tiện ích mở rộng tùy chọn, ShimmerPatch không yêu cầu.</string>
+    <string name="home_about">Giới thiệu về ShimmerPatch</string>
+    <string name="about_author_summary">Người bảo trì ShimmerPatch</string>
     <string name="about_disclaimer_title">Tuyên bố miễn trừ trách nhiệm</string>
-    <string name="about_disclaimer_body">NPatch chỉ được cung cấp cho công việc học tập, nghiên cứu và tương thích ứng dụng hợp pháp. Vui lòng tôn trọng luật pháp địa phương, điều khoản ứng dụng và quyền của nhà phát triển ban đầu. Bạn chịu trách nhiệm về cách sử dụng các ứng dụng và mô-đun đã vá trên thiết bị của mình.</string>
+    <string name="about_disclaimer_body">ShimmerPatch chỉ được cung cấp cho công việc học tập, nghiên cứu và tương thích ứng dụng hợp pháp. Vui lòng tôn trọng luật pháp địa phương, điều khoản ứng dụng và quyền của nhà phát triển ban đầu. Bạn chịu trách nhiệm về cách sử dụng các ứng dụng và mô-đun đã vá trên thiết bị của mình.</string>
     <string name="about_links_title">Liên kết</string>
     <string name="about_official_website">Trang web</string>
     <string name="about_link_website_summary">Truy cập trang web của NkBe</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Lời cảm ơn đặc biệt (không theo thứ tự)</string>
     <string name="about_ack_rovo89_summary">Người sáng lập Khung Xposed; người khởi xướng và tiên phong của toàn bộ hệ sinh thái mô-đun.</string>
     <string name="about_ack_lsposed_team_summary">Xin gửi lời cảm ơn tới Nhóm LSPosed vì những đóng góp liên tục của họ cho hệ sinh thái Xposed và các kỹ thuật tiêm mức độ thấp.</string>
-    <string name="about_ack_jingmatrix_summary">Tác giả của Vector, người có kiến trúc khung xuất sắc đã cung cấp nền tảng và nguồn cảm hứng quan trọng cho NPatch.</string>
+    <string name="about_ack_jingmatrix_summary">Tác giả của Vector, người có kiến trúc khung xuất sắc đã cung cấp nền tảng và nguồn cảm hứng quan trọng cho ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Người tiên phong trong các giải pháp vá lỗi không cần root, chứng minh tính khả thi của việc tải môi trường Xposed động thông qua triển khai phía người quản lý.</string>
     <string name="about_ack_libxposed_summary">Động lực đằng sau việc tiêu chuẩn hóa Xposed API, mang lại sự an toàn về kiểu dáng và các quy ước rõ ràng cho thế giới phát triển mô-đun.</string>
     <string name="about_ack_winter_summary">Người hỗ trợ tài chính đầu tiên của tôi; cảm ơn bạn đã khuyến khích sớm và trực tiếp như vậy.</string>
@@ -78,7 +78,7 @@
     <string name="screen_select_modules">Chọn mô-đun</string>
     <string name="welcome_version">Phiên bản %1$s</string>
     <string name="welcome_intro_content">Công cụ chèn mô-đun Xposed hiện đại và công cụ vá lỗi APK được thiết kế cho môi trường không có root.</string>
-    <string name="welcome_intro_detail">NPatch chèn trình tải Xposed bằng cách sửa đổi các tệp APK. Chế độ cục bộ hoạt động với trình quản lý để tải các mô-đun và quản lý phạm vi một cách linh hoạt mà không khiến trình quản lý chạy ở chế độ nền. Chế độ tích hợp nhúng các mô-đun trực tiếp vào ứng dụng mục tiêu để sử dụng độc lập trên các thiết bị mà không cần trình quản lý. Shizuku chỉ mở khóa một số tính năng tiện lợi và không bắt buộc đối với việc vá lõi NPatch, tải mô-đun hoặc quản lý cơ bản.</string>
+    <string name="welcome_intro_detail">ShimmerPatch chèn trình tải Xposed bằng cách sửa đổi các tệp APK. Chế độ cục bộ hoạt động với trình quản lý để tải các mô-đun và quản lý phạm vi một cách linh hoạt mà không khiến trình quản lý chạy ở chế độ nền. Chế độ tích hợp nhúng các mô-đun trực tiếp vào ứng dụng mục tiêu để sử dụng độc lập trên các thiết bị mà không cần trình quản lý. Shizuku chỉ mở khóa một số tính năng tiện lợi và không bắt buộc đối với việc vá lõi ShimmerPatch, tải mô-đun hoặc quản lý cơ bản.</string>
     <string name="welcome_permission_title">Định cấu hình các quyền cần thiết</string>
     <string name="welcome_permission_summary">Trước khi bắt đầu, hãy cấp quyền truy cập cơ bản để duy trì hoạt động của các tính năng cốt lõi.</string>
     <string name="welcome_permission_storage_title">Truy cập bộ nhớ</string>
@@ -86,7 +86,7 @@
     <string name="welcome_permission_applist_title">Đọc danh sách ứng dụng</string>
     <string name="welcome_permission_applist_summary">Được sử dụng để đọc các ứng dụng đã cài đặt để bạn có thể chọn mục tiêu vá một cách chính xác.</string>
     <string name="welcome_optional_title">Tiện ích mở rộng tùy chọn: Shizuku</string>
-    <string name="welcome_optional_summary">Chỉ phần mở rộng tùy chọn. Ngay cả khi không có Shizuku, các tính năng cốt lõi của NPatch vẫn hoạt động bình thường.</string>
+    <string name="welcome_optional_summary">Chỉ phần mở rộng tùy chọn. Ngay cả khi không có Shizuku, các tính năng cốt lõi của ShimmerPatch vẫn hoạt động bình thường.</string>
     <string name="welcome_permission_granted">Đã được cấp</string>
     <string name="welcome_permission_authorize">Cấp quyền truy cập</string>
     <string name="welcome_disclaimer_title">Ghi chú sử dụng và từ chối trách nhiệm</string>
@@ -113,7 +113,7 @@
     <string name="settings_other_settings">Cài đặt khác</string>
     <string name="settings_network">Mạng</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS được sử dụng bởi các yêu cầu mạng NPatch</string>
+    <string name="settings_dns_summary">DNS được sử dụng bởi các yêu cầu mạng ShimmerPatch</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Đám mây bùng phát DoH</string>

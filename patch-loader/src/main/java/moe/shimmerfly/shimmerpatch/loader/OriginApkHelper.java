@@ -30,7 +30,7 @@ import java.util.zip.ZipFile;
 @SuppressLint({"SetWorldReadable"})
 public class OriginApkHelper {
 
-    private static final String TAG = "NPatch-ApkHelper";
+    private static final String TAG = "ShimmerPatch-ApkHelper";
     private static final int PER_USER_RANGE = 100000;
     private static final String NATIVE_CACHE_COMPLETE = ".complete";
 

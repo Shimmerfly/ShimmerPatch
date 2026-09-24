@@ -86,17 +86,17 @@ tasks.register<Delete>("clean") {
 listOf("Debug", "Release").forEach { variant ->
     val variantLower = variant.lowercase()
     val remoteApiTask = tasks.register<Copy>("buildRemoteApi$variant") {
-        description = "Build and collect the NPatch Remote API $variant AAR"
+        description = "Build and collect the ShimmerPatch Remote API $variant AAR"
         dependsOn(":remote-api:assemble$variant")
         from(project(":remote-api").layout.buildDirectory.dir("outputs/aar")) {
             include("remote-api-$variantLower.aar")
-            rename { "npatch-remote-api-v1.0.0-$variantLower.aar" }
+            rename { "shimmerpatch-remote-api-v1.0.0-$variantLower.aar" }
         }
         into(layout.projectDirectory.dir("out/$variantLower"))
     }
 
     tasks.register("build$variant") {
-        description = "Build NPatch with $variant"
+        description = "Build ShimmerPatch with $variant"
         dependsOn(tasks.findByPath(":jar:build$variant") ?: "jar:build$variant")
         dependsOn(tasks.findByPath(":manager:build$variant") ?: "manager:build$variant")
         dependsOn(remoteApiTask)

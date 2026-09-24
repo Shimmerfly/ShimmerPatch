@@ -36,7 +36,7 @@ public final class ManagerRemoteServiceBridge {
                 IModuleService.Stub.asInterface(binder);
         if (service == null) {
             throw new IllegalStateException(
-                    "NPatch Manager rejected the injected remote service request");
+                    "ShimmerPatch Manager rejected the injected remote service request");
         }
         return service;
     }

@@ -71,7 +71,7 @@ fun MainScreen(
         }
     }
 
-    NPatchScaffold(
+    ShimmerPatchScaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             if (floating) {

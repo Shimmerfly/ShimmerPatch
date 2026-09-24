@@ -13,13 +13,13 @@
     <string name="error_unknown">Onbekende fout</string>
     <string name="home_shizuku_warning">Sommige funksies nie beskikbaar nie</string>
     <string name="home_api_version">API weergawe</string>
-    <string name="home_npatch_version">NPatch weergawe</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch weergawe</string>
     <string name="home_framework_version">Raamwerk weergawe</string>
     <string name="home_system_version">Stelsel weergawe</string>
     <string name="home_device">Toestel</string>
     <string name="home_system_abi">Stelsel ABI</string>
     <string name="home_info_copied">Gekopieer na knipbord</string>
-    <string name="home_description">NPatch is \'n gratis nie-wortel Xposed raamwerk gebaseer op Vector.</string>
+    <string name="home_description">ShimmerPatch is \'n gratis nie-wortel Xposed raamwerk gebaseer op Vector.</string>
     <string name="screen_manage">Bestuur</string>
     <string name="manage_loading">Laai tans</string>
     <string name="manage_no_apps">Nog geen reggemaakte programme nie</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Kies \'n geïnstalleerde toepassing</string>
     <string name="patch_mode">Patch Mode</string>
     <string name="patch_local">Plaaslik</string>
-    <string name="patch_local_desc">Plak programme sonder om modules in te sluit.\nDie Xposed omvang kan dinamies verander word sonder dat dit nodig is om weer te pleister.\nHierdie modus kan slegs plaaslik met die NPatch Bestuurder gebruik word.</string>
+    <string name="patch_local_desc">Plak programme sonder om modules in te sluit.\nDie Xposed omvang kan dinamies verander word sonder dat dit nodig is om weer te pleister.\nHierdie modus kan slegs plaaslik met die ShimmerPatch Bestuurder gebruik word.</string>
     <string name="patch_integrated">Geïntegreerde</string>
-    <string name="patch_integrated_desc">Patcher une application avec des modules intégrés.\nL\'application corrigée peut fonctionner sans le gestionnaire mais ne peut pas être gérée dynamiquement.\nLes applications patchées intégrées peuvent être utilisées sur des appareils sur lesquels NPatch Manager n\'est pas installé.</string>
+    <string name="patch_integrated_desc">Patcher une application avec des modules intégrés.\nL\'application corrigée peut fonctionner sans le gestionnaire mais ne peut pas être gérée dynamiquement.\nLes applications patchées intégrées peuvent être utilisées sur des appareils sur lesquels ShimmerPatch Manager n\'est pas installé.</string>
     <string name="patch_embed_modules">Sluit modules in</string>
     <string name="patch_debuggable">Ontfoutbaar</string>
     <string name="patch_sigbypass">Handtekening omseil</string>

@@ -17,7 +17,7 @@ import org.matrix.vector.ipc.IProcessChannel
 import moe.shimmerfly.shimmerpatch.config.ConfigManager
 
 /**
- * Process registry shared by NPatch's provider and bound-service IPC paths.
+ * Process registry shared by ShimmerPatch's provider and bound-service IPC paths.
  *
  * Target ids are opaque and never reused. A target is always checked against the requesting
  * LoadedModule package before its process binder can be reached.
@@ -50,7 +50,7 @@ object HotReloadRegistry {
     private val targets = ConcurrentHashMap<Long, TargetRecord>()
     private val nextTargetId = AtomicLong(1)
     private val executor = Executors.newFixedThreadPool(2) { runnable ->
-        Thread(runnable, "NPatch-HotReload").apply { isDaemon = true }
+        Thread(runnable, "ShimmerPatch-HotReload").apply { isDaemon = true }
     }
 
     fun recordModules(

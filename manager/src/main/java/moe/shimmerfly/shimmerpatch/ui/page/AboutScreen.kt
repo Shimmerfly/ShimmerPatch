@@ -55,10 +55,10 @@ fun AboutScreen(onBack: () -> Unit) {
     val backdrop = rememberMaterial3BlurBackdrop(LocalFloatingGlassBottomBarBlur.current)
     val links = rememberAboutLinks()
     val acknowledgments = rememberAcknowledgmentLinks()
-    NPatchScaffold(
+    ShimmerPatchScaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            NPatchTopAppBar(
+            ShimmerPatchTopAppBar(
                 title = stringResource(R.string.home_about),
                 scrollBehavior = scrollBehavior,
                 navigationIcon = { ExpressiveBackButton(onClick = onBack) },

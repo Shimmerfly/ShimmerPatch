@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">คัดลอกบันทึกแพตช์</string>
     <string name="welcome_ui_step">ขั้นตอน %1$d ของ %2$d</string>
     <string name="screen_home">บ้าน</string>
-    <string name="home_shizuku_optional_summary">ส่วนขยายเพิ่มเติม ที่ NPatch ไม่ต้องการ</string>
-    <string name="home_about">เกี่ยวกับ NPatch</string>
-    <string name="about_author_summary">ผู้ดูแล NPatch</string>
+    <string name="home_shizuku_optional_summary">ส่วนขยายเพิ่มเติม ที่ ShimmerPatch ไม่ต้องการ</string>
+    <string name="home_about">เกี่ยวกับ ShimmerPatch</string>
+    <string name="about_author_summary">ผู้ดูแล ShimmerPatch</string>
     <string name="about_disclaimer_title">ข้อสงวนสิทธิ์</string>
-    <string name="about_disclaimer_body">NPatch มีไว้เพื่อการเรียนรู้ การวิจัย และความเข้ากันได้ของแอปที่ถูกต้องตามกฎหมายเท่านั้น โปรดเคารพกฎหมายท้องถิ่น ข้อกำหนดของแอป และสิทธิ์ของนักพัฒนาดั้งเดิม คุณมีหน้าที่รับผิดชอบในการใช้แอปและโมดูลที่มีแพตช์บนอุปกรณ์ของคุณ</string>
+    <string name="about_disclaimer_body">ShimmerPatch มีไว้เพื่อการเรียนรู้ การวิจัย และความเข้ากันได้ของแอปที่ถูกต้องตามกฎหมายเท่านั้น โปรดเคารพกฎหมายท้องถิ่น ข้อกำหนดของแอป และสิทธิ์ของนักพัฒนาดั้งเดิม คุณมีหน้าที่รับผิดชอบในการใช้แอปและโมดูลที่มีแพตช์บนอุปกรณ์ของคุณ</string>
     <string name="about_links_title">ลิงค์</string>
     <string name="about_official_website">เว็บไซต์</string>
     <string name="about_link_website_summary">เยี่ยมชมเว็บไซต์ของ NkBe</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">ขอขอบคุณเป็นพิเศษ (ไม่เรียงลำดับ)</string>
     <string name="about_ack_rovo89_summary">ผู้ก่อตั้งกรอบงาน Xposed ผู้ริเริ่มและผู้บุกเบิกระบบนิเวศแบบโมดูลาร์ทั้งหมด</string>
     <string name="about_ack_lsposed_team_summary">ขอขอบคุณทีมงาน LSPosed ที่ให้การสนับสนุนระบบนิเวศ Xposed และเทคนิคการฉีดระดับต่ำอย่างต่อเนื่อง</string>
-    <string name="about_ack_jingmatrix_summary">ผู้เขียน Vector ซึ่งมีสถาปัตยกรรมเฟรมเวิร์กที่โดดเด่นเป็นรากฐานที่สำคัญและเป็นแรงบันดาลใจสำหรับ NPatch</string>
+    <string name="about_ack_jingmatrix_summary">ผู้เขียน Vector ซึ่งมีสถาปัตยกรรมเฟรมเวิร์กที่โดดเด่นเป็นรากฐานที่สำคัญและเป็นแรงบันดาลใจสำหรับ ShimmerPatch</string>
     <string name="about_ack_lspatch_summary">ผู้บุกเบิกโซลูชันการแพตช์แบบไม่ต้องรูท ซึ่งพิสูจน์ความเป็นไปได้ของการโหลดสภาพแวดล้อม Xposed แบบไดนามิกผ่านการใช้งานฝั่งผู้จัดการ</string>
     <string name="about_ack_libxposed_summary">แรงผลักดันเบื้องหลังการสร้างมาตรฐาน Xposed API นำความปลอดภัยประเภทและรูปแบบที่ชัดเจนมาสู่โลกแห่งการพัฒนาโมดูล</string>
     <string name="about_ack_winter_summary">ผู้สนับสนุนทางการเงินคนแรกของฉัน ขอบคุณสำหรับกำลังใจตั้งแต่เนิ่นๆและโดยตรงเช่นนี้</string>
@@ -78,7 +78,7 @@
     <string name="screen_select_modules">เลือกโมดูล</string>
     <string name="welcome_version">เวอร์ชัน %1$s</string>
     <string name="welcome_intro_content">การแทรกโมดูล Xposed ที่ทันสมัยและเครื่องมือการแพตช์ APK ที่ออกแบบมาสำหรับสภาพแวดล้อมที่ไม่ต้องรูท</string>
-    <string name="welcome_intro_detail">NPatch แทรกตัวโหลด Xposed โดยการแก้ไขไฟล์ APK โหมดภายในทำงานร่วมกับผู้จัดการเพื่อโหลดโมดูลและจัดการขอบเขตแบบไดนามิก โดยไม่ปล่อยให้ผู้จัดการทำงานอยู่เบื้องหลัง โหมดรวมจะฝังโมดูลลงในแอปเป้าหมายโดยตรงเพื่อการใช้งานแบบสแตนด์อโลนบนอุปกรณ์ที่ไม่มีผู้จัดการ Shizuku จะปลดล็อคคุณสมบัติอำนวยความสะดวกบางอย่างเท่านั้น และไม่จำเป็นสำหรับการแพทช์หลัก NPatch การโหลดโมดูล หรือการจัดการขั้นพื้นฐาน</string>
+    <string name="welcome_intro_detail">ShimmerPatch แทรกตัวโหลด Xposed โดยการแก้ไขไฟล์ APK โหมดภายในทำงานร่วมกับผู้จัดการเพื่อโหลดโมดูลและจัดการขอบเขตแบบไดนามิก โดยไม่ปล่อยให้ผู้จัดการทำงานอยู่เบื้องหลัง โหมดรวมจะฝังโมดูลลงในแอปเป้าหมายโดยตรงเพื่อการใช้งานแบบสแตนด์อโลนบนอุปกรณ์ที่ไม่มีผู้จัดการ Shizuku จะปลดล็อคคุณสมบัติอำนวยความสะดวกบางอย่างเท่านั้น และไม่จำเป็นสำหรับการแพทช์หลัก ShimmerPatch การโหลดโมดูล หรือการจัดการขั้นพื้นฐาน</string>
     <string name="welcome_permission_title">กำหนดค่าสิทธิ์ที่จำเป็น</string>
     <string name="welcome_permission_summary">ก่อนเริ่มต้น ให้ให้สิทธิ์การเข้าถึงขั้นพื้นฐานเพื่อให้ฟีเจอร์หลักทำงานต่อไป</string>
     <string name="welcome_permission_storage_title">การเข้าถึงพื้นที่เก็บข้อมูล</string>
@@ -86,7 +86,7 @@
     <string name="welcome_permission_applist_title">อ่านรายการแอป</string>
     <string name="welcome_permission_applist_summary">ใช้เพื่ออ่านแอพที่ติดตั้งเพื่อให้คุณสามารถเลือกเป้าหมายการแก้ไขได้อย่างแม่นยำ</string>
     <string name="welcome_optional_title">ส่วนขยายเพิ่มเติม: Shizuku</string>
-    <string name="welcome_optional_summary">ส่วนขยายเพิ่มเติมเท่านั้น แม้ว่าจะไม่มี Shizuku แต่ฟีเจอร์หลักของ NPatch ก็ยังทำงานได้ตามปกติ</string>
+    <string name="welcome_optional_summary">ส่วนขยายเพิ่มเติมเท่านั้น แม้ว่าจะไม่มี Shizuku แต่ฟีเจอร์หลักของ ShimmerPatch ก็ยังทำงานได้ตามปกติ</string>
     <string name="welcome_permission_granted">ได้รับ</string>
     <string name="welcome_permission_authorize">ให้สิทธิ์การเข้าถึง</string>
     <string name="welcome_disclaimer_title">หมายเหตุการใช้งานและข้อจำกัดความรับผิดชอบ</string>
@@ -113,7 +113,7 @@
     <string name="settings_other_settings">การตั้งค่าอื่นๆ</string>
     <string name="settings_network">เครือข่าย</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS ใช้โดยคำขอเครือข่าย NPatch</string>
+    <string name="settings_dns_summary">DNS ใช้โดยคำขอเครือข่าย ShimmerPatch</string>
     <string name="settings_dns_tencent">เทนเซ็นต์ DoH</string>
     <string name="settings_dns_google">กูเกิล DoH</string>
     <string name="settings_dns_cloudflare">คลาวด์แฟลร์ DoH</string>

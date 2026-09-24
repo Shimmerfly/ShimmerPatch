@@ -15,7 +15,7 @@ IDENTIFIERS = re.compile(
     r'https?://[^\s<>"\)]+|(?:/[\w.-]+){2,}|'
     r'\b[a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)+\b|'
     r'PackageInfo\(Parcel\)|android:usesCleartextTraffic|ReVanced GmsCore|'
-    r'\b(?:NPatch|LSPatch|LSPosed|Xposed|Shizuku|Vector|AppComponentFactory|'
+    r'\b(?:ShimmerPatch|LSPatch|LSPosed|Xposed|Shizuku|Vector|AppComponentFactory|'
     r'getPackageArchiveInfo|hasSigningCertificate|openat64|openat|Binder|MicroG)\b'
 )
 errors = []

@@ -13,13 +13,13 @@
     <string name="error_unknown">Nepoznata pogreška</string>
     <string name="home_shizuku_warning">Neke funkcije nisu dostupne</string>
     <string name="home_api_version">API verzija</string>
-    <string name="home_npatch_version">NPatch verzija</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch verzija</string>
     <string name="home_framework_version">Framework verzija</string>
     <string name="home_system_version">Verzija sustava</string>
     <string name="home_device">Uređaj</string>
     <string name="home_system_abi">Sustav ABI</string>
     <string name="home_info_copied">Kopirano u međuspremnik</string>
-    <string name="home_description">NPatch je besplatni nekorijenski Xposed okvir temeljen na Vector.</string>
+    <string name="home_description">ShimmerPatch je besplatni nekorijenski Xposed okvir temeljen na Vector.</string>
     <string name="screen_manage">Upravljanje</string>
     <string name="manage_loading">Učitavanje</string>
     <string name="manage_no_apps">Još nema zakrpanih aplikacija</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Odaberite instaliranu aplikaciju</string>
     <string name="patch_mode">Način zakrpe</string>
     <string name="patch_local">Lokalni</string>
-    <string name="patch_local_desc">Krpi aplikacije bez modula za ugradnju.\nOpseg Xposed može se dinamički mijenjati bez potrebe za ponovnim krpanjem.\nOvaj način se može koristiti samo lokalno sa NPatch Managerom.</string>
+    <string name="patch_local_desc">Krpi aplikacije bez modula za ugradnju.\nOpseg Xposed može se dinamički mijenjati bez potrebe za ponovnim krpanjem.\nOvaj način se može koristiti samo lokalno sa ShimmerPatch Managerom.</string>
     <string name="patch_integrated">Integriran</string>
-    <string name="patch_integrated_desc">Zakrpite aplikaciju s ugrađenim modulima.\nZakrpana aplikacija može raditi bez upravitelja, ali se njome ne može upravljati dinamički.\nIntegrirane zakrpane aplikacije mogu se koristiti na uređajima koji nemaju instaliran NPatch Manager.</string>
+    <string name="patch_integrated_desc">Zakrpite aplikaciju s ugrađenim modulima.\nZakrpana aplikacija može raditi bez upravitelja, ali se njome ne može upravljati dinamički.\nIntegrirane zakrpane aplikacije mogu se koristiti na uređajima koji nemaju instaliran ShimmerPatch Manager.</string>
     <string name="patch_embed_modules">Ugradite module</string>
     <string name="patch_debuggable">Mogućnost otklanjanja pogrešaka</string>
     <string name="patch_sigbypass">Premosnica potpisa</string>

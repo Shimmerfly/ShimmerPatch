@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Αντιγραφή αρχείου ενημέρωσης κώδικα</string>
     <string name="welcome_ui_step">Βήμα %1$d του %2$d</string>
     <string name="screen_home">Σπίτι</string>
-    <string name="home_shizuku_optional_summary">Προαιρετική επέκταση, δεν απαιτείται από το NPatch.</string>
-    <string name="home_about">Σχετικά με το NPatch</string>
-    <string name="about_author_summary">Συντηρητής NPatch</string>
+    <string name="home_shizuku_optional_summary">Προαιρετική επέκταση, δεν απαιτείται από το ShimmerPatch.</string>
+    <string name="home_about">Σχετικά με το ShimmerPatch</string>
+    <string name="about_author_summary">Συντηρητής ShimmerPatch</string>
     <string name="about_disclaimer_title">Αποποίηση ευθύνης</string>
-    <string name="about_disclaimer_body">Το NPatch παρέχεται μόνο για μάθηση, έρευνα και νόμιμη εργασία συμβατότητας εφαρμογών. Σεβαστείτε τους τοπικούς νόμους, τους όρους εφαρμογών και τα δικαιώματα των αρχικών προγραμματιστών. Είστε υπεύθυνοι για τον τρόπο χρήσης των επιδιορθωμένων εφαρμογών και λειτουργικών μονάδων στη συσκευή σας.</string>
+    <string name="about_disclaimer_body">Το ShimmerPatch παρέχεται μόνο για μάθηση, έρευνα και νόμιμη εργασία συμβατότητας εφαρμογών. Σεβαστείτε τους τοπικούς νόμους, τους όρους εφαρμογών και τα δικαιώματα των αρχικών προγραμματιστών. Είστε υπεύθυνοι για τον τρόπο χρήσης των επιδιορθωμένων εφαρμογών και λειτουργικών μονάδων στη συσκευή σας.</string>
     <string name="about_links_title">Σύνδεσμοι</string>
     <string name="about_official_website">Ιστοσελίδα</string>
     <string name="about_link_website_summary">Επισκεφθείτε την ιστοσελίδα της NkBe</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Ιδιαίτερες ευχαριστίες (χωρίς παραγγελία)</string>
     <string name="about_ack_rovo89_summary">Ιδρυτής του πλαισίου Xposed. ο δημιουργός και πρωτοπόρος ολόκληρου του αρθρωτού οικοσυστήματος.</string>
     <string name="about_ack_lsposed_team_summary">Ευχαριστούμε την ομάδα LSPosed για τη συνεχή συνεισφορά της στο οικοσύστημα Xposed και στις τεχνικές έγχυσης χαμηλού επιπέδου.</string>
-    <string name="about_ack_jingmatrix_summary">Συγγραφέας του Vector, του οποίου η εξαιρετική αρχιτεκτονική πλαισίου παρείχε ζωτική βάση και έμπνευση για το NPatch.</string>
+    <string name="about_ack_jingmatrix_summary">Συγγραφέας του Vector, του οποίου η εξαιρετική αρχιτεκτονική πλαισίου παρείχε ζωτική βάση και έμπνευση για το ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Πρωτοπόρος στις λύσεις επιδιόρθωσης χωρίς root, αποδεικνύοντας τη σκοπιμότητα της δυναμικής φόρτωσης περιβάλλοντος Xposed μέσω υλοποίησης από την πλευρά του διαχειριστή.</string>
     <string name="about_ack_libxposed_summary">Η κινητήρια δύναμη πίσω από την τυποποίηση Xposed API, φέρνοντας ασφάλεια τύπου και σαφείς συμβάσεις στον κόσμο ανάπτυξης μονάδων.</string>
     <string name="about_ack_winter_summary">Ο πρώτος μου οικονομικός υποστηρικτής. σας ευχαριστώ για την τόσο έγκαιρη και άμεση ενθάρρυνση.</string>
@@ -79,7 +79,7 @@
     <string name="screen_select_modules">Επιλέξτε μονάδες</string>
     <string name="welcome_version">Έκδοση %1$s</string>
     <string name="welcome_intro_content">Ένα σύγχρονο εργαλείο έγχυσης μονάδας Xposed και εργαλείο επιδιόρθωσης APK σχεδιασμένο για περιβάλλοντα χωρίς root.</string>
-    <string name="welcome_intro_detail">Το NPatch εισάγει τον φορτωτή Xposed τροποποιώντας αρχεία APK. Η τοπική λειτουργία συνεργάζεται με τον διαχειριστή για τη φόρτωση λειτουργικών μονάδων και τη δυναμική διαχείριση των πεδίων, χωρίς να διατηρείται ο διαχειριστής σε λειτουργία στο παρασκήνιο. Η ενσωματωμένη λειτουργία ενσωματώνει μονάδες απευθείας στην εφαρμογή προορισμού για αυτόνομη χρήση σε συσκευές χωρίς τον διαχειριστή. Το Shizuku ξεκλειδώνει μόνο ορισμένες λειτουργίες ευκολίας και δεν απαιτείται για επιδιόρθωση πυρήνα NPatch, φόρτωση λειτουργικών μονάδων ή βασική διαχείριση.</string>
+    <string name="welcome_intro_detail">Το ShimmerPatch εισάγει τον φορτωτή Xposed τροποποιώντας αρχεία APK. Η τοπική λειτουργία συνεργάζεται με τον διαχειριστή για τη φόρτωση λειτουργικών μονάδων και τη δυναμική διαχείριση των πεδίων, χωρίς να διατηρείται ο διαχειριστής σε λειτουργία στο παρασκήνιο. Η ενσωματωμένη λειτουργία ενσωματώνει μονάδες απευθείας στην εφαρμογή προορισμού για αυτόνομη χρήση σε συσκευές χωρίς τον διαχειριστή. Το Shizuku ξεκλειδώνει μόνο ορισμένες λειτουργίες ευκολίας και δεν απαιτείται για επιδιόρθωση πυρήνα ShimmerPatch, φόρτωση λειτουργικών μονάδων ή βασική διαχείριση.</string>
     <string name="welcome_permission_title">Διαμόρφωση Απαιτούμενων Δικαιωμάτων</string>
     <string name="welcome_permission_summary">Πριν ξεκινήσετε, παραχωρήστε βασικά δικαιώματα πρόσβασης για να διατηρήσετε τη λειτουργία των βασικών λειτουργιών.</string>
     <string name="welcome_permission_storage_title">Πρόσβαση στο χώρο αποθήκευσης</string>
@@ -87,7 +87,7 @@
     <string name="welcome_permission_applist_title">Διαβάστε τη λίστα εφαρμογών</string>
     <string name="welcome_permission_applist_summary">Χρησιμοποιείται για την ανάγνωση εγκατεστημένων εφαρμογών, ώστε να μπορείτε να επιλέξετε στόχους ενημέρωσης κώδικα με ακρίβεια.</string>
     <string name="welcome_optional_title">Προαιρετική επέκταση: Shizuku</string>
-    <string name="welcome_optional_summary">Μόνο προαιρετική επέκταση. Ακόμη και χωρίς Shizuku, οι βασικές λειτουργίες NPatch εξακολουθούν να λειτουργούν κανονικά.</string>
+    <string name="welcome_optional_summary">Μόνο προαιρετική επέκταση. Ακόμη και χωρίς Shizuku, οι βασικές λειτουργίες ShimmerPatch εξακολουθούν να λειτουργούν κανονικά.</string>
     <string name="welcome_permission_granted">Χορηγείται</string>
     <string name="welcome_permission_authorize">Παραχώρηση πρόσβασης</string>
     <string name="welcome_disclaimer_title">Σημειώσεις χρήσης και αποποίηση ευθύνης</string>
@@ -114,7 +114,7 @@
     <string name="settings_other_settings">Άλλες ρυθμίσεις</string>
     <string name="settings_network">Δίκτυο</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">Το DNS χρησιμοποιείται από αιτήματα δικτύου NPatch</string>
+    <string name="settings_dns_summary">Το DNS χρησιμοποιείται από αιτήματα δικτύου ShimmerPatch</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

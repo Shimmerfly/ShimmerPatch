@@ -70,7 +70,7 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
         val text = viewModel.logs.joinToString("\n") { it.second }
         if (text.isEmpty()) return
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        clipboard.setPrimaryClip(ClipData.newPlainText("NPatch Log", text))
+        clipboard.setPrimaryClip(ClipData.newPlainText("ShimmerPatch Log", text))
         scope.launch { snackbarHost.showSnackbar(copiedMessage) }
     }
 
@@ -210,7 +210,7 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                 status != PackageInstaller.STATUS_PENDING_USER_ACTION && status != NeoPackageManager.STATUS_USER_CANCELLED -> {
                     if (snackbarHost.showSnackbar(installFailed, copyError) == SnackbarResult.ActionPerformed) {
                         val clipboard = lspApp.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        clipboard.setPrimaryClip(ClipData.newPlainText("NPatch", message))
+                        clipboard.setPrimaryClip(ClipData.newPlainText("ShimmerPatch", message))
                     }
                 }
             }

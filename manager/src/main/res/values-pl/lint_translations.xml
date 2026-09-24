@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Skopiuj dziennik poprawek</string>
     <string name="welcome_ui_step">Krok %1$d z %2$d</string>
     <string name="screen_home">Dom</string>
-    <string name="home_shizuku_optional_summary">Opcjonalne rozszerzenie, niewymagane przez NPatch.</string>
-    <string name="home_about">Informacje o NPatch</string>
-    <string name="about_author_summary">Konserwator NPatch</string>
+    <string name="home_shizuku_optional_summary">Opcjonalne rozszerzenie, niewymagane przez ShimmerPatch.</string>
+    <string name="home_about">Informacje o ShimmerPatch</string>
+    <string name="about_author_summary">Konserwator ShimmerPatch</string>
     <string name="about_disclaimer_title">Zastrzeżenie</string>
-    <string name="about_disclaimer_body">NPatch jest przeznaczony wyłącznie do celów edukacyjnych, badawczych i legalnych prac związanych ze zgodnością aplikacji. Należy przestrzegać lokalnych przepisów, warunków aplikacji i praw oryginalnych programistów. Ponosisz odpowiedzialność za sposób korzystania z poprawionych aplikacji i modułów na Twoim urządzeniu.</string>
+    <string name="about_disclaimer_body">ShimmerPatch jest przeznaczony wyłącznie do celów edukacyjnych, badawczych i legalnych prac związanych ze zgodnością aplikacji. Należy przestrzegać lokalnych przepisów, warunków aplikacji i praw oryginalnych programistów. Ponosisz odpowiedzialność za sposób korzystania z poprawionych aplikacji i modułów na Twoim urządzeniu.</string>
     <string name="about_links_title">Linki</string>
     <string name="about_official_website">Strona internetowa</string>
     <string name="about_link_website_summary">Odwiedź stronę internetową NkBe</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Specjalne podziękowania (nieuporządkowane)</string>
     <string name="about_ack_rovo89_summary">Założyciel frameworka Xposed; pomysłodawca i pionier całego ekosystemu modułowego.</string>
     <string name="about_ack_lsposed_team_summary">Z podziękowaniami dla zespołu LSPosed za ich ciągły wkład w ekosystem Xposed i techniki wtrysku niskiego poziomu.</string>
-    <string name="about_ack_jingmatrix_summary">Autor Vector, którego wyjątkowa architektura szkieletowa zapewniła istotną podstawę i inspirację dla NPatch.</string>
+    <string name="about_ack_jingmatrix_summary">Autor Vector, którego wyjątkowa architektura szkieletowa zapewniła istotną podstawę i inspirację dla ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Pionier rozwiązań łatania bez rootowania, udowadniający wykonalność dynamicznego ładowania środowiska Xposed poprzez implementację po stronie menedżera.</string>
     <string name="about_ack_libxposed_summary">Siła napędowa standaryzacji Xposed API, która wprowadza bezpieczeństwo typu i jasne konwencje do świata projektowania modułów.</string>
     <string name="about_ack_winter_summary">Mój pierwszy sponsor finansowy; dziękuję za tak wczesną i bezpośrednią zachętę.</string>
@@ -79,7 +79,7 @@
     <string name="screen_select_modules">Wybierz moduły</string>
     <string name="welcome_version">Wersja %1$s</string>
     <string name="welcome_intro_content">Nowoczesne narzędzie do wstrzykiwania modułów Xposed i narzędzie do łatania APK przeznaczone dla środowisk bez rootowania.</string>
-    <string name="welcome_intro_detail">NPatch wstawia moduł ładujący Xposed, modyfikując pliki APK. Tryb lokalny współpracuje z menedżerem w celu dynamicznego ładowania modułów i zarządzania zakresami, bez konieczności utrzymywania menedżera działającego w tle. Tryb zintegrowany osadza moduły bezpośrednio w aplikacji docelowej do samodzielnego użytku na urządzeniach bez menedżera. Shizuku odblokowuje jedynie niektóre wygodne funkcje i nie jest wymagany do łatania rdzenia NPatch, ładowania modułów ani podstawowego zarządzania.</string>
+    <string name="welcome_intro_detail">ShimmerPatch wstawia moduł ładujący Xposed, modyfikując pliki APK. Tryb lokalny współpracuje z menedżerem w celu dynamicznego ładowania modułów i zarządzania zakresami, bez konieczności utrzymywania menedżera działającego w tle. Tryb zintegrowany osadza moduły bezpośrednio w aplikacji docelowej do samodzielnego użytku na urządzeniach bez menedżera. Shizuku odblokowuje jedynie niektóre wygodne funkcje i nie jest wymagany do łatania rdzenia ShimmerPatch, ładowania modułów ani podstawowego zarządzania.</string>
     <string name="welcome_permission_title">Skonfiguruj wymagane uprawnienia</string>
     <string name="welcome_permission_summary">Zanim zaczniesz, przyznaj podstawowe uprawnienia dostępu, aby podstawowe funkcje działały.</string>
     <string name="welcome_permission_storage_title">Dostęp do magazynu</string>
@@ -87,7 +87,7 @@
     <string name="welcome_permission_applist_title">Przeczytaj listę aplikacji</string>
     <string name="welcome_permission_applist_summary">Służy do odczytywania zainstalowanych aplikacji, dzięki czemu można dokładnie wybierać cele poprawek.</string>
     <string name="welcome_optional_title">Opcjonalne rozszerzenie: Shizuku</string>
-    <string name="welcome_optional_summary">Tylko opcjonalne przedłużenie. Nawet bez Shizuku podstawowe funkcje NPatch nadal działają normalnie.</string>
+    <string name="welcome_optional_summary">Tylko opcjonalne przedłużenie. Nawet bez Shizuku podstawowe funkcje ShimmerPatch nadal działają normalnie.</string>
     <string name="welcome_permission_granted">Zgoda</string>
     <string name="welcome_permission_authorize">Przyznaj dostęp</string>
     <string name="welcome_disclaimer_title">Uwagi dotyczące użytkowania i zastrzeżenie</string>
@@ -114,7 +114,7 @@
     <string name="settings_other_settings">Inne ustawienia</string>
     <string name="settings_network">Sieć</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS używany przez żądania sieciowe NPatch</string>
+    <string name="settings_dns_summary">DNS używany przez żądania sieciowe ShimmerPatch</string>
     <string name="settings_dns_tencent">Tencenta DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

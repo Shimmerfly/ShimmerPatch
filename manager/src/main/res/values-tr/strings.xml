@@ -13,13 +13,13 @@
     <string name="error_unknown">Bilinmeyen hata</string>
     <string name="home_shizuku_warning">Bazı işlevler kullanılamıyor</string>
     <string name="home_api_version">API Sürümü</string>
-    <string name="home_npatch_version">NPatch Sürümü</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch Sürümü</string>
     <string name="home_framework_version">Çerçeve Sürümü</string>
     <string name="home_system_version">Sistem Sürümü</string>
     <string name="home_device">Cihaz</string>
     <string name="home_system_abi">Sistem ABI\'si</string>
     <string name="home_info_copied">Panoya kopyalandı</string>
-    <string name="home_description">NPatch, Vector\'yi temel alan, root olmayan ücretsiz bir Xposed çerçevesidir.</string>
+    <string name="home_description">ShimmerPatch, Vector\'yi temel alan, root olmayan ücretsiz bir Xposed çerçevesidir.</string>
     <string name="screen_manage">Yönetmek</string>
     <string name="manage_loading">Yükleniyor</string>
     <string name="manage_no_apps">Henüz yama uygulanmış uygulama yok</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Yüklü bir uygulama seçin</string>
     <string name="patch_mode">Yama Modu</string>
     <string name="patch_local">Yerel</string>
-    <string name="patch_local_desc">Modülleri yerleştirmeden uygulamaları yamalar.\nXposed kapsamı, yeniden yama yapılmasına gerek kalmadan dinamik olarak değiştirilebilir.\nBu mod yalnızca NPatch Yöneticisi ile yerel olarak kullanılabilir.</string>
+    <string name="patch_local_desc">Modülleri yerleştirmeden uygulamaları yamalar.\nXposed kapsamı, yeniden yama yapılmasına gerek kalmadan dinamik olarak değiştirilebilir.\nBu mod yalnızca ShimmerPatch Yöneticisi ile yerel olarak kullanılabilir.</string>
     <string name="patch_integrated">Birleşik</string>
-    <string name="patch_integrated_desc">Gömülü modüller içeren bir uygulamaya yama yapın.\nYamalı uygulama, yönetici olmadan çalışabilir ancak dinamik olarak yönetilemez.\nTümleşik yamalı uygulamalar, NPatch Yöneticisi yüklü olmayan cihazlarda kullanılabilir.</string>
+    <string name="patch_integrated_desc">Gömülü modüller içeren bir uygulamaya yama yapın.\nYamalı uygulama, yönetici olmadan çalışabilir ancak dinamik olarak yönetilemez.\nTümleşik yamalı uygulamalar, ShimmerPatch Yöneticisi yüklü olmayan cihazlarda kullanılabilir.</string>
     <string name="patch_embed_modules">Gömülü modüller</string>
     <string name="patch_debuggable">Hata ayıklanabilir</string>
     <string name="patch_sigbypass">İmza atlama</string>

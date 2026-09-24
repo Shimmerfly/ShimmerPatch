@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Zkopírujte protokol opravy</string>
     <string name="welcome_ui_step">Krok %1$d z %2$d</string>
     <string name="screen_home">Domů</string>
-    <string name="home_shizuku_optional_summary">Volitelné rozšíření, které NPatch nevyžaduje.</string>
-    <string name="home_about">O NPatch</string>
-    <string name="about_author_summary">Správce NPatch</string>
+    <string name="home_shizuku_optional_summary">Volitelné rozšíření, které ShimmerPatch nevyžaduje.</string>
+    <string name="home_about">O ShimmerPatch</string>
+    <string name="about_author_summary">Správce ShimmerPatch</string>
     <string name="about_disclaimer_title">Zřeknutí se odpovědnosti</string>
-    <string name="about_disclaimer_body">NPatch je poskytován pouze za účelem učení, výzkumu a legitimní práce s kompatibilitou aplikací. Respektujte prosím místní zákony, podmínky aplikace a práva původních vývojářů. Jste odpovědní za to, jak jsou na vašem zařízení používány opravené aplikace a moduly.</string>
+    <string name="about_disclaimer_body">ShimmerPatch je poskytován pouze za účelem učení, výzkumu a legitimní práce s kompatibilitou aplikací. Respektujte prosím místní zákony, podmínky aplikace a práva původních vývojářů. Jste odpovědní za to, jak jsou na vašem zařízení používány opravené aplikace a moduly.</string>
     <string name="about_links_title">Odkazy</string>
     <string name="about_official_website">webové stránky</string>
     <string name="about_link_website_summary">Navštivte webové stránky NkBe</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Zvláštní poděkování (neobjednáno)</string>
     <string name="about_ack_rovo89_summary">Zakladatel Xposed Framework; původce a průkopník celého modulárního ekosystému.</string>
     <string name="about_ack_lsposed_team_summary">S poděkováním týmu LSPosed za jejich neustálé příspěvky k ekosystému Xposed a nízkoúrovňové injekční techniky.</string>
-    <string name="about_ack_jingmatrix_summary">Autor Vector, jehož vynikající architektura frameworku poskytla zásadní základ a inspiraci pro NPatch.</string>
+    <string name="about_ack_jingmatrix_summary">Autor Vector, jehož vynikající architektura frameworku poskytla zásadní základ a inspiraci pro ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Průkopník v řešení oprav bez kořenů, který dokazuje proveditelnost dynamického načítání prostředí Xposed prostřednictvím implementace na straně správce.</string>
     <string name="about_ack_libxposed_summary">Hnací síla standardizace Xposed API, která přináší typovou bezpečnost a jasné konvence do světa vývoje modulů.</string>
     <string name="about_ack_winter_summary">Můj úplně první finanční podporovatel; děkuji za tak brzké a přímé povzbuzení.</string>
@@ -81,7 +81,7 @@
     <string name="screen_select_modules">Vyberte moduly</string>
     <string name="welcome_version">Verze %1$s</string>
     <string name="welcome_intro_content">Moderní nástroj pro vkládání modulů Xposed a záplatovací nástroj APK určený pro prostředí bez kořenů.</string>
-    <string name="welcome_intro_detail">NPatch injektuje zavaděč Xposed úpravou souborů APK. Místní režim spolupracuje se správcem na dynamickém načítání modulů a správě rozsahů, aniž by správce běžel na pozadí. Integrovaný režim vkládá moduly přímo do cílové aplikace pro samostatné použití na zařízeních bez správce. Shizuku odemyká pouze některé funkce pohodlí a není vyžadován pro záplatování jádra NPatch, načítání modulů nebo základní správu.</string>
+    <string name="welcome_intro_detail">ShimmerPatch injektuje zavaděč Xposed úpravou souborů APK. Místní režim spolupracuje se správcem na dynamickém načítání modulů a správě rozsahů, aniž by správce běžel na pozadí. Integrovaný režim vkládá moduly přímo do cílové aplikace pro samostatné použití na zařízeních bez správce. Shizuku odemyká pouze některé funkce pohodlí a není vyžadován pro záplatování jádra ShimmerPatch, načítání modulů nebo základní správu.</string>
     <string name="welcome_permission_title">Nakonfigurujte požadovaná oprávnění</string>
     <string name="welcome_permission_summary">Než začnete, udělte základní přístupová oprávnění, aby základní funkce fungovaly.</string>
     <string name="welcome_permission_storage_title">Přístup k úložišti</string>
@@ -89,7 +89,7 @@
     <string name="welcome_permission_applist_title">Přečtěte si seznam aplikací</string>
     <string name="welcome_permission_applist_summary">Používá se ke čtení nainstalovaných aplikací, takže si můžete přesně vybrat cíle opravy.</string>
     <string name="welcome_optional_title">Volitelné rozšíření: Shizuku</string>
-    <string name="welcome_optional_summary">Pouze volitelné rozšíření. I bez Shizuku základní funkce NPatch stále fungují normálně.</string>
+    <string name="welcome_optional_summary">Pouze volitelné rozšíření. I bez Shizuku základní funkce ShimmerPatch stále fungují normálně.</string>
     <string name="welcome_permission_granted">Přiznáno</string>
     <string name="welcome_permission_authorize">Udělit přístup</string>
     <string name="welcome_disclaimer_title">Poznámky k použití a vyloučení odpovědnosti</string>
@@ -116,7 +116,7 @@
     <string name="settings_other_settings">Další nastavení</string>
     <string name="settings_network">Síť</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS používané síťovými požadavky NPatch</string>
+    <string name="settings_dns_summary">DNS používané síťovými požadavky ShimmerPatch</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

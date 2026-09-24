@@ -91,8 +91,8 @@ androidComponents {
         val variantLowered = variant.name.lowercase()
         val variantCapped = variant.name.replaceFirstChar { it.uppercase() }
 
-        val configuredSignature = providers.environmentVariable("NPATCH_MANAGER_SIGNATURE_SHA256")
-            .orElse(providers.gradleProperty("npatchManagerSignatureSha256"))
+        val configuredSignature = providers.environmentVariable("SHIMMERPATCH_MANAGER_SIGNATURE_SHA256")
+            .orElse(providers.gradleProperty("shimmerpatchManagerSignatureSha256"))
         val signingConfig = android.buildTypes.getByName(requireNotNull(variant.buildType)).signingConfig
         val signatureAllowlist = configuredSignature.orElse(providers.provider {
             val config = requireNotNull(signingConfig) { "Missing manager signing config for ${variant.name}" }
@@ -126,7 +126,7 @@ androidComponents {
 
             val targetDir = layout.buildDirectory.dir("intermediates/assets/$variantLowered/merge${variantCapped}Assets")
             doFirst {
-                delete(targetDir.map { it.file("npatch/loader.dex") })
+                delete(targetDir.map { it.file("shimmerpatch/loader.dex") })
             }
             into(targetDir)
 
@@ -152,7 +152,7 @@ androidComponents {
             dependsOn("assemble$variantCapped")
             from(variant.artifacts.get(SingleArtifact.APK))
             into("${rootProject.projectDir}/out/$variantLowered")
-            rename(".*.apk", "NPatch-v$verName-$verCode-$variantLowered.apk")
+            rename(".*.apk", "ShimmerPatch-v$verName-$verCode-$variantLowered.apk")
         }
     }
 }

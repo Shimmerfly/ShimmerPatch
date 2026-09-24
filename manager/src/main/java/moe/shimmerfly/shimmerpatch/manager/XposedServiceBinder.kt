@@ -11,14 +11,14 @@ import kotlinx.coroutines.runBlocking
 import moe.shimmerfly.shimmerpatch.BuildConfig
 import moe.shimmerfly.shimmerpatch.config.ConfigManager
 import moe.shimmerfly.shimmerpatch.lspApp
-import moe.shimmerfly.shimmerpatch.util.NPatchRemoteStore
+import moe.shimmerfly.shimmerpatch.util.ShimmerPatchRemoteStore
 
 class XposedServiceBinder(
     private val packageName: String,
     private val allowedUid: Int? = null,
 ) : IXposedService.Stub() {
 
-    private val remoteStore by lazy { NPatchRemoteStore.get(lspApp, packageName) }
+    private val remoteStore by lazy { ShimmerPatchRemoteStore.get(lspApp, packageName) }
 
     override fun getApiVersion(): Int {
         enforceCaller()
@@ -27,7 +27,7 @@ class XposedServiceBinder(
 
     override fun getFrameworkName(): String {
         enforceCaller()
-        return "NPatch"
+        return "ShimmerPatch"
     }
 
     override fun getFrameworkVersion(): String {
@@ -43,7 +43,7 @@ class XposedServiceBinder(
 
     override fun getFrameworkProperties(): Long {
         enforceCaller()
-        return NPatchRemoteStore.CAP_REMOTE
+        return ShimmerPatchRemoteStore.CAP_REMOTE
     }
 
     override fun getScope(): List<String> {

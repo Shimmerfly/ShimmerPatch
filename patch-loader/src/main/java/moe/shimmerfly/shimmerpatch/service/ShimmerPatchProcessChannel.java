@@ -13,18 +13,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * The host's inbound hot-reload channel for NPatch's manager.
+ * The host's inbound hot-reload channel for ShimmerPatch's manager.
  *
  * <p>Executes in-process generation swap ({@code VectorModuleManager.hotReload}) on behalf of
- * the NPatch manager on a background worker thread and reports the outcome out-of-band.</p>
+ * the ShimmerPatch manager on a background worker thread and reports the outcome out-of-band.</p>
  */
-public class NPatchProcessChannel extends IProcessChannel.Stub {
+public class ShimmerPatchProcessChannel extends IProcessChannel.Stub {
 
-    private static final String TAG = "NPatch-HotReload";
+    private static final String TAG = "ShimmerPatch-HotReload";
 
     private final ExecutorService worker =
             Executors.newSingleThreadExecutor(r -> {
-                Thread t = new Thread(r, "npatch-hot-reload-host");
+                Thread t = new Thread(r, "shimmerpatch-hot-reload-host");
                 t.setDaemon(true);
                 return t;
             });

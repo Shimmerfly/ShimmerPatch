@@ -9,13 +9,13 @@ import java.io.File
 
 object ManagerCacheCleaner {
 
-    private const val REMOTE_PREFS_PREFIX = "npatch_remote_"
+    private const val REMOTE_PREFS_PREFIX = "shimmerpatch_remote_"
 
     suspend fun clear() {
         withContext(Dispatchers.IO) {
             ConfigManager.clearRuntimeCache()
             clearRemotePreferenceFiles()
-            deleteRecursively(File(lspApp.filesDir, "npatch/remote"))
+            deleteRecursively(File(lspApp.filesDir, "shimmerpatch/remote"))
             deleteIfExists(File(lspApp.filesDir, "repo.json"))
             recreateDirectory(lspApp.cacheDir)
             recreateDirectory(lspApp.externalCacheDir)

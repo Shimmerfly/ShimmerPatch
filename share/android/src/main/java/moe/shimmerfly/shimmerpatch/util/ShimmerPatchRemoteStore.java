@@ -33,20 +33,20 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Canonical SQLite-backed storage and validation backend for NPatch remote preferences and files.
+ * Canonical SQLite-backed storage and validation backend for ShimmerPatch remote preferences and files.
  *
  * <p>Preserves full object type fidelity (including {@code Set<String>} and arbitrary Serializables)
  * across IPC boundaries, mirroring the Vector daemon's schema while operating in rootless user mode.</p>
  */
-public final class NPatchRemoteStore {
+public final class ShimmerPatchRemoteStore {
     public static final long CAP_REMOTE = 1L << 1;
-    private static final String TAG = "NPatchRemoteStore";
-    private static final String DB_NAME = "npatch-xposed-remote.db";
+    private static final String TAG = "ShimmerPatchRemoteStore";
+    private static final String DB_NAME = "shimmerpatch-xposed-remote.db";
     private static final int DB_VERSION = 1;
     private static final String TABLE = "configs";
     private static final int PER_USER_RANGE = 100000;
 
-    private static final Map<String, NPatchRemoteStore> INSTANCES = new ConcurrentHashMap<>();
+    private static final Map<String, ShimmerPatchRemoteStore> INSTANCES = new ConcurrentHashMap<>();
 
     private static final class CallbackState {
         final int userId;
@@ -65,21 +65,21 @@ public final class NPatchRemoteStore {
     private final DatabaseHelper dbHelper;
     private final Map<String, Set<CallbackState>> groupCallbacks = new ConcurrentHashMap<>();
 
-    private NPatchRemoteStore(Context context, String modulePackageName) {
+    private ShimmerPatchRemoteStore(Context context, String modulePackageName) {
         Context appContext = context.getApplicationContext();
         this.context = appContext == null ? context : appContext;
         this.modulePackageName = requireModulePackage(modulePackageName);
         this.dbHelper = new DatabaseHelper(this.context);
     }
 
-    public static NPatchRemoteStore get(Context context, String modulePackageName) {
+    public static ShimmerPatchRemoteStore get(Context context, String modulePackageName) {
         Objects.requireNonNull(context, "context");
         Context appContext = context.getApplicationContext();
         Context storageContext = appContext == null ? context : appContext;
         String safePackage = requireModulePackage(modulePackageName);
         String key = storageContext.getApplicationInfo().dataDir + ':' + safePackage;
         return INSTANCES.computeIfAbsent(
-                key, ignored -> new NPatchRemoteStore(storageContext, safePackage));
+                key, ignored -> new ShimmerPatchRemoteStore(storageContext, safePackage));
     }
 
     private static int callingUserId() {
@@ -300,7 +300,7 @@ public final class NPatchRemoteStore {
     }
 
     private File remoteFilesDir() {
-        return new File(context.getFilesDir(), "npatch/remote/" + modulePackageName);
+        return new File(context.getFilesDir(), "shimmerpatch/remote/" + modulePackageName);
     }
 
     private File resolveRemoteFile(String name) {

@@ -18,7 +18,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun NPatchPullToRefresh(
+fun ShimmerPatchPullToRefresh(
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,

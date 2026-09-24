@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RemoteApplicationService implements IFrameworkService {
 
-    private static final String TAG = "NPatch";
+    private static final String TAG = "ShimmerPatch";
     private static final String MODULE_SERVICE = "moe.shimmerfly.shimmerpatch.manager.ModuleService";
     private static final int CONNECTION_TIMEOUT_SEC = 2;
     private static final long MAX_BACKGROUND_WAIT_MS = 5 * 60 * 1000L;
@@ -57,7 +57,7 @@ public class RemoteApplicationService implements IFrameworkService {
     private static final Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
     private static final ExecutorService BIND_EXECUTOR =
             Executors.newCachedThreadPool(runnable -> {
-                Thread thread = new Thread(runnable, "NPatch-ManagerBind");
+                Thread thread = new Thread(runnable, "ShimmerPatch-ManagerBind");
                 thread.setDaemon(true);
                 return thread;
             });
@@ -99,7 +99,7 @@ public class RemoteApplicationService implements IFrameworkService {
 
                     // Restore Process Channel (Hot reload)
                     try {
-                        connected.attachProcessChannel(new NPatchProcessChannel());
+                        connected.attachProcessChannel(new ShimmerPatchProcessChannel());
                     } catch (Throwable t) {
                         Log.w(TAG, "Failed to restore hot reload process channel on reconnect", t);
                     }
@@ -255,7 +255,7 @@ public class RemoteApplicationService implements IFrameworkService {
 
     private void recordFallbackEvent(String reason) {
         try {
-            SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
+            SharedPreferences shared = context.getSharedPreferences("shimmerpatch", Context.MODE_PRIVATE);
             shared.edit()
                     .putLong("last_fallback_ts", System.currentTimeMillis())
                     .putString("last_fallback_reason", reason)
@@ -286,7 +286,7 @@ public class RemoteApplicationService implements IFrameworkService {
                 moduleObj.put("packageName", entry.getKey());
                 moduleArr.put(moduleObj);
             }
-            SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
+            SharedPreferences shared = context.getSharedPreferences("shimmerpatch", Context.MODE_PRIVATE);
             shared.edit().putString("modules", moduleArr.toString()).apply();
             XLog.i(TAG, "Updated local module scope cache: " + moduleArr);
         } catch (Throwable e) {
@@ -300,7 +300,7 @@ public class RemoteApplicationService implements IFrameworkService {
             List<LoadedModule> modernTarget
     ) {
         try {
-            SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
+            SharedPreferences shared = context.getSharedPreferences("shimmerpatch", Context.MODE_PRIVATE);
             String jsonStr = shared.getString("modules", "[]");
             JSONArray jsonArray = new JSONArray(jsonStr);
             PackageManager pm = context.getPackageManager();
@@ -622,7 +622,7 @@ public class RemoteApplicationService implements IFrameworkService {
         IFrameworkService current = service;
         if (current != null && managerAvailable.get()) {
             try {
-                current.attachProcessChannel(new NPatchProcessChannel());
+                current.attachProcessChannel(new ShimmerPatchProcessChannel());
             } catch (RemoteException error) {
                 onManagerFailure("register hot reload target", error);
             }

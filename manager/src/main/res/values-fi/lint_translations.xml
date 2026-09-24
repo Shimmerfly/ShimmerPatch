@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Kopioi korjausloki</string>
     <string name="welcome_ui_step">Vaihe %1$d / %2$d</string>
     <string name="screen_home">Kotiin</string>
-    <string name="home_shizuku_optional_summary">Valinnainen laajennus, ei vaadi NPatch.</string>
-    <string name="home_about">Tietoja NPatch:stä</string>
-    <string name="about_author_summary">NPatch ylläpitäjä</string>
+    <string name="home_shizuku_optional_summary">Valinnainen laajennus, ei vaadi ShimmerPatch.</string>
+    <string name="home_about">Tietoja ShimmerPatch:stä</string>
+    <string name="about_author_summary">ShimmerPatch ylläpitäjä</string>
     <string name="about_disclaimer_title">Vastuuvapauslauseke</string>
-    <string name="about_disclaimer_body">NPatch on tarkoitettu vain oppimiseen, tutkimukseen ja lailliseen sovellusten yhteensopivuustyöhön. Noudata paikallisia lakeja, sovellusehtoja ja alkuperäisten kehittäjien oikeuksia. Olet vastuussa siitä, kuinka korjattuja sovelluksia ja moduuleja käytetään laitteessasi.</string>
+    <string name="about_disclaimer_body">ShimmerPatch on tarkoitettu vain oppimiseen, tutkimukseen ja lailliseen sovellusten yhteensopivuustyöhön. Noudata paikallisia lakeja, sovellusehtoja ja alkuperäisten kehittäjien oikeuksia. Olet vastuussa siitä, kuinka korjattuja sovelluksia ja moduuleja käytetään laitteessasi.</string>
     <string name="about_links_title">Linkit</string>
     <string name="about_official_website">Verkkosivusto</string>
     <string name="about_link_website_summary">Vieraile NkBe:n verkkosivuilla</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Erityiskiitokset (järjestämätön)</string>
     <string name="about_ack_rovo89_summary">Xposed-kehyksen perustaja; koko modulaarisen ekosysteemin alkuunpanija ja edelläkävijä.</string>
     <string name="about_ack_lsposed_team_summary">Kiitos LSPosed Teamille heidän jatkuvasta panoksestaan Xposed-ekosysteemiin ja matalan tason ruiskutustekniikoihin.</string>
-    <string name="about_ack_jingmatrix_summary">Vector:n kirjoittaja, jonka erinomainen kehysarkkitehtuuri tarjosi tärkeän perustan ja inspiraation NPatch:lle.</string>
+    <string name="about_ack_jingmatrix_summary">Vector:n kirjoittaja, jonka erinomainen kehysarkkitehtuuri tarjosi tärkeän perustan ja inspiraation ShimmerPatch:lle.</string>
     <string name="about_ack_lspatch_summary">Juurittomien korjausratkaisujen edelläkävijä, joka todistaa dynaamisen Xposed-ympäristön latauksen toteutettavuuden johtajapuolen toteutuksen kautta.</string>
     <string name="about_ack_libxposed_summary">Xposed API -standardoinnin liikkeellepaneva voima, joka tuo tyyppiturvallisuutta ja selkeät käytännöt moduulien kehitysmaailmaan.</string>
     <string name="about_ack_winter_summary">Ensimmäinen taloudellinen tukijani; kiitos näin varhaisesta ja suorasta rohkaisusta.</string>
@@ -79,7 +79,7 @@
     <string name="screen_select_modules">Valitse moduulit</string>
     <string name="welcome_version">Versio %1$s</string>
     <string name="welcome_intro_content">Moderni Xposed-moduulin injektio- ja APK-paikkaustyökalu, joka on suunniteltu juurittomiin ympäristöihin.</string>
-    <string name="welcome_intro_detail">NPatch ruiskuttaa Xposed-lataimen muokkaamalla APK-tiedostoja. Paikallinen tila toimii johtajan kanssa moduulien lataamisessa ja laajuuksien hallinnassa dynaamisesti pitämättä hallintaa käynnissä taustalla. Integroitu tila upottaa moduulit suoraan kohdesovellukseen itsenäiseen käyttöön laitteissa ilman hallintaa. Shizuku avaa vain joitain mukavuusominaisuuksia, eikä sitä vaadita NPatch-ytimen korjaukseen, moduulien lataamiseen tai perushallintaan.</string>
+    <string name="welcome_intro_detail">ShimmerPatch ruiskuttaa Xposed-lataimen muokkaamalla APK-tiedostoja. Paikallinen tila toimii johtajan kanssa moduulien lataamisessa ja laajuuksien hallinnassa dynaamisesti pitämättä hallintaa käynnissä taustalla. Integroitu tila upottaa moduulit suoraan kohdesovellukseen itsenäiseen käyttöön laitteissa ilman hallintaa. Shizuku avaa vain joitain mukavuusominaisuuksia, eikä sitä vaadita ShimmerPatch-ytimen korjaukseen, moduulien lataamiseen tai perushallintaan.</string>
     <string name="welcome_permission_title">Määritä vaaditut käyttöoikeudet</string>
     <string name="welcome_permission_summary">Ennen kuin aloitat, myönnä peruskäyttöoikeudet, jotta ydinominaisuudet pysyvät toiminnassa.</string>
     <string name="welcome_permission_storage_title">Tallennustilan käyttöoikeus</string>
@@ -87,7 +87,7 @@
     <string name="welcome_permission_applist_title">Lue sovellusluettelo</string>
     <string name="welcome_permission_applist_summary">Käytetään asennettujen sovellusten lukemiseen, jotta voit valita korjaustiedoston kohteet tarkasti.</string>
     <string name="welcome_optional_title">Valinnainen laajennus: Shizuku</string>
-    <string name="welcome_optional_summary">Vain valinnainen laajennus. Jopa ilman Shizuku:tä, NPatch:n ydinominaisuudet toimivat edelleen normaalisti.</string>
+    <string name="welcome_optional_summary">Vain valinnainen laajennus. Jopa ilman Shizuku:tä, ShimmerPatch:n ydinominaisuudet toimivat edelleen normaalisti.</string>
     <string name="welcome_permission_granted">Myönnetty</string>
     <string name="welcome_permission_authorize">Myönnä käyttöoikeus</string>
     <string name="welcome_disclaimer_title">Käyttöhuomautuksia ja vastuuvapauslauseke</string>
@@ -114,7 +114,7 @@
     <string name="settings_other_settings">Muut asetukset</string>
     <string name="settings_network">Verkko</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS käyttää NPatch-verkkopyyntöjä</string>
+    <string name="settings_dns_summary">DNS käyttää ShimmerPatch-verkkopyyntöjä</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

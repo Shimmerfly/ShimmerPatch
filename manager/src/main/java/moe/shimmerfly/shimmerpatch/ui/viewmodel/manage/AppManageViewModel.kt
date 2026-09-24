@@ -48,7 +48,7 @@ class AppManageViewModel : ViewModel() {
     val appList: List<Pair<AppInfo, PatchConfig>> by derivedStateOf {
         NeoPackageManager.appList.mapNotNull { appInfo ->
             runCatching {
-                appInfo.app.metaData?.getString("npatch")?.let {
+                appInfo.app.metaData?.getString("shimmerpatch")?.let {
                     val json = Base64.decode(it, Base64.DEFAULT).toString(Charsets.UTF_8)
                     val config = Gson().fromJson(json, PatchConfig::class.java)
                     if (config?.lspConfig == null) null else appInfo to config
@@ -126,7 +126,7 @@ class AppManageViewModel : ViewModel() {
                 for (apk in apkPaths) {
                     ZipFile(apk).use { zip ->
                         var entry = zip.getEntry(Constants.ORIGINAL_APK_ASSET_PATH)
-                        if (entry == null) entry = zip.getEntry("assets/npatch/origin_apk.bin")
+                        if (entry == null) entry = zip.getEntry("assets/shimmerpatch/origin_apk.bin")
                         if (entry == null) throw FileNotFoundException("Original apk entry not found for $apk")
                         zip.getInputStream(entry).use { input ->
                             val dst = lspApp.tmpApkDir.resolve(apk.substringAfterLast('/'))

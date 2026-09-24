@@ -18,12 +18,12 @@ fun checkIsApkFixedByLSP(context: Context, packageName: String): Boolean {
     return try {
         val app =
             context.packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
-        (app.metaData?.containsKey("npatch") != true)
+        (app.metaData?.containsKey("shimmerpatch") != true)
     } catch (_: PackageManager.NameNotFoundException) {
-        Log.e("NPatch", "Package not found: $packageName")
+        Log.e("ShimmerPatch", "Package not found: $packageName")
         false
     } catch (e: Exception) {
-        Log.e("NPatch", "Unexpected error in checkIsApkFixedByLSP", e)
+        Log.e("ShimmerPatch", "Unexpected error in checkIsApkFixedByLSP", e)
         false
     }
 }

@@ -29,7 +29,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
-import moe.shimmerfly.shimmerpatch.ui.component.NPatchPullToRefresh
+import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchPullToRefresh
 
 /** Exercises the production refresh/app-bar nesting with one uninterrupted pointer gesture. */
 class NestedRefreshTest {
@@ -57,7 +57,7 @@ class NestedRefreshTest {
                 refresh = rememberPullToRefreshState()
                 list = rememberLazyListState(initialFirstVisibleItemIndex = firstItem)
                 var refreshing by remember { mutableStateOf(false) }
-                NPatchPullToRefresh(
+                ShimmerPatchPullToRefresh(
                     isRefreshing = refreshing,
                     onRefresh = { refreshes++; refreshing = true },
                     scrollBehavior = behavior,

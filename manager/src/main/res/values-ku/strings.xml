@@ -13,13 +13,13 @@
     <string name="error_unknown">Çewtiya nenas</string>
     <string name="home_shizuku_warning">Hin fonksiyon ne berdest in</string>
     <string name="home_api_version">Guhertoya API</string>
-    <string name="home_npatch_version">Guhertoya NPatch</string>
+    <string name="home_shimmerpatch_version">Guhertoya ShimmerPatch</string>
     <string name="home_framework_version">Guhertoya Çarçoveyê</string>
     <string name="home_system_version">Versiyon ji System</string>
     <string name="home_device">Sazî</string>
     <string name="home_system_abi">Pergala ABI</string>
     <string name="home_info_copied">Li clipboardê hate kopî kirin</string>
-    <string name="home_description">NPatch çarçoveyek Xposed-a ne-root e ku li ser bingeha Vector-ê ye.</string>
+    <string name="home_description">ShimmerPatch çarçoveyek Xposed-a ne-root e ku li ser bingeha Vector-ê ye.</string>
     <string name="screen_manage">Rêvebirin</string>
     <string name="manage_loading">Barkirin</string>
     <string name="manage_no_apps">Hê sepanên patched tune</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Serlêdanek sazkirî hilbijêrin</string>
     <string name="patch_mode">Mode Patch</string>
     <string name="patch_local">Herêmî</string>
-    <string name="patch_local_desc">Serlêdanan bêyî ku modulên binavkirî bişopînin.\nQada Xposed dikare bi dînamîkî were guheztin bêyî ku hewce bike ku ji nû ve were guheztin.\nVê modê tenê bi Rêvebirê NPatch re herêmî dikare were bikar anîn.</string>
+    <string name="patch_local_desc">Serlêdanan bêyî ku modulên binavkirî bişopînin.\nQada Xposed dikare bi dînamîkî were guheztin bêyî ku hewce bike ku ji nû ve were guheztin.\nVê modê tenê bi Rêvebirê ShimmerPatch re herêmî dikare were bikar anîn.</string>
     <string name="patch_integrated">Integrated</string>
-    <string name="patch_integrated_desc">Serlêdanek bi modulên pêvekirî veqetînin.\nSerlêdana paçkirî dikare bêyî rêveberê bixebite, lê bi dînamîk nayê rêvebirin.\nSerlêdanên pejirandî yên yekbûyî dikarin li ser cîhazên ku Rêvebirê NPatch-ê sazkirî ne têne bikar anîn.</string>
+    <string name="patch_integrated_desc">Serlêdanek bi modulên pêvekirî veqetînin.\nSerlêdana paçkirî dikare bêyî rêveberê bixebite, lê bi dînamîk nayê rêvebirin.\nSerlêdanên pejirandî yên yekbûyî dikarin li ser cîhazên ku Rêvebirê ShimmerPatch-ê sazkirî ne têne bikar anîn.</string>
     <string name="patch_embed_modules">Modulên tevde bikin</string>
     <string name="patch_debuggable">Debuggable</string>
     <string name="patch_sigbypass">Îmzeya bipass</string>

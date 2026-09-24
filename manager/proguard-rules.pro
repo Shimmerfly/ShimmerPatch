@@ -11,8 +11,8 @@
 -keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
 -keep class com.beust.jcommander.** { *; }
 -keep interface com.beust.jcommander.** { *; }
--keep class moe.shimmerfly.shimmerpatch.patch.NPatch { *; }
--keepclassmembers class moe.shimmerfly.shimmerpatch.patch.NPatch {
+-keep class moe.shimmerfly.shimmerpatch.patch.ShimmerPatch { *; }
+-keepclassmembers class moe.shimmerfly.shimmerpatch.patch.ShimmerPatch {
     @com.beust.jcommander.Parameter <fields>;
 }
 

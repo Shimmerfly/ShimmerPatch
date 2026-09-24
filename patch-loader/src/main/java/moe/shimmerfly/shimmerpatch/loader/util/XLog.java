@@ -66,7 +66,7 @@ public class XLog {
         }
 
         // Whitelist filtering
-        boolean isWhitelisted = (tag != null && tag.startsWith("NPatch")) ||
+        boolean isWhitelisted = (tag != null && tag.startsWith("ShimmerPatch")) ||
                 (targetPackageName != null && targetPackageName.equals(tag));
 
         if (!isWhitelisted) {

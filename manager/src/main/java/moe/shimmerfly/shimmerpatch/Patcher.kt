@@ -9,7 +9,7 @@ import moe.shimmerfly.shimmerpatch.config.KeystorePreset
 import moe.shimmerfly.shimmerpatch.config.MyKeyStore
 import moe.shimmerfly.shimmerpatch.share.Constants
 import moe.shimmerfly.shimmerpatch.share.PatchConfig
-import moe.shimmerfly.shimmerpatch.patch.NPatch
+import moe.shimmerfly.shimmerpatch.patch.ShimmerPatch
 import moe.shimmerfly.shimmerpatch.patch.util.Logger
 import moe.shimmerfly.shimmerpatch.patch.util.ManifestParser
 import java.io.File
@@ -126,7 +126,7 @@ object Patcher {
                 if (config.hideLibs) add("--hidelibs")
                 if (config.usesCleartextTraffic) add("--cleartext")
                 when (Configs.keyStorePreset) {
-                    KeystorePreset.NPATCH -> add("-npa")
+                    KeystorePreset.SHIMMERPATCH -> add("-npa")
                     KeystorePreset.FPA -> add("-fpa")
                     KeystorePreset.CUSTOM -> addAll(arrayOf("-k", MyKeyStore.file.path, Configs.keyStorePassword, Configs.keyStoreAlias, Configs.keyStoreAliasPassword))
                 }
@@ -140,7 +140,7 @@ object Patcher {
             val inputApks = options.inputApks
             validateInputSet(inputApks)
             val outputsBeforePatch = currentPatchOutputs()
-            NPatch(logger, *options.toStringArray()).doCommandLine()
+            ShimmerPatch(logger, *options.toStringArray()).doCommandLine()
 
             val uri = Configs.storageDirectory?.toUri()
                 ?: throw IOException("Uri is null")
@@ -235,7 +235,7 @@ object Patcher {
 
     private fun createInstallSetDirectory(): File {
         val cacheRoot = lspApp.externalCacheDir ?: lspApp.cacheDir
-        val installRoot = cacheRoot.resolve("npatch-install")
+        val installRoot = cacheRoot.resolve("shimmerpatch-install")
         if (!installRoot.exists() && !installRoot.mkdirs()) {
             throw IOException("Unable to create install cache: $installRoot")
         }
@@ -264,7 +264,7 @@ object Patcher {
             .filter { it != currentDirectory }
             .distinct()
             .forEach { directory ->
-                if (directory.parentFile?.name == "npatch-install") {
+                if (directory.parentFile?.name == "shimmerpatch-install") {
                     directory.deleteRecursively()
                 }
             }

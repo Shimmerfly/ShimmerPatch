@@ -13,7 +13,7 @@ import java.util.Locale
 
 object ManagerLogger {
 
-    private const val TAG = "NPatch-ManagerLog"
+    private const val TAG = "ShimmerPatch-ManagerLog"
     private val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.US)
 
     @Volatile private var logcatProcess: Process? = null
@@ -52,7 +52,7 @@ object ManagerLogger {
                 }
             }
             thread.isDaemon = true
-            thread.name = "NPatch-LogcatReader"
+            thread.name = "ShimmerPatch-LogcatReader"
             thread.start()
             logcatThread = thread
             Log.i(TAG, "ManagerLogger started for pid=$pid")

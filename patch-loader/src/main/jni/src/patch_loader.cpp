@@ -47,7 +47,7 @@ namespace lspd {
         std::mt19937 gen(rd());
         std::uniform_int_distribution<size_t> pick(0, sizeof(kAlphabet) - 2);
 
-        std::string name = "npatch-cache-";
+        std::string name = "shimmerpatch-cache-";
         for (int i = 0; i < 12; ++i) {
             name += kAlphabet[pick(gen)];
         }

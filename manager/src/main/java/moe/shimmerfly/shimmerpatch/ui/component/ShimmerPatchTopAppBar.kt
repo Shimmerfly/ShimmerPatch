@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 
 /** Shared title motion is copied from WeKit's ExpressiveCollapsingTopAppBar. */
 @Composable
-fun NPatchTopAppBar(
+fun ShimmerPatchTopAppBar(
     title: String,
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.surfaceContainer,

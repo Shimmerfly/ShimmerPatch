@@ -13,13 +13,13 @@
     <string name="error_unknown">Erro desconhecido</string>
     <string name="home_shizuku_warning">Algumas funções indisponíveis</string>
     <string name="home_api_version">Versão da API</string>
-    <string name="home_npatch_version">Versão NPatch</string>
+    <string name="home_shimmerpatch_version">Versão ShimmerPatch</string>
     <string name="home_framework_version">Versão da estrutura</string>
     <string name="home_system_version">Versão do sistema</string>
     <string name="home_device">Dispositivo</string>
     <string name="home_system_abi">Sistema ABI</string>
     <string name="home_info_copied">Copiado para a área de transferência</string>
-    <string name="home_description">NPatch é uma estrutura Xposed gratuita e não raiz baseada em Vector.</string>
+    <string name="home_description">ShimmerPatch é uma estrutura Xposed gratuita e não raiz baseada em Vector.</string>
     <string name="screen_manage">Gerir</string>
     <string name="manage_loading">Carregando</string>
     <string name="manage_no_apps">Nenhum aplicativo corrigido ainda</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Selecione um aplicativo instalado</string>
     <string name="patch_mode">Modo Patch</string>
     <string name="patch_local">Local</string>
-    <string name="patch_local_desc">Corrige aplicativos sem incorporar módulos.\nO escopo Xposed pode ser alterado dinamicamente sem a necessidade de novo patch.\nEste modo só pode ser usado localmente com o NPatch Manager.</string>
+    <string name="patch_local_desc">Corrige aplicativos sem incorporar módulos.\nO escopo Xposed pode ser alterado dinamicamente sem a necessidade de novo patch.\nEste modo só pode ser usado localmente com o ShimmerPatch Manager.</string>
     <string name="patch_integrated">Integrado</string>
-    <string name="patch_integrated_desc">Corrija um aplicativo com módulos incorporados.\nO aplicativo corrigido pode ser executado sem o gerenciador, mas não pode ser gerenciado dinamicamente.\nAplicativos corrigidos integrados podem ser usados em dispositivos que não possuem o NPatch Manager instalado.</string>
+    <string name="patch_integrated_desc">Corrija um aplicativo com módulos incorporados.\nO aplicativo corrigido pode ser executado sem o gerenciador, mas não pode ser gerenciado dinamicamente.\nAplicativos corrigidos integrados podem ser usados em dispositivos que não possuem o ShimmerPatch Manager instalado.</string>
     <string name="patch_embed_modules">Incorporar módulos</string>
     <string name="patch_debuggable">Depurável</string>
     <string name="patch_sigbypass">Bypass de assinatura</string>

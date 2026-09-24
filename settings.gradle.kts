@@ -16,7 +16,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "NPatch"
+rootProject.name = "ShimmerPatch"
 include(
     ":apkzlib",
     ":jar",

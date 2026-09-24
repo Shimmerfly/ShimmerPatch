@@ -75,7 +75,7 @@ import moe.shimmerfly.shimmerpatch.ui.component.m3.topShape
 import moe.shimmerfly.shimmerpatch.ui.component.m3.middleShape
 import moe.shimmerfly.shimmerpatch.ui.component.m3.bottomShape
 import moe.shimmerfly.shimmerpatch.ui.component.m3.singleShape
-import moe.shimmerfly.shimmerpatch.ui.component.NPatchPullToRefresh
+import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchPullToRefresh
 import moe.shimmerfly.shimmerpatch.ui.page.ACTION_APPLIST
 import moe.shimmerfly.shimmerpatch.ui.page.ACTION_STORAGE
 import moe.shimmerfly.shimmerpatch.ui.page.Navigator
@@ -197,7 +197,7 @@ fun AppManageBody(
         }
     }
 
-    NPatchPullToRefresh(
+    ShimmerPatchPullToRefresh(
         isRefreshing = viewModel.isRefreshing,
         scrollBehavior = scrollBehavior,
         onRefresh = { viewModel.dispatch(AppManageViewModel.ViewAction.Refresh) },

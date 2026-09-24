@@ -14,13 +14,13 @@
     <!-- Home Screen -->
     <string name="home_shizuku_warning">Einige Funktionen nicht verfügbar</string>
     <string name="home_api_version">API-Version</string>
-    <string name="home_npatch_version">NPatch-Version</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch-Version</string>
     <string name="home_framework_version">Framework-Version</string>
     <string name="home_system_version">Systemversion</string>
     <string name="home_device">Gerät</string>
     <string name="home_system_abi">System-ABI</string>
     <string name="home_info_copied">In Zwischenablage kopiert</string>
-    <string name="home_description">NPatch ist ein kostenloses Xposed-Framework ohne Root auf Basis von Vector.</string>
+    <string name="home_description">ShimmerPatch ist ein kostenloses Xposed-Framework ohne Root auf Basis von Vector.</string>
     <!-- Manage Screen -->
     <string name="screen_manage">Verwalten</string>
     <string name="manage_loading">Laden</string>
@@ -46,9 +46,9 @@
     <string name="patch_from_applist">Wählen Sie eine installierte App aus</string>
     <string name="patch_mode">Patch-Modus</string>
     <string name="patch_local">Lokal</string>
-    <string name="patch_local_desc">Patcht Apps ohne eingebettete Module.\nDer Geltungsbereich von Xposed kann dynamisch geändert werden, ohne erneut zu patchen.\nDieser Modus kann nur lokal mit dem NPatch Manager verwendet werden.</string>
+    <string name="patch_local_desc">Patcht Apps ohne eingebettete Module.\nDer Geltungsbereich von Xposed kann dynamisch geändert werden, ohne erneut zu patchen.\nDieser Modus kann nur lokal mit dem ShimmerPatch Manager verwendet werden.</string>
     <string name="patch_integrated">Integriert</string>
-    <string name="patch_integrated_desc">Patche eine App mit eingebetteten Modulen.\nDie gepatchte App kann ohne den Manager ausgeführt, aber nicht dynamisch verwaltet werden.\nIntegrierte gepatchte Apps können auf Geräten verwendet werden, auf denen der NPatch Manager nicht installiert ist.</string>
+    <string name="patch_integrated_desc">Patche eine App mit eingebetteten Modulen.\nDie gepatchte App kann ohne den Manager ausgeführt, aber nicht dynamisch verwaltet werden.\nIntegrierte gepatchte Apps können auf Geräten verwendet werden, auf denen der ShimmerPatch Manager nicht installiert ist.</string>
     <string name="patch_embed_modules">Module einbetten</string>
     <string name="patch_debuggable">Debuggingfähig</string>
     <string name="patch_sigbypass">Signaturumgehung</string>

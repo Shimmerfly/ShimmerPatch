@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Salin log tambalan</string>
     <string name="welcome_ui_step">Langkah %1$d dari %2$d</string>
     <string name="screen_home">Rumah</string>
-    <string name="home_shizuku_optional_summary">Ekstensi opsional, tidak diperlukan oleh NPatch.</string>
-    <string name="home_about">Tentang NPatch</string>
-    <string name="about_author_summary">Pengelola NPatch</string>
+    <string name="home_shizuku_optional_summary">Ekstensi opsional, tidak diperlukan oleh ShimmerPatch.</string>
+    <string name="home_about">Tentang ShimmerPatch</string>
+    <string name="about_author_summary">Pengelola ShimmerPatch</string>
     <string name="about_disclaimer_title">Penafian</string>
-    <string name="about_disclaimer_body">NPatch disediakan hanya untuk pembelajaran, penelitian, dan pekerjaan kompatibilitas aplikasi yang sah. Harap hormati hukum setempat, persyaratan aplikasi, dan hak pengembang asli. Anda bertanggung jawab atas cara aplikasi dan modul yang dipatch digunakan pada perangkat Anda.</string>
+    <string name="about_disclaimer_body">ShimmerPatch disediakan hanya untuk pembelajaran, penelitian, dan pekerjaan kompatibilitas aplikasi yang sah. Harap hormati hukum setempat, persyaratan aplikasi, dan hak pengembang asli. Anda bertanggung jawab atas cara aplikasi dan modul yang dipatch digunakan pada perangkat Anda.</string>
     <string name="about_links_title">Tautan</string>
     <string name="about_official_website">Situs web</string>
     <string name="about_link_website_summary">Kunjungi situs web NkBe</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Terima kasih khusus (tidak dipesan)</string>
     <string name="about_ack_rovo89_summary">Pendiri Kerangka Xposed; pencetus dan pelopor seluruh ekosistem modular.</string>
     <string name="about_ack_lsposed_team_summary">Terima kasih kepada Tim LSPosed atas kontribusi berkelanjutan mereka pada ekosistem Xposed dan teknik injeksi tingkat rendah.</string>
-    <string name="about_ack_jingmatrix_summary">Penulis Vector, yang arsitektur kerangka kerjanya yang luar biasa memberikan landasan dan inspirasi penting bagi NPatch.</string>
+    <string name="about_ack_jingmatrix_summary">Penulis Vector, yang arsitektur kerangka kerjanya yang luar biasa memberikan landasan dan inspirasi penting bagi ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Pelopor dalam solusi patching tanpa root, membuktikan kelayakan pemuatan lingkungan Xposed yang dinamis melalui implementasi sisi manajer.</string>
     <string name="about_ack_libxposed_summary">Kekuatan pendorong di balik standardisasi Xposed API, menghadirkan keamanan tipe dan konvensi yang jelas ke dunia pengembangan modul.</string>
     <string name="about_ack_winter_summary">Pendukung finansial pertama saya; terima kasih atas dorongan awal dan langsung tersebut.</string>
@@ -78,7 +78,7 @@
     <string name="screen_select_modules">Pilih modul</string>
     <string name="welcome_version">Versi %1$s</string>
     <string name="welcome_intro_content">Injeksi modul Xposed modern dan alat patching APK yang dirancang untuk lingkungan tanpa root.</string>
-    <string name="welcome_intro_detail">NPatch menyuntikkan pemuat Xposed dengan memodifikasi file APK. Mode lokal bekerja dengan pengelola untuk memuat modul dan mengelola cakupan secara dinamis, tanpa membuat pengelola tetap berjalan di latar belakang. Mode terintegrasi menyematkan modul langsung ke aplikasi target untuk penggunaan mandiri di perangkat tanpa pengelola. Shizuku hanya membuka beberapa fitur kenyamanan dan tidak diperlukan untuk patching inti NPatch, pemuatan modul, atau manajemen dasar.</string>
+    <string name="welcome_intro_detail">ShimmerPatch menyuntikkan pemuat Xposed dengan memodifikasi file APK. Mode lokal bekerja dengan pengelola untuk memuat modul dan mengelola cakupan secara dinamis, tanpa membuat pengelola tetap berjalan di latar belakang. Mode terintegrasi menyematkan modul langsung ke aplikasi target untuk penggunaan mandiri di perangkat tanpa pengelola. Shizuku hanya membuka beberapa fitur kenyamanan dan tidak diperlukan untuk patching inti ShimmerPatch, pemuatan modul, atau manajemen dasar.</string>
     <string name="welcome_permission_title">Konfigurasikan Izin yang Diperlukan</string>
     <string name="welcome_permission_summary">Sebelum memulai, berikan izin akses dasar agar fitur inti tetap berfungsi.</string>
     <string name="welcome_permission_storage_title">Akses Penyimpanan</string>
@@ -86,7 +86,7 @@
     <string name="welcome_permission_applist_title">Baca Daftar Aplikasi</string>
     <string name="welcome_permission_applist_summary">Digunakan untuk membaca aplikasi yang diinstal sehingga Anda dapat memilih target patch secara akurat.</string>
     <string name="welcome_optional_title">Ekstensi opsional: Shizuku</string>
-    <string name="welcome_optional_summary">Ekstensi opsional saja. Meski tanpa Shizuku, fitur inti NPatch tetap berfungsi normal.</string>
+    <string name="welcome_optional_summary">Ekstensi opsional saja. Meski tanpa Shizuku, fitur inti ShimmerPatch tetap berfungsi normal.</string>
     <string name="welcome_permission_granted">Memang benar</string>
     <string name="welcome_permission_authorize">Berikan akses</string>
     <string name="welcome_disclaimer_title">Catatan Penggunaan dan Penafian</string>
@@ -113,7 +113,7 @@
     <string name="settings_other_settings">Pengaturan Lainnya</string>
     <string name="settings_network">Jaringan</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS digunakan oleh permintaan jaringan NPatch</string>
+    <string name="settings_dns_summary">DNS digunakan oleh permintaan jaringan ShimmerPatch</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

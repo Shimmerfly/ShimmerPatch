@@ -13,13 +13,13 @@
     <string name="error_unknown">Nieznany błąd</string>
     <string name="home_shizuku_warning">Niektóre funkcje niedostępne</string>
     <string name="home_api_version">Wersja API</string>
-    <string name="home_npatch_version">Wersja NPatch</string>
+    <string name="home_shimmerpatch_version">Wersja ShimmerPatch</string>
     <string name="home_framework_version">Wersja Frameworka</string>
     <string name="home_system_version">Wersja systemu</string>
     <string name="home_device">Urządzenie</string>
     <string name="home_system_abi">ABI systemu</string>
     <string name="home_info_copied">Skopiowane do schowka</string>
-    <string name="home_description">NPatch to darmowy framework Xposed inny niż root, oparty na Vector.</string>
+    <string name="home_description">ShimmerPatch to darmowy framework Xposed inny niż root, oparty na Vector.</string>
     <string name="screen_manage">Zarządzaj</string>
     <string name="manage_loading">Ładowanie</string>
     <string name="manage_no_apps">Brak spatchowanych aplikacji</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Wybierz zainstalowaną aplikację</string>
     <string name="patch_mode">Tryb Patchu</string>
     <string name="patch_local">Lokalny</string>
-    <string name="patch_local_desc">Łaty aplikacje bez osadzania modułów.\nZakres Xposed można dynamicznie zmieniać bez konieczności ponownego instalowania poprawek.\nTego trybu można używać wyłącznie lokalnie z menedżerem NPatch.</string>
+    <string name="patch_local_desc">Łaty aplikacje bez osadzania modułów.\nZakres Xposed można dynamicznie zmieniać bez konieczności ponownego instalowania poprawek.\nTego trybu można używać wyłącznie lokalnie z menedżerem ShimmerPatch.</string>
     <string name="patch_integrated">Zintegrowane</string>
-    <string name="patch_integrated_desc">Łaty aplikacje z wbudowanymi modułami.\nPoprawiona aplikacja może działać niezależnie bez Menedżera, ale nie może dynamicznie zarządzać konfiguracjami.\nTen tryb jest odpowiedni dla aplikacji, które muszą działać na urządzeniach bez zainstalowanego menedżera NPatch.</string>
+    <string name="patch_integrated_desc">Łaty aplikacje z wbudowanymi modułami.\nPoprawiona aplikacja może działać niezależnie bez Menedżera, ale nie może dynamicznie zarządzać konfiguracjami.\nTen tryb jest odpowiedni dla aplikacji, które muszą działać na urządzeniach bez zainstalowanego menedżera ShimmerPatch.</string>
     <string name="patch_embed_modules">Osadź moduły</string>
     <string name="patch_debuggable">Możliwość debugowania</string>
     <string name="patch_sigbypass">Ominięcie podpisu</string>

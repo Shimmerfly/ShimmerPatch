@@ -68,7 +68,7 @@ import hidden.HiddenApiBridge;
 @SuppressLint({"ObsoleteSdkInt"})
 public class LSPApplication {
 
-    private static final String TAG = "NPatch";
+    private static final String TAG = "ShimmerPatch";
     private static final int FIRST_APP_ZYGOTE_ISOLATED_UID = 90000;
     private static final int PER_USER_RANGE = 100000;
 
@@ -163,7 +163,7 @@ public class LSPApplication {
 
     private static boolean hasEmbeddedModules(Context context) {
         try {
-            String[] list = context.getAssets().list("npatch/modules");
+            String[] list = context.getAssets().list("shimmerpatch/modules");
             return list != null && list.length > 0;
         } catch (IOException e) {
             return false;
@@ -183,7 +183,7 @@ public class LSPApplication {
             var metaData = packageManager
                     .getApplicationInfo(appInfo.packageName, PackageManager.GET_META_DATA)
                     .metaData;
-            String encoded = metaData == null ? null : metaData.getString("npatch");
+            String encoded = metaData == null ? null : metaData.getString("shimmerpatch");
             if (encoded == null) {
                 return fallbackLevel;
             }
@@ -275,7 +275,7 @@ public class LSPApplication {
                     moduleObj.put("packageName", entry.getKey());
                     moduleArr.put(moduleObj);
                 }
-                SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
+                SharedPreferences shared = context.getSharedPreferences("shimmerpatch", Context.MODE_PRIVATE);
                 shared.edit().putString("modules", moduleArr.toString()).apply();
                 logInfo("Success update LoadedModule scope from Manager");
             } catch (Throwable e) {
@@ -338,11 +338,11 @@ public class LSPApplication {
         switchAllClassLoader();
 
         if (config.useMicroG) {
-            logInfo("Activating MicroG redirect via NPatch");
+            logInfo("Activating MicroG redirect via ShimmerPatch");
             GmsRedirector.activate(context, config.originalSignature);
         }
 
-        logInfo("NPatch bootstrap completed");
+        logInfo("ShimmerPatch bootstrap completed");
     }
 
     private static void installCrashInterceptor(Context context) {

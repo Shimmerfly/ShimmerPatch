@@ -13,13 +13,13 @@
     <string name="error_unknown">Неизвестная ошибка</string>
     <string name="home_shizuku_warning">Некоторые функции недоступны</string>
     <string name="home_api_version">Версия API</string>
-    <string name="home_npatch_version">Версия NPatch</string>
+    <string name="home_shimmerpatch_version">Версия ShimmerPatch</string>
     <string name="home_framework_version">Версия framework</string>
     <string name="home_system_version">Версия системы</string>
     <string name="home_device">Устройство</string>
     <string name="home_system_abi">Разрядность системы (ABI)</string>
     <string name="home_info_copied">Скопировано в буфер обмена</string>
-    <string name="home_description">NPatch — это бесплатная некорневая платформа Xposed, основанная на Vector.</string>
+    <string name="home_description">ShimmerPatch — это бесплатная некорневая платформа Xposed, основанная на Vector.</string>
     <string name="screen_manage">Управление</string>
     <string name="manage_loading">Загрузка</string>
     <string name="manage_no_apps">Пропатченных приложений пока нет</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Выберите установленное приложение</string>
     <string name="patch_mode">Режим патча</string>
     <string name="patch_local">Локальный</string>
-    <string name="patch_local_desc">Исправляет приложения без встраивания модулей.\nОбласть действия Xposed можно динамически изменять без необходимости повторного исправления.\nЭтот режим можно использовать только локально с NPatch Manager.</string>
+    <string name="patch_local_desc">Исправляет приложения без встраивания модулей.\nОбласть действия Xposed можно динамически изменять без необходимости повторного исправления.\nЭтот режим можно использовать только локально с ShimmerPatch Manager.</string>
     <string name="patch_integrated">Интегрированный</string>
-    <string name="patch_integrated_desc">Патч приложения со встроенными модулями.\nПропатченное приложение может работать без менеджера, но не может управляться динамически.\nИнтегрированно пропатченные приложения могут быть использованы на устройствах и без установленного NPatch Менеджера.</string>
+    <string name="patch_integrated_desc">Патч приложения со встроенными модулями.\nПропатченное приложение может работать без менеджера, но не может управляться динамически.\nИнтегрированно пропатченные приложения могут быть использованы на устройствах и без установленного ShimmerPatch Менеджера.</string>
     <string name="patch_embed_modules">Встроенные модули</string>
     <string name="patch_debuggable">Отладка</string>
     <string name="patch_sigbypass">Обход подписи</string>

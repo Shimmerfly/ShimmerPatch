@@ -10,7 +10,7 @@ import moe.shimmerfly.shimmerpatch.ui.util.SampleStringProvider
 @Preview
 @Composable
 fun CenterTopBar(@PreviewParameter(SampleStringProvider::class, 1) text: String) {
-    NPatchTopAppBar(
+    ShimmerPatchTopAppBar(
         title = text
     )
 }

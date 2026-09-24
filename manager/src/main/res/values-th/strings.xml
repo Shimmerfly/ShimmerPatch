@@ -13,13 +13,13 @@
     <string name="error_unknown">Unknown error</string>
     <string name="home_shizuku_warning">ฟังก์ชั่นบางอย่างใช้งานไม่ได้</string>
     <string name="home_api_version">เวอร์ชัน API</string>
-    <string name="home_npatch_version">เวอร์ชัน NPatch</string>
+    <string name="home_shimmerpatch_version">เวอร์ชัน ShimmerPatch</string>
     <string name="home_framework_version">เวอร์ชันกรอบงาน</string>
     <string name="home_system_version">เวอร์ชันของระบบ</string>
     <string name="home_device">อุปกรณ์</string>
     <string name="home_system_abi">ระบบ ABI</string>
     <string name="home_info_copied">คัดลอกไปยังคลิปบอร์ดแล้ว</string>
-    <string name="home_description">NPatch เป็นเฟรมเวิร์ก Xposed ที่ไม่ใช่รูทฟรีที่ใช้ Vector</string>
+    <string name="home_description">ShimmerPatch เป็นเฟรมเวิร์ก Xposed ที่ไม่ใช่รูทฟรีที่ใช้ Vector</string>
     <string name="screen_manage">จัดการ</string>
     <string name="manage_loading">กำลังโหลด</string>
     <string name="manage_no_apps">ยังไม่มีแอพแพตช์</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">เลือกแอพที่ติดตั้ง</string>
     <string name="patch_mode">โหมดแพทช์</string>
     <string name="patch_local">ท้องถิ่น</string>
-    <string name="patch_local_desc">แพทช์แอปโดยไม่ต้องฝังโมดูล\nขอบเขต Xposed สามารถเปลี่ยนแปลงได้แบบไดนามิกโดยไม่จำเป็นต้องแพตช์ใหม่\nโหมดนี้สามารถใช้ได้ภายในเครื่องกับ NPatch Manager เท่านั้น</string>
+    <string name="patch_local_desc">แพทช์แอปโดยไม่ต้องฝังโมดูล\nขอบเขต Xposed สามารถเปลี่ยนแปลงได้แบบไดนามิกโดยไม่จำเป็นต้องแพตช์ใหม่\nโหมดนี้สามารถใช้ได้ภายในเครื่องกับ ShimmerPatch Manager เท่านั้น</string>
     <string name="patch_integrated">แบบบูรณาการ</string>
-    <string name="patch_integrated_desc">Patch an app with modules embedded.\nThe patched app can run without the manager, but cannot be managed dynamically.\nIntegrated patched apps can be used on devices that do not have NPatch Manager installed.</string>
+    <string name="patch_integrated_desc">Patch an app with modules embedded.\nThe patched app can run without the manager, but cannot be managed dynamically.\nIntegrated patched apps can be used on devices that do not have ShimmerPatch Manager installed.</string>
     <string name="patch_embed_modules">โมดูลฝังตัว</string>
     <string name="patch_debuggable">แก้จุดบกพร่องได้</string>
     <string name="patch_sigbypass">บายพาสลายเซ็น</string>

@@ -14,7 +14,7 @@ import io.github.libxposed.service.IHotReloadCallback;
 import io.github.libxposed.service.IXposedScopeCallback;
 import io.github.libxposed.service.IXposedService;
 import moe.shimmerfly.shimmerpatch.share.LSPConfig;
-import moe.shimmerfly.shimmerpatch.util.NPatchRemoteStore;
+import moe.shimmerfly.shimmerpatch.util.ShimmerPatchRemoteStore;
 
 /**
  * In-process implementation of {@link IXposedService} for modern modules running in embedded mode.
@@ -24,12 +24,12 @@ public class EmbeddedXposedService extends IXposedService.Stub {
 
     private final String modulePackageName;
     private final String hostPackageName;
-    private final NPatchRemoteStore store;
+    private final ShimmerPatchRemoteStore store;
 
     public EmbeddedXposedService(Context context, String modulePackageName, String hostPackageName) {
         this.modulePackageName = modulePackageName;
         this.hostPackageName = hostPackageName;
-        this.store = NPatchRemoteStore.get(context, modulePackageName);
+        this.store = ShimmerPatchRemoteStore.get(context, modulePackageName);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class EmbeddedXposedService extends IXposedService.Stub {
 
     @Override
     public String getFrameworkName() {
-        return "NPatch";
+        return "ShimmerPatch";
     }
 
     @Override
@@ -55,7 +55,7 @@ public class EmbeddedXposedService extends IXposedService.Stub {
 
     @Override
     public long getFrameworkProperties() {
-        return NPatchRemoteStore.CAP_REMOTE;
+        return ShimmerPatchRemoteStore.CAP_REMOTE;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class EmbeddedXposedService extends IXposedService.Stub {
     public void requestScope(List<String> packages, IXposedScopeCallback callback) {
         try {
             if (callback != null) {
-                callback.onScopeRequestFailed("scope is set by patching in NPatch; it cannot be granted at runtime");
+                callback.onScopeRequestFailed("scope is set by patching in ShimmerPatch; it cannot be granted at runtime");
             }
         } catch (Throwable t) {
             Log.w(TAG, "onScopeRequestFailed error", t);

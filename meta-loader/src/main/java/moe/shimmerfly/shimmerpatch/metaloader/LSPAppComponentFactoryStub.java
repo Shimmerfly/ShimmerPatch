@@ -42,7 +42,7 @@ import java.util.Objects;
 
 @SuppressLint({"UnsafeDynamicallyLoadedCode", "PrivateApi", "DiscouragedPrivateApi", "SdCardPath", "ObsoleteSdkInt"})
 public class LSPAppComponentFactoryStub extends AppComponentFactory {
-    private static final String TAG = "NPatch-MetaLoader";
+    private static final String TAG = "ShimmerPatch-MetaLoader";
     private static final Object BOOTSTRAP_LOCK = new Object();
     private static final Map<String, String> ABI_BY_INSTRUCTION_SET = new HashMap<>(4);
     private static final ThreadLocal<Boolean> RESOLVING_RUNTIME_LOADER = new ThreadLocal<>();
@@ -190,7 +190,7 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
                 writeDiagnostic(error);
                 // AppComponentFactory is also responsible for constructing the original app.
                 // Do not poison class initialization: component methods below can still delegate
-                // to the original factory or framework default after NPatch bootstrap fails.
+                // to the original factory or framework default after ShimmerPatch bootstrap fails.
             } finally {
                 bootstrapThread = null;
             }
@@ -237,7 +237,7 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
 
         bootstrapStage = "extract_native";
         File nativeFile = createTempSoFile(Process.myUid() / 100000);
-        String nativeAsset = "assets/npatch/so/" + abi + "/libnpatch.so";
+        String nativeAsset = "assets/shimmerpatch/so/" + abi + "/libshimmerpatch.so";
         try (InputStream input = requireResource(loader, nativeAsset);
              FileOutputStream output = new FileOutputStream(nativeFile)) {
             transfer(input, output);
@@ -400,7 +400,7 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
         if (!cache.isDirectory() && !cache.mkdirs()) {
             throw new IOException("Unable to create cache directory: " + cache);
         }
-        return File.createTempFile("libnpatch-", ".so", cache);
+        return File.createTempFile("libshimmerpatch-", ".so", cache);
     }
 
     private static File resolveCacheDir(int userId) throws IOException {
@@ -408,7 +408,7 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
         if (packageName == null || packageName.isEmpty()) {
             throw new IOException("Unable to resolve current package name");
         }
-        return new File(resolveDataDir(packageName, userId), "cache/npatch");
+        return new File(resolveDataDir(packageName, userId), "cache/shimmerpatch");
     }
 
     private static String resolvePackageName() {

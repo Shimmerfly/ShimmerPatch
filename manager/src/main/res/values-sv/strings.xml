@@ -13,13 +13,13 @@
     <string name="error_unknown">Okänt fel</string>
     <string name="home_shizuku_warning">Vissa funktioner är inte tillgängliga</string>
     <string name="home_api_version">API-version</string>
-    <string name="home_npatch_version">NPatch-version</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch-version</string>
     <string name="home_framework_version">Ramverksversion</string>
     <string name="home_system_version">Systemversion</string>
     <string name="home_device">Enhet</string>
     <string name="home_system_abi">System ABI</string>
     <string name="home_info_copied">Kopierat till urklipp</string>
-    <string name="home_description">NPatch är ett gratis Xposed-ramverk som inte är rotbaserat på Vector.</string>
+    <string name="home_description">ShimmerPatch är ett gratis Xposed-ramverk som inte är rotbaserat på Vector.</string>
     <string name="screen_manage">Hantera</string>
     <string name="manage_loading">Laddar</string>
     <string name="manage_no_apps">Inga patchade appar ännu</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">Välj en installerad app</string>
     <string name="patch_mode">Patch-läge</string>
     <string name="patch_local">Lokal</string>
-    <string name="patch_local_desc">Lappar appar utan att bädda in moduler.\nXposed scope kan ändras dynamiskt utan att behöva patcha om.\nDetta läge kan endast användas lokalt med NPatch Manager.</string>
+    <string name="patch_local_desc">Lappar appar utan att bädda in moduler.\nXposed scope kan ändras dynamiskt utan att behöva patcha om.\nDetta läge kan endast användas lokalt med ShimmerPatch Manager.</string>
     <string name="patch_integrated">Integrerad</string>
-    <string name="patch_integrated_desc">Patcha en app med inbäddade moduler.\nDen patchade appen kan köras utan behovet av hantering, men kan då inte hanteras dynamiskt.\nIntegrerade patchade appar kan användas på enheter som inte har NPatch Manager installerat.</string>
+    <string name="patch_integrated_desc">Patcha en app med inbäddade moduler.\nDen patchade appen kan köras utan behovet av hantering, men kan då inte hanteras dynamiskt.\nIntegrerade patchade appar kan användas på enheter som inte har ShimmerPatch Manager installerat.</string>
     <string name="patch_embed_modules">Inbäddade moduler</string>
     <string name="patch_debuggable">Felsökningsbar</string>
     <string name="patch_sigbypass">Hoppa över signaturkontrollen</string>

@@ -13,13 +13,13 @@
     <string name="error_unknown">알 수 없는 오류</string>
     <string name="home_shizuku_warning">일부 기능을 사용할 수 없음</string>
     <string name="home_api_version">API 버전</string>
-    <string name="home_npatch_version">NPatch 버전</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch 버전</string>
     <string name="home_framework_version">프레임워크 버전</string>
     <string name="home_system_version">시스템 버전</string>
     <string name="home_device">장치</string>
     <string name="home_system_abi">시스템 ABI</string>
     <string name="home_info_copied">클립보드에 복사됨</string>
-    <string name="home_description">NPatch는 Vector를 기반으로 하는 루트가 아닌 무료 Xposed 프레임워크입니다.</string>
+    <string name="home_description">ShimmerPatch는 Vector를 기반으로 하는 루트가 아닌 무료 Xposed 프레임워크입니다.</string>
     <string name="screen_manage">관리하다</string>
     <string name="manage_loading">로딩 중</string>
     <string name="manage_no_apps">아직 패치된 앱이 없습니다.</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">설치된 앱 선택</string>
     <string name="patch_mode">패치 모드</string>
     <string name="patch_local">로컬</string>
-    <string name="patch_local_desc">모듈을 포함하지 않고 앱을 패치합니다.\nXposed 범위는 다시 패치할 필요 없이 동적으로 변경할 수 있습니다.\n이 모드는 NPatch Manager를 사용하여 로컬에서만 사용할 수 있습니다.</string>
+    <string name="patch_local_desc">모듈을 포함하지 않고 앱을 패치합니다.\nXposed 범위는 다시 패치할 필요 없이 동적으로 변경할 수 있습니다.\n이 모드는 ShimmerPatch Manager를 사용하여 로컬에서만 사용할 수 있습니다.</string>
     <string name="patch_integrated">통합</string>
-    <string name="patch_integrated_desc">모듈이 포함된 앱을 패치합니다.\n패치된 앱은 관리자 없이 실행할 수 있지만 동적으로 관리할 수는 없습니다.\n통합 패치 앱은 NPatch Manager가 설치되지 않은 장치에서 사용할 수 있습니다.</string>
+    <string name="patch_integrated_desc">모듈이 포함된 앱을 패치합니다.\n패치된 앱은 관리자 없이 실행할 수 있지만 동적으로 관리할 수는 없습니다.\n통합 패치 앱은 ShimmerPatch Manager가 설치되지 않은 장치에서 사용할 수 있습니다.</string>
     <string name="patch_embed_modules">모듈 포함</string>
     <string name="patch_debuggable">디버깅 가능</string>
     <string name="patch_sigbypass">서명 우회</string>

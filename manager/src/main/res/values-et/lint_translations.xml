@@ -7,11 +7,11 @@
     <string name="patch_ui_copy_log">Kopeeri paigalogi</string>
     <string name="welcome_ui_step">%2$d samm %1$d</string>
     <string name="screen_home">Kodu</string>
-    <string name="home_shizuku_optional_summary">Valikuline laiendus, mida NPatch ei nõua.</string>
-    <string name="home_about">NPatch kohta</string>
-    <string name="about_author_summary">NPatch hooldaja</string>
+    <string name="home_shizuku_optional_summary">Valikuline laiendus, mida ShimmerPatch ei nõua.</string>
+    <string name="home_about">ShimmerPatch kohta</string>
+    <string name="about_author_summary">ShimmerPatch hooldaja</string>
     <string name="about_disclaimer_title">Vastutusest loobumine</string>
-    <string name="about_disclaimer_body">NPatch on ette nähtud ainult õppimiseks, uurimiseks ja seaduslikuks rakenduste ühilduvuseks. Austage kohalikke seadusi, rakenduste tingimusi ja algsete arendajate õigusi. Vastutate selle eest, kuidas teie seadmes paigatud rakendusi ja mooduleid kasutatakse.</string>
+    <string name="about_disclaimer_body">ShimmerPatch on ette nähtud ainult õppimiseks, uurimiseks ja seaduslikuks rakenduste ühilduvuseks. Austage kohalikke seadusi, rakenduste tingimusi ja algsete arendajate õigusi. Vastutate selle eest, kuidas teie seadmes paigatud rakendusi ja mooduleid kasutatakse.</string>
     <string name="about_links_title">Lingid</string>
     <string name="about_official_website">Veebisait</string>
     <string name="about_link_website_summary">Külastage NkBe veebisaiti</string>
@@ -20,7 +20,7 @@
     <string name="about_acknowledgments_title">Eriline tänu (järjestamata)</string>
     <string name="about_ack_rovo89_summary">Xposed raamistiku asutaja; kogu modulaarse ökosüsteemi algataja ja pioneer.</string>
     <string name="about_ack_lsposed_team_summary">Täname LSPosedi meeskonda nende pideva panuse eest Xposed ökosüsteemi ja madala tasemega süstimistehnikatesse.</string>
-    <string name="about_ack_jingmatrix_summary">Vector autor, kelle silmapaistev raamistiku arhitektuur andis NPatch jaoks olulise aluse ja inspiratsiooni.</string>
+    <string name="about_ack_jingmatrix_summary">Vector autor, kelle silmapaistev raamistiku arhitektuur andis ShimmerPatch jaoks olulise aluse ja inspiratsiooni.</string>
     <string name="about_ack_lspatch_summary">Teerajaja juurteta paigalahenduste alal, tõestades dünaamilise Xposed keskkonna laadimise teostatavust halduripoolse juurutuse kaudu.</string>
     <string name="about_ack_libxposed_summary">Xposed API standardimise liikumapanev jõud, mis toob moodulite arendusmaailma tüübiohutuse ja selged kokkulepped.</string>
     <string name="about_ack_winter_summary">Minu esimene rahaline toetaja; aitäh nii varajase ja otsese julgustuse eest.</string>
@@ -79,7 +79,7 @@
     <string name="screen_select_modules">Valige moodulid</string>
     <string name="welcome_version">Versioon %1$s</string>
     <string name="welcome_intro_content">Moodne Xposed mooduli sissepritse ja APK lapimise tööriist, mis on loodud juurteta keskkondade jaoks.</string>
-    <string name="welcome_intro_detail">NPatch sisestab Xposed laaduri, muutes APK faile. Kohalik režiim töötab koos halduriga moodulite laadimiseks ja ulatuste dünaamiliseks haldamiseks, ilma et peaks haldur taustal töötama. Integreeritud režiim manustab moodulid otse sihtrakendusse, et neid saaks kasutada iseseisvalt seadmetes ilma haldurita. Shizuku avab ainult mõned mugavusfunktsioonid ja seda ei nõuta NPatch südamiku parandamiseks, mooduli laadimiseks ega põhihalduseks.</string>
+    <string name="welcome_intro_detail">ShimmerPatch sisestab Xposed laaduri, muutes APK faile. Kohalik režiim töötab koos halduriga moodulite laadimiseks ja ulatuste dünaamiliseks haldamiseks, ilma et peaks haldur taustal töötama. Integreeritud režiim manustab moodulid otse sihtrakendusse, et neid saaks kasutada iseseisvalt seadmetes ilma haldurita. Shizuku avab ainult mõned mugavusfunktsioonid ja seda ei nõuta ShimmerPatch südamiku parandamiseks, mooduli laadimiseks ega põhihalduseks.</string>
     <string name="welcome_permission_title">Nõutavate õiguste konfigureerimine</string>
     <string name="welcome_permission_summary">Enne alustamist andke põhifunktsioonide töös hoidmiseks põhilised juurdepääsuload.</string>
     <string name="welcome_permission_storage_title">Juurdepääs salvestusruumile</string>
@@ -87,7 +87,7 @@
     <string name="welcome_permission_applist_title">Lugege rakenduste loendit</string>
     <string name="welcome_permission_applist_summary">Kasutatakse installitud rakenduste lugemiseks, et saaksite paiga sihtmärke täpselt valida.</string>
     <string name="welcome_optional_title">Valikuline laiendus: Shizuku</string>
-    <string name="welcome_optional_summary">Ainult valikuline laiendus. Isegi ilma Shizukuta töötavad NPatch põhifunktsioonid normaalselt.</string>
+    <string name="welcome_optional_summary">Ainult valikuline laiendus. Isegi ilma Shizukuta töötavad ShimmerPatch põhifunktsioonid normaalselt.</string>
     <string name="welcome_permission_granted">Lubatud</string>
     <string name="welcome_permission_authorize">Andke juurdepääs</string>
     <string name="welcome_disclaimer_title">Kasutusmärkused ja lahtiütlemine</string>
@@ -114,7 +114,7 @@
     <string name="settings_other_settings">Muud sätted</string>
     <string name="settings_network">Võrk</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">DNS, mida kasutavad NPatch võrgupäringud</string>
+    <string name="settings_dns_summary">DNS, mida kasutavad ShimmerPatch võrgupäringud</string>
     <string name="settings_dns_tencent">Tencent DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

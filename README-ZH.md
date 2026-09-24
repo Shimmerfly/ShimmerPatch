@@ -6,7 +6,7 @@
 
 > English: [README.md](README.md)
 
-NPatch 是一个无需 root 的 LSPosed / LSPatch 风格框架，会把 dex 与原生库注入到目标 APK 中，让应用在自身进程里获得 Xposed API 支持。
+ShimmerPatch 是一个无需 root 的 LSPosed / LSPatch 风格框架，会把 dex 与原生库注入到目标 APK 中，让应用在自身进程里获得 Xposed API 支持。
 
 **官网：[npatch.nkbe.top](https://npatch.nkbe.top)**
 
@@ -14,7 +14,7 @@ NPatch 是一个无需 root 的 LSPosed / LSPatch 风格框架，会把 dex 与�
 
 重点说明：
 
-- NPatch 的核心是进程内注入，不是系统级的全局 XposedService。
+- ShimmerPatch 的核心是进程内注入，不是系统级的全局 XposedService。
 - 管理器不需要常驻前台。
 - 但是当你要新增或移除模块，或者同步最新配置时，管理器仍然必须已安装，并且能被系统正常访问。
 - 模块作用域与配置仍然由管理器的数据流负责管理。
@@ -34,8 +34,8 @@ NPatch 是一个无需 root 的 LSPosed / LSPatch 风格框架，会把 dex 与�
 使用方式：
 
 - Jar
-  - 下载 `npatch.jar`
-  - 执行 `java -jar npatch.jar`
+  - 下载 `shimmerpatch.jar`
+  - 执行 `java -jar shimmerpatch.jar`
 - 管理器
   - 在 Android 设备上安装 `manager.apk`
   - 按照管理器 App 的指引操作

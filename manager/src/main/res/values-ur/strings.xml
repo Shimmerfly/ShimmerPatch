@@ -13,13 +13,13 @@
     <string name="error_unknown">نامعلوم خامی</string>
     <string name="home_shizuku_warning">کچھ فنکشنز دستیاب نہیں ہیں۔</string>
     <string name="home_api_version">API ورژن</string>
-    <string name="home_npatch_version">NPatch ورژن</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch ورژن</string>
     <string name="home_framework_version">فریم ورک ورژن</string>
     <string name="home_system_version">سسٹم ورژن</string>
     <string name="home_device">ڈیوائس</string>
     <string name="home_system_abi">سسٹم ABI</string>
     <string name="home_info_copied">کلپ بورڈ پر کاپی ہو گیا۔</string>
-    <string name="home_description">NPatch Vector پر مبنی ایک مفت نان روٹ Xposed فریم ورک ہے۔</string>
+    <string name="home_description">ShimmerPatch Vector پر مبنی ایک مفت نان روٹ Xposed فریم ورک ہے۔</string>
     <string name="screen_manage">انتظام کریں۔</string>
     <string name="manage_loading">لوڈ ہو رہا ہے۔</string>
     <string name="manage_no_apps">ابھی تک کوئی پیچ شدہ ایپس نہیں ہیں۔</string>
@@ -43,9 +43,9 @@
     <string name="patch_from_applist">انسٹال کردہ ایپ منتخب کریں۔</string>
     <string name="patch_mode">پیچ موڈ</string>
     <string name="patch_local">مقامی</string>
-    <string name="patch_local_desc">ماڈیولز کو سرایت کیے بغیر ایپس کو پیچ کرتا ہے۔\nXposed دائرہ کار کو دوبارہ پیچ کرنے کی ضرورت کے بغیر متحرک طور پر تبدیل کیا جا سکتا ہے۔\nیہ موڈ صرف مقامی طور پر NPatch مینیجر کے ساتھ استعمال کیا جا سکتا ہے۔</string>
+    <string name="patch_local_desc">ماڈیولز کو سرایت کیے بغیر ایپس کو پیچ کرتا ہے۔\nXposed دائرہ کار کو دوبارہ پیچ کرنے کی ضرورت کے بغیر متحرک طور پر تبدیل کیا جا سکتا ہے۔\nیہ موڈ صرف مقامی طور پر ShimmerPatch مینیجر کے ساتھ استعمال کیا جا سکتا ہے۔</string>
     <string name="patch_integrated">ضم</string>
-    <string name="patch_integrated_desc">ایمبیڈڈ ماڈیولز کے ساتھ ایک ایپ پیچ کریں۔\nپیچ شدہ ایپ مینیجر کے بغیر چل سکتی ہے، لیکن اسے متحرک طور پر منظم نہیں کیا جا سکتا۔\nانٹیگریٹڈ پیچ شدہ ایپس ان آلات پر استعمال کی جا سکتی ہیں جن میں NPatch مینیجر انسٹال نہیں ہے۔</string>
+    <string name="patch_integrated_desc">ایمبیڈڈ ماڈیولز کے ساتھ ایک ایپ پیچ کریں۔\nپیچ شدہ ایپ مینیجر کے بغیر چل سکتی ہے، لیکن اسے متحرک طور پر منظم نہیں کیا جا سکتا۔\nانٹیگریٹڈ پیچ شدہ ایپس ان آلات پر استعمال کی جا سکتی ہیں جن میں ShimmerPatch مینیجر انسٹال نہیں ہے۔</string>
     <string name="patch_embed_modules">ایمبیڈ ماڈیولز</string>
     <string name="patch_debuggable">ڈیبگ ایبل</string>
     <string name="patch_sigbypass">دستخط بائی پاس</string>

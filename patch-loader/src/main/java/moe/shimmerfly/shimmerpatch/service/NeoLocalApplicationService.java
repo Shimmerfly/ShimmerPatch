@@ -34,7 +34,7 @@ import java.util.concurrent.TimeoutException;
 
 @SuppressLint({"SdCardPath"})
 public class NeoLocalApplicationService extends IFrameworkService.Stub {
-    private static final String TAG = "NPatch";
+    private static final String TAG = "ShimmerPatch";
     private static final String AUTHORITY = "moe.shimmerfly.shimmerpatch.manager.provider.config";
     private static final Uri PROVIDER_URI = Uri.parse("content://" + AUTHORITY + "/config");
     private static final long PROVIDER_TIMEOUT_SECONDS = 3;
@@ -75,7 +75,7 @@ public class NeoLocalApplicationService extends IFrameworkService.Stub {
 
     private void loadModulesFromCache(Context context) {
         try {
-            SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
+            SharedPreferences shared = context.getSharedPreferences("shimmerpatch", Context.MODE_PRIVATE);
             String jsonStr = shared.getString("modules", "[]");
             JSONArray jsonArray = new JSONArray(jsonStr);
             PackageManager pm = context.getPackageManager();
@@ -269,7 +269,7 @@ public class NeoLocalApplicationService extends IFrameworkService.Stub {
 
     private void updateModulesCache(Context context, JSONArray modules) {
         try {
-            SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
+            SharedPreferences shared = context.getSharedPreferences("shimmerpatch", Context.MODE_PRIVATE);
             shared.edit().putString("modules", modules.toString()).apply();
             XLog.i(TAG, "NeoLocal: Updated local modules cache: " + modules);
         } catch (Throwable e) {

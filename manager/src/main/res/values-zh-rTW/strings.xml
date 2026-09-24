@@ -15,21 +15,21 @@
 
     <!-- Home Screen -->
     <string name="home_shizuku_warning">部分功能不可用</string>
-    <string name="home_shizuku_optional_summary">可選擴展，不影響 NPatch 核心功能。</string>
+    <string name="home_shizuku_optional_summary">可選擴展，不影響 ShimmerPatch 核心功能。</string>
     <string name="home_api_version">API 版本</string>
-    <string name="home_npatch_version">NPatch 版本</string>
+    <string name="home_shimmerpatch_version">ShimmerPatch 版本</string>
     <string name="home_framework_version">框架版本</string>
     <string name="home_system_version">系統版本</string>
     <string name="home_device">裝置</string>
     <string name="home_system_abi">系統架構</string>
     <string name="home_info_copied">已複製到剪貼簿</string>
-    <string name="home_about">關於 NPatch</string>
-    <string name="home_description">NPatch 是一款免費且迭代自 LSPatch 的，基於 Vector 核心的免 Root 的 Xposed 框架。</string>
+    <string name="home_about">關於 ShimmerPatch</string>
+    <string name="home_description">ShimmerPatch 是一款免費且迭代自 LSPatch 的，基於 Vector 核心的免 Root 的 Xposed 框架。</string>
     
     <!-- About Screen -->
-    <string name="about_author_summary">NPatch 主要開發者</string>
+    <string name="about_author_summary">ShimmerPatch 主要開發者</string>
     <string name="about_disclaimer_title">免責聲明</string>
-    <string name="about_disclaimer_body">NPatch 僅供學習、研究以及合法的應用程式相容性工作使用。請尊重當地法律、應用程式條款與原開發者權益。您需自行承擔在裝置上使用修補應用與模組的責任。</string>
+    <string name="about_disclaimer_body">ShimmerPatch 僅供學習、研究以及合法的應用程式相容性工作使用。請尊重當地法律、應用程式條款與原開發者權益。您需自行承擔在裝置上使用修補應用與模組的責任。</string>
     <string name="about_links_title">相關連結</string>
     <string name="about_official_website">官方網站</string>
     <string name="about_link_website_summary">前往 NkBe 的官方網站</string>
@@ -37,7 +37,7 @@
     <string name="about_link_telegram_summary">訂閱我們的頻道</string>
     <string name="about_acknowledgments_title">特別鳴謝（排名不分先後）</string>
     <string name="about_ack_rovo89_summary">Xposed 框架創始人，一切模組化生態的起源與奠基者。</string>
-    <string name="about_ack_jingmatrix_summary">Vector 作者，其優秀的框架工作為 NPatch 的持續迭代提供了重要基礎與啟發。</string>
+    <string name="about_ack_jingmatrix_summary">Vector 作者，其優秀的框架工作為 ShimmerPatch 的持續迭代提供了重要基礎與啟發。</string>
     <string name="about_ack_lsposed_team_summary">感謝 LSPosed 團隊在現代化 Xposed 生態與底層注入技術上的持續貢獻。</string>
     <string name="about_ack_lspatch_summary">免 Root 修補方案的先行者，證明了在管理器側動態加載 Xposed 環境的可行性。</string>
     <string name="about_ack_libxposed_summary">現代 Xposed API 標準化推手，為模組開發帶來了型別安全與更清晰的秩序。</string>
@@ -87,9 +87,9 @@
     <string name="patch_from_applist">選取要打包的已安裝程式</string>
     <string name="patch_mode">打包模式</string>
     <string name="patch_local">本地模式</string>
-    <string name="patch_local_desc">為未嵌入模組的應用程式打補丁。\nXposed 範圍可動態更改，無需重新打補丁。\n此模式下的應用程式只能在本地裝置上與 NPatch 管理器搭配使用。</string>
+    <string name="patch_local_desc">為未嵌入模組的應用程式打補丁。\nXposed 範圍可動態更改，無需重新打補丁。\n此模式下的應用程式只能在本地裝置上與 ShimmerPatch 管理器搭配使用。</string>
     <string name="patch_integrated">集成模式</string>
-    <string name="patch_integrated_desc">修補 App 並內建模組。\n經修補的應用可以在沒有管理器的情況下獨立執行，但不能動態管理配置。\n此模式適用於需要在未安裝 NPatch 管理器的裝置上執行的應用程式。</string>
+    <string name="patch_integrated_desc">修補 App 並內建模組。\n經修補的應用可以在沒有管理器的情況下獨立執行，但不能動態管理配置。\n此模式適用於需要在未安裝 ShimmerPatch 管理器的裝置上執行的應用程式。</string>
     <string name="patch_embed_modules">內建模組</string>
     <string name="patch_advanced">進階選項</string>
     <string name="patch_debuggable">程式可偵錯</string>
@@ -145,7 +145,7 @@
     <!-- Welcome Screen -->
     <string name="welcome_version">版本 %1$s</string>
     <string name="welcome_intro_content">專為免 Root 環境設計的現代化 Xposed 模組注入與應用修補工具。</string>
-    <string name="welcome_intro_detail">NPatch 能在免 Root 環境中，透過修改 APK 檔案注入 Xposed 載入器。本地模式需搭配管理器動態載入並管理模組與作用域，但使用時無需保持管理器處於背景運行；集成模式則將模組直接內嵌至目標應用中，適合無管理器的裝置獨立執行。Shizuku 只會擴充部分便利功能，並不是 NPatch 核心修補、模組載入或基本管理的必要依賴。</string>
+    <string name="welcome_intro_detail">ShimmerPatch 能在免 Root 環境中，透過修改 APK 檔案注入 Xposed 載入器。本地模式需搭配管理器動態載入並管理模組與作用域，但使用時無需保持管理器處於背景運行；集成模式則將模組直接內嵌至目標應用中，適合無管理器的裝置獨立執行。Shizuku 只會擴充部分便利功能，並不是 ShimmerPatch 核心修補、模組載入或基本管理的必要依賴。</string>
     <string name="welcome_permission_title">配置必要權限</string>
     <string name="welcome_permission_summary">開始體驗前，請先授予基本存取權限以確保核心功能運作。</string>
     <string name="welcome_permission_storage_title">儲存空間存取</string>
@@ -153,7 +153,7 @@
     <string name="welcome_permission_applist_title">讀取應用程式清單</string>
     <string name="welcome_permission_applist_summary">用於獲取已安裝的應用程式，以便您精確選取修補目標。</string>
     <string name="welcome_optional_title">可選擴展：Shizuku</string>
-    <string name="welcome_optional_summary">Shizuku 僅為可選擴展，未連接也不影響 NPatch 核心功能。</string>
+    <string name="welcome_optional_summary">Shizuku 僅為可選擴展，未連接也不影響 ShimmerPatch 核心功能。</string>
     <string name="welcome_permission_granted">已授予</string>
     <string name="welcome_permission_authorize">前往授權</string>
     <string name="welcome_disclaimer_title">使用須知與免責聲明</string>
@@ -196,7 +196,7 @@
     <string name="settings_other_settings">其他設定</string>
     <string name="settings_network">網路</string>
     <string name="settings_dns">DNS</string>
-    <string name="settings_dns_summary">NPatch 網路請求使用的 DNS</string>
+    <string name="settings_dns_summary">ShimmerPatch 網路請求使用的 DNS</string>
     <string name="settings_dns_tencent">騰訊 DoH</string>
     <string name="settings_dns_google">Google DoH</string>
     <string name="settings_dns_cloudflare">Cloudflare DoH</string>

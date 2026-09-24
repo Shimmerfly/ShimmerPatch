@@ -30,8 +30,8 @@ import moe.shimmerfly.shimmerpatch.ui.page.newpatch.ConfiguringFab
 import moe.shimmerfly.shimmerpatch.ui.page.newpatch.DoPatchBody
 import moe.shimmerfly.shimmerpatch.ui.page.newpatch.PatchOptionsBody
 import moe.shimmerfly.shimmerpatch.ui.page.newpatch.PatchFlowViewModel
-import moe.shimmerfly.shimmerpatch.ui.component.NPatchScaffold
-import moe.shimmerfly.shimmerpatch.ui.component.NPatchTopAppBar
+import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchScaffold
+import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchTopAppBar
 import moe.shimmerfly.shimmerpatch.ui.util.LocalSnackbarHost
 import moe.shimmerfly.shimmerpatch.ui.viewmodel.MainViewModel
 import moe.shimmerfly.shimmerpatch.ui.viewmodel.NewPatchViewModel
@@ -149,10 +149,10 @@ fun NewPatchScreen(
     // predictive pop; ordinary back is handled by the same NavDisplay as the other pages.
     BackHandler(enabled = patchViewModel.patchState == PatchState.PATCHING || isExtracting) {}
 
-    NPatchScaffold(
+    ShimmerPatchScaffold(
         modifier = Modifier.imePadding().nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            NPatchTopAppBar(
+            ShimmerPatchTopAppBar(
                 title = stringResource(R.string.screen_new_patch),
                 scrollBehavior = scrollBehavior,
                 navigationIcon = {
@@ -205,7 +205,7 @@ fun NewPatchScreen(
         val patchedType = pendingPatchedType
         val typeName = when (patchedType) {
             NeoPackageManager.PatchedType.EMBEDDED -> stringResource(R.string.patch_type_embedded_apk)
-            NeoPackageManager.PatchedType.NONE -> "NPatch/LSPatch/FPA"
+            NeoPackageManager.PatchedType.NONE -> "ShimmerPatch/LSPatch/FPA"
             else -> patchedType.displayName
         }
         val dismiss = {

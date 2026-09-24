@@ -154,7 +154,7 @@ namespace lspd {
             {"libart.so", "", ""},
             {"libbinder.so", "", ""},
             {"libselinux.so", "", ""},
-            {"libnpatch.so", "", ""},
+            {"libshimmerpatch.so", "", ""},
             {"libandroid_runtime.so", "", ""},
             {"libc.so", "", ""},
     };
@@ -168,7 +168,7 @@ namespace lspd {
             "edxposed",
             "xposed",
             "riru",
-            "npatch",
+            "shimmerpatch",
             "vector",
             "/data/local/tmp",
             "/data/adb/",
@@ -865,7 +865,7 @@ namespace lspd {
         }
 
         const char* fname = info.dli_fname;
-        if (strstr(fname, "libnpatch.so") != nullptr) {
+        if (strstr(fname, "libshimmerpatch.so") != nullptr) {
             return true;
         }
 
@@ -885,7 +885,7 @@ namespace lspd {
         return path.size() == root.size() || path[root.size()] == '/';
     }
 
-    static bool is_npatch_module_native_caller(const void* caller_pc) {
+    static bool is_shimmerpatch_module_native_caller(const void* caller_pc) {
         if (caller_pc == nullptr) return false;
         Dl_info info = {};
         if (dladdr(caller_pc, &info) == 0 || info.dli_fname == nullptr || info.dli_fname[0] == '\0') {
@@ -907,10 +907,10 @@ namespace lspd {
 
     static bool should_redirect_apk_contents(const void* caller_pc) {
         // 【重要】这里必须按调用方分流。targetApkPath 是外层修补 APK，而 redirectApkPath
-        // （origin.apk）不含 NPatch 注入的模块/加固资源。若把加固模块 JNI_OnLoad 对 APK 的
+        // （origin.apk）不含 ShimmerPatch 注入的模块/加固资源。若把加固模块 JNI_OnLoad 对 APK 的
         // 读取重定向到 origin.apk，会导致 JNI_OnLoad/UnsatisfiedLinkError、模块无法加载。
         // 禁止将这里简化为无条件返回 true。
-        return !is_npatch_module_native_caller(caller_pc);
+        return !is_shimmerpatch_module_native_caller(caller_pc);
     }
 
     int open_sanitized_proc_file(const char* pathname, const void* caller_pc) {
@@ -931,7 +931,7 @@ namespace lspd {
             if (g_lib_hide_enabled) {
                 content = sanitize_maps_like_content(content);
             }
-            return create_memfd_from_string("npatch_apk_maps_view",
+            return create_memfd_from_string("shimmerpatch_apk_maps_view",
                                             content);
         }
         if (is_jiagu_or_stub_caller(caller_pc)) {
@@ -955,7 +955,7 @@ namespace lspd {
         }
         std::string content = read_fd_to_string(fd);
         close(fd);
-        return create_memfd_from_string("npatch_proc_view", sanitize_maps_like_content(content));
+        return create_memfd_from_string("shimmerpatch_proc_view", sanitize_maps_like_content(content));
     }
 
     static bool is_read_only_open(int flags) {

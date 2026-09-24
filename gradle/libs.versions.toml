@@ -1,5 +1,5 @@
 [versions]
-agp = "9.3.1"
+agp = "9.3.3"
 kotlin = "2.4.10"
 okhttp = "5.5.0"
 ktfmt = "0.27.0"

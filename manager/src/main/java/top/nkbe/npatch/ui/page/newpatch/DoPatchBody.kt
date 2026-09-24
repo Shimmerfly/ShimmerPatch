@@ -1,6 +1,5 @@
 package top.nkbe.npatch.ui.page.newpatch
 
-import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -10,28 +9,26 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.ErrorOutline
-import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -42,328 +39,217 @@ import nkbe.util.NeoPackageManager.AppInfo
 import nkbe.util.ShizukuApi
 import top.nkbe.npatch.R
 import top.nkbe.npatch.lspApp
-import top.nkbe.npatch.ui.component.ShimmerAnimation
+import top.nkbe.npatch.ui.component.LoadingDialog
+import top.nkbe.npatch.ui.component.m3.SettingsDialog
 import top.nkbe.npatch.ui.page.Navigator
 import top.nkbe.npatch.ui.util.LocalSnackbarHost
-import top.nkbe.npatch.ui.util.backgroundAwareCardColors
 import top.nkbe.npatch.ui.util.checkIsApkFixedByLSP
-import top.nkbe.npatch.ui.util.isScrolledToEnd
-import top.nkbe.npatch.ui.util.lastItemIndex
 import top.nkbe.npatch.ui.viewmodel.NewPatchViewModel
 import top.nkbe.npatch.ui.viewmodel.NewPatchViewModel.PatchState
 import top.nkbe.npatch.ui.viewmodel.NewPatchViewModel.ViewAction
-import io.github.suqi8.coui.kmp.basic.ButtonDefaults
-import io.github.suqi8.coui.kmp.basic.Card
-import io.github.suqi8.coui.kmp.basic.CircularProgressIndicator
-import io.github.suqi8.coui.kmp.basic.Icon
-import io.github.suqi8.coui.kmp.basic.SmallTitle
-import io.github.suqi8.coui.kmp.basic.SnackbarResult
-import io.github.suqi8.coui.kmp.basic.Text
-import io.github.suqi8.coui.kmp.basic.TextButton
-import io.github.suqi8.coui.kmp.layout.DialogButtonBar
-import io.github.suqi8.coui.kmp.layout.DialogButtonBarAction
-import io.github.suqi8.coui.kmp.overlay.OverlayDialog
-import io.github.suqi8.coui.kmp.overlay.OverlayLoadingDialog
-import io.github.suqi8.coui.kmp.theme.COUITheme
-import io.github.suqi8.coui.kmp.utils.overScrollVertical
-import io.github.suqi8.coui.kmp.utils.scrollEndHaptic
 
 private const val TAG = "NewPatchPage"
 
-@SuppressLint("UnusedBoxWithConstraintsScope")
+private data class InstallAttempt(val id: Long, val method: NewPatchViewModel.InstallMethod)
+
+/** Status and progress follow InstallerX-Revived's Material 3 InstallingDialog. */
 @Composable
 fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
     val viewModel = viewModel<NewPatchViewModel>()
     val snackbarHost = LocalSnackbarHost.current
     val scope = rememberCoroutineScope()
+    val copiedMessage = stringResource(R.string.home_info_copied)
+    val installSucceededMessage = stringResource(R.string.patch_install_successfully)
     val context = LocalContext.current
+    val logState = rememberLazyListState()
+    val isDragging by logState.interactionSource.collectIsDraggedAsState()
+    var followLogs by remember { mutableStateOf(true) }
+    var installation by remember { mutableStateOf<InstallAttempt?>(null) }
+
+    fun copyLogs() {
+        val text = viewModel.logs.joinToString("\n") { it.second }
+        if (text.isEmpty()) return
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboard.setPrimaryClip(ClipData.newPlainText("NPatch Log", text))
+        scope.launch { snackbarHost.showSnackbar(copiedMessage) }
+    }
 
     LaunchedEffect(Unit) {
-        if (viewModel.logs.isEmpty()) {
-            viewModel.dispatch(ViewAction.LaunchPatch)
+        if (viewModel.logs.isEmpty()) viewModel.dispatch(ViewAction.LaunchPatch)
+    }
+    LaunchedEffect(isDragging, logState.isScrollInProgress) {
+        if (isDragging) followLogs = false
+        else if (!logState.isScrollInProgress) followLogs = !logState.canScrollForward
+    }
+    LaunchedEffect(viewModel.logs.size) {
+        if (followLogs && !isDragging && viewModel.logs.isNotEmpty()) {
+            logState.scrollToItem(viewModel.logs.lastIndex)
         }
     }
 
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 12.dp)
+        modifier = modifier.fillMaxSize().padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        // ── 狀態指示 ──
-        AnimatedVisibility(
-            visible = viewModel.patchState != PatchState.PATCHING,
-            enter = fadeIn(),
-            exit = fadeOut()
+        Surface(
+            shape = MaterialTheme.shapes.extraLarge,
+            color = if (viewModel.patchState == PatchState.ERROR) {
+                MaterialTheme.colorScheme.errorContainer
+            } else MaterialTheme.colorScheme.primaryContainer,
         ) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp),
-                colors = backgroundAwareCardColors(),
+            Column(
+                Modifier.fillMaxWidth().padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 16.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite },
                 ) {
-                    Icon(
-                        imageVector = if (viewModel.patchState == PatchState.FINISHED)
-                            Icons.Outlined.CheckCircle else Icons.Outlined.ErrorOutline,
-                        contentDescription = null,
-                        tint = if (viewModel.patchState == PatchState.FINISHED)
-                            COUITheme.colorScheme.primary else COUITheme.colorScheme.error,
-                        modifier = Modifier.size(32.dp)
+                    if (viewModel.patchState != PatchState.PATCHING) {
+                        Icon(
+                            imageVector = if (viewModel.patchState == PatchState.FINISHED) {
+                                Icons.Outlined.CheckCircle
+                            } else Icons.Outlined.ErrorOutline,
+                            contentDescription = null,
+                            modifier = Modifier.size(40.dp),
+                        )
+                    }
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(when (viewModel.patchState) {
+                                PatchState.FINISHED -> R.string.patch_ui_finished
+                                PatchState.ERROR -> R.string.patch_ui_failed
+                                else -> R.string.patch_ui_running
+                            }),
+                            style = MaterialTheme.typography.headlineSmall,
+                        )
+                        Text(viewModel.patchApp.app.packageName, style = MaterialTheme.typography.bodyMedium)
+                    }
+                }
+                if (viewModel.patchState == PatchState.PATCHING) {
+                    LinearWavyProgressIndicator(modifier = Modifier.fillMaxWidth())
+                }
+            }
+        }
+
+        Surface(
+            modifier = Modifier.weight(1f).fillMaxWidth(),
+            shape = MaterialTheme.shapes.extraLarge,
+            color = MaterialTheme.colorScheme.surfaceBright,
+        ) {
+            Column {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 8.dp, top = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = stringResource(R.string.patch_ui_log),
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.weight(1f),
                     )
-                    Column {
-                        Text(
-                            text = if (viewModel.patchState == PatchState.FINISHED)
-                                stringResource(R.string.patch_start) + " ✓"
-                            else
-                                stringResource(R.string.copy_error),
-                            style = COUITheme.textStyles.headline1,
-                        )
-                        Text(
-                            text = viewModel.patchApp.app.packageName,
-                            style = COUITheme.textStyles.body2,
-                            color = COUITheme.colorScheme.onSurfaceVariantSummary,
-                        )
+                    IconButton(onClick = ::copyLogs, enabled = viewModel.logs.isNotEmpty()) {
+                        Icon(Icons.Outlined.ContentCopy, stringResource(R.string.patch_ui_copy_log))
                     }
                 }
-            }
-        }
-
-        // ── 進度指示（打包中）──
-        AnimatedVisibility(
-            visible = viewModel.patchState == PatchState.PATCHING,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp),
-                colors = backgroundAwareCardColors(COUITheme.colorScheme.surfaceVariant),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    CircularProgressIndicator(modifier = Modifier.size(28.dp))
-                    Column {
-                        Text(
-                            text = stringResource(R.string.patch_start) + "…",
-                            style = COUITheme.textStyles.headline1,
-                        )
-                        Text(
-                            text = viewModel.patchApp.app.packageName,
-                            style = COUITheme.textStyles.body2,
-                            color = COUITheme.colorScheme.onSurfaceVariantSummary,
-                        )
-                    }
-                }
-            }
-        }
-
-        // ── 日誌輸出區域 ──
-        SmallTitle(text = "Log")
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(bottom = 12.dp)
-                .combinedClickable(
-                    onClick = {},
-                    onLongClick = {
-                        val joinedLogs = viewModel.logs.joinToString(separator = "\n") { it.second }
-                        if (joinedLogs.isNotEmpty()) {
-                            val cm = lspApp.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            cm.setPrimaryClip(ClipData.newPlainText("NPatch Log", joinedLogs))
-                            scope.launch { snackbarHost.showSnackbar(context.getString(R.string.home_info_copied)) }
-                        }
-                    }
-                ),
-            colors = backgroundAwareCardColors(),
-        ) {
-            ShimmerAnimation(enabled = viewModel.patchState == PatchState.PATCHING) {
-                ProvideTextStyle(COUITheme.textStyles.footnote1.copy(fontFamily = FontFamily.Monospace)) {
-                    val scrollState = rememberLazyListState()
+                SelectionContainer {
                     LazyColumn(
-                        state = scrollState,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(16.dp))
-                            .scrollEndHaptic()
-                            .overScrollVertical()
-                            .padding(horizontal = 16.dp, vertical = 16.dp),
-                        overscrollEffect = null
+                        state = logState,
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        items(viewModel.logs) {
-                            val line = it.second
-                            when (it.first) {
-                                Log.DEBUG, Log.INFO -> Text(
-                                    text = line,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 4.dp)
-                                )
-                                Log.ERROR -> Text(
-                                    text = line,
-                                    color = COUITheme.colorScheme.error,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 4.dp)
-                                )
-                            }
-                        }
-                    }
-
-                    LaunchedEffect(scrollState.lastItemIndex) {
-                        if (scrollState.lastItemIndex != null && !scrollState.isScrolledToEnd) {
-                            scrollState.animateScrollToItem(scrollState.lastItemIndex!!)
+                        itemsIndexed(viewModel.logs, key = { index, _ -> index }) { _, log ->
+                            Text(
+                                text = log.second,
+                                style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
+                                color = if (log.first == Log.ERROR) MaterialTheme.colorScheme.error
+                                    else MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.fillMaxWidth(),
+                            )
                         }
                     }
                 }
             }
         }
 
-        // ── 底部操作按鈕 ──
-        when (viewModel.patchState) {
-            PatchState.FINISHED -> {
-                val installFailed = stringResource(R.string.patch_install_failed)
-                val copyError = stringResource(R.string.copy_error)
-                var installation by remember { mutableStateOf<NewPatchViewModel.InstallMethod?>(null) }
+        if (viewModel.patchState == PatchState.FINISHED || viewModel.patchState == PatchState.ERROR) {
+            FlowRow(
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.End),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                OutlinedButton(onClick = { navigator.pop() }) { Text(stringResource(R.string.patch_return)) }
+                if (viewModel.patchState == PatchState.FINISHED) {
+                    Button(onClick = {
+                        installation = InstallAttempt(
+                            id = System.nanoTime(),
+                            method = if (ShizukuApi.isReady) NewPatchViewModel.InstallMethod.SHIZUKU
+                                else NewPatchViewModel.InstallMethod.SYSTEM,
+                        )
+                    }) { Text(stringResource(R.string.install)) }
+                } else {
+                    Button(onClick = ::copyLogs) { Text(stringResource(R.string.copy_error)) }
+                }
+            }
+        } else {
+            Spacer(Modifier.height(0.dp))
+        }
+    }
 
-                val onFinish: (Int, String?) -> Unit = { status, message ->
-                    scope.launch {
-                        if (status == PackageInstaller.STATUS_SUCCESS) {
-                            installation = null
-                            viewModel.reset()
-                            navigator.pop()
-                            Toast.makeText(
-                                context.applicationContext,
-                                context.getString(R.string.patch_install_successfully),
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                        } else if (status == PackageInstaller.STATUS_PENDING_USER_ACTION) {
-                            installation = null
-                        } else if (status != NeoPackageManager.STATUS_USER_CANCELLED) {
-                            val result = snackbarHost.showSnackbar(installFailed, copyError)
-                            if (result == SnackbarResult.ActionPerformed) {
-                                val cm = lspApp.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                cm.setPrimaryClip(ClipData.newPlainText("NPatch", message))
-                            }
-                        }
-                        if (installation != null) {
-                            installation = null
-                        }
+    val installFailed = stringResource(R.string.patch_install_failed)
+    val copyError = stringResource(R.string.copy_error)
+    val onFinish: (Int, String?) -> Unit = { status, message ->
+        scope.launch {
+            installation = null
+            when {
+                status == PackageInstaller.STATUS_SUCCESS -> {
+                    navigator.pop()
+                    Toast.makeText(context.applicationContext, installSucceededMessage, Toast.LENGTH_SHORT).show()
+                }
+                status != PackageInstaller.STATUS_PENDING_USER_ACTION && status != NeoPackageManager.STATUS_USER_CANCELLED -> {
+                    if (snackbarHost.showSnackbar(installFailed, copyError) == SnackbarResult.ActionPerformed) {
+                        val clipboard = lspApp.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        clipboard.setPrimaryClip(ClipData.newPlainText("NPatch", message))
                     }
                 }
-                when (installation) {
-                    NewPatchViewModel.InstallMethod.SYSTEM -> InstallDialog(
-                        patchApp = viewModel.patchApp,
-                        method = NeoPackageManager.InstallMethod.SYSTEM,
-                        onFinish = onFinish,
-                    )
-
-                    NewPatchViewModel.InstallMethod.SHIZUKU -> InstallDialog(
-                        patchApp = viewModel.patchApp,
-                        method = NeoPackageManager.InstallMethod.SHIZUKU,
-                        onFinish = onFinish,
-                    )
-
-                    null -> {}
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    TextButton(
-                        text = stringResource(R.string.patch_return),
-                        modifier = Modifier.weight(1f),
-                        onClick = {
-                            viewModel.reset()
-                            navigator.pop()
-                        },
-                    )
-                    TextButton(
-                        text = stringResource(R.string.install),
-                        modifier = Modifier.weight(1f),
-                        onClick = {
-                            installation =
-                                if (!ShizukuApi.isReady) NewPatchViewModel.InstallMethod.SYSTEM
-                                else NewPatchViewModel.InstallMethod.SHIZUKU
-                            Log.d(TAG, "Installation method: $installation")
-                        },
-                        colors = ButtonDefaults.textButtonColorsPrimary(),
-                    )
-                }
             }
-            PatchState.ERROR -> {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    TextButton(
-                        text = stringResource(R.string.patch_return),
-                        modifier = Modifier.weight(1f),
-                        onClick = {
-                            viewModel.reset()
-                            navigator.pop()
-                        },
-                    )
-                    TextButton(
-                        text = stringResource(R.string.copy_error),
-                        modifier = Modifier.weight(1f),
-                        onClick = {
-                            val cm = lspApp.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            cm.setPrimaryClip(ClipData.newPlainText("NPatch", viewModel.logs.joinToString(separator = "\n") { it.second }))
-                        },
-                        colors = ButtonDefaults.textButtonColorsPrimary(),
-                    )
-                }
-            }
-            else -> Unit
+        }
+    }
+    RetainedPatchDialog(installation) { attempt, visible ->
+        key(attempt.id) {
+            InstallDialog(
+                patchApp = viewModel.patchApp,
+                method = if (attempt.method == NewPatchViewModel.InstallMethod.SHIZUKU) {
+                    NeoPackageManager.InstallMethod.SHIZUKU
+                } else NeoPackageManager.InstallMethod.SYSTEM,
+                onFinish = onFinish,
+                visible = visible,
+            )
         }
     }
 }
 
 @Composable
 fun UninstallConfirmationDialog(
+    show: Boolean = true,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     onIgnoreAndInstall: () -> Unit,
 ) {
-    val show = remember { mutableStateOf(true) }
-    OverlayDialog(
+    // The same always-composed dialog host is used by settings and patching.
+    SettingsDialog(
+        show = show,
         title = stringResource(R.string.uninstall),
-        summary = stringResource(R.string.patch_uninstall_text),
-        show = show.value,
-        onDismissRequest = { show.value = false; onDismiss() },
-        renderInRootScaffold = false,
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            Column(horizontalAlignment = Alignment.End) {
+                TextButton(onClick = onConfirm) { Text(stringResource(android.R.string.ok)) }
+                TextButton(onClick = onIgnoreAndInstall) { Text(stringResource(R.string.patch_ignore_risk_install)) }
+            }
+        },
     ) {
-        DialogButtonBar(
-            positive = DialogButtonBarAction(
-                text = stringResource(android.R.string.ok),
-                onClick = { show.value = false; onConfirm() },
-            ),
-            neutral = DialogButtonBarAction(
-                text = stringResource(R.string.patch_ignore_risk_install),
-                onClick = { show.value = false; onIgnoreAndInstall() },
-            ),
-            negative = DialogButtonBarAction(
-                text = stringResource(android.R.string.cancel),
-                onClick = { show.value = false; onDismiss() },
-            ),
-        )
+        Text(stringResource(R.string.patch_uninstall_text))
     }
 }
 
@@ -372,6 +258,7 @@ fun InstallDialog(
     patchApp: AppInfo,
     method: NeoPackageManager.InstallMethod,
     onFinish: (Int, String?) -> Unit,
+    visible: Boolean = true,
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -384,7 +271,8 @@ fun InstallDialog(
             },
         )
     }
-    var installing by remember { mutableStateOf(0) }
+    var installing by remember { mutableIntStateOf(0) }
+    var awaitingUninstall by remember { mutableStateOf(false) }
     var installStarted by remember { mutableStateOf(false) }
     suspend fun doInstall() {
         Log.i(TAG, "Installing ${patchApp.app.packageName} with $method")
@@ -440,56 +328,51 @@ fun InstallDialog(
         }
     }
 
-    if (uninstallFirst) {
-        UninstallConfirmationDialog(
-            onDismiss = { onFinish(NeoPackageManager.STATUS_USER_CANCELLED, "User cancelled") },
-            onIgnoreAndInstall = {
-                uninstallFirst = false
-                if (!installStarted) {
-                    scope.launch {
-                        doInstall()
-                    }
-                }
-            },
-            onConfirm = {
-                if (method == NeoPackageManager.InstallMethod.SHIZUKU) {
-                    scope.launch {
-                        Log.i(TAG, "Uninstalling app ${patchApp.app.packageName}")
-                        installing = 2
-                        val (status, message) = NeoPackageManager.uninstall(patchApp.app.packageName)
-                        installing = 0
-                        Log.i(TAG, "Uninstallation end: $status, $message")
-                        if (status == PackageInstaller.STATUS_SUCCESS) {
-                            uninstallFirst = false
-                            if (!installStarted) {
-                                doInstall()
-                            }
-                        } else {
-                            uninstallLauncher.launch(
-                                Intent(Intent.ACTION_DELETE).apply {
-                                    data = "package:${patchApp.app.packageName}".toUri()
-                                },
-                            )
-                        }
-                    }
-                } else {
-                    uninstallLauncher.launch(
-                        Intent(Intent.ACTION_DELETE).apply {
-                            data = "package:${patchApp.app.packageName}".toUri()
-                        },
-                    )
+    UninstallConfirmationDialog(
+        show = visible && uninstallFirst && !awaitingUninstall && installing == 0,
+        onDismiss = { onFinish(NeoPackageManager.STATUS_USER_CANCELLED, "User cancelled") },
+        onIgnoreAndInstall = {
+            uninstallFirst = false
+            if (!installStarted) {
+                scope.launch {
+                    doInstall()
                 }
             }
-        )
-    }
+        },
+        onConfirm = {
+            awaitingUninstall = true
+            if (method == NeoPackageManager.InstallMethod.SHIZUKU) {
+                scope.launch {
+                    Log.i(TAG, "Uninstalling app ${patchApp.app.packageName}")
+                    installing = 2
+                    val (status, message) = NeoPackageManager.uninstall(patchApp.app.packageName)
+                    installing = 0
+                    Log.i(TAG, "Uninstallation end: $status, $message")
+                    if (status == PackageInstaller.STATUS_SUCCESS) {
+                        uninstallFirst = false
+                        if (!installStarted) {
+                            doInstall()
+                        }
+                    } else {
+                        uninstallLauncher.launch(
+                            Intent(Intent.ACTION_DELETE).apply {
+                                data = "package:${patchApp.app.packageName}".toUri()
+                            },
+                        )
+                    }
+                }
+            } else {
+                uninstallLauncher.launch(
+                    Intent(Intent.ACTION_DELETE).apply {
+                        data = "package:${patchApp.app.packageName}".toUri()
+                    },
+                )
+            }
+        }
+    )
 
-    if (installing != 0) {
-        val showInstalling = remember { mutableStateOf(true) }
-        OverlayLoadingDialog(
-            text = stringResource(if (installing == 1) R.string.installing else R.string.uninstalling),
-            show = showInstalling.value,
-            onDismissRequest = {},
-            renderInRootScaffold = false,
-        )
-    }
+    LoadingDialog(
+        visible = visible && installing != 0,
+        title = stringResource(if (installing == 1) R.string.installing else R.string.uninstalling),
+    )
 }

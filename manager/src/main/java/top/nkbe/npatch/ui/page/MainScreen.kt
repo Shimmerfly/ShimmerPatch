@@ -1,43 +1,26 @@
+// Tab controller and floating navigation follow InstallerX-Revived / WeKit; see docs/UI_SOURCES.md.
 package top.nkbe.npatch.ui.page
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.padding
+import android.os.Build
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import com.kyant.backdrop.backdrops.layerBackdrop
-import com.kyant.backdrop.backdrops.rememberLayerBackdrop
-import io.github.suqi8.coui.kmp.basic.NavigationBar
-import io.github.suqi8.coui.kmp.basic.NavigationBarItem
-import io.github.suqi8.coui.kmp.theme.COUITheme
+import androidx.compose.ui.unit.Dp
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
-import top.nkbe.npatch.ui.component.FloatingGlassBottomBar
-import top.nkbe.npatch.ui.component.FloatingGlassBottomBarIcon
-import top.nkbe.npatch.ui.component.FloatingGlassBottomBarItem
-import top.nkbe.npatch.ui.component.FloatingGlassBottomBarLabel
-import top.nkbe.npatch.ui.component.NPatchScaffold
-import top.nkbe.npatch.ui.util.LocalFloatingGlassBottomBar
-import top.nkbe.npatch.ui.util.LocalFloatingGlassBottomBarBlur
-import top.nkbe.npatch.ui.util.backgroundAwareCardColors
+import top.nkbe.npatch.ui.component.*
+import top.nkbe.npatch.ui.util.*
+import top.yukonga.miuix.kmp.blur.rememberLayerBackdrop
+import top.yukonga.miuix.kmp.shader.isRenderEffectSupported
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen(
     navigator: Navigator,
@@ -45,138 +28,113 @@ fun MainScreen(
     selectedManageTab: Int = 0,
     onSelectedTabChange: (Int) -> Unit = {},
     onSelectedManageTabChange: (Int) -> Unit = {},
+    onNavigationBarHeightChanged: (Dp) -> Unit = {},
 ) {
     val tabs = MainTab.entries
-    val safeSelectedTab = selectedTab.coerceIn(0, tabs.lastIndex)
-    val pagerState = rememberPagerState(
-        initialPage = safeSelectedTab,
-        pageCount = { tabs.size },
-    )
-    val settledPage by remember(pagerState) {
-        derivedStateOf { pagerState.settledPage }
+    val pager = rememberPagerState(initialPage = selectedTab.coerceIn(tabs.indices), pageCount = { tabs.size })
+    val controller = rememberMainPagerState(pager)
+    val managePager = rememberPagerState(initialPage = selectedManageTab.coerceIn(0, 1), pageCount = { 2 })
+    val manageController = rememberMainPagerState(managePager)
+    val onTabSettled by rememberUpdatedState(onSelectedTabChange)
+    val currentSelectedTab by rememberUpdatedState(selectedTab)
+    val focusManager = LocalFocusManager.current
+    val selectTab: (Int) -> Unit = { index ->
+        focusManager.clearFocus()
+        onSelectedTabChange(index)
     }
-    val scope = rememberCoroutineScope()
-    val useFloatingGlassBottomBar = LocalFloatingGlassBottomBar.current
-    val useFloatingGlassBottomBarBlur = LocalFloatingGlassBottomBarBlur.current
-    val surfaceColor = COUITheme.colorScheme.surface
-    val backdrop = if (useFloatingGlassBottomBarBlur) {
-        rememberLayerBackdrop {
-            drawRect(surfaceColor)
-            drawContent()
-        }
-    } else {
-        null
+    val floating = LocalFloatingGlassBottomBar.current
+    val blur = LocalFloatingGlassBottomBarBlur.current
+    val surface = MaterialTheme.colorScheme.surfaceContainer
+    val backdrop = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && isRenderEffectSupported()) rememberLayerBackdrop { drawRect(surface); drawContent() } else null
+
+    // Only the controller writes PagerState. Clicks and shortcuts submit a destination.
+    LaunchedEffect(selectedTab) { controller.animateToPage(selectedTab.coerceIn(tabs.indices)) }
+    LaunchedEffect(pager, controller) {
+        snapshotFlow { Triple(pager.settledPage, pager.isScrollInProgress, controller.isNavigating) }
+            .distinctUntilChanged().collect { (page, scrolling, navigating) ->
+                if (!scrolling && !navigating) {
+                    if (page != currentSelectedTab) focusManager.clearFocus()
+                    controller.syncPage()
+                    onTabSettled(page)
+                }
+            }
     }
 
-    LaunchedEffect(safeSelectedTab) {
-        if (pagerState.currentPage != safeSelectedTab) {
-            pagerState.scrollToPage(safeSelectedTab)
+    val navigationItems: @Composable RowScope.() -> Unit = {
+        tabs.forEachIndexed { index, tab ->
+            NavigationBarItem(
+                selected = controller.selectedPage == index,
+                onClick = { selectTab(index) },
+                icon = { Icon(if (controller.selectedPage == index) tab.selectedIcon else tab.unselectedIcon, null) },
+                label = { Text(stringResource(tab.labelRes)) },
+            )
         }
-    }
-
-    LaunchedEffect(navigator, pagerState) {
-        snapshotFlow { pagerState.settledPage }
-            .distinctUntilChanged()
-            .collect(onSelectedTabChange)
     }
 
     NPatchScaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
-            if (useFloatingGlassBottomBar) {
+            if (floating) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            bottom = 12.dp + WindowInsets.navigationBars
-                                .asPaddingValues()
-                                .calculateBottomPadding(),
-                        ),
-                    contentAlignment = Alignment.BottomCenter,
+                    Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 16.dp, vertical = 12.dp),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    FloatingGlassBottomBar(
-                        selectedIndex = { pagerState.currentPage },
-                        onSelected = { index ->
-                            onSelectedTabChange(index)
-                            scope.launch { pagerState.animateScrollToPage(index) }
-                        },
-                        tabsCount = tabs.size,
+                    if (backdrop != null) FloatingBottomBar(
+                        items = tabs,
+                        selectedIndex = { controller.selectedPage },
+                        onSelected = selectTab,
                         backdrop = backdrop,
-                        isBlurEnabled = useFloatingGlassBottomBarBlur,
-                        modifier = Modifier.padding(horizontal = 12.dp),
-                    ) {
-                        tabs.forEachIndexed { index, tab ->
-                            val isSelected = settledPage == index
-                            val label = stringResource(tab.labelRes)
-                            FloatingGlassBottomBarItem(
-                                onClick = {
-                                    onSelectedTabChange(index)
-                                    scope.launch { pagerState.animateScrollToPage(index) }
-                                },
-                                selected = isSelected,
-                                label = label,
-                            ) {
-                                FloatingGlassBottomBarIcon(
-                                    selected = isSelected,
-                                    selectedIcon = tab.selectedIcon,
-                                    unselectedIcon = tab.unselectedIcon,
-                                )
-                                FloatingGlassBottomBarLabel(label)
-                            }
-                        }
-                    }
-                }
-            } else {
-                NavigationBar(color = backgroundAwareCardColors().color) {
-                    tabs.forEachIndexed { index, tab ->
-                        val isSelected = settledPage == index
-                        NavigationBarItem(
-                            selected = isSelected,
-                            onClick = {
-                                onSelectedTabChange(index)
-                                scope.launch { pagerState.animateScrollToPage(index) }
-                            },
-                            icon = if (isSelected) tab.selectedIcon else tab.unselectedIcon,
-                            label = stringResource(tab.labelRes),
+                        mode = if (blur) FloatingBottomBarMode.LiquidGlass else FloatingBottomBarMode.None,
+                        iconContent = { tab, _, selected ->
+                            Icon(if (selected) tab.selectedIcon else tab.unselectedIcon, contentDescription = null)
+                        },
+                        labelContent = { tab, _ ->
+                            Text(stringResource(tab.labelRes), style = MaterialTheme.typography.labelMedium)
+                        },
+                    ) else {
+                        // Same floating placement on older Android, using an opaque M3 surface.
+                        NavigationBar(
+                            modifier = Modifier.clip(CircleShape),
+                            windowInsets = WindowInsets(0, 0, 0, 0),
+                            content = navigationItems,
                         )
                     }
                 }
+            } else {
+                NavigationBar(content = navigationItems)
             }
         },
-    ) { padding ->
+    ) { chromePadding ->
+        // Keep all three page compositions and their scroll state alive. Content can pass behind
+        // the floating bar; each list gets the measured chrome inset as scrollable end padding.
+        val navigationHeight = chromePadding.calculateBottomPadding()
+        SideEffect { onNavigationBarHeightChanged(navigationHeight) }
+        val contentPadding = PaddingValues(bottom = navigationHeight)
         HorizontalPager(
-            state = pagerState,
-            modifier = Modifier
-                .then(
-                    if (useFloatingGlassBottomBar &&
-                        useFloatingGlassBottomBarBlur &&
-                        backdrop != null
-                    ) {
-                        Modifier.layerBackdrop(backdrop)
-                    } else {
-                        Modifier
-                    },
-                )
-                // Floating glass must sample page content behind itself. Applying Scaffold's
-                // bottom padding here clips the recorded backdrop above the navigation bar.
-                .then(if (useFloatingGlassBottomBar) Modifier else Modifier.padding(padding))
-                .fillMaxSize(),
+            state = pager,
+            modifier = Modifier.fillMaxSize().m3BackdropLayer(backdrop),
+            key = { tabs[it].name },
+            beyondViewportPageCount = tabs.lastIndex,
         ) { page ->
             when (tabs[page]) {
                 MainTab.Home -> HomeScreen(
                     navigator = navigator,
-                    onManageShortcut = { managePage ->
-                        onSelectedManageTabChange(managePage)
-                        onSelectedTabChange(MainTab.Manage.ordinal)
+                    contentPadding = contentPadding,
+                    onManageShortcut = { manageTab ->
+                        manageController.snapToPage(manageTab) {
+                            onSelectedManageTabChange(manageTab)
+                            onSelectedTabChange(MainTab.Manage.ordinal)
+                        }
                     },
                 )
-
                 MainTab.Manage -> ManageScreen(
                     navigator = navigator,
+                    controller = manageController,
                     selectedPage = selectedManageTab,
                     onSelectedPageChange = onSelectedManageTabChange,
+                    contentPadding = contentPadding,
                 )
-
-                MainTab.Settings -> SettingsScreen()
+                MainTab.Settings -> SettingsScreen(contentPadding = contentPadding)
             }
         }
     }

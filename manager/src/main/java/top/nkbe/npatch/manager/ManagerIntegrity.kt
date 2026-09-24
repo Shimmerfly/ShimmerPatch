@@ -1,3 +1,5 @@
+@file:android.annotation.SuppressLint("DiscouragedPrivateApi", "ObsoleteSdkInt")
+
 package top.nkbe.npatch.manager
 
 import android.app.ActivityThread

@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">Tilføje</string>
     <string name="install">Installer</string>
     <string name="installing">Installation af</string>
     <string name="uninstall">Afinstaller</string>
@@ -11,9 +10,7 @@
     <string name="shizuku_available">Shizuku service tilgængelig</string>
     <string name="shizuku_unavailable">Shizuku-tjenesten er ikke tilsluttet</string>
     <string name="screen_repo">Repo</string>
-    <string name="off">Off</string>
     <string name="error_unknown">Ukendt fejl</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">Nogle funktioner er ikke tilgængelige</string>
     <string name="home_api_version">API-version</string>
     <string name="home_npatch_version">NPatch version</string>
@@ -22,10 +19,7 @@
     <string name="home_device">Enhed</string>
     <string name="home_system_abi">System ABI</string>
     <string name="home_info_copied">Kopieret til udklipsholder</string>
-    <string name="home_support">Support</string>
-    <string name="home_description">NPatch er en gratis ikke-root Xposed-ramme baseret på LSPosed-kerne.</string>
-    <string name="about_view_source_code"><![CDATA[Se kildekoden på %1$s]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch er en gratis ikke-root Xposed ramme baseret på Vector.</string>
     <string name="screen_manage">Administrer</string>
     <string name="manage_loading">Indlæser</string>
     <string name="manage_no_apps">Ingen lappede apps endnu</string>
@@ -41,7 +35,6 @@
     <string name="manage_no_modules">Ingen moduler endnu</string>
     <string name="manage_module_settings">Modulindstillinger</string>
     <string name="manage_app_info">App-info</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">Ny patch</string>
     <string name="patch_select_dir_title">Vælg lagerbibliotek</string>
     <string name="patch_select_dir_text">Vælg en mappe til at gemme de patchede apks</string>
@@ -50,7 +43,7 @@
     <string name="patch_from_applist">Vælg en installeret app</string>
     <string name="patch_mode">Patch-tilstand</string>
     <string name="patch_local">Lokal</string>
-    <string name="patch_local_desc">Patch en app uden indlejrede moduler.\nXposed scope kan ændres dynamisk uden re-patch.\nLokalt patchede apps kan kun køre på den lokale enhed.</string>
+    <string name="patch_local_desc">Patcher apps uden indlejring af moduler.\nXposed-omfanget kan ændres dynamisk uden at skulle gen-patch.\nDenne tilstand kan kun bruges lokalt med NPatch Manager.</string>
     <string name="patch_integrated">Integreret</string>
     <string name="patch_integrated_desc">Patch en app med indlejrede moduler.\nDen patchede app kan køre uden manageren, men kan ikke administreres dynamisk.\nIntegrerede patchede apps kan bruges på enheder, der ikke har NPatch Manager installeret.</string>
     <string name="patch_embed_modules">Indlejre moduler</string>
@@ -67,10 +60,7 @@
     <string name="patch_uninstall_text">På grund af forskellige signaturer skal du afinstallere den originale app, før du installerer den patchede.\nSørg for, at du har sikkerhedskopieret personlige data.</string>
     <string name="patch_install_successfully">Installer med succes</string>
     <string name="patch_install_failed">Installationen mislykkedes</string>
-    <string name="patch_no_xposed_module">Ingen Xposed-modul(er) blev fundet</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">Vælg apps</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">Indstillinger</string>
     <string name="settings_keystore">Signatur-nøgleopbevaring</string>
     <string name="settings_keystore_custom">Tilpasset</string>

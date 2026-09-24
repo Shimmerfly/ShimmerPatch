@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">Добавить</string>
     <string name="install">Установить</string>
     <string name="installing">Установка</string>
     <string name="uninstall">Удалить</string>
@@ -11,10 +10,7 @@
     <string name="shizuku_available">Служба Shizuku доступна</string>
     <string name="shizuku_unavailable">Служба Shizuku не подключена</string>
     <string name="screen_repo">Репозиторий</string>
-
-    <string name="off">Выкл.</string>
     <string name="error_unknown">Неизвестная ошибка</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">Некоторые функции недоступны</string>
     <string name="home_api_version">Версия API</string>
     <string name="home_npatch_version">Версия NPatch</string>
@@ -23,10 +19,7 @@
     <string name="home_device">Устройство</string>
     <string name="home_system_abi">Разрядность системы (ABI)</string>
     <string name="home_info_copied">Скопировано в буфер обмена</string>
-    <string name="home_support">Поддержка</string>
-    <string name="home_description">NPatch — это бесплатный без-рута-фреймворк Xposed, основанный на ядре LSPosed.</string>
-    <string name="about_view_source_code"><![CDATA[Посмотрите исходный код на %1$s]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch — это бесплатная некорневая платформа Xposed, основанная на Vector.</string>
     <string name="screen_manage">Управление</string>
     <string name="manage_loading">Загрузка</string>
     <string name="manage_no_apps">Пропатченных приложений пока нет</string>
@@ -42,7 +35,6 @@
     <string name="manage_no_modules">Модулей пока нет</string>
     <string name="manage_module_settings">Настройки модуля</string>
     <string name="manage_app_info">Информация о приложении</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">Новый патч</string>
     <string name="patch_select_dir_title">Выбор каталога хранилища</string>
     <string name="patch_select_dir_text">Выберите каталог для хранения пропатченных Apk</string>
@@ -51,7 +43,7 @@
     <string name="patch_from_applist">Выберите установленное приложение</string>
     <string name="patch_mode">Режим патча</string>
     <string name="patch_local">Локальный</string>
-    <string name="patch_local_desc">Патч приложения без встроенных модулей.\n«Охват» Xposed может быть изменён динамически без перепатчивания.\nЛокально пропатченные приложения могут работать только на локальном устройстве.</string>
+    <string name="patch_local_desc">Исправляет приложения без встраивания модулей.\nОбласть действия Xposed можно динамически изменять без необходимости повторного исправления.\nЭтот режим можно использовать только локально с NPatch Manager.</string>
     <string name="patch_integrated">Интегрированный</string>
     <string name="patch_integrated_desc">Патч приложения со встроенными модулями.\nПропатченное приложение может работать без менеджера, но не может управляться динамически.\nИнтегрированно пропатченные приложения могут быть использованы на устройствах и без установленного NPatch Менеджера.</string>
     <string name="patch_embed_modules">Встроенные модули</string>
@@ -68,10 +60,7 @@
     <string name="patch_uninstall_text">Ввиду разницы в подписях вам необходимо удалить оригинальное приложение перед установкой пропатченного.\nУбедитесь, что у вас есть резервная копия личных данных.</string>
     <string name="patch_install_successfully">Установка завершена</string>
     <string name="patch_install_failed">Ошибка установки</string>
-    <string name="patch_no_xposed_module">Не найдено ни одного модуля Xposed</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">Выберите приложения</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">Настройки</string>
     <string name="settings_keystore">Хранилище ключей подписи</string>
     <string name="settings_keystore_custom">Пользовательское</string>
@@ -87,7 +76,7 @@
     <string name="settings_keystore_wrong_alias_password">Неправильный alias-пароль</string>
     <string name="settings_detail_patch_logs">Подробности журнала патча</string>
     <string name="patch_output_log_to_media">Вывод журнала в каталог Media</string>
-    <string name="patch_output_log_to_media_desc">Вывод журналов Xposed и журналов запуска фреймворка в каталог Media.</string>
+    <string name="patch_output_log_to_media_desc">Захватывает журналы Xposed API, события платформы и сбои Java/Kotlin.</string>
     <string name="settings_card_background_alpha">Непрозрачность фона карточек</string>
     <string name="settings_card_background_alpha_summary">Применяется, когда включено пользовательское фоновое изображение</string>
 </resources>

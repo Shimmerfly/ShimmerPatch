@@ -1,3 +1,5 @@
+@file:android.annotation.SuppressLint("NewApi")
+
 package top.nkbe.npatch
 
 import android.content.Intent

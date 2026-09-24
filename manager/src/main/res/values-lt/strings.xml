@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">Papildyti</string>
     <string name="install">Įdiekite</string>
     <string name="installing">diegimas</string>
     <string name="uninstall">Pašalinti</string>
@@ -11,9 +10,7 @@
     <string name="shizuku_available">Galimas Shizuku servisas</string>
     <string name="shizuku_unavailable">„Shizuku“ paslauga neprijungta</string>
     <string name="screen_repo">Repo</string>
-    <string name="off">Išjungta</string>
     <string name="error_unknown">Nežinoma klaida</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">Kai kurios funkcijos nepasiekiamos</string>
     <string name="home_api_version">API versija</string>
     <string name="home_npatch_version">NPatch versija</string>
@@ -22,10 +19,7 @@
     <string name="home_device">Įrenginys</string>
     <string name="home_system_abi">Sistema ABI</string>
     <string name="home_info_copied">Nukopijuota į mainų sritį</string>
-    <string name="home_support">Palaikymas</string>
-    <string name="home_description">NPatch yra nemokama ne šakninė Xposed sistema, pagrįsta LSPosed branduoliu.</string>
-    <string name="about_view_source_code"><![CDATA[Peržiūrėkite šaltinio kodą %1$s]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch yra nemokama ne šakninė Xposed sistema, pagrįsta Vector.</string>
     <string name="screen_manage">Tvarkykite</string>
     <string name="manage_loading">Įkeliama</string>
     <string name="manage_no_apps">Dar nėra pataisytų programų</string>
@@ -41,7 +35,6 @@
     <string name="manage_no_modules">Modulių dar nėra</string>
     <string name="manage_module_settings">Modulio nustatymai</string>
     <string name="manage_app_info">Programėlės informacija</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">Naujas pataisymas</string>
     <string name="patch_select_dir_title">Pasirinkite saugojimo katalogą</string>
     <string name="patch_select_dir_text">Pasirinkite katalogą, kuriame bus saugomi pataisyti APK</string>
@@ -50,7 +43,7 @@
     <string name="patch_from_applist">Pasirinkite įdiegtą programą</string>
     <string name="patch_mode">Patch režimas</string>
     <string name="patch_local">Vietinis</string>
-    <string name="patch_local_desc">Pataisykite programą be įterptųjų modulių.\n\"Xposed\" apimtį galima dinamiškai keisti be pakartotinio pataisymo.\nVietinės pataisytos programos gali veikti tik vietiniame įrenginyje.</string>
+    <string name="patch_local_desc">Pataiso programas neįdėdami modulių.\nXposed taikymo sritį galima dinamiškai keisti, nereikia iš naujo pataisyti.\nŠį režimą galima naudoti tik vietoje su NPatch Manager.</string>
     <string name="patch_integrated">Integruota</string>
     <string name="patch_integrated_desc">Pataisykite programą su įterptais moduliais.\nPataisyta programa gali veikti be tvarkyklės, bet negali būti valdoma dinamiškai.\nIntegruotas pataisytas programas galima naudoti įrenginiuose, kuriuose nėra įdiegta NPatch Manager.</string>
     <string name="patch_embed_modules">Įterpti modulius</string>
@@ -67,10 +60,7 @@
     <string name="patch_uninstall_text">Dėl skirtingų parašų prieš įdiegdami pataisytą programą turite pašalinti originalią programą.\nĮsitikinkite, kad turite atsargines asmens duomenų kopijas.</string>
     <string name="patch_install_successfully">Įdiegti sėkmingai</string>
     <string name="patch_install_failed">Diegimas nepavyko</string>
-    <string name="patch_no_xposed_module">Nerastas (-i) nė vienas (-i) \"Xposed\" modulis (-iai)</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">Pasirinkite programas</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">Nustatymai</string>
     <string name="settings_keystore">Parašo raktų saugykla</string>
     <string name="settings_keystore_custom">Pasirinktinis</string>
@@ -85,50 +75,8 @@
     <string name="settings_keystore_wrong_alias">Neteisingas pseudonimas</string>
     <string name="settings_keystore_wrong_alias_password">Neteisingas slapyvardžio slaptažodis</string>
     <string name="settings_detail_patch_logs">Išsamūs pataisų žurnalai</string>
-
-    <!-- Modules Repo-->
-    <string name="sort_by_name">Nome applicazione</string>
-    <string name="sort_by_package_name">Nome pacchetto</string>
-    <string name="sort_by_install_time">Data di installazione</string>
-    <string name="sort_by_update_time">Data di aggiornamento</string>
-    <string name="refresh_pulling">Trascina per aggiornare</string>
-    <string name="refresh_release">Rilascia per aggiornare</string>
-    <string name="refresh_refresh">Aggiornamento in corso</string>
-    <string name="refresh_complete">Aggiornamento completato</string>
-    <string name="module_repo">Repository</string>
-    <string name="module_repo_up_to_date">Tutti i moduli sono aggiornati</string>
-    <string name="module_repo_published_time">Pubblicato il %s</string>
-    <string name="module_repo_updated_time">Aggiornato il %s</string>
-    <plurals name="module_repo_upgradable">
-        <item quantity="one">%d modulo aggiornabile</item>
-        <item quantity="other">%d moduli aggiornabili</item>
-    </plurals>
-    <string name="sort_upgradable_first">Aggiornabili per primi</string>
     <string name="list_empty">Nessun elemento</string>
-    <string name="need_update">Da aggiornare</string>
-    <string name="installed">Installato</string>
-    <string name="menu_open_in_browser">Apri nel browser</string>
-    <string name="download_latest_version">Scarica l\'ultima versione</string>
-    <string name="module_readme">Leggimi</string>
-    <string name="module_releases">Rilasci</string>
-    <string name="module_information">Informazioni</string>
-    <string name="unknown_author">Sconosciuto</string>
-    <string name="unknown_version">Sconosciuta</string>
-    <string name="unknown_asset">Risorsa sconosciuta</string>
-    <string name="module_app_info">Informazioni app</string>
     <string name="nav_back">Indietro</string>
-    <string name="module_information_homepage">Homepage</string>
-    <string name="module_information_source_url">Codice sorgente</string>
-    <string name="module_information_collaborators">Collaboratori</string>
-    <string name="module_release_view_assets">Risorse</string>
-    <string name="module_release_load_more">Mostra versioni precedenti</string>
-    <string name="module_release_no_more">Nessun altro rilascio</string>
-    <string name="repo_load_failed">Impossibile caricare il repository dei moduli: %s</string>
-    <plurals name="module_release_assets_download_count">
-        <item quantity="one">%d download</item>
-        <item quantity="other">%d download</item>
-    </plurals>
-    <string name="download_asset">Scarica</string>
     <string name="settings_card_background_alpha">Kortelių fono nepermatomumas</string>
     <string name="settings_card_background_alpha_summary">Taikoma, kai įjungtas pasirinktinis fono paveikslėlis</string>
 </resources>

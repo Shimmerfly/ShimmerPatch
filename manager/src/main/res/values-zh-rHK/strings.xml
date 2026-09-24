@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="add">添加</string>
     <string name="install">安裝</string>
     <string name="installing">安裝中</string>
     <string name="uninstall">解除安裝</string>
@@ -12,7 +11,6 @@
     <string name="shizuku_unavailable">Shizuku 服务未连接</string>
     <string name="screen_repo">倉庫</string>
 
-    <string name="off">關閉</string>
     <string name="error_unknown">未知錯誤</string>
     <!-- Home Screen -->
     <string name="home_shizuku_warning">部分功能不可用</string>
@@ -23,10 +21,8 @@
     <string name="home_device">裝置</string>
     <string name="home_system_abi">系統架构</string>
     <string name="home_info_copied">已複製到剪贴板</string>
-    <string name="home_support">支持</string>
     <string name="home_about">關於 NPatch</string>
     <string name="home_description">NPatch 是一款免费的迭代于 LSPatch 的，基于 Vector 核心的免 Root 的 Xposed 框架。</string>
-    <string name="about_view_source_code"><![CDATA[查看源代码 %1$s]]></string>
     <!-- Manage Screen -->
     <string name="screen_manage">管理</string>
     <string name="manage_loading">載入中</string>
@@ -45,7 +41,6 @@
     <string name="manage_no_modules">尚无模組</string>
     <string name="manage_module_settings">模組設定</string>
     <string name="manage_app_info">應用程式信息</string>
-    <string name="manage_check_manager_package_name">该應用程式由 %1$s 管理\n在本管理器中修改作用域 %2$s 不会生效\n重新修补以解决</string>
     <!-- New Patch Screen -->
     <string name="screen_new_patch">新建修补</string>
     <string name="patch_select_dir_title">選擇儲存目錄</string>
@@ -55,7 +50,7 @@
     <string name="patch_from_applist">選擇已安裝的應用程式程序</string>
     <string name="patch_mode">修补模式</string>
     <string name="patch_local">本地模式</string>
-    <string name="patch_local_desc">为未嵌入模組的應用程式程序打补丁。\nXposed 范围可动态更改，无需重新打补丁。\n打了本地补丁的應用程式程序只能在本地裝置上运行。</string>
+    <string name="patch_local_desc">為未嵌入模組的應用程式打補丁。\nXposed 範圍可動態更改，無需重新打補丁。\n此模式下的應用程式只能在本地裝置上與 NPatch 管理器搭配使用。</string>
     <string name="patch_integrated">集成模式</string>
     <string name="patch_integrated_desc">修补 App 并内置模組。\n经修补的應用程式可以在没有管理器的情况下运行，但不能动态管理配置。\n以集成模式修补的應用程式可在未安裝 NPatch 管理器的裝置上运行。</string>
     <string name="patch_embed_modules">嵌入模組</string>
@@ -71,14 +66,13 @@
     <string name="patch_override_target_sdk_desc">將修補的 App 的 targetSdk 版本重寫為自訂值，預設為 28\n這可以提升部分依賴舊版 Android 行為特徵的 Xposed 模組的相容性</string>
     <string name="patch_custom_target_sdk">自訂 targetSdk</string>
     <string name="patch_cleartext_traffic">允許 HTTP 明文流量</string>
-    <string name="patch_cleartext_traffic_desc">在清單中強制啟用 usesCleartextTraffic，允許應用程式與模組存取未加密的 HTTP 網路端點以利抓包、代理或除錯。</string>
+    <string name="patch_cleartext_traffic_desc">在清單中強制設定 android:usesCleartextTraffic=\"true\"，允許應用程式與模組存取未加密的 HTTP 端點，以便進行流量檢查、代理或除錯。</string>
     <string name="patch_start">开始修补</string>
     <string name="patch_return">返回</string>
     <string name="patch_uninstall_text">由于簽名不同，安裝修补的應用程式前需要先解除安裝原應用程式。\n确保您已备份好个人数据。</string>
     <string name="patch_ignore_risk_install">無視風險，繼續安裝</string>
     <string name="patch_install_successfully">安裝成功</string>
     <string name="patch_install_failed">安裝失敗</string>
-    <string name="patch_no_xposed_module">未找到 Xposed 模組</string>
     <!-- Select Apps Screen -->
     <string name="screen_select_apps">選擇應用程式程序</string>
     <!-- Settings Screen -->
@@ -97,13 +91,6 @@
     <string name="settings_keystore_wrong_alias_password">別名密碼錯誤</string>
     <string name="settings_detail_patch_logs">详细修补日誌</string>
     <string name="settings_storage_directory">变更儲存目錄</string>
-    <string name="enable_install_activity_title">启用 install activity</string>
-    <string name="package_name">包名</string>
-    <string name="author">作者</string>
-    <string name="time_just_now">剛剛</string>
-    <string name="time_minutes_ago">%d分鐘前</string>
-    <string name="time_hours_ago">%d小時前</string>
-    <string name="time_days_ago">%d天前</string>
     <string name="settings_card_background_alpha">卡片背景不透明度</string>
     <string name="settings_card_background_alpha_summary">啟用自訂背景圖片時生效</string>
 </resources>

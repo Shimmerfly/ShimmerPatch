@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="patch_ui_finished">修补完成</string>
+    <string name="patch_ui_failed">修补失败</string>
+    <string name="patch_ui_running">正在修补应用</string>
+    <string name="patch_ui_log">修补日志</string>
+    <string name="patch_ui_copy_log">复制修补日志</string>
+    <string name="welcome_ui_step">第 %1$d 步，共 %2$d 步</string>
+</resources>

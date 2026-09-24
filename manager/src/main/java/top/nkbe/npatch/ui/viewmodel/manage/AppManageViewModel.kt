@@ -3,17 +3,15 @@ package top.nkbe.npatch.ui.viewmodel.manage
 import android.content.pm.PackageInstaller
 import android.util.Base64
 import android.util.Log
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import top.nkbe.npatch.Patcher
@@ -32,7 +30,6 @@ class AppManageViewModel : ViewModel() {
 
     companion object {
         private const val TAG = "ManageViewModel"
-        private const val AUTO_REFRESH_INTERVAL = 90_114L
     }
 
     sealed class ViewAction {
@@ -47,9 +44,18 @@ class AppManageViewModel : ViewModel() {
         object Refresh : ViewAction()
     }
 
-    // 手動管理狀態，避免實時響應系統廣播導致列表跳動
-    var appList: List<Pair<AppInfo, PatchConfig>> by mutableStateOf(emptyList())
-        private set
+    // Both management tabs derive their lists from the same completed package scan.
+    val appList: List<Pair<AppInfo, PatchConfig>> by derivedStateOf {
+        NeoPackageManager.appList.mapNotNull { appInfo ->
+            runCatching {
+                appInfo.app.metaData?.getString("npatch")?.let {
+                    val json = Base64.decode(it, Base64.DEFAULT).toString(Charsets.UTF_8)
+                    val config = Gson().fromJson(json, PatchConfig::class.java)
+                    if (config?.lspConfig == null) null else appInfo to config
+                }
+            }.getOrNull()
+        }
+    }
 
     var isRefreshing by mutableStateOf(false)
         private set
@@ -80,25 +86,6 @@ class AppManageViewModel : ViewModel() {
         }
     }
 
-    init {
-        viewModelScope.launch {
-            snapshotFlow { NeoPackageManager.appList }
-                .filter { it.isNotEmpty() }
-                .first()
-            Log.d(TAG, "Initial data ready, starting auto-refresh loop")
-            // 啓動立即加载
-            loadData()
-
-            while (true) {
-                delay(AUTO_REFRESH_INTERVAL)
-                Log.d(TAG, "Auto refreshing app list (90s timer)")
-                if (!isRefreshing) {
-                    loadData(silent = true)
-                }
-            }
-        }
-    }
-
     fun dispatch(action: ViewAction) {
         viewModelScope.launch {
             when (action) {
@@ -113,34 +100,15 @@ class AppManageViewModel : ViewModel() {
                 is ViewAction.Refresh -> {
                     if (!isRefreshing) {
                         isRefreshing = true
-                        withContext(Dispatchers.IO) {
+                        try {
                             NeoPackageManager.fetchAppList()
+                        } finally {
+                            isRefreshing = false
                         }
-                        loadData(silent = true)
-                        isRefreshing = false
                     }
                 }
             }
         }
-    }
-
-    // silent 参数用于区分是否显示 loading 状态
-    private fun loadData(silent: Boolean = false) {
-        if (!silent) isRefreshing = true
-        val currentList = NeoPackageManager.appList.mapNotNull { appInfo ->
-            runCatching {
-                appInfo.app.metaData?.getString("npatch")?.let {
-                    val json = Base64.decode(it, Base64.DEFAULT).toString(Charsets.UTF_8)
-                    val config = Gson().fromJson(json, PatchConfig::class.java)
-                    if (config?.lspConfig == null) null else appInfo to config
-                }
-            }.getOrNull()
-        }
-
-        Log.d(TAG, "Loaded ${currentList.size} patched apps")
-        appList = currentList
-
-        if (!silent) isRefreshing = false
     }
 
     private suspend fun updateLoader(appInfo: AppInfo, config: PatchConfig) {

@@ -4,170 +4,161 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Apps
-import androidx.compose.material.icons.outlined.CheckCircle
-import androidx.compose.material.icons.outlined.Folder
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Security
-import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import kotlinx.coroutines.launch
 import nkbe.util.ShizukuApi
 import top.nkbe.npatch.BuildConfig
 import top.nkbe.npatch.R
 import top.nkbe.npatch.config.Configs
+import top.nkbe.npatch.ui.component.ExpressiveBackButton
 import top.nkbe.npatch.ui.component.NPatchScaffold
-import top.nkbe.npatch.ui.util.backgroundAwareCardColors
-import top.nkbe.npatch.ui.util.backgroundAwareColor
-import io.github.suqi8.coui.kmp.basic.Button
-import io.github.suqi8.coui.kmp.basic.ButtonDefaults
-import io.github.suqi8.coui.kmp.basic.Card
-import io.github.suqi8.coui.kmp.basic.Icon
-import io.github.suqi8.coui.kmp.basic.SmallTitle
-import io.github.suqi8.coui.kmp.basic.Text
-import io.github.suqi8.coui.kmp.basic.TextButton
-import io.github.suqi8.coui.kmp.theme.COUITheme
+import top.nkbe.npatch.ui.component.NPatchTopAppBar
+import top.nkbe.npatch.ui.component.m3.BaseItemContainer
+import top.nkbe.npatch.ui.component.m3.BaseWidget
+import top.nkbe.npatch.ui.component.m3.SegmentedColumn
 
-private val welcomeShizukuListener: (Int, Int) -> Unit = { _, grantResult ->
-    ShizukuApi.isPermissionGranted = grantResult == PackageManager.PERMISSION_GRANTED
+private val welcomeShizukuListener: (Int, Int) -> Unit = { _, _ ->
     ShizukuApi.refreshState()
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+/** Uses the same WeKit / InstallerX Material 3 segmented widget family as Settings. */
 @Composable
-fun WelcomeScreen(
-    reviewMode: Boolean,
-    onFinish: () -> Unit,
-    onReturn: () -> Unit,
-) {
+fun WelcomeScreen(reviewMode: Boolean, onFinish: () -> Unit, onReturn: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { 3 })
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     var storageGranted by remember { mutableStateOf(context.hasStorageAccess()) }
     var appListGranted by remember { mutableStateOf(context.hasAppListAccessDeclaration()) }
 
-    val legacyStorageLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) {
+    val legacyStorageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
         storageGranted = context.hasStorageAccess()
     }
-    val settingsLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
+    val settingsLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         storageGranted = context.hasStorageAccess()
         appListGranted = context.hasAppListAccessDeclaration()
     }
-
     fun requestStorageAccess() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val intent = runCatching {
-                Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
-                    data = Uri.parse("package:${context.packageName}")
-                }
-            }.getOrElse {
-                Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+            val appIntent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
+                data = "package:${context.packageName}".toUri()
             }
-            settingsLauncher.launch(intent)
-        } else {
-            legacyStorageLauncher.launch(
-                arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
+            settingsLauncher.launch(
+                if (appIntent.resolveActivity(context.packageManager) != null) appIntent
+                else Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
             )
+        } else {
+            legacyStorageLauncher.launch(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
         }
     }
-
     fun completeWelcome() {
-        if (reviewMode) {
-            onReturn()
-        } else {
+        if (reviewMode) onReturn() else {
             Configs.welcomeSeen = true
             onFinish()
         }
     }
 
+    DisposableEffect(Unit) {
+        ShizukuApi.refreshState()
+        ShizukuApi.addRequestPermissionResultListener(welcomeShizukuListener)
+        onDispose { ShizukuApi.removeRequestPermissionResultListener(welcomeShizukuListener) }
+    }
+
     NPatchScaffold(
-        bottomBar = {
-            WelcomeBottomBar(
-                page = pagerState.currentPage,
-                reviewMode = reviewMode,
-                permissionsReady = storageGranted && appListGranted,
-                onBackOrSkip = {
-                    if (reviewMode) {
-                        onReturn()
-                    } else {
-                        Configs.welcomeSeen = true
-                        onFinish()
-                    }
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            NPatchTopAppBar(
+                title = stringResource(when (pagerState.currentPage) {
+                    1 -> R.string.welcome_permission_title
+                    2 -> R.string.welcome_disclaimer_title
+                    else -> R.string.app_name
+                }),
+                navigationIcon = {
+                    if (reviewMode) ExpressiveBackButton(
+                        contentDescription = stringResource(R.string.welcome_btn_return),
+                        onClick = onReturn,
+                    )
                 },
-                onNext = {
-                    if (pagerState.currentPage == 2) {
-                        completeWelcome()
-                    } else {
-                        scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
+                scrollBehavior = scrollBehavior,
+            )
+        },
+        bottomBar = {
+            Surface(color = MaterialTheme.colorScheme.surfaceContainer) {
+                Column(
+                    Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    LinearProgressIndicator(
+                        progress = { (pagerState.currentPage + 1) / 3f },
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                    )
+                    Text(
+                        stringResource(R.string.welcome_ui_step, pagerState.currentPage + 1, 3),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                    )
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        if (!reviewMode) {
+                            TextButton(onClick = ::completeWelcome) {
+                                Text(stringResource(R.string.welcome_btn_skip))
+                            }
+                        }
+                        if (pagerState.currentPage > 0) {
+                            OutlinedButton(onClick = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } }) {
+                                Text(stringResource(R.string.nav_back))
+                            }
+                        }
+                        Button(
+                            enabled = pagerState.currentPage != 1 || storageGranted && appListGranted,
+                            onClick = {
+                                if (pagerState.currentPage == 2) completeWelcome()
+                                else scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
+                            },
+                        ) {
+                            Text(stringResource(if (pagerState.currentPage == 2) R.string.welcome_btn_finish else R.string.welcome_btn_next))
+                        }
                     }
                 }
-            )
-        }
-    ) { innerPadding ->
+            }
+        },
+    ) { padding ->
         HorizontalPager(
             state = pagerState,
             userScrollEnabled = false,
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
+            beyondViewportPageCount = 2,
+            modifier = Modifier.fillMaxSize().padding(padding),
         ) { page ->
             when (page) {
                 0 -> WelcomeIntroPage()
@@ -176,12 +167,10 @@ fun WelcomeScreen(
                     appListGranted = appListGranted,
                     onStorageClick = ::requestStorageAccess,
                     onAppListClick = {
-                        settingsLauncher.launch(
-                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                data = Uri.parse("package:${context.packageName}")
-                            }
-                        )
-                    }
+                        settingsLauncher.launch(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            data = "package:${context.packageName}".toUri()
+                        })
+                    },
                 )
                 else -> WelcomeDisclaimerPage()
             }
@@ -191,73 +180,48 @@ fun WelcomeScreen(
 
 @Composable
 private fun WelcomeIntroPage() {
-    val versionLabel = stringResource(R.string.welcome_version, BuildConfig.VERSION_NAME)
     WelcomePageContainer {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = backgroundAwareCardColors(),
-            showIndication = false,
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 28.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_launcher_playstore),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(86.dp)
-                        .clip(CircleShape)
-                )
-                Spacer(Modifier.height(18.dp))
-                Text(
-                    text = stringResource(R.string.app_name),
-                    style = COUITheme.textStyles.title1,
-                    fontWeight = FontWeight.SemiBold,
-                    color = COUITheme.colorScheme.onSurface,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    text = versionLabel,
-                    style = COUITheme.textStyles.body2,
-                    color = COUITheme.colorScheme.onSurfaceVariantSummary,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.semantics {
-                        contentDescription = versionLabel
+        item(key = "intro") {
+            SegmentedColumn {
+                item {
+                    BaseItemContainer {
+                        Column(
+                            modifier = Modifier.fillMaxWidth().padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_launcher_playstore),
+                                contentDescription = null,
+                                modifier = Modifier.size(88.dp).clip(CircleShape),
+                            )
+                            Text(
+                                stringResource(R.string.app_name),
+                                style = MaterialTheme.typography.displaySmall,
+                                modifier = Modifier.semantics { heading() },
+                            )
+                            Text(
+                                stringResource(R.string.welcome_version, BuildConfig.VERSION_NAME),
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            Text(
+                                stringResource(R.string.welcome_intro_content),
+                                style = MaterialTheme.typography.titleMedium,
+                                textAlign = TextAlign.Center,
+                            )
+                            Text(
+                                stringResource(R.string.welcome_intro_detail),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
                     }
-                )
-                Spacer(Modifier.height(18.dp))
-                Text(
-                    text = stringResource(R.string.welcome_intro_content),
-                    style = COUITheme.textStyles.body1,
-                    color = COUITheme.colorScheme.onSurfaceVariantSummary,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(Modifier.height(10.dp))
-                Text(
-                    text = stringResource(R.string.welcome_intro_detail),
-                    style = COUITheme.textStyles.body2,
-                    color = COUITheme.colorScheme.onSurfaceVariantSummary,
-                    textAlign = TextAlign.Start
-                )
+                }
             }
         }
-
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = backgroundAwareCardColors(),
-            showIndication = false,
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp)
-            ) {
-                LanguagePreference()
-            }
+        item(key = "language") {
+            SegmentedColumn { item { LanguagePreference() } }
         }
     }
 }
@@ -270,130 +234,52 @@ private fun WelcomePermissionPage(
     onAppListClick: () -> Unit,
 ) {
     WelcomePageContainer {
-        WelcomePageHeader(
-            icon = Icons.Outlined.Security,
-            title = stringResource(R.string.welcome_permission_title),
-            summary = stringResource(R.string.welcome_permission_summary)
-        )
-        Spacer(Modifier.height(16.dp))
-        PermissionStatusCard(
-            icon = Icons.Outlined.Folder,
-            title = stringResource(R.string.welcome_permission_storage_title),
-            summary = stringResource(R.string.welcome_permission_storage_summary),
-            granted = storageGranted,
-            onClick = onStorageClick
-        )
-        Spacer(Modifier.height(12.dp))
-        PermissionStatusCard(
-            icon = Icons.Outlined.Apps,
-            title = stringResource(R.string.welcome_permission_applist_title),
-            summary = stringResource(R.string.welcome_permission_applist_summary),
-            granted = appListGranted,
-            onClick = onAppListClick
-        )
-        Spacer(Modifier.height(12.dp))
-        OptionalFeatureCard()
-        Spacer(Modifier.height(4.dp))
-        SmallTitle(text = stringResource(R.string.welcome_basic_settings_title))
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = backgroundAwareCardColors(),
-            showIndication = false,
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp)
-            ) {
-                AppearanceSettings()
-                StorageDirectory()
+        item(key = "permissions") {
+            SegmentedColumn(title = stringResource(R.string.welcome_permission_summary)) {
+                item {
+                    PermissionStatusItem(
+                        icon = Icons.Outlined.Folder,
+                        title = stringResource(R.string.welcome_permission_storage_title),
+                        summary = stringResource(R.string.welcome_permission_storage_summary),
+                        granted = storageGranted,
+                        onClick = onStorageClick,
+                    )
+                }
+                item {
+                    PermissionStatusItem(
+                        icon = Icons.Outlined.Apps,
+                        title = stringResource(R.string.welcome_permission_applist_title),
+                        summary = stringResource(R.string.welcome_permission_applist_summary),
+                        granted = appListGranted,
+                        onClick = onAppListClick,
+                    )
+                }
             }
         }
-    }
-}
-
-@Composable
-private fun OptionalFeatureCard() {
-    LaunchedEffect(Unit) {
-        ShizukuApi.refreshState()
-        ShizukuApi.addRequestPermissionResultListener(welcomeShizukuListener)
-    }
-    DisposableEffect(Unit) {
-        onDispose {
-            ShizukuApi.removeRequestPermissionResultListener(welcomeShizukuListener)
-        }
-    }
-
-    val isGranted = ShizukuApi.isPermissionGranted
-    val warningContainer = if (COUITheme.colorScheme.surface.luminance() > 0.5f) {
-        Color(0xFFFFE08A)
-    } else {
-        Color(0xFF5C4800)
-    }
-    val warningContent = if (COUITheme.colorScheme.surface.luminance() > 0.5f) {
-        Color(0xFF5A4300)
-    } else {
-        Color(0xFFFFF1BF)
-    }
-    val containerColor = if (isGranted) COUITheme.colorScheme.primaryContainer else warningContainer
-    val contentColor = if (isGranted) COUITheme.colorScheme.onPrimaryContainer else warningContent
-    val shizukuApiVersion = ShizukuApi.getVersionOrNull()
-    val shizukuStatusDescription = shizukuApiVersion?.let {
-        stringResource(R.string.home_api_version) + " $it"
-    } ?: stringResource(R.string.home_shizuku_warning)
-
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = backgroundAwareCardColors(
-            color = containerColor,
-            contentColor = contentColor
-        ),
-        showIndication = true,
-        onClick = {
-            if (ShizukuApi.isBinderAvailable && !isGranted) {
-                ShizukuApi.requestPermission()
+        item(key = "shizuku") {
+            SegmentedColumn(title = stringResource(R.string.welcome_optional_title)) {
+                item {
+                    val isGranted = ShizukuApi.isPermissionGranted
+                    val apiVersion = ShizukuApi.getVersionOrNull()
+                    BaseWidget(
+                        icon = if (isGranted) Icons.Outlined.CheckCircle else Icons.Outlined.Info,
+                        title = stringResource(if (isGranted) R.string.shizuku_available else R.string.shizuku_unavailable),
+                        description = buildString {
+                            append(apiVersion?.let { "API $it" } ?: stringResource(R.string.home_shizuku_warning))
+                            append("\n")
+                            append(stringResource(R.string.welcome_optional_summary))
+                        },
+                        onClick = if (ShizukuApi.isBinderAvailable && !isGranted) {
+                            { ShizukuApi.requestPermission() }
+                        } else null,
+                    )
+                }
             }
-        },
-    ) {
-        Row(
-            modifier = Modifier.padding(18.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = if (isGranted) Icons.Outlined.CheckCircle else Icons.Outlined.Warning,
-                contentDescription = null,
-                tint = contentColor
-            )
-            Spacer(Modifier.width(14.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(R.string.welcome_optional_title),
-                    style = COUITheme.textStyles.title3,
-                    color = contentColor
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = stringResource(if (isGranted) R.string.shizuku_available else R.string.shizuku_unavailable),
-                    style = COUITheme.textStyles.body1,
-                    color = contentColor.copy(alpha = 0.92f)
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = shizukuApiVersion?.let { "API $it" }
-                        ?: stringResource(R.string.home_shizuku_warning),
-                    style = COUITheme.textStyles.body2,
-                    color = contentColor.copy(alpha = 0.82f),
-                    modifier = Modifier.semantics {
-                        contentDescription = shizukuStatusDescription
-                    }
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(
-                    text = stringResource(R.string.welcome_optional_summary),
-                    style = COUITheme.textStyles.body2,
-                    fontSize = 13.sp,
-                    color = contentColor.copy(alpha = 0.9f)
-                )
+        }
+        item(key = "appearance") { AppearanceSettings() }
+        item(key = "storage") {
+            SegmentedColumn(title = stringResource(R.string.welcome_basic_settings_title)) {
+                item { StorageDirectory() }
             }
         }
     }
@@ -402,187 +288,56 @@ private fun OptionalFeatureCard() {
 @Composable
 private fun WelcomeDisclaimerPage() {
     WelcomePageContainer {
-        WelcomePageHeader(
-            icon = Icons.Outlined.Info,
-            title = stringResource(R.string.welcome_disclaimer_title),
-            summary = stringResource(R.string.welcome_disclaimer_summary)
-        )
-        Spacer(Modifier.height(16.dp))
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = backgroundAwareCardColors(),
-            showIndication = false,
-        ) {
-            Column(Modifier.padding(18.dp)) {
-                Text(
-                    text = stringResource(R.string.welcome_disclaimer_content),
-                    style = COUITheme.textStyles.body1,
-                    color = COUITheme.colorScheme.onSurfaceVariantSummary
-                )
+        item {
+            SegmentedColumn {
+                item {
+                    BaseWidget(
+                        icon = Icons.Outlined.Info,
+                        title = stringResource(R.string.welcome_disclaimer_summary),
+                        description = stringResource(R.string.welcome_disclaimer_content),
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun WelcomePageContainer(content: @Composable ColumnScope.() -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp, vertical = 20.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            content = content
-        )
-    }
+private fun WelcomePageContainer(content: LazyListScope.() -> Unit) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(bottom = 24.dp),
+        content = content,
+    )
 }
 
 @Composable
-private fun WelcomePageHeader(
-    icon: ImageVector,
-    title: String,
-    summary: String,
-) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            modifier = Modifier
-                .size(46.dp)
-                .clip(RoundedCornerShape(14.dp))
-                .background(backgroundAwareColor(COUITheme.colorScheme.primaryContainer)),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = COUITheme.colorScheme.onPrimaryContainer
-            )
-        }
-        Spacer(Modifier.width(12.dp))
-        Column {
-            Text(
-                text = title,
-                style = COUITheme.textStyles.title2,
-                fontWeight = FontWeight.SemiBold,
-                color = COUITheme.colorScheme.onSurface
-            )
-            Spacer(Modifier.height(2.dp))
-            Text(
-                text = summary,
-                style = COUITheme.textStyles.body2,
-                color = COUITheme.colorScheme.onSurfaceVariantSummary
-            )
-        }
-    }
-}
-
-@Composable
-private fun PermissionStatusCard(
-    icon: ImageVector,
+private fun PermissionStatusItem(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     title: String,
     summary: String,
     granted: Boolean,
     onClick: () -> Unit,
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = backgroundAwareCardColors(),
-        showIndication = !granted,
-        onClick = {
-            if (!granted) onClick()
-        }
+    BaseWidget(
+        icon = icon,
+        title = title,
+        description = summary + "\n" + stringResource(
+            if (granted) R.string.welcome_permission_granted else R.string.welcome_permission_authorize
+        ),
+        onClick = if (granted) null else onClick,
     ) {
-        Row(
-            modifier = Modifier.padding(18.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = COUITheme.colorScheme.primary
-            )
-            Spacer(Modifier.width(14.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = COUITheme.textStyles.title3,
-                    color = COUITheme.colorScheme.onSurface
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = summary,
-                    style = COUITheme.textStyles.body2,
-                    color = COUITheme.colorScheme.onSurfaceVariantSummary
-                )
-            }
-            Spacer(Modifier.width(12.dp))
-            if (granted) {
-                Icon(
-                    imageVector = Icons.Outlined.CheckCircle,
-                    contentDescription = stringResource(R.string.welcome_permission_granted),
-                    tint = COUITheme.colorScheme.primary
-                )
-            } else {
-                Text(
-                    text = stringResource(R.string.welcome_permission_authorize),
-                    style = COUITheme.textStyles.body2,
-                    color = COUITheme.colorScheme.primary
-                )
-            }
-        }
+        if (granted) Icon(Icons.Outlined.CheckCircle, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
     }
 }
 
-@Composable
-private fun WelcomeBottomBar(
-    page: Int,
-    reviewMode: Boolean,
-    permissionsReady: Boolean,
-    onBackOrSkip: () -> Unit,
-    onNext: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.Transparent)
-            .padding(horizontal = 16.dp, vertical = 14.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        TextButton(
-            text = stringResource(if (reviewMode) R.string.welcome_btn_return else R.string.welcome_btn_skip),
-            onClick = onBackOrSkip
-        )
-        Spacer(Modifier.weight(1f))
-        Button(
-            onClick = onNext,
-            enabled = page != 1 || permissionsReady,
-            colors = ButtonDefaults.buttonColorsPrimary(),
-            insideMargin = PaddingValues(horizontal = 22.dp, vertical = 13.dp)
-        ) {
-            Text(
-                text = stringResource(if (page == 2) R.string.welcome_btn_finish else R.string.welcome_btn_next),
-                style = COUITheme.textStyles.button
-            )
-        }
-    }
+private fun Context.hasStorageAccess(): Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+    Environment.isExternalStorageManager()
+} else {
+    checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+        checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 }
 
-private fun Context.hasStorageAccess(): Boolean {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        Environment.isExternalStorageManager()
-    } else {
-        checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-    }
-}
-
-private fun Context.hasAppListAccessDeclaration(): Boolean {
-    val permissions = packageManager
-        .getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
-        .requestedPermissions
-        .orEmpty()
-    return Manifest.permission.QUERY_ALL_PACKAGES in permissions
-}
+@android.annotation.SuppressLint("InlinedApi")
+private fun Context.hasAppListAccessDeclaration(): Boolean = Manifest.permission.QUERY_ALL_PACKAGES in packageManager
+    .getPackageInfo(packageName, PackageManager.GET_PERMISSIONS).requestedPermissions.orEmpty()

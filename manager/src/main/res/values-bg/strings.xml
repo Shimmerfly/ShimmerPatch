@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">Добавяне на</string>
     <string name="install">Инсталиране на</string>
     <string name="installing">Инсталиране на</string>
     <string name="uninstall">Деинсталиране на</string>
@@ -11,10 +10,7 @@
     <string name="shizuku_available">Налична услуга Shizuku</string>
     <string name="shizuku_unavailable">Услугата Shizuku не е свързана</string>
     <string name="screen_repo">Репо</string>
-
-    <string name="off">Изключено</string>
     <string name="error_unknown">Неизвестна грешка</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">Някои функции са недостъпни</string>
     <string name="home_api_version">Версия на API</string>
     <string name="home_npatch_version">Версия на NPatch</string>
@@ -23,10 +19,7 @@
     <string name="home_device">Устройство</string>
     <string name="home_system_abi">ABI на системата</string>
     <string name="home_info_copied">Копиране в клипборда</string>
-    <string name="home_support">Подкрепа</string>
-    <string name="home_description">NPatch е безплатна некоренова рамка Xposed, базирана на ядрото LSPosed.</string>
-    <string name="about_view_source_code"><![CDATA[Преглед на изходния код в %1$s]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch е безплатна не-root Xposed рамка, базирана на Vector.</string>
     <string name="screen_manage">Управление на</string>
     <string name="manage_loading">Зареждане на</string>
     <string name="manage_no_apps">Все още няма поправени приложения</string>
@@ -42,7 +35,6 @@
     <string name="manage_no_modules">Все още няма модули</string>
     <string name="manage_module_settings">Настройки на модула</string>
     <string name="manage_app_info">Информация за приложението</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">Нова кръпка</string>
     <string name="patch_select_dir_title">Изберете директория за съхранение</string>
     <string name="patch_select_dir_text">Изберете директория, в която да съхранявате поправените apks</string>
@@ -51,7 +43,7 @@
     <string name="patch_from_applist">Изберете инсталирано приложение</string>
     <string name="patch_mode">Режим Patch</string>
     <string name="patch_local">Местни</string>
-    <string name="patch_local_desc">Поправка на приложение без вградени модули.\nОбхватът на Xposed може да бъде променян динамично, без да се налага повторна кръпка.\nЛокално патчираните приложения могат да работят само на локалното устройство.</string>
+    <string name="patch_local_desc">Корекции на приложения без вграждане на модули.\nОбхватът на Xposed може да се променя динамично, без да е необходимо да се пренарежда.\nТози режим може да се използва само локално с NPatch Manager.</string>
     <string name="patch_integrated">Интегриран</string>
     <string name="patch_integrated_desc">Пач на приложение с вградени модули.\nПриложението с корекция може да работи без мениджъра, но не може да се управлява динамично.\nИнтегрираните пакетирани приложения могат да се използват на устройства, които нямат инсталиран NPatch Manager.</string>
     <string name="patch_embed_modules">Вграждане на модули</string>
@@ -68,10 +60,7 @@
     <string name="patch_uninstall_text">Поради различните сигнатури е необходимо да деинсталирате оригиналното приложение, преди да инсталирате коригираното.\nУверете се, че сте направили резервно копие на личните си данни.</string>
     <string name="patch_install_successfully">Инсталирайте успешно</string>
     <string name="patch_install_failed">Инсталацията е неуспешна</string>
-    <string name="patch_no_xposed_module">Не са открити модул(и) Xposed</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">Изберете приложения</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">Настройки</string>
     <string name="settings_keystore">Хранилище на ключове за подписване</string>
     <string name="settings_keystore_custom">Потребителски</string>

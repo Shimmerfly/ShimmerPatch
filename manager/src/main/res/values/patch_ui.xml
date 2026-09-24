@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- New UI messages currently use the default English fallback outside Chinese. -->
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
+    <string name="patch_ui_finished">Patch complete</string>
+    <string name="patch_ui_failed">Patch failed</string>
+    <string name="patch_ui_running">Patching app</string>
+    <string name="patch_ui_log">Patch log</string>
+    <string name="patch_ui_copy_log">Copy patch log</string>
+    <string name="welcome_ui_step">Step %1$d of %2$d</string>
+</resources>

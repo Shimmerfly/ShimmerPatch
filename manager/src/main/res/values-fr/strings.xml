@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add">Ajouter</string>
     <string name="install">Installer</string>
     <string name="installing">Installation de</string>
     <string name="uninstall">Désinstaller</string>
@@ -12,7 +11,6 @@
     <string name="shizuku_unavailable">Service Shizuku non connecté</string>
     <string name="screen_repo">Dépôt</string>
 
-    <string name="off">Arrêt</string>
     <string name="error_unknown">Erreur inconnue</string>
     <!-- Home Screen -->
     <string name="home_shizuku_warning">Certaines fonctionnalités seront indisponibles</string>
@@ -23,9 +21,7 @@
     <string name="home_device">Appareil</string>
     <string name="home_system_abi">Architecture du système</string>
     <string name="home_info_copied">Copié dans le presse-papier</string>
-    <string name="home_support">Support</string>
-    <string name="home_description">NPatch est un framework Xposed gratuit non root basé sur le noyau de LSPosed.</string>
-    <string name="about_view_source_code"><![CDATA[Voir le code source sur %1$s]]></string>
+    <string name="home_description">NPatch est un framework Xposed gratuit, sans accès root, basé sur Vector.</string>
     <!-- Manage Screen -->
     <string name="screen_manage">Gérer</string>
     <string name="manage_loading">Chargement</string>
@@ -53,7 +49,7 @@
     <string name="patch_from_applist">Sélectionner une appli installée</string>
     <string name="patch_mode">Mode de patch</string>
     <string name="patch_local">Local</string>
-    <string name="patch_local_desc">Patch d\'une application sans modules intégrés.\nLe champ d\'application de Xposed peut être modifié dynamiquement sans qu\'il soit nécessaire d\'appliquer un nouveau correctif.\nLes applications patchées localement ne peuvent fonctionner que sur l\'appareil local.</string>
+    <string name="patch_local_desc">Modifie les applications sans y intégrer de modules.\nLa portée de Xposed peut être modifiée dynamiquement sans appliquer de nouveau correctif.\nCe mode fonctionne uniquement sur cet appareil avec le gestionnaire NPatch.</string>
     <string name="patch_integrated">Intégré</string>
     <string name="patch_integrated_desc">Patcher une application avec des modules intégrés.\nL\'application corrigée peut fonctionner sans le gestionnaire mais ne peut pas être gérée dynamiquement.\nLes applications patchées intégrées peuvent être utilisées sur des appareils sur lesquels NPatch Manager n\'est pas installé.</string>
     <string name="patch_embed_modules">Intégrer des modules</string>
@@ -70,7 +66,6 @@
     <string name="patch_uninstall_text">En raison de signatures différentes, vous devez désinstaller l\'appli originale avant d\'installer celle modifiée.\nAssurez-vous d\'avoir sauvegardé vos données personnelles.</string>
     <string name="patch_install_successfully">Installation réussie</string>
     <string name="patch_install_failed">Échec de l\'installation</string>
-    <string name="patch_no_xposed_module">Aucun module Xposed n\'a été trouvé</string>
     <!-- Select Apps Screen -->
     <string name="screen_select_apps">Sélectionner Applications</string>
     <!-- Settings Screen -->
@@ -90,12 +85,6 @@
     <string name="settings_detail_patch_logs">Détails des journaux du patch</string>
     <string name="patch_output_log_to_media">Sortir le journal vers le répertoire Media</string>
     <string name="patch_output_log_to_media_desc">Sortir les journaux Xposed et les journaux de démarrage du framework vers le répertoire Media.</string>
-    <string name="package_name">Nom du paquet</string>
-    <string name="author">Auteur</string>
-    <string name="time_just_now">À l\'instant</string>
-    <string name="time_minutes_ago">Il y a %d minutes</string>
-    <string name="time_hours_ago">Il y a %d heures</string>
-    <string name="time_days_ago">Il y a %d jours</string>
     <string name="settings_card_background_alpha">Opacité du fond des cartes</string>
     <string name="settings_card_background_alpha_summary">S\'applique lorsqu\'une image d\'arrière-plan personnalisée est activée</string>
 </resources>

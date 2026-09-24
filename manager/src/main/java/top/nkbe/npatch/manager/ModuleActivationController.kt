@@ -1,8 +1,10 @@
+@file:android.annotation.SuppressLint("NewApi")
+
 package top.nkbe.npatch.manager
 
 import android.app.IActivityManager
 import android.content.AttributionSource
-import android.net.Uri
+import androidx.core.net.toUri
 import android.os.Build
 import android.os.Bundle
 import android.os.Binder
@@ -62,7 +64,7 @@ object ModuleActivationController {
 
         // 2. Fallback to standard exported provider call
         val authority = packageName + IXposedService.AUTHORITY_SUFFIX
-        val uri = Uri.parse("content://$authority")
+        val uri = "content://$authority".toUri()
         return runCatching {
             val extras = Bundle().apply { putBinder("binder", XposedServiceBinder(packageName).asBinder()) }
             lspApp.contentResolver.call(uri, IXposedService.SEND_BINDER, null, extras) != null

@@ -1,3 +1,5 @@
+@file:android.annotation.SuppressLint("NewApi", "ImplicitSamInstance")
+
 package nkbe.util
 
 import android.app.IActivityManager

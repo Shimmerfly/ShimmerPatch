@@ -1,3 +1,5 @@
+@file:android.annotation.SuppressLint("SdCardPath")
+
 package top.nkbe.npatch.manager
 
 import android.app.ActivityManager

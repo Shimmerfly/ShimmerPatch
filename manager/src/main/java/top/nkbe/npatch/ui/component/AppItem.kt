@@ -1,30 +1,33 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Adapted from InstallerX-Revived ui/page/main/settings/config/apply/ApplyItemWidget.kt.
 package top.nkbe.npatch.ui.component
 
-import androidx.compose.foundation.basicMarquee
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import io.github.suqi8.coui.kmp.basic.Card
-import io.github.suqi8.coui.kmp.basic.CardColors
-import io.github.suqi8.coui.kmp.basic.Icon
-import io.github.suqi8.coui.kmp.basic.Surface
 import top.nkbe.npatch.ui.util.backgroundAwareCardColors
-import io.github.suqi8.coui.kmp.basic.Text
-import io.github.suqi8.coui.kmp.theme.COUITheme
-import io.github.suqi8.coui.kmp.utils.PressFeedbackType
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AppItem(
     modifier: Modifier = Modifier,
@@ -39,140 +42,104 @@ fun AppItem(
     warningText: String? = null,
     isEnabled: Boolean = true,
     cardColors: CardColors = backgroundAwareCardColors(),
+    shape: Shape = RoundedCornerShape(16.dp),
+    checked: Boolean? = null,
     onClick: () -> Unit = {},
-    onLongPress: () -> Unit = {}
+    onLongPress: (() -> Unit)? = null,
 ) {
-    var descriptionExpanded by remember { mutableStateOf(false) }
-    val colorScheme = COUITheme.colorScheme
+    var descriptionExpanded by rememberSaveable(packageName, description) { mutableStateOf(false) }
+    var descriptionOverflows by remember(packageName, description) { mutableStateOf(false) }
+    val interactionModifier = if (checked == null) {
+        Modifier.combinedClickable(onClick = onClick, onLongClick = onLongPress, role = Role.Button)
+    } else {
+        Modifier.toggleable(value = checked, role = Role.Checkbox, onValueChange = { onClick() })
+    }
 
-    Card(
+    Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp)
-            .padding(bottom = 8.dp),
-        colors = cardColors,
-        insideMargin = PaddingValues(12.dp),
-        showIndication = true,
-        pressFeedbackType = PressFeedbackType.Sink,
-        onClick = onClick,
-        onLongPress = onLongPress
+            .background(cardColors.containerColor, shape)
+            .clip(shape)
+            .then(interactionModifier)
+            .animateContentSize()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Column {
-            Row(
-                modifier = Modifier.fillMaxWidth()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(Modifier.size(40.dp).alpha(if (isEnabled) 1f else 0.45f)) { icon() }
+            Column(
+                modifier = Modifier.weight(1f).alpha(if (isEnabled) 1f else 0.45f),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .alpha(if (isEnabled) 1f else 0.4f),
-                    contentAlignment = Alignment.Center
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    icon()
-                }
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .alpha(if (isEnabled) 1f else 0.45f)
-                        .align(Alignment.CenterVertically)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text(
-                            text = label,
-                            modifier = Modifier
-                                .weight(1f, fill = false)
-                                .basicMarquee(),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight(600),
-                            color = colorScheme.onSurface,
-                            maxLines = 1,
-                            softWrap = false
-                        )
-                        labelTrailingContent?.invoke(this)
-                    }
-
-                    Spacer(modifier = Modifier.height(2.dp))
-
                     Text(
-                        text = packageName,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight(500),
-                        color = colorScheme.onSurfaceVariantSummary,
-                        maxLines = 1,
-                        softWrap = false
+                        text = label,
+                        modifier = Modifier.weight(1f, fill = false),
+                        style = MaterialTheme.typography.titleMediumEmphasized,
+                        color = cardColors.contentColor,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
                     )
-
-                    if (summaryRow != null) {
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(6.dp),
-                            content = summaryRow
-                        )
-                    }
+                    labelTrailingContent?.invoke(this)
                 }
-
-                if (trailingContent != null) {
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Box(modifier = Modifier.align(Alignment.CenterVertically)) {
-                        trailingContent()
-                    }
-                }
-
-                if (topRightContent != null) {
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Box(modifier = Modifier.align(Alignment.Top)) {
-                        topRightContent()
+                Text(
+                    text = packageName,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                if (summaryRow != null || topRightContent != null) {
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        summaryRow?.let { summary ->
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                content = summary,
+                            )
+                        }
+                        topRightContent?.invoke()
                     }
                 }
             }
-
-            // 底部描述与警告区域
-            if (description.isNotEmpty() || warningText != null) {
-                Spacer(modifier = Modifier.height(4.dp))
-
-                if (description.isNotEmpty()) {
-                    Text(
-                        text = description,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight(500),
-                        color = colorScheme.onSurfaceVariantSummary,
-                        maxLines = if (descriptionExpanded) Int.MAX_VALUE else 2,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            ) { descriptionExpanded = !descriptionExpanded }
-                    )
-                }
-
-                if (warningText != null) {
-                    if (description.isNotEmpty()) {
-                        Spacer(modifier = Modifier.height(8.dp))
+            trailingContent?.invoke()
+        }
+        if (description.isNotEmpty()) {
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = if (descriptionExpanded) Int.MAX_VALUE else 2,
+                overflow = TextOverflow.Ellipsis,
+                onTextLayout = { result ->
+                    if (!descriptionExpanded) descriptionOverflows = result.hasVisualOverflow
+                },
+                modifier = Modifier.fillMaxWidth().then(
+                    if (descriptionOverflows || descriptionExpanded) {
+                        Modifier.clickable { descriptionExpanded = !descriptionExpanded }
+                    } else {
+                        Modifier
                     }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Outlined.Warning,
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp),
-                            tint = colorScheme.error
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = warningText,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight(550),
-                            color = colorScheme.error
-                        )
-                    }
-                }
+                ),
+            )
+        }
+        warningText?.let {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(Icons.Outlined.Warning, null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.error)
+                Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
             }
         }
     }

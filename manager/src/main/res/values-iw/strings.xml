@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">לְהוֹסִיף</string>
     <string name="install">להתקין</string>
     <string name="installing">מתקין</string>
     <string name="uninstall">הסר את ההתקנה</string>
@@ -8,13 +7,10 @@
     <string name="copy_error">שגיאת העתקה</string>
     <string name="apps">אפליקציות</string>
     <string name="modules">מודולים</string>
-    <string name="shizuku_available">שירות שיזוקו זמין</string>
+    <string name="shizuku_available">שירות Shizuku זמין</string>
     <string name="shizuku_unavailable">שירות Shizuku לא מחובר</string>
     <string name="screen_repo">ריפו</string>
-
-    <string name="off">כבוי</string>
     <string name="error_unknown">שגיאה לא ידועה</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">חלק מהפונקציות אינן זמינות</string>
     <string name="home_api_version">גרסת API</string>
     <string name="home_npatch_version">גרסת NPatch</string>
@@ -23,10 +19,7 @@
     <string name="home_device">התקן</string>
     <string name="home_system_abi">מערכת ABI</string>
     <string name="home_info_copied">הועתק ללוח</string>
-    <string name="home_support">תמיכה</string>
-    <string name="home_description">NPatch היא מסגרת חינמית ללא שורש Xposed המבוססת על ליבת LSPosed.</string>
-    <string name="about_view_source_code"><![CDATA[צפה בקוד המקור ב %1$s]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch היא מסגרת חינמית ללא שורש Xposed המבוססת על Vector.</string>
     <string name="screen_manage">לנהל</string>
     <string name="manage_loading">טוען</string>
     <string name="manage_no_apps">עדיין אין אפליקציות מתוקנות</string>
@@ -42,7 +35,6 @@
     <string name="manage_no_modules">עדיין אין מודולים</string>
     <string name="manage_module_settings">הגדרות מודול</string>
     <string name="manage_app_info">מידע על האפליקציה</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">תיקון חדש</string>
     <string name="patch_select_dir_title">בחר ספריית אחסון</string>
     <string name="patch_select_dir_text">בחר ספרייה לאחסון ה-apks המתוקן</string>
@@ -51,7 +43,7 @@
     <string name="patch_from_applist">בחר אפליקציה מותקנת</string>
     <string name="patch_mode">מצב תיקון</string>
     <string name="patch_local">מְקוֹמִי</string>
-    <string name="patch_local_desc">תקן אפליקציה ללא מודולים מוטבעים.\nניתן לשנות את היקף Xposed באופן דינמי ללא תיקון מחדש.\nאפליקציות מקומיות מתוקנות יכולות לפעול רק במכשיר המקומי.</string>
+    <string name="patch_local_desc">מתקן אפליקציות ללא הטמעת מודולים.\nניתן לשנות את היקף Xposed באופן דינמי ללא צורך בתיקון מחדש.\nניתן להשתמש במצב זה רק באופן מקומי עם מנהל NPatch.</string>
     <string name="patch_integrated">מְשׁוּלָב</string>
     <string name="patch_integrated_desc">תקן אפליקציה עם מודולים משובצים.\nהאפליקציה המתוקנת יכולה לפעול ללא המנהל, אך לא ניתן לנהל אותה באופן דינמי.\nניתן להשתמש באפליקציות מתוקנות משולבות במכשירים שלא מותקן בהם NPatch Manager.</string>
     <string name="patch_embed_modules">הטמע מודולים</string>
@@ -68,10 +60,7 @@
     <string name="patch_uninstall_text">עקב חתימות שונות, עליך להסיר את ההתקנה של האפליקציה המקורית לפני התקנת האפליקציה המתוקנת.\nודא שגיבית את הנתונים האישיים.</string>
     <string name="patch_install_successfully">התקן בהצלחה</string>
     <string name="patch_install_failed">ההתקנה נכשלה</string>
-    <string name="patch_no_xposed_module">לא נמצאו מודולי Xposed</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">בחר אפליקציות</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">הגדרות</string>
     <string name="settings_keystore">מאגר מפתחות חתימה</string>
     <string name="settings_keystore_custom">המותאם אישית</string>

@@ -1,6 +1,7 @@
 package top.nkbe.npatch.network
 
 import android.content.Context
+import androidx.core.content.edit
 import okhttp3.Dns
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
@@ -36,18 +37,22 @@ object NetworkDns {
     fun customUrl(): String = preferences().getString(PREF_CUSTOM_URL, "").orEmpty()
 
     fun setProvider(provider: DnsProvider) {
-        preferences().edit().putString(PREF_PROVIDER, provider.preferenceValue).apply()
+        preferences().edit { putString(PREF_PROVIDER, provider.preferenceValue) }
         cachedClient = null
     }
 
-    fun setCustomUrl(url: String): Boolean {
+    fun isValidCustomUrl(url: String): Boolean {
+        val parsed = url.trim().toHttpUrlOrNull()
+        return parsed != null && parsed.isHttps && parsed.host.isNotBlank()
+    }
+
+    fun setCustomUrl(url: String, selectProvider: Boolean = true): Boolean {
         val normalized = url.trim()
-        val parsed = normalized.toHttpUrlOrNull()
-        if (parsed == null || !parsed.isHttps || parsed.host.isBlank()) return false
-        preferences().edit()
-            .putString(PREF_CUSTOM_URL, normalized)
-            .putString(PREF_PROVIDER, DnsProvider.CUSTOM.preferenceValue)
-            .apply()
+        if (!isValidCustomUrl(normalized)) return false
+        preferences().edit {
+            putString(PREF_CUSTOM_URL, normalized)
+            if (selectProvider) putString(PREF_PROVIDER, DnsProvider.CUSTOM.preferenceValue)
+        }
         cachedClient = null
         return true
     }

@@ -1,315 +1,300 @@
 package top.nkbe.npatch.ui.page.newpatch
 
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import nkbe.util.NeoPackageManager
 import top.nkbe.npatch.R
 import top.nkbe.npatch.share.Constants
-import top.nkbe.npatch.ui.component.NPatchTopAppBar
-import top.nkbe.npatch.ui.component.SelectionColumn
-import top.nkbe.npatch.ui.component.SelectionColumnScope.SelectionItem
+import top.nkbe.npatch.ui.component.m3.BaseItemContainer
+import top.nkbe.npatch.ui.component.m3.BaseWidget
+import top.nkbe.npatch.ui.component.m3.RadioButtonWidget
+import top.nkbe.npatch.ui.component.m3.SegmentedColumn
+import top.nkbe.npatch.ui.component.m3.SwitchWidget
 import top.nkbe.npatch.ui.component.settings.SettingsEditor
-import top.nkbe.npatch.ui.util.backgroundAwareCardColors
 import top.nkbe.npatch.ui.viewmodel.NewPatchViewModel
 import top.nkbe.npatch.ui.viewmodel.NewPatchViewModel.ViewAction
-import io.github.suqi8.coui.kmp.basic.*
-import io.github.suqi8.coui.kmp.preference.OverlayDropdownPreference
-import io.github.suqi8.coui.kmp.preference.SwitchPreference
-import io.github.suqi8.coui.kmp.theme.COUITheme
-
-@Composable
-fun ConfiguringTopBar(scrollBehavior: ScrollBehavior, onBackClick: () -> Unit) {
-    NPatchTopAppBar(
-        title = stringResource(R.string.screen_new_patch),
-        scrollBehavior = scrollBehavior,
-        navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                Icon(Icons.AutoMirrored.Outlined.ArrowBack, null)
-            }
-        }
-    )
-}
 
 @Composable
 fun ConfiguringFab() {
     val viewModel = viewModel<NewPatchViewModel>()
-    FloatingActionButton(
-        onClick = { viewModel.dispatch(ViewAction.SubmitPatch) }
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(horizontal = 16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.AutoFixHigh,
-                contentDescription = null,
-                tint = COUITheme.colorScheme.onPrimary
-            )
-            Text(
-                text = stringResource(R.string.patch_start),
-                color = COUITheme.colorScheme.onPrimary
-            )
-        }
-    }
+    val label = stringResource(R.string.patch_start)
+    ExtendedFloatingActionButton(
+        onClick = { viewModel.dispatch(ViewAction.SubmitPatch) },
+        // Material 3 hides the animated text from semantics and uses the icon label.
+        icon = { Icon(Icons.Outlined.AutoFixHigh, contentDescription = label) },
+        text = { Text(label) },
+    )
 }
 
 @Composable
-fun sigBypassLvTitle(level: Int): String {
-    return when (level) {
-        0 -> stringResource(R.string.patch_sigbypasslv0)
-        1 -> stringResource(R.string.patch_sigbypasslv1)
-        2 -> stringResource(R.string.patch_sigbypasslv2)
-        3 -> stringResource(R.string.patch_sigbypasslv3)
+fun sigBypassLvTitle(level: Int): String = stringResource(
+    when (level) {
+        0 -> R.string.patch_sigbypasslv0
+        1 -> R.string.patch_sigbypasslv1
+        2 -> R.string.patch_sigbypasslv2
+        3 -> R.string.patch_sigbypasslv3
         else -> error("Invalid sigBypassLv: $level")
     }
-}
+)
 
 @Composable
-fun sigBypassLvDesc(level: Int): String {
-    return when (level) {
-        0 -> stringResource(R.string.patch_sigbypasslv0_desc)
-        1 -> stringResource(R.string.patch_sigbypasslv1_desc)
-        2 -> stringResource(R.string.patch_sigbypasslv2_desc)
-        3 -> stringResource(R.string.patch_sigbypasslv3_desc)
+fun sigBypassLvDesc(level: Int): String = stringResource(
+    when (level) {
+        0 -> R.string.patch_sigbypasslv0_desc
+        1 -> R.string.patch_sigbypasslv1_desc
+        2 -> R.string.patch_sigbypasslv2_desc
+        3 -> R.string.patch_sigbypasslv3_desc
         else -> error("Invalid sigBypassLv: $level")
     }
-}
+)
 
+/**
+ * The complete segmented settings layout and animated expandable items are reused from
+ * WeKit ui/content/m3 (ported from InstallerX-Revived's Material 3 settings widgets).
+ */
 @Composable
 fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit) {
     val viewModel = viewModel<NewPatchViewModel>()
-    val cardShape = RoundedCornerShape(24.dp)
-    val itemShape = RoundedCornerShape(16.dp)
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(bottom = 84.dp)
+    val app = viewModel.patchApp
+    val appIcon by produceState<ImageBitmap?>(null, app) {
+        // The selected ApplicationInfo points to either the installed app or the imported APK.
+        // Avoid the package-name cache, which could contain the icon of another installed build.
+        value = withContext(Dispatchers.IO) { NeoPackageManager.loadIconBitmap(app.app) }
+    }
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(bottom = 104.dp),
     ) {
-        SmallTitle(text = stringResource(R.string.patch_mode))
-
-        // ── 應用資訊 ──
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 12.dp)
-                .clip(cardShape),
-            colors = backgroundAwareCardColors(),
-        ) {
-            Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
-                Text(text = viewModel.patchApp.label, style = COUITheme.textStyles.headline1)
-                Text(
-                    text = viewModel.patchApp.app.packageName,
-                    style = COUITheme.textStyles.body2,
-                    color = COUITheme.colorScheme.onSurfaceVariantSummary,
-                )
+        item(key = "app") {
+            SegmentedColumn {
+                item {
+                    BaseWidget(
+                        iconContent = {
+                            val bitmap = appIcon
+                            if (bitmap != null) {
+                                Image(
+                                    bitmap = bitmap,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(40.dp).clip(RoundedCornerShape(12.dp)),
+                                )
+                            } else Icon(Icons.Outlined.Android, null, Modifier.size(40.dp))
+                        },
+                        title = viewModel.patchApp.label,
+                        titleStyle = MaterialTheme.typography.headlineSmall,
+                        description = viewModel.patchApp.app.packageName,
+                    )
+                }
             }
         }
-
-        // ── 修補模式選擇 ──
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 16.dp)
-                .clip(cardShape),
-            colors = backgroundAwareCardColors(),
-        ) {
-            SelectionColumn(Modifier.padding(8.dp)) {
-                SelectionItem(
-                    modifier = Modifier.clip(itemShape),
-                    selected = viewModel.useManager,
-                    onClick = { viewModel.setUseManager(true) },
-                    icon = Icons.Outlined.Api,
-                    title = stringResource(R.string.patch_local),
-                    desc = stringResource(R.string.patch_local_desc)
-                )
-                SelectionItem(
-                    modifier = Modifier.clip(itemShape),
-                    selected = !viewModel.useManager,
-                    onClick = { viewModel.setUseManager(false) },
-                    icon = Icons.Outlined.WorkOutline,
-                    title = stringResource(R.string.patch_integrated),
-                    desc = stringResource(R.string.patch_integrated_desc),
-                    extraContent = {
-                        val embedText = if (viewModel.embeddedModules.isNotEmpty()) {
-                            stringResource(R.string.patch_embed_modules) + " (${viewModel.embeddedModules.size})"
-                        } else {
-                            stringResource(R.string.patch_embed_modules)
-                        }
-                        Text(
-                            text = embedText,
-                            modifier = Modifier
-                                .padding(top = 8.dp)
-                                .clickable(onClick = onAddEmbed),
-                            color = COUITheme.colorScheme.primary,
-                            style = COUITheme.textStyles.body2
+        item(key = "mode") {
+            SegmentedColumn(
+                title = stringResource(R.string.patch_mode),
+                modifier = Modifier.selectableGroup(),
+            ) {
+                item(key = "local") {
+                    RadioButtonWidget(
+                        title = stringResource(R.string.patch_local),
+                        description = stringResource(R.string.patch_local_desc),
+                        icon = Icons.Outlined.Api,
+                        selected = viewModel.useManager,
+                        onSelect = { viewModel.setUseManager(true) },
+                    )
+                }
+                item(key = "integrated") {
+                    RadioButtonWidget(
+                        title = stringResource(R.string.patch_integrated),
+                        description = stringResource(R.string.patch_integrated_desc),
+                        icon = Icons.Outlined.WorkOutline,
+                        selected = !viewModel.useManager,
+                        onSelect = { viewModel.setUseManager(false) },
+                        extraContent = {
+                            // LSPatch's SelectionItem expands its action inside the selected mode.
+                            AnimatedVisibility(
+                                visible = !viewModel.useManager,
+                                enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
+                                exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
+                            ) {
+                                TextButton(onClick = onAddEmbed) {
+                                    Text(
+                                        text = "${stringResource(R.string.patch_embed_modules)} (${viewModel.embeddedModules.size})",
+                                        style = MaterialTheme.typography.bodyLarge,
+                                    )
+                                }
+                            }
+                        },
+                    )
+                }
+            }
+        }
+        if (viewModel.hasSubProcesses) {
+            item(key = "subprocess") {
+                SegmentedColumn {
+                    item {
+                        BaseWidget(
+                            icon = Icons.Outlined.Info,
+                            title = stringResource(R.string.patch_inject_dex),
+                            description = pluralStringResource(
+                                R.plurals.patch_subprocess_detected_hint,
+                                viewModel.subProcessCount,
+                                viewModel.subProcessCount,
+                            ),
                         )
                     }
-                )
-            }
-        }
-
-        // ── 獨立子進程檢測提示 ──
-        if (viewModel.hasSubProcesses) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 12.dp)
-                    .clip(cardShape),
-                colors = backgroundAwareCardColors(),
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Info,
-                        contentDescription = null,
-                        tint = COUITheme.colorScheme.primary
-                    )
-                    Text(
-                        text = stringResource(R.string.patch_subprocess_detected_hint, viewModel.subProcessCount),
-                        style = COUITheme.textStyles.body2,
-                        color = COUITheme.colorScheme.onSurfaceVariantSummary
-                    )
                 }
             }
         }
-
-        // ── 進階配置 ──
-        SmallTitle(text = stringResource(R.string.patch_advanced))
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 16.dp)
-                .clip(cardShape),
-            colors = backgroundAwareCardColors(),
-        ) {
-            Column(Modifier.padding(vertical = 4.dp)) {
-                SettingsEditor(
-                    Modifier.padding(horizontal = 12.dp),
-                    stringResource(R.string.patch_new_package),
-                    viewModel.newPackageName,
-                    onValueChange = { viewModel.newPackageName = it },
-                )
-                SwitchPreference(
-                    title = stringResource(R.string.patch_debuggable),
-                    startAction = { Icon(Icons.Outlined.BugReport, null) },
-                    checked = viewModel.debuggable,
-                    onCheckedChange = { viewModel.debuggable = it }
-                )
-                SwitchPreference(
-                    title = stringResource(R.string.patch_override_version_code),
-                    summary = stringResource(R.string.patch_override_version_code_desc),
-                    startAction = { Icon(Icons.Outlined.Layers, null) },
-                    checked = viewModel.overrideVersionCode,
-                    onCheckedChange = { viewModel.overrideVersionCode = it }
-                )
-                if (viewModel.overrideVersionCode) {
-                    SettingsEditor(
-                        Modifier.padding(horizontal = 12.dp),
-                        stringResource(R.string.patch_custom_version_code),
-                        viewModel.overrideVersionCodeValue,
-                        onValueChange = { value ->
-                            viewModel.overrideVersionCodeValue = value.filter { it in '0'..'9' }
-                        },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        item(key = "advanced") {
+            SegmentedColumn(title = stringResource(R.string.patch_advanced)) {
+                item(key = "package") {
+                    BaseItemContainer {
+                        SettingsEditor(
+                            label = stringResource(R.string.patch_new_package),
+                            text = viewModel.newPackageName,
+                            onValueChange = { viewModel.newPackageName = it },
+                        )
+                    }
+                }
+                item(key = "debuggable") {
+                    SwitchWidget(
+                        title = stringResource(R.string.patch_debuggable),
+                        icon = Icons.Outlined.BugReport,
+                        checked = viewModel.debuggable,
+                        onCheckedChange = { viewModel.debuggable = it },
                     )
                 }
-                SwitchPreference(
-                    title = stringResource(R.string.patch_override_target_sdk),
-                    summary = stringResource(R.string.patch_override_target_sdk_desc),
-                    startAction = { Icon(Icons.Outlined.Android, null) },
-                    checked = viewModel.overrideTargetSdk,
-                    onCheckedChange = { viewModel.overrideTargetSdk = it }
-                )
-                if (viewModel.overrideTargetSdk) {
-                    SettingsEditor(
-                        Modifier.padding(horizontal = 12.dp),
-                        stringResource(R.string.patch_custom_target_sdk),
-                        viewModel.overrideTargetSdkValue,
-                        onValueChange = { value ->
-                            viewModel.overrideTargetSdkValue = value.filter { it in '0'..'9' }
-                        },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-                }
-                SwitchPreference(
-                    title = stringResource(R.string.patch_inject_mt_provider),
-                    summary = stringResource(R.string.patch_inject_mt_provider_desc),
-                    startAction = { Icon(Icons.Outlined.AddCard, null) },
-                    checked = viewModel.injectProvider,
-                    onCheckedChange = { viewModel.injectProvider = it }
-                )
-                SwitchPreference(
-                    title = stringResource(R.string.patch_inject_dex),
-                    summary = stringResource(R.string.patch_inject_dex_desc),
-                    startAction = { Icon(Icons.Outlined.AccountTree, null) },
-                    checked = viewModel.injectDex,
-                    onCheckedChange = { viewModel.injectDex = it }
-                )
-                SwitchPreference(
-                    title = stringResource(R.string.patch_use_microg),
-                    summary = stringResource(R.string.patch_use_microg_desc),
-                    startAction = { Icon(Icons.Outlined.CloudSync, null) },
-                    checked = viewModel.useMicroG,
-                    onCheckedChange = { viewModel.useMicroG = it }
-                )
-                SwitchPreference(
-                    title = stringResource(R.string.patch_output_log_to_media),
-                    summary = stringResource(R.string.patch_output_log_to_media_desc),
-                    startAction = { Icon(Icons.Outlined.Output, null) },
-                    checked = viewModel.outputLog,
-                    onCheckedChange = { viewModel.outputLog = it }
-                )
-                SwitchPreference(
-                    title = stringResource(R.string.patch_cleartext_traffic),
-                    summary = stringResource(R.string.patch_cleartext_traffic_desc),
-                    startAction = { Icon(Icons.Outlined.Http, null) },
-                    checked = viewModel.usesCleartextTraffic,
-                    onCheckedChange = { viewModel.usesCleartextTraffic = it }
-                )
-                val maxSigBypassLevel = Constants.SIGBYPASS_EXTREME
-                val sigBypassEntries = listOf(
-                    DropdownEntry(
-                        items = (Constants.SIGBYPASS_NONE..maxSigBypassLevel).map { level ->
-                            DropdownItem(
-                                text = sigBypassLvTitle(level),
-                                summary = sigBypassLvDesc(level),
-                                selected = viewModel.sigBypassLevel == level,
-                                onClick = {
-                                    viewModel.sigBypassLevel = level
-                                }
+                expandableItem(
+                    expanded = viewModel.overrideVersionCode,
+                    topContent = {
+                        SwitchWidget(
+                            title = stringResource(R.string.patch_override_version_code),
+                            description = stringResource(R.string.patch_override_version_code_desc),
+                            icon = Icons.Outlined.Layers,
+                            checked = viewModel.overrideVersionCode,
+                            onCheckedChange = { viewModel.overrideVersionCode = it },
+                        )
+                    },
+                    bottomContent = {
+                        BaseItemContainer {
+                            SettingsEditor(
+                                label = stringResource(R.string.patch_custom_version_code),
+                                text = viewModel.overrideVersionCodeValue,
+                                onValueChange = { value -> viewModel.overrideVersionCodeValue = value.filter { it in '0'..'9' } },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             )
                         }
+                    },
+                )
+                expandableItem(
+                    expanded = viewModel.overrideTargetSdk,
+                    topContent = {
+                        SwitchWidget(
+                            title = stringResource(R.string.patch_override_target_sdk),
+                            description = stringResource(R.string.patch_override_target_sdk_desc),
+                            icon = Icons.Outlined.Android,
+                            checked = viewModel.overrideTargetSdk,
+                            onCheckedChange = { viewModel.overrideTargetSdk = it },
+                        )
+                    },
+                    bottomContent = {
+                        BaseItemContainer {
+                            SettingsEditor(
+                                label = stringResource(R.string.patch_custom_target_sdk),
+                                text = viewModel.overrideTargetSdkValue,
+                                onValueChange = { value -> viewModel.overrideTargetSdkValue = value.filter { it in '0'..'9' } },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            )
+                        }
+                    },
+                )
+                item(key = "provider") {
+                    SwitchWidget(
+                        title = stringResource(R.string.patch_inject_mt_provider),
+                        description = stringResource(R.string.patch_inject_mt_provider_desc),
+                        icon = Icons.Outlined.AddCard,
+                        checked = viewModel.injectProvider,
+                        onCheckedChange = { viewModel.injectProvider = it },
                     )
-                )
-                OverlayDropdownPreference(
-                    title = stringResource(R.string.patch_sigbypass),
-                    startAction = { Icon(Icons.Outlined.Security, null) },
-                    entries = sigBypassEntries
-                )
+                }
+                item(key = "dex") {
+                    SwitchWidget(
+                        title = stringResource(R.string.patch_inject_dex),
+                        description = stringResource(R.string.patch_inject_dex_desc),
+                        icon = Icons.Outlined.AccountTree,
+                        checked = viewModel.injectDex,
+                        onCheckedChange = { viewModel.injectDex = it },
+                    )
+                }
+                item(key = "microg") {
+                    SwitchWidget(
+                        title = stringResource(R.string.patch_use_microg),
+                        description = stringResource(R.string.patch_use_microg_desc),
+                        icon = Icons.Outlined.CloudSync,
+                        checked = viewModel.useMicroG,
+                        onCheckedChange = { viewModel.useMicroG = it },
+                    )
+                }
+                item(key = "log") {
+                    SwitchWidget(
+                        title = stringResource(R.string.patch_output_log_to_media),
+                        description = stringResource(R.string.patch_output_log_to_media_desc),
+                        icon = Icons.Outlined.Output,
+                        checked = viewModel.outputLog,
+                        onCheckedChange = { viewModel.outputLog = it },
+                    )
+                }
+                item(key = "cleartext") {
+                    SwitchWidget(
+                        title = stringResource(R.string.patch_cleartext_traffic),
+                        description = stringResource(R.string.patch_cleartext_traffic_desc),
+                        icon = Icons.Outlined.Http,
+                        checked = viewModel.usesCleartextTraffic,
+                        onCheckedChange = { viewModel.usesCleartextTraffic = it },
+                    )
+                }
+            }
+        }
+        item(key = "signature") {
+            SegmentedColumn(
+                title = stringResource(R.string.patch_sigbypass),
+                modifier = Modifier.selectableGroup(),
+            ) {
+                for (level in Constants.SIGBYPASS_NONE..Constants.SIGBYPASS_EXTREME) {
+                    item(key = level) {
+                        RadioButtonWidget(
+                            title = sigBypassLvTitle(level),
+                            description = sigBypassLvDesc(level),
+                            icon = Icons.Outlined.Security,
+                            selected = viewModel.sigBypassLevel == level,
+                            onSelect = { viewModel.sigBypassLevel = level },
+                        )
+                    }
+                }
             }
         }
     }

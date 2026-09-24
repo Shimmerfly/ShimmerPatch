@@ -13,7 +13,6 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
@@ -39,7 +38,8 @@ import top.nkbe.npatch.ui.util.adjustLightnessArgb
 import top.nkbe.npatch.ui.util.cssColorFromArgb
 import top.nkbe.npatch.ui.util.ensureVisibleByMix
 import top.nkbe.npatch.ui.util.relativeLuminance
-import io.github.suqi8.coui.kmp.theme.COUITheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.graphics.luminance
 import java.io.ByteArrayInputStream
 import java.nio.charset.StandardCharsets
 import kotlin.math.abs
@@ -50,8 +50,6 @@ fun GithubMarkdown(
     content: String,
     isLoading: MutableState<Boolean> = mutableStateOf(true)
 ) {
-    isLoading.value = true
-
     val density = LocalDensity.current
     val systemDensity = LocalResources.current.displayMetrics.density
     val fontScale = density.fontScale
@@ -59,10 +57,10 @@ fun GithubMarkdown(
     val newtTextZoom = (90 * pageScale * fontScale).toInt()
 
     val scrollInterface = remember { MarkdownScrollInterface() }
-    val isDark = isSystemInDarkTheme()
+    val isDark = MaterialTheme.colorScheme.surface.luminance() < 0.5f
     val dir = if (LocalLayoutDirection.current == LayoutDirection.Rtl) "rtl" else "ltr"
 
-    val bgArgb = COUITheme.colorScheme.surfaceContainer.toArgb()
+    val bgArgb = MaterialTheme.colorScheme.surfaceContainer.toArgb()
     val bgLuminance = relativeLuminance(bgArgb)
 
     fun makeVariant(delta: Float): Int {
@@ -75,9 +73,9 @@ fun GithubMarkdown(
     val bgMuted = cssColorFromArgb(makeVariant(if (bgLuminance > 0.6) -0.06f else 0.06f))
     val bgNeutralMuted = cssColorFromArgb(makeVariant(if (bgLuminance > 0.6) -0.12f else 0.12f))
     val bgAttentionMuted = cssColorFromArgb(makeVariant(-0.12f))
-    val fgDefault = cssColorFromArgb(COUITheme.colorScheme.onSurface.toArgb())
-    val fgMuted = cssColorFromArgb(COUITheme.colorScheme.onSurfaceVariantSummary.toArgb())
-    val fgLink = cssColorFromArgb(COUITheme.colorScheme.primary.toArgb())
+    val fgDefault = cssColorFromArgb(MaterialTheme.colorScheme.onSurface.toArgb())
+    val fgMuted = cssColorFromArgb(MaterialTheme.colorScheme.onSurfaceVariant.toArgb())
+    val fgLink = cssColorFromArgb(MaterialTheme.colorScheme.primary.toArgb())
 
     val colorsCss =
         "https://appassets.androidplatform.net/assets/webview/${if (isDark) "colors_dark.css" else "colors_light.css"}"
@@ -90,7 +88,7 @@ fun GithubMarkdown(
         <html dir='${dir}'>
         <head>
           <meta charset='utf-8'/>
-          <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'/>
+          <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1'/>
           <meta name="HandheldFriendly" content="true">
           <link rel="stylesheet" href="$colorsCss" />
           <link rel="stylesheet" href="$markdownCss" />
@@ -156,7 +154,9 @@ fun GithubMarkdown(
                         allowFileAccess = false
                         cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
                         textZoom = newtTextZoom
-                        setSupportZoom(false)
+                        setSupportZoom(true)
+                        builtInZoomControls = true
+                        displayZoomControls = false
                         setGeolocationEnabled(false)
                     }
                     addJavascriptInterface(scrollInterface, "AndroidScroll")
@@ -249,6 +249,7 @@ fun GithubMarkdown(
                         override fun shouldInterceptRequest(
                             view: WebView, request: WebResourceRequest
                         ): WebResourceResponse? {
+                            assetLoader.shouldInterceptRequest(request.url)?.let { return it }
                             val scheme = request.url.scheme ?: return null
                             if (!scheme.startsWith("http")) return null
                             val client = NetworkDns.client()
@@ -327,7 +328,9 @@ fun GithubMarkdown(
         },
         update = { frameLayout ->
             val webView = frameLayout.getChildAt(0) as? WebView
+            webView?.settings?.textZoom = newtTextZoom
             if (webView?.tag != html) {
+                isLoading.value = true
                 webView?.tag = html
                 webView?.loadDataWithBaseURL(
                     "https://appassets.androidplatform.net", html,

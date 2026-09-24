@@ -5,56 +5,58 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.ui.NavDisplay
-import coil.compose.AsyncImage
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import top.nkbe.npatch.LSPApplication
 import top.nkbe.npatch.config.Configs
 import top.nkbe.npatch.config.ThemeConfig
 import top.nkbe.npatch.config.ThemeMode
-import top.nkbe.npatch.config.ThemeSettings
 import top.nkbe.npatch.ui.page.AboutScreen
 import top.nkbe.npatch.ui.page.LocalNavigator
-import top.nkbe.npatch.ui.page.MainTab
 import top.nkbe.npatch.ui.page.MainScreen
-import top.nkbe.npatch.ui.page.Navigator
+import top.nkbe.npatch.ui.page.MainTab
 import top.nkbe.npatch.ui.page.NewPatchScreen
 import top.nkbe.npatch.ui.page.Route
 import top.nkbe.npatch.ui.page.SelectAppsScreen
 import top.nkbe.npatch.ui.page.WelcomeScreen
-import top.nkbe.npatch.config.DEFAULT_CARD_BACKGROUND_ALPHA_PERCENT
-import top.nkbe.npatch.config.DEFAULT_CUSTOM_COLOR
+import top.nkbe.npatch.ui.page.rememberM3NavEffects
 import top.nkbe.npatch.ui.theme.LSPTheme
 import top.nkbe.npatch.ui.util.LocalBackgroundImagePath
 import top.nkbe.npatch.ui.util.LocalCardBackgroundAlpha
 import top.nkbe.npatch.ui.util.LocalFloatingGlassBottomBar
 import top.nkbe.npatch.ui.util.LocalFloatingGlassBottomBarBlur
 import top.nkbe.npatch.ui.util.LocalSnackbarHost
-import io.github.suqi8.coui.kmp.basic.SnackbarHostState
-import io.github.suqi8.coui.kmp.theme.COUITheme
+import top.nkbe.npatch.ui.util.LocalThemeSettings
+import top.nkbe.npatch.ui.viewmodel.MainViewModel
+import top.yukonga.miuix.kmp.nav.core.NavDisplay
+import top.yukonga.miuix.kmp.nav.core.rememberNavBackStack
+import top.yukonga.miuix.kmp.nav.transition.NavSwipeDirection
+import top.yukonga.miuix.kmp.nav.transition.NavTransitions
 
 class MainActivity : ComponentActivity() {
 
@@ -65,6 +67,10 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
+        var isThemeLoaded = false
+        // Match InstallerX: reveal the first complete themed frame from the system splash.
+        splashScreen.setKeepOnScreenCondition { !isThemeLoaded }
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge(
@@ -80,20 +86,12 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val systemIsDark = isSystemInDarkTheme()
-            val context = LocalContext.current
             val supportsFloatingGlassBottomBarBlur = ThemeConfig.isFloatingGlassBottomBarBlurSupported()
 
-            val themeState by ThemeConfig.getThemeFlow(context).collectAsState(
-                initial = ThemeSettings(
-                    backgroundImageUri = "",
-                    useMonet = false,
-                    customColor = DEFAULT_CUSTOM_COLOR,
-                    themeMode = ThemeMode.SYSTEM,
-                    useFloatingGlassBottomBar = false,
-                    useFloatingGlassBottomBarBlur = supportsFloatingGlassBottomBarBlur,
-                    cardBackgroundAlphaPercent = DEFAULT_CARD_BACKGROUND_ALPHA_PERCENT,
-                )
-            )
+            val mainViewModel = viewModel<MainViewModel>()
+            val loadedTheme by mainViewModel.theme.collectAsState()
+            val themeState = loadedTheme ?: return@setContent
+            SideEffect { isThemeLoaded = true }
             val isDark = when (themeState.themeMode) {
                 ThemeMode.SYSTEM -> systemIsDark
                 ThemeMode.LIGHT -> false
@@ -123,6 +121,7 @@ class MainActivity : ComponentActivity() {
                 customColor = themeState.customColor
             ) {
                 CompositionLocalProvider(
+                    LocalThemeSettings provides themeState,
                     LocalBackgroundImagePath provides themeState.backgroundImageUri,
                     LocalCardBackgroundAlpha provides (themeState.cardBackgroundAlphaPercent / 100f),
                     LocalFloatingGlassBottomBar provides themeState.useFloatingGlassBottomBar,
@@ -131,40 +130,27 @@ class MainActivity : ComponentActivity() {
                     ),
                 ) {
                     Box(modifier = Modifier.fillMaxSize()) {
-                        Crossfade(targetState = themeState.backgroundImageUri, label = "global_background") { path ->
-                            if (path.isNotEmpty()) {
-                                AsyncImage(
-                                    model = path,
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .blur(20.dp)
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .background(Color.Black.copy(alpha = 0.35f))
-                                )
-                            } else {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .background(COUITheme.colorScheme.background)
-                                )
-                            }
-                        }
-
-                        val snackbarHostState = remember { SnackbarHostState() }
+                        val snackbarHostState = mainViewModel.snackbarHostState
                         val startRoute = remember {
                             if (Configs.welcomeSeen) Route.Main() else Route.Welcome()
                         }
-                        val backStack = remember { mutableStateListOf<NavKey>(startRoute) }
-                        val navigator = remember { Navigator(backStack) }
+                        val backStack = rememberNavBackStack<Route>(startRoute)
+                        // A killed process cannot resume native patch work or picker callbacks.
+                        // Restore stable destinations; configuration changes retain the live VMs.
+                        if (!mainViewModel.hasBoundNavigation) {
+                            if (savedInstanceState != null) {
+                                backStack.removeAll { it is Route.NewPatch || it is Route.SelectApps }
+                                if (backStack.isEmpty()) backStack.add(startRoute)
+                            }
+                            mainViewModel.hasBoundNavigation = true
+                        }
+                        val navigator = mainViewModel.navigator
+                        navigator.attachBackStack(backStack)
                         val startMainRoute = startRoute as? Route.Main
                         var selectedMainTab by rememberSaveable {
                             mutableIntStateOf(startMainRoute?.initialTab ?: MainTab.Home.ordinal)
                         }
+                        var navigationHeight by remember { mutableStateOf(0.dp) }
                         var selectedManageTab by rememberSaveable {
                             mutableIntStateOf(startMainRoute?.initialManageTab ?: 0)
                         }
@@ -175,45 +161,62 @@ class MainActivity : ComponentActivity() {
                         ) {
                             NavDisplay(
                                 backStack = backStack,
-                                onBack = { navigator.pop() },
-                                entryProvider = entryProvider {
-                                    entry<Route.Main> {
-                                        MainScreen(
-                                            navigator = navigator,
-                                            selectedTab = selectedMainTab,
-                                            selectedManageTab = selectedManageTab,
-                                            onSelectedTabChange = { selectedMainTab = it },
-                                            onSelectedManageTabChange = { selectedManageTab = it }
-                                        )
-                                    }
-
-                                    entry<Route.About> {
-                                        AboutScreen(onBack = { navigator.pop() })
-                                    }
-
-                                    entry<Route.Welcome> { route ->
-                                        WelcomeScreen(
-                                            reviewMode = route.reviewMode,
-                                            onFinish = {
-                                                backStack.clear()
-                                                backStack.add(Route.Main())
-                                            },
-                                            onReturn = { navigator.pop() }
-                                        )
-                                    }
-
-                                    entry<Route.NewPatch> { route ->
-                                        NewPatchScreen(id = route.id, data = route.data)
-                                    }
-
-                                    entry<Route.SelectApps> { route ->
-                                        SelectAppsScreen(
-                                            multiSelect = route.multiSelect,
-                                            initialSelected = route.initialSelected
-                                        )
-                                    }
+                                onBack = {
+                                    if (backStack.size > 1) navigator.pop()
+                                    else if (selectedMainTab != MainTab.Home.ordinal && backStack.lastOrNull() is Route.Main) {
+                                        selectedMainTab = MainTab.Home.ordinal
+                                    } else finish()
+                                },
+                                transition = NavTransitions.MiuixDefault,
+                                effects = rememberM3NavEffects(),
+                            ) {
+                                entry<Route.Main> {
+                                    MainScreen(
+                                        navigator = navigator,
+                                        selectedTab = selectedMainTab,
+                                        selectedManageTab = selectedManageTab,
+                                        onSelectedTabChange = { selectedMainTab = it },
+                                        onSelectedManageTabChange = { selectedManageTab = it },
+                                        onNavigationBarHeightChanged = { navigationHeight = it },
+                                    )
                                 }
+
+                                entry<Route.About>(swipeDismiss = NavSwipeDirection.LeftToRight) {
+                                    AboutScreen(onBack = { navigator.pop() })
+                                }
+
+                                entry<Route.Welcome>(swipeDismiss = NavSwipeDirection.LeftToRight) { route ->
+                                    WelcomeScreen(
+                                        reviewMode = route.reviewMode,
+                                        onFinish = {
+                                            backStack.clear()
+                                            backStack.add(Route.Main())
+                                        },
+                                        onReturn = { navigator.pop() }
+                                    )
+                                }
+
+                                entry<Route.NewPatch> { route ->
+                                    NewPatchScreen(id = route.id, data = route.data)
+                                }
+
+                                entry<Route.SelectApps>(swipeDismiss = NavSwipeDirection.LeftToRight) { route ->
+                                    SelectAppsScreen(
+                                        multiSelect = route.multiSelect,
+                                        initialSelected = route.initialSelected
+                                    )
+                                }
+                            }
+                            val snackbarBottom = if (backStack.lastOrNull() is Route.Main) navigationHeight
+                                else WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                            SnackbarHost(
+                                hostState = snackbarHostState,
+                                modifier = Modifier.align(Alignment.BottomCenter).imePadding()
+                                    .padding(start = 16.dp, end = 16.dp, bottom = snackbarBottom),
                             )
+                            BackHandler(enabled = backStack.size == 1 && backStack.lastOrNull() is Route.Main && selectedMainTab != MainTab.Home.ordinal) {
+                                selectedMainTab = MainTab.Home.ordinal
+                            }
                         }
                     }
                 }

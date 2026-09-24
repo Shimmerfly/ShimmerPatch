@@ -1,115 +1,59 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Adapted from InstallerX-Revived ui/page/main/settings/config/apply/ApplyPage.kt.
 package top.nkbe.npatch.ui.component
 
-import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.IconButtonShapes
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import io.github.suqi8.coui.kmp.basic.Icon
-import io.github.suqi8.coui.kmp.basic.IconButton
-import io.github.suqi8.coui.kmp.basic.Text
-import io.github.suqi8.coui.kmp.basic.TextField
-import io.github.suqi8.coui.kmp.basic.TopAppBar
+import top.nkbe.npatch.R
 
-private const val TAG = "SearchBar"
-
-@OptIn(ExperimentalComposeUiApi::class)
+/** The same real text field remains mounted while results and tabs change. */
 @Composable
-fun SearchAppBar(
-    title: @Composable () -> Unit,
-    searchText: String,
-    onSearchTextChange: (String) -> Unit,
-    onClearClick: () -> Unit,
-    onBackClick: () -> Unit,
-    onConfirm: (() -> Unit)? = null
+fun SearchBar(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    label: String = stringResource(R.string.manage_search),
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val focusRequester = remember { FocusRequester() }
-    var onSearch by remember { mutableStateOf(false) }
-
-    if (onSearch) {
-        LaunchedEffect(Unit) { focusRequester.requestFocus() }
-    }
-    DisposableEffect(Unit) {
-        onDispose {
-            keyboardController?.hide()
-        }
-    }
-
-    TopAppBar(
-        title = if (onSearch) "" else "Search",
-        navigationIcon = {
-            IconButton(
-                onClick = onBackClick,
-            ) {
-                Icon(Icons.AutoMirrored.Outlined.ArrowBack, null)
-            }
-        },
-        actions = {
-            if (!onSearch) {
+    val focusManager = LocalFocusManager.current
+    OutlinedTextField(
+        modifier = modifier.fillMaxWidth(),
+        value = query,
+        onValueChange = onQueryChange,
+        singleLine = true,
+        shape = MaterialTheme.shapes.extraLarge,
+        placeholder = { Text(label) },
+        leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
+        trailingIcon = {
+            if (query.isNotEmpty()) {
                 IconButton(
-                    onClick = { onSearch = true },
+                    shapes = IconButtonShapes(
+                        shape = IconButtonDefaults.smallRoundShape,
+                        pressedShape = IconButtonDefaults.smallPressedShape,
+                    ),
+                    onClick = { onQueryChange("") },
                 ) {
-                    Icon(Icons.Filled.Search, null)
+                    Icon(Icons.Filled.Close, stringResource(R.string.accessibility_clear))
                 }
             }
-        }
-    )
-
-    if (onSearch) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp)
-        ) {
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester)
-                    .onFocusChanged { focusState ->
-                        if (focusState.isFocused) onSearch = true
-                        Log.d(TAG, "onFocusChanged: $focusState")
-                    },
-                value = searchText,
-                onValueChange = onSearchTextChange,
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = {
-                    keyboardController?.hide()
-                    onConfirm?.invoke()
-                })
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun SearchAppBarPreview() {
-    var searchText by remember { mutableStateOf("") }
-    SearchAppBar(
-        title = { Text("Search text") },
-        searchText = searchText,
-        onSearchTextChange = { searchText = it },
-        onClearClick = { searchText = "" },
-        onBackClick = {}
+        },
+        textStyle = MaterialTheme.typography.titleMedium,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
     )
 }

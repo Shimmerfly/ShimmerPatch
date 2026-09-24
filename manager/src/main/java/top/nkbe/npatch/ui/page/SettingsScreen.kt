@@ -1,112 +1,71 @@
 package top.nkbe.npatch.ui.page
 
-import android.app.Activity
+import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.util.Log
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Android
-import androidx.compose.material.icons.outlined.ArrowUpward
-import androidx.compose.material.icons.outlined.BlurCircular
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Dashboard
-import androidx.compose.material.icons.outlined.BugReport
-import androidx.compose.material.icons.outlined.DeleteSweep
-import androidx.compose.material.icons.outlined.Description
-import androidx.compose.material.icons.outlined.Folder
-import androidx.compose.material.icons.outlined.Image
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Key
-import androidx.compose.material.icons.outlined.Language
-import androidx.compose.material.icons.outlined.Palette
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.SettingsBrightness
-import android.Manifest
-import android.os.Build
-import top.nkbe.npatch.install.InstallNotificationHelper
-import top.nkbe.npatch.install.ThirdPartyPackageInstaller
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.edit
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import top.nkbe.npatch.LSPApplication
 import top.nkbe.npatch.R
-import top.nkbe.npatch.config.Configs
-import top.nkbe.npatch.config.CARD_BACKGROUND_ALPHA_MAX
-import top.nkbe.npatch.config.CARD_BACKGROUND_ALPHA_MIN
-import top.nkbe.npatch.config.KeystorePreset
-import top.nkbe.npatch.config.MyKeyStore
-import top.nkbe.npatch.config.ThemeConfig
-import top.nkbe.npatch.config.ThemeMode
-import top.nkbe.npatch.config.ThemeSettings
-import top.nkbe.npatch.config.dataStore
+import top.nkbe.npatch.config.*
+import top.nkbe.npatch.install.DiscoveredInstaller
+import top.nkbe.npatch.install.InstallNotificationHelper
+import top.nkbe.npatch.install.ThirdPartyPackageInstaller
 import top.nkbe.npatch.manager.ManagerCacheCleaner
 import top.nkbe.npatch.manager.ManagerLogger
 import top.nkbe.npatch.network.DnsProvider
 import top.nkbe.npatch.network.NetworkDns
 import top.nkbe.npatch.ui.activity.MainActivity
 import top.nkbe.npatch.ui.component.NPatchScaffold
-import top.nkbe.npatch.config.DEFAULT_CUSTOM_COLOR
-import top.nkbe.npatch.config.DEFAULT_CARD_BACKGROUND_ALPHA_PERCENT
-import top.nkbe.npatch.ui.util.BackgroundImageStorage
-import top.nkbe.npatch.ui.util.LocalFloatingGlassBottomBar
-import top.nkbe.npatch.ui.util.LocalSnackbarHost
-import top.nkbe.npatch.ui.util.backgroundAwareCardColors
-import io.github.suqi8.coui.kmp.basic.BasicComponent
-import io.github.suqi8.coui.kmp.basic.ButtonDefaults
-import io.github.suqi8.coui.kmp.basic.Card
-import io.github.suqi8.coui.kmp.basic.Icon
-import io.github.suqi8.coui.kmp.basic.COUIScrollBehavior
-import io.github.suqi8.coui.kmp.basic.Slider
-import io.github.suqi8.coui.kmp.basic.SmallTitle
-import io.github.suqi8.coui.kmp.basic.Text
-import io.github.suqi8.coui.kmp.basic.TextButton
-import io.github.suqi8.coui.kmp.basic.TextField
 import top.nkbe.npatch.ui.component.NPatchTopAppBar
-import top.nkbe.npatch.ui.util.backgroundAwareHazeStyle
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
-import io.github.suqi8.coui.kmp.preference.ArrowPreference
-import io.github.suqi8.coui.kmp.preference.OverlayDropdownPreference
-import io.github.suqi8.coui.kmp.preference.SwitchPreference
-import io.github.suqi8.coui.kmp.layout.DialogButtonBar
-import io.github.suqi8.coui.kmp.layout.DialogButtonBarAction
-import io.github.suqi8.coui.kmp.overlay.OverlayDialog
-import io.github.suqi8.coui.kmp.theme.COUITheme
-import io.github.suqi8.coui.kmp.utils.overScrollVertical
-import io.github.suqi8.coui.kmp.utils.scrollEndHaptic
+import top.nkbe.npatch.ui.component.rememberMaterial3BlurBackdrop
+import top.nkbe.npatch.ui.component.m3AppBarBlur
+import top.nkbe.npatch.ui.component.m3AppBarColor
+import top.nkbe.npatch.ui.component.m3BackdropLayer
+import top.nkbe.npatch.ui.component.m3.*
+import top.nkbe.npatch.ui.util.BackgroundImageStorage
+import top.nkbe.npatch.ui.util.LocalSnackbarHost
+import top.nkbe.npatch.ui.util.LocalThemeSettings
+import top.nkbe.npatch.ui.util.LocalFloatingGlassBottomBarBlur
 import java.io.IOException
 import java.security.GeneralSecurityException
 import java.security.KeyStore
@@ -114,367 +73,88 @@ import kotlin.math.roundToInt
 
 private const val TAG = "SettingsScreen"
 
+/** Settings groups and item shapes are copied from WeKit's Material 3 settings UI. */
 @Composable
-fun SettingsScreen() {
-    val scrollBehavior = COUIScrollBehavior()
-    val hazeState = rememberHazeState()
-    val hazeStyle = backgroundAwareHazeStyle()
-    val useFloatingGlassBottomBar = LocalFloatingGlassBottomBar.current
-    val bottomContentPadding = if (useFloatingGlassBottomBar) {
-        68.dp + 12.dp + 8.dp + 28.dp +
-            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    } else {
-        24.dp
-    }
+fun SettingsScreen(contentPadding: PaddingValues = PaddingValues()) {
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollState = rememberScrollState()
+    val layoutDirection = LocalLayoutDirection.current
+    val backdrop = rememberMaterial3BlurBackdrop(enabled = LocalFloatingGlassBottomBarBlur.current)
     NPatchScaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             NPatchTopAppBar(
                 title = stringResource(R.string.screen_settings),
+                modifier = Modifier.m3AppBarBlur(backdrop),
+                color = backdrop.m3AppBarColor(),
                 scrollBehavior = scrollBehavior,
-                hazeState = hazeState,
-                hazeStyle = hazeStyle,
             )
-        }
+        },
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .hazeSource(state = hazeState)
-                .scrollEndHaptic()
-                .overScrollVertical()
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 12.dp),
+            Modifier.fillMaxSize()
+                .m3BackdropLayer(backdrop)
+                .verticalScroll(scrollState)
+                .padding(
+                    top = innerPadding.calculateTopPadding(),
+                    start = innerPadding.calculateStartPadding(layoutDirection),
+                    end = innerPadding.calculateEndPadding(layoutDirection),
+                    bottom = maxOf(contentPadding.calculateBottomPadding(), innerPadding.calculateBottomPadding()) + 24.dp,
+                ),
         ) {
-            SmallTitle(text = stringResource(R.string.settings_appearance_theme))
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = backgroundAwareCardColors(),
-            ) {
-                AppearanceSettings()
+            AppearanceSettings()
+            InstallationSettings()
+            SegmentedColumn(title = stringResource(R.string.settings_network)) {
+                item(key = "dns") { DnsPreference() }
             }
-
-            Spacer(Modifier.height(12.dp))
-
-            SmallTitle(text = stringResource(R.string.settings_installation_category))
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = backgroundAwareCardColors(),
-            ) {
-                InstallationSettings()
-            }
-
-            Spacer(Modifier.height(12.dp))
-
-            SmallTitle(text = stringResource(R.string.settings_network))
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = backgroundAwareCardColors(),
-            ) {
-                DnsPreference()
-            }
-
-            Spacer(Modifier.height(12.dp))
-
-            SmallTitle(text = stringResource(R.string.settings_other_settings))
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = backgroundAwareCardColors(),
-            ) {
-                LanguagePreference()
-                KeyStore()
-                DetailPatchLogs()
-                OutputFullLog()
-                WelcomeGuide()
-                StorageDirectory()
-                ClearManagerCache()
-            }
-            Spacer(Modifier.height(bottomContentPadding))
-        }
-    }
-}
-
-@Composable
-private fun DnsPreference() {
-    val providers = DnsProvider.entries
-    val labels = listOf(
-        stringResource(R.string.settings_dns_tencent),
-        stringResource(R.string.settings_dns_google),
-        stringResource(R.string.settings_dns_cloudflare),
-        stringResource(R.string.settings_dns_system),
-        stringResource(R.string.settings_dns_custom),
-    )
-    var selectedProvider by remember { mutableStateOf(NetworkDns.selectedProvider()) }
-    var showCustomDialog by remember { mutableStateOf(false) }
-
-    OverlayDropdownPreference(
-        title = stringResource(R.string.settings_dns),
-        summary = stringResource(R.string.settings_dns_summary),
-        items = labels,
-        selectedIndex = providers.indexOf(selectedProvider),
-        startAction = { SettingsStartIcon(Icons.Outlined.Language) },
-        onSelectedIndexChange = { index ->
-            val provider = providers[index]
-            if (provider == DnsProvider.CUSTOM) {
-                showCustomDialog = true
-            } else {
-                NetworkDns.setProvider(provider)
-                selectedProvider = provider
-            }
-        }
-    )
-
-    if (showCustomDialog) {
-        var customUrl by rememberSaveable { mutableStateOf(NetworkDns.customUrl()) }
-        var invalidUrl by rememberSaveable { mutableStateOf(false) }
-        OverlayDialog(
-            title = stringResource(R.string.settings_dns_custom),
-            show = true,
-            onDismissRequest = { showCustomDialog = false },
-        ) {
-            Column {
-                Text(
-                    text = stringResource(
-                        if (invalidUrl) R.string.settings_dns_custom_invalid
-                        else R.string.settings_dns_custom_summary
-                    ),
-                    color = if (invalidUrl) COUITheme.colorScheme.error
-                    else COUITheme.colorScheme.onSurfaceVariantSummary,
-                    style = COUITheme.textStyles.body2,
-                    modifier = Modifier.padding(bottom = 12.dp),
-                )
-                TextField(
-                    value = customUrl,
-                    onValueChange = {
-                        customUrl = it
-                        invalidUrl = false
-                    },
-                    label = stringResource(R.string.settings_dns_custom_url),
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                Spacer(Modifier.height(16.dp))
-                DialogButtonBar(
-                    negative = DialogButtonBarAction(
-                        text = stringResource(android.R.string.cancel),
-                        onClick = { showCustomDialog = false }
-                    ),
-                    positive = DialogButtonBarAction(
-                        text = stringResource(android.R.string.ok),
-                        onClick = {
-                            if (NetworkDns.setCustomUrl(customUrl)) {
-                                selectedProvider = DnsProvider.CUSTOM
-                                showCustomDialog = false
-                            } else {
-                                invalidUrl = true
-                            }
-                        }
-                    )
-                )
+            SegmentedColumn(title = stringResource(R.string.settings_other_settings)) {
+                item(key = "language") { LanguagePreference() }
+                item(key = "keystore") { KeyStorePreference() }
+                item(key = "patch_logs") { DetailPatchLogs() }
+                item(key = "full_logs") { OutputFullLog() }
+                item(key = "welcome") { WelcomeGuide() }
+                item(key = "storage") { StorageDirectory() }
+                item(key = "cache") { ClearManagerCache() }
             }
         }
     }
 }
 
+/** Row and chevron copied from InstallerX-Revived's NavigationItemWidget. */
 @Composable
-fun InstallationSettings() {
-    val context = LocalContext.current
-    var installNotificationEnabled by remember { mutableStateOf(Configs.installNotificationEnabled) }
-    var installAllUsers by remember { mutableStateOf(Configs.installAllUsers) }
-    var thirdPartyInstallerPackage by remember { mutableStateOf(Configs.thirdPartyInstallerPackage) }
-    var showInstallerDialog by remember { mutableStateOf(false) }
-
-    val notificationPermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        Configs.installNotificationEnabled = isGranted
-        installNotificationEnabled = isGranted
+private fun SettingsAction(
+    title: String,
+    icon: ImageVector,
+    description: String? = null,
+    enabled: Boolean = true,
+    onClick: () -> Unit,
+) {
+    BaseWidget(title = title, icon = icon, description = description, enabled = enabled, onClick = onClick) {
+        Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, contentDescription = null)
     }
+}
 
-    SwitchPreference(
-        title = stringResource(R.string.settings_install_notification),
-        summary = stringResource(R.string.settings_install_notification_summary),
-        checked = installNotificationEnabled,
-        onCheckedChange = { enable ->
-            if (enable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !InstallNotificationHelper.hasNotificationPermission(context)) {
-                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            } else {
-                Configs.installNotificationEnabled = enable
-                installNotificationEnabled = enable
-            }
-        },
-        startAction = { SettingsStartIcon(Icons.Outlined.ArrowUpward) },
-    )
-
-    SwitchPreference(
-        title = stringResource(R.string.settings_install_all_users),
-        summary = stringResource(R.string.settings_install_all_users_summary),
-        checked = installAllUsers,
-        onCheckedChange = {
-            Configs.installAllUsers = it
-            installAllUsers = it
-        },
-        startAction = { SettingsStartIcon(Icons.Outlined.Person) },
-    )
-
-    val currentInstallerSummary = remember(thirdPartyInstallerPackage) {
-        if (thirdPartyInstallerPackage.isBlank()) {
-            context.getString(R.string.settings_third_party_installer_system_default)
-        } else {
-            runCatching {
-                val appInfo = context.packageManager.getApplicationInfo(thirdPartyInstallerPackage, 0)
-                "${context.packageManager.getApplicationLabel(appInfo)} ($thirdPartyInstallerPackage)"
-            }.getOrDefault(thirdPartyInstallerPackage)
-        }
-    }
-
-    ArrowPreference(
-        title = stringResource(R.string.settings_third_party_installer),
-        summary = currentInstallerSummary,
-        startAction = { SettingsStartIcon(Icons.Outlined.Android) },
-        onClick = { showInstallerDialog = true },
-    )
-
-    if (showInstallerDialog) {
-        val discoveredInstallers = remember {
-            ThirdPartyPackageInstaller.getDiscoveredInstallers(context)
-        }
-        var customPkgText by rememberSaveable {
-            mutableStateOf(
-                if (thirdPartyInstallerPackage.isNotBlank() && discoveredInstallers.none { it.packageName == thirdPartyInstallerPackage }) {
-                    thirdPartyInstallerPackage
-                } else {
-                    ""
-                }
-            )
-        }
-        var isCustomError by rememberSaveable { mutableStateOf(false) }
-
-        OverlayDialog(
-            title = stringResource(R.string.settings_third_party_installer_dialog_title),
-            show = true,
-            onDismissRequest = { showInstallerDialog = false },
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-            ) {
-                // System default option
-                val isDefaultSelected = thirdPartyInstallerPackage.isBlank()
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable {
-                            Configs.thirdPartyInstallerPackage = ""
-                            thirdPartyInstallerPackage = ""
-                            showInstallerDialog = false
-                        }
-                        .padding(vertical = 12.dp, horizontal = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = stringResource(R.string.settings_third_party_installer_system_default),
-                            style = COUITheme.textStyles.body1,
-                        )
-                    }
-                    if (isDefaultSelected) {
-                        Icon(
-                            imageVector = Icons.Outlined.Check,
-                            contentDescription = "Selected",
-                            tint = COUITheme.colorScheme.primary,
-                        )
-                    }
-                }
-
-                // Discovered third-party installers
-                discoveredInstallers.forEach { installer ->
-                    val isSelected = thirdPartyInstallerPackage == installer.packageName
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable {
-                                Configs.thirdPartyInstallerPackage = installer.packageName
-                                thirdPartyInstallerPackage = installer.packageName
-                                showInstallerDialog = false
-                            }
-                            .padding(vertical = 12.dp, horizontal = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = installer.label,
-                                style = COUITheme.textStyles.body1,
-                            )
-                            Text(
-                                text = installer.packageName,
-                                style = COUITheme.textStyles.footnote1,
-                                color = COUITheme.colorScheme.onSurfaceVariantSummary,
-                            )
-                        }
-                        if (isSelected) {
-                            Icon(
-                                imageVector = Icons.Outlined.Check,
-                                contentDescription = "Selected",
-                                tint = COUITheme.colorScheme.primary,
-                            )
-                        }
-                    }
-                }
-
-                Spacer(Modifier.height(12.dp))
-
-                // Custom package input
-                Text(
-                    text = stringResource(R.string.settings_third_party_installer_custom),
-                    style = COUITheme.textStyles.body2,
-                    color = COUITheme.colorScheme.onSurfaceVariantSummary,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                )
-                TextField(
-                    value = customPkgText,
-                    onValueChange = {
-                        customPkgText = it.trim()
-                        isCustomError = false
+@Composable
+private fun SettingsChoice(
+    title: String,
+    icon: ImageVector,
+    options: List<String>,
+    selectedIndex: Int,
+    onSelected: (Int) -> Unit,
+) {
+    var show by rememberSaveable { mutableStateOf(false) }
+    SettingsAction(title, icon, options.getOrNull(selectedIndex), onClick = { show = true })
+    SettingsDialog(show = show, title = title, onDismissRequest = { show = false }, scrollable = false) {
+        // Radio controls use the same full-row selection contract as InstallerX's dialogs.
+        LazyColumn(Modifier.weight(1f, fill = false).fillMaxWidth().selectableGroup()) {
+            lazySegmentedItems(options.indices.toList(), key = { it }) { index ->
+                RadioButtonWidget(
+                    title = options[index],
+                    selected = index == selectedIndex,
+                    onSelect = {
+                        show = false
+                        onSelected(index)
                     },
-                    label = stringResource(R.string.settings_third_party_installer_custom_hint),
-                    modifier = Modifier.fillMaxWidth(),
-                )
-                if (isCustomError) {
-                    Text(
-                        text = stringResource(R.string.settings_third_party_installer_invalid_pkg),
-                        color = COUITheme.colorScheme.error,
-                        style = COUITheme.textStyles.footnote1,
-                        modifier = Modifier.padding(top = 4.dp, start = 8.dp),
-                    )
-                }
-
-                Spacer(Modifier.height(16.dp))
-
-                DialogButtonBar(
-                    negative = DialogButtonBarAction(
-                        text = stringResource(android.R.string.cancel),
-                        onClick = { showInstallerDialog = false },
-                    ),
-                    positive = DialogButtonBarAction(
-                        text = stringResource(android.R.string.ok),
-                        onClick = {
-                            if (customPkgText.isBlank()) {
-                                Configs.thirdPartyInstallerPackage = ""
-                                thirdPartyInstallerPackage = ""
-                                showInstallerDialog = false
-                            } else if (ThirdPartyPackageInstaller.isInstallerValid(context, customPkgText)) {
-                                Configs.thirdPartyInstallerPackage = customPkgText
-                                thirdPartyInstallerPackage = customPkgText
-                                showInstallerDialog = false
-                            } else {
-                                isCustomError = true
-                            }
-                        },
-                    ),
                 )
             }
         }
@@ -485,258 +165,169 @@ fun InstallationSettings() {
 fun AppearanceSettings() {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val supportsFloatingGlassBottomBarBlur = ThemeConfig.isFloatingGlassBottomBarBlurSupported()
-    val themeState by ThemeConfig.getThemeFlow(context).collectAsState(
-        initial = ThemeSettings(
-            backgroundImageUri = "",
-            useMonet = false,
-            customColor = DEFAULT_CUSTOM_COLOR,
-            themeMode = ThemeMode.SYSTEM,
-            useFloatingGlassBottomBar = false,
-            useFloatingGlassBottomBarBlur = supportsFloatingGlassBottomBarBlur,
-            cardBackgroundAlphaPercent = DEFAULT_CARD_BACKGROUND_ALPHA_PERCENT,
-        )
-    )
-    val bgImageUri = themeState.backgroundImageUri
-    val useMonet = themeState.useMonet
-    val customColor = themeState.customColor
-    val useFloatingGlassBottomBar = themeState.useFloatingGlassBottomBar
-    val useFloatingGlassBottomBarBlur = themeState.useFloatingGlassBottomBarBlur
-    val cardBackgroundAlphaPercent = themeState.cardBackgroundAlphaPercent
-    var cardBackgroundAlphaSlider by remember(cardBackgroundAlphaPercent) {
-        mutableFloatStateOf(cardBackgroundAlphaPercent.toFloat())
-    }
-    val scrollState = rememberScrollState()
     val snackbarHost = LocalSnackbarHost.current
-    val unknownErrorText = stringResource(R.string.error_unknown)
-    val themeModeItems = listOf(
-        stringResource(R.string.settings_theme_mode_system),
-        stringResource(R.string.settings_theme_mode_light),
-        stringResource(R.string.settings_theme_mode_dark)
-    )
-    val themeModeIndex = when (themeState.themeMode) {
-        ThemeMode.SYSTEM -> 0
-        ThemeMode.LIGHT -> 1
-        ThemeMode.DARK -> 2
+    // The Activity owns this state. Re-entering this page never renders default DataStore values.
+    val theme = LocalThemeSettings.current
+    val unknownError = stringResource(R.string.error_unknown)
+    val alphaTitle = stringResource(R.string.settings_card_background_alpha)
+    var alpha by remember(theme.cardBackgroundAlphaPercent) {
+        mutableFloatStateOf(theme.cardBackgroundAlphaPercent.toFloat())
     }
-
-    val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        uri ?: return@rememberLauncherForActivityResult
-        scope.launch {
+    val imagePicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) scope.launch {
             runCatching {
-                BackgroundImageStorage.persistFromUri(context, uri)
-            }.onSuccess { storedPath ->
-                context.dataStore.edit { prefs -> prefs[ThemeConfig.BG_IMAGE_URI] = storedPath }
-            }.onFailure { throwable ->
-                Log.e(TAG, "Failed to persist background image", throwable)
-                snackbarHost.showSnackbar(unknownErrorText)
+                val storedPath = BackgroundImageStorage.persistFromUri(context, uri)
+                context.dataStore.edit { it[ThemeConfig.BG_IMAGE_URI] = storedPath }
+            }.onFailure {
+                Log.e(TAG, "Failed to persist background image", it)
+                snackbarHost.showSnackbar(unknownError)
             }
         }
     }
-
-    OverlayDropdownPreference(
-        title = stringResource(R.string.settings_theme_mode),
-        items = themeModeItems,
-        selectedIndex = themeModeIndex,
-        startAction = {
-            SettingsStartIcon(Icons.Outlined.SettingsBrightness)
-        },
-        onSelectedIndexChange = { index ->
-            val mode = when (index) {
-                1 -> ThemeMode.LIGHT
-                2 -> ThemeMode.DARK
-                else -> ThemeMode.SYSTEM
-            }
-            scope.launch {
-                context.dataStore.edit { it[ThemeConfig.THEME_MODE] = mode.value }
-            }
-        }
+    val themeModes = listOf(
+        DropdownOption(0, stringResource(R.string.settings_theme_mode_system), Icons.Outlined.SettingsBrightness),
+        DropdownOption(1, stringResource(R.string.settings_theme_mode_light), Icons.Outlined.LightMode),
+        DropdownOption(2, stringResource(R.string.settings_theme_mode_dark), Icons.Outlined.DarkMode),
     )
-
-    SwitchPreference(
-        title = stringResource(R.string.settings_monet_dynamic_color),
-        summary = stringResource(R.string.settings_monet_dynamic_color_summary),
-        checked = useMonet,
-        startAction = {
-            SettingsStartIcon(Icons.Outlined.Palette)
-        },
-        onCheckedChange = { isChecked ->
-            scope.launch { context.dataStore.edit { it[ThemeConfig.USE_MONET] = isChecked } }
+    SegmentedColumn(title = stringResource(R.string.settings_appearance_theme)) {
+        item(key = "theme_mode") {
+            DropDownMenuWidget(
+                title = stringResource(R.string.settings_theme_mode),
+                icon = Icons.Outlined.SettingsBrightness,
+                options = themeModes,
+                value = theme.themeMode.value,
+                onValueChange = { index -> scope.launch { context.dataStore.edit { it[ThemeConfig.THEME_MODE] = index } } },
+            )
         }
-    )
-
-    SwitchPreference(
-        title = stringResource(R.string.settings_floating_glass_bottom_bar),
-        summary = stringResource(R.string.settings_floating_glass_bottom_bar_summary),
-        checked = useFloatingGlassBottomBar,
-        startAction = {
-            SettingsStartIcon(Icons.Outlined.Dashboard)
-        },
-        onCheckedChange = { isChecked ->
-            scope.launch { context.dataStore.edit { it[ThemeConfig.USE_FLOATING_GLASS_BOTTOM_BAR] = isChecked } }
+        item(key = "monet") {
+            SwitchWidget(
+                title = stringResource(R.string.settings_monet_dynamic_color),
+                description = stringResource(R.string.settings_monet_dynamic_color_summary),
+                icon = Icons.Outlined.Palette,
+                checked = theme.useMonet,
+                enabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
+                onCheckedChange = { checked -> scope.launch { context.dataStore.edit { it[ThemeConfig.USE_MONET] = checked } } },
+            )
         }
-    )
-
-    AnimatedVisibility(visible = useFloatingGlassBottomBar) {
-        SwitchPreference(
-            title = stringResource(R.string.settings_floating_glass_bottom_bar_blur),
-            summary = stringResource(R.string.settings_floating_glass_bottom_bar_blur_summary),
-            checked = useFloatingGlassBottomBarBlur,
-            startAction = {
-                SettingsStartIcon(Icons.Outlined.BlurCircular)
-            },
-            onCheckedChange = { isChecked ->
-                scope.launch { context.dataStore.edit { it[ThemeConfig.USE_FLOATING_GLASS_BOTTOM_BAR_BLUR] = isChecked } }
-            }
-        )
-    }
-
-    BasicComponent(
-        modifier = Modifier,
-        title = stringResource(R.string.settings_custom_background_image),
-        startAction = {
-            SettingsStartIcon(Icons.Outlined.Image)
-        },
-        endActions = {
-            if (bgImageUri.isNotEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable {
-                            scope.launch {
+        item(key = "floating_navigation") {
+            SwitchWidget(
+                title = stringResource(R.string.settings_floating_glass_bottom_bar),
+                description = stringResource(R.string.settings_floating_glass_bottom_bar_summary),
+                icon = Icons.Outlined.Dashboard,
+                checked = theme.useFloatingGlassBottomBar,
+                onCheckedChange = { checked -> scope.launch { context.dataStore.edit { it[ThemeConfig.USE_FLOATING_GLASS_BOTTOM_BAR] = checked } } },
+            )
+        }
+        item(key = "navigation_blur", animatedVisibility = theme.useFloatingGlassBottomBar) {
+            SwitchWidget(
+                title = stringResource(R.string.settings_floating_glass_bottom_bar_blur),
+                description = stringResource(R.string.settings_floating_glass_bottom_bar_blur_summary),
+                icon = Icons.Outlined.BlurCircular,
+                checked = theme.useFloatingGlassBottomBarBlur,
+                enabled = ThemeConfig.isFloatingGlassBottomBarBlurSupported(),
+                onCheckedChange = { checked -> scope.launch { context.dataStore.edit { it[ThemeConfig.USE_FLOATING_GLASS_BOTTOM_BAR_BLUR] = checked } } },
+            )
+        }
+        item(key = "background") {
+            BaseWidget(
+                title = stringResource(R.string.settings_custom_background_image),
+                icon = Icons.Outlined.Image,
+                onClick = { imagePicker.launch(arrayOf("image/*")) },
+            ) {
+                if (theme.backgroundImageUri.isNotEmpty()) {
+                    TextButton(onClick = {
+                        scope.launch {
+                            runCatching {
                                 BackgroundImageStorage.clear(context)
                                 context.dataStore.edit { it[ThemeConfig.BG_IMAGE_URI] = "" }
-                            }
+                            }.onFailure { snackbarHost.showSnackbar(unknownError) }
                         }
-                        .background(COUITheme.colorScheme.error.copy(alpha = 0.1f))
-                        .padding(horizontal = 12.dp, vertical = 6.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.settings_clear),
-                        color = COUITheme.colorScheme.error,
-                        style = COUITheme.textStyles.body2
+                    }) { Text(stringResource(R.string.settings_clear)) }
+                } else {
+                    Icon(Icons.AutoMirrored.Rounded.KeyboardArrowRight, contentDescription = null)
+                }
+            }
+        }
+        item(key = "card_opacity") {
+            BaseItemContainer {
+                BaseWidget(
+                    title = alphaTitle,
+                    description = stringResource(R.string.settings_card_background_alpha_summary),
+                    icon = Icons.Outlined.Palette,
+                ) { Text("${alpha.roundToInt()}%", style = MaterialTheme.typography.labelLarge) }
+                val alphaSliderState = remember {
+                    SliderState(
+                        value = alpha,
+                        steps = CARD_BACKGROUND_ALPHA_MAX - CARD_BACKGROUND_ALPHA_MIN - 1,
+                        trackRange = CARD_BACKGROUND_ALPHA_MIN.toFloat()..CARD_BACKGROUND_ALPHA_MAX.toFloat(),
                     )
                 }
-            }
-        },
-        onClick = { imagePickerLauncher.launch(arrayOf("image/*")) }
-    )
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 10.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            SettingsStartIcon(Icons.Outlined.Palette)
-            Spacer(Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(R.string.settings_card_background_alpha),
-                    style = COUITheme.textStyles.body1,
-                    color = COUITheme.colorScheme.onSurface
-                )
-                Text(
-                    text = stringResource(R.string.settings_card_background_alpha_summary),
-                    style = COUITheme.textStyles.body2,
-                    color = COUITheme.colorScheme.onSurfaceVariantSummary
+                alphaSliderState.value = alpha
+                Slider(
+                    state = alphaSliderState,
+                    onValueChange = { alpha = it.roundToInt().toFloat() },
+                    track = { sliderState ->
+                        SliderDefaults.Track(sliderState = sliderState, drawTick = { _, _ -> })
+                    },
+                    onValueChangeFinished = {
+                        val percent = alpha.roundToInt().coerceIn(CARD_BACKGROUND_ALPHA_MIN, CARD_BACKGROUND_ALPHA_MAX)
+                        scope.launch { context.dataStore.edit { it[ThemeConfig.CARD_BACKGROUND_ALPHA_PERCENT] = percent } }
+                    },
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 12.dp)
+                        .semantics {
+                            contentDescription = alphaTitle
+                            stateDescription = "${alpha.roundToInt()}%"
+                        },
                 )
             }
-            Text(
-                text = "${cardBackgroundAlphaSlider.roundToInt()}%",
-                style = COUITheme.textStyles.body2,
-                color = COUITheme.colorScheme.onSurfaceVariantSummary
-            )
         }
-        Slider(
-            value = cardBackgroundAlphaSlider,
-            onValueChange = { value ->
-                cardBackgroundAlphaSlider = value.roundToInt()
-                    .coerceIn(CARD_BACKGROUND_ALPHA_MIN, CARD_BACKGROUND_ALPHA_MAX)
-                    .toFloat()
-            },
-            valueRange = CARD_BACKGROUND_ALPHA_MIN.toFloat()..CARD_BACKGROUND_ALPHA_MAX.toFloat(),
-            steps = CARD_BACKGROUND_ALPHA_MAX - CARD_BACKGROUND_ALPHA_MIN - 1,
-            onValueChangeFinished = {
-                val percent = cardBackgroundAlphaSlider.roundToInt()
-                    .coerceIn(CARD_BACKGROUND_ALPHA_MIN, CARD_BACKGROUND_ALPHA_MAX)
-                scope.launch {
-                    context.dataStore.edit { it[ThemeConfig.CARD_BACKGROUND_ALPHA_PERCENT] = percent }
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp)
-        )
+        item(key = "palette", animatedVisibility = !theme.useMonet) {
+            ThemePalette(theme.customColor) { color ->
+                scope.launch { context.dataStore.edit { it[ThemeConfig.CUSTOM_COLOR] = color } }
+            }
+        }
     }
+}
 
-    AnimatedVisibility(visible = !useMonet) {
-        Column {
-            Text(
-                text = stringResource(R.string.settings_builtin_theme_color),
-                style = COUITheme.textStyles.body2,
-                color = COUITheme.colorScheme.onSurfaceVariantSummary,
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(scrollState)
-                    .padding(horizontal = 20.dp, vertical = 12.dp)
-                    .padding(bottom = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                val colorPalettes = listOf(
-                    DEFAULT_CUSTOM_COLOR to stringResource(R.string.settings_color_cherry_blossom),
-                    0xFF007AFF to stringResource(R.string.settings_color_default_blue),
-                    0xFF34C759 to stringResource(R.string.settings_color_fresh_green),
-                    0xFFAF52DE to stringResource(R.string.settings_color_elegant_purple),
-                    0xFFFF9500 to stringResource(R.string.settings_color_vibrant_orange),
-                    0xFF00BCD4 to stringResource(R.string.settings_color_cyan),
-                    0xFF81C784 to stringResource(R.string.settings_color_mint_green),
-                    0xFFF06292 to stringResource(R.string.settings_color_pink),
-                    0xFFD81B60 to stringResource(R.string.settings_color_deep_pink),
-                    0xFF64B5F6 to stringResource(R.string.settings_color_ice_blue),
-                    0xFFE91E63 to stringResource(R.string.settings_color_rose)
-                )
-
-                colorPalettes.forEach { (colorHex, colorName) ->
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                        modifier = Modifier.width(74.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(46.dp)
-                                .clip(CircleShape)
-                                .background(Color(colorHex.toInt()))
-                                .clickable {
-                                    scope.launch { context.dataStore.edit { it[ThemeConfig.CUSTOM_COLOR] = colorHex.toInt() } }
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            if (customColor == colorHex.toInt()) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Check,
-                                    contentDescription = "Selected",
-                                    tint = Color.White,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
-                        }
-                        Text(
-                            text = colorName,
-                            style = COUITheme.textStyles.footnote1,
-                            color = COUITheme.colorScheme.onSurfaceVariantSummary,
-                            textAlign = TextAlign.Center,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
+@Composable
+private fun ThemePalette(selectedColor: Int, onSelected: (Int) -> Unit) {
+    val palettes = listOf(
+        DEFAULT_CUSTOM_COLOR to R.string.settings_color_cherry_blossom,
+        0xFF007AFF.toInt() to R.string.settings_color_default_blue,
+        0xFF34C759.toInt() to R.string.settings_color_fresh_green,
+        0xFFAF52DE.toInt() to R.string.settings_color_elegant_purple,
+        0xFFFF9500.toInt() to R.string.settings_color_vibrant_orange,
+        0xFF00BCD4.toInt() to R.string.settings_color_cyan,
+        0xFF81C784.toInt() to R.string.settings_color_mint_green,
+        0xFFF06292.toInt() to R.string.settings_color_pink,
+        0xFFD81B60.toInt() to R.string.settings_color_deep_pink,
+        0xFF64B5F6.toInt() to R.string.settings_color_ice_blue,
+        0xFFE91E63.toInt() to R.string.settings_color_rose,
+    )
+    BaseItemContainer {
+        BaseWidget(title = stringResource(R.string.settings_builtin_theme_color), icon = Icons.Outlined.Palette)
+        FlowRow(
+            modifier = Modifier.fillMaxWidth().selectableGroup().padding(horizontal = 16.dp).padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            palettes.forEach { (value, name) ->
+                val label = stringResource(name)
+                Column(
+                    modifier = Modifier.width(80.dp).clip(MaterialTheme.shapes.medium)
+                        .selectable(selected = selectedColor == value, role = Role.RadioButton, onClick = { onSelected(value) })
+                        .padding(vertical = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Box(Modifier.size(48.dp).clip(CircleShape).background(Color(value)), contentAlignment = Alignment.Center) {
+                        if (selectedColor == value) Icon(
+                            Icons.Outlined.Check,
+                            contentDescription = null,
+                            tint = if (Color(value).luminance() > 0.5f) Color.Black else Color.White,
                         )
                     }
+                    Text(label, style = MaterialTheme.typography.labelMedium, textAlign = TextAlign.Center)
                 }
             }
         }
@@ -744,18 +335,248 @@ fun AppearanceSettings() {
 }
 
 @Composable
-private fun SettingsStartIcon(imageVector: ImageVector) {
-    Box(
-        modifier = Modifier.size(24.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = imageVector,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            tint = COUITheme.colorScheme.onBackground
-        )
+fun InstallationSettings() {
+    val context = LocalContext.current
+    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        Configs.installNotificationEnabled = granted
     }
+    SegmentedColumn(title = stringResource(R.string.settings_installation_category)) {
+        item(key = "notifications") {
+            SwitchWidget(
+                title = stringResource(R.string.settings_install_notification),
+                description = stringResource(R.string.settings_install_notification_summary),
+                icon = Icons.Outlined.ArrowUpward,
+                checked = Configs.installNotificationEnabled,
+                onCheckedChange = { enabled ->
+                    if (enabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !InstallNotificationHelper.hasNotificationPermission(context)) {
+                        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    } else {
+                        Configs.installNotificationEnabled = enabled
+                    }
+                },
+            )
+        }
+        item(key = "all_users") {
+            SwitchWidget(
+                title = stringResource(R.string.settings_install_all_users),
+                description = stringResource(R.string.settings_install_all_users_summary),
+                icon = Icons.Outlined.Person,
+                checked = Configs.installAllUsers,
+                onCheckedChange = { Configs.installAllUsers = it },
+            )
+        }
+        item(key = "installer") { InstallerPreference() }
+    }
+}
+
+@Composable
+private fun InstallerPreference() {
+    val context = LocalContext.current
+    val packageName = Configs.thirdPartyInstallerPackage
+    val defaultLabel = stringResource(R.string.settings_third_party_installer_system_default)
+    var show by rememberSaveable { mutableStateOf(false) }
+    var showEditor by rememberSaveable { mutableStateOf(false) }
+    var draft by rememberSaveable { mutableStateOf(packageName) }
+    var customPackage by rememberSaveable { mutableStateOf(Configs.customInstallerPackage) }
+    var customSelected by rememberSaveable { mutableStateOf(false) }
+    var discovered by remember { mutableStateOf<List<DiscoveredInstaller>>(emptyList()) }
+    var discovering by remember { mutableStateOf(false) }
+    val currentSummary by produceState(initialValue = packageName.ifBlank { defaultLabel }, packageName, defaultLabel) {
+        value = if (packageName.isBlank()) defaultLabel else withContext(Dispatchers.IO) {
+            runCatching {
+                val info = context.packageManager.getApplicationInfo(packageName, 0)
+                "${context.packageManager.getApplicationLabel(info)} ($packageName)"
+            }.getOrDefault(packageName)
+        }
+    }
+    LaunchedEffect(show) {
+        if (show) {
+            discovering = true
+            try {
+                discovered = withContext(Dispatchers.IO) {
+                    runCatching { ThirdPartyPackageInstaller.getDiscoveredInstallers(context) }
+                        .onFailure { Log.e(TAG, "Failed to discover package installers", it) }
+                        .getOrDefault(emptyList())
+                }
+                if (draft.isNotBlank() && discovered.none { it.packageName == draft }) {
+                    customPackage = draft
+                    customSelected = true
+                }
+            } finally {
+                discovering = false
+            }
+        }
+    }
+    val scope = rememberCoroutineScope()
+    var saving by remember { mutableStateOf(false) }
+    SettingsAction(
+        title = stringResource(R.string.settings_third_party_installer),
+        description = currentSummary,
+        icon = Icons.Outlined.Android,
+        onClick = {
+            draft = packageName
+            customPackage = Configs.customInstallerPackage
+            customSelected = packageName.isNotBlank() && packageName == customPackage
+            showEditor = false
+            show = true
+        },
+    )
+    SettingsDialog(
+        show = show,
+        title = stringResource(R.string.settings_third_party_installer_dialog_title),
+        onDismissRequest = { if (!saving) show = false },
+        scrollable = false,
+        confirmButton = {
+            TextButton(enabled = !saving && !discovering, onClick = {
+                val selectedPackage = if (customSelected) customPackage else draft
+                saving = true
+                scope.launch {
+                    try {
+                        val valid = (!customSelected && selectedPackage.isBlank()) || withContext(Dispatchers.IO) {
+                            ThirdPartyPackageInstaller.isInstallerValid(context, selectedPackage)
+                        }
+                        if (valid) {
+                            Configs.customInstallerPackage = customPackage
+                            Configs.thirdPartyInstallerPackage = selectedPackage
+                            show = false
+                        } else {
+                            customPackage = selectedPackage
+                            customSelected = true
+                            showEditor = true
+                        }
+                    } finally { saving = false }
+                }
+            }) { Text(stringResource(android.R.string.ok)) }
+        },
+    ) {
+        LazyColumn(Modifier.weight(1f, fill = false).fillMaxWidth().selectableGroup()) {
+            val customIndex = discovered.size + 1
+            lazySegmentedItems(
+                items = (0..customIndex).toList(),
+                key = { index ->
+                    when (index) {
+                        0 -> "system"
+                        customIndex -> "custom"
+                        else -> discovered[index - 1].packageName
+                    }
+                },
+            ) { index ->
+                when (index) {
+                    0 -> RadioButtonWidget(
+                        title = defaultLabel,
+                        selected = !customSelected && draft.isBlank(),
+                        onSelect = { customSelected = false; draft = "" },
+                    )
+                    customIndex -> CustomValueOption(
+                        title = stringResource(R.string.settings_third_party_installer_custom),
+                        value = customPackage,
+                        selected = customSelected,
+                        onEdit = { showEditor = true },
+                        onSelect = { customSelected = true },
+                    )
+                    else -> {
+                        val installer = discovered[index - 1]
+                        RadioButtonWidget(
+                            title = installer.label,
+                            description = installer.packageName,
+                            selected = !customSelected && draft == installer.packageName,
+                            onSelect = { customSelected = false; draft = installer.packageName },
+                        )
+                    }
+                }
+            }
+        }
+        if (discovering) LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+    }
+    CustomValueDialog(
+        show = show && showEditor,
+        title = stringResource(R.string.settings_third_party_installer_custom),
+        label = stringResource(R.string.settings_third_party_installer_custom_hint),
+        value = customPackage,
+        errorText = stringResource(R.string.settings_third_party_installer_invalid_pkg),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
+        onDismissRequest = { showEditor = false },
+        validate = { value -> withContext(Dispatchers.IO) { ThirdPartyPackageInstaller.isInstallerValid(context, value) } },
+        onConfirm = { customPackage = it },
+    )
+}
+
+@Composable
+private fun DnsPreference() {
+    var selected by remember { mutableStateOf(NetworkDns.selectedProvider()) }
+    var show by rememberSaveable { mutableStateOf(false) }
+    var showEditor by rememberSaveable { mutableStateOf(false) }
+    var draft by rememberSaveable { mutableStateOf(selected) }
+    var customUrl by rememberSaveable { mutableStateOf(NetworkDns.customUrl()) }
+    val providers = DnsProvider.entries
+    val labels = listOf(
+        stringResource(R.string.settings_dns_tencent),
+        stringResource(R.string.settings_dns_google),
+        stringResource(R.string.settings_dns_cloudflare),
+        stringResource(R.string.settings_dns_system),
+        stringResource(R.string.settings_dns_custom),
+    )
+    SettingsAction(
+        title = stringResource(R.string.settings_dns),
+        description = "${labels[providers.indexOf(selected)]} · ${stringResource(R.string.settings_dns_summary)}",
+        icon = Icons.Outlined.Language,
+        onClick = { draft = selected; customUrl = NetworkDns.customUrl(); showEditor = false; show = true },
+    )
+    SettingsDialog(
+        show = show,
+        title = stringResource(R.string.settings_dns),
+        onDismissRequest = { show = false },
+        scrollable = false,
+        confirmButton = {
+            TextButton(onClick = {
+                if (customUrl.isNotBlank()) {
+                    if (!NetworkDns.setCustomUrl(customUrl, selectProvider = false)) {
+                        showEditor = true
+                        return@TextButton
+                    }
+                } else if (draft == DnsProvider.CUSTOM) {
+                    showEditor = true
+                    return@TextButton
+                }
+                NetworkDns.setProvider(draft)
+                selected = draft
+                show = false
+            }) { Text(stringResource(android.R.string.ok)) }
+        },
+    ) {
+        LazyColumn(Modifier.weight(1f, fill = false).fillMaxWidth().selectableGroup()) {
+            lazySegmentedItems(providers, key = { it.name }) { provider ->
+                if (provider == DnsProvider.CUSTOM) {
+                    CustomValueOption(
+                        title = labels[provider.ordinal],
+                        value = customUrl,
+                        selected = draft == provider,
+                        selectionEnabled = NetworkDns.isValidCustomUrl(customUrl),
+                        onEdit = { showEditor = true },
+                        onSelect = { draft = provider },
+                    )
+                } else {
+                    RadioButtonWidget(
+                        title = labels[provider.ordinal],
+                        selected = draft == provider,
+                        onSelect = { draft = provider },
+                    )
+                }
+            }
+        }
+    }
+    CustomValueDialog(
+        show = show && showEditor,
+        title = stringResource(R.string.settings_dns_custom),
+        label = stringResource(R.string.settings_dns_custom_url),
+        value = customUrl,
+        errorText = stringResource(R.string.settings_dns_custom_invalid),
+        description = stringResource(R.string.settings_dns_custom_summary),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Uri),
+        onDismissRequest = { showEditor = false },
+        validate = { NetworkDns.isValidCustomUrl(it) },
+        onConfirm = { customUrl = it },
+    )
 }
 
 private val LANGUAGE_ENTRIES = listOf(
@@ -809,267 +630,192 @@ private val LANGUAGE_ENTRIES = listOf(
 @Composable
 fun LanguagePreference() {
     val context = LocalContext.current
+    val activity = LocalActivity.current
     val systemLabel = stringResource(R.string.settings_language_system)
-    val languageLabels = remember(systemLabel) {
+    val labels = remember(systemLabel) {
         LANGUAGE_ENTRIES.map { (_, label) -> if (label == "settings_language_system") systemLabel else label }
     }
-    var selectedIndex by remember {
-        mutableStateOf(
-            LANGUAGE_ENTRIES.indexOfFirst {
-                LSPApplication.normalizeLanguageTag(it.first) ==
-                    LSPApplication.normalizeLanguageTag(Configs.language)
-            }.takeIf { it >= 0 } ?: 0
-        )
-    }
-    OverlayDropdownPreference(
-        title = stringResource(R.string.settings_language),
-        items = languageLabels,
-        selectedIndex = selectedIndex,
-        startAction = {
-            SettingsStartIcon(Icons.Outlined.Language)
-        },
-        onSelectedIndexChange = { index ->
-            selectedIndex = index
-            val tag = LSPApplication.normalizeLanguageTag(LANGUAGE_ENTRIES[index].first)
-            Configs.language = tag
-            val intent = Intent(context, MainActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+    val selectedIndex = LANGUAGE_ENTRIES.indexOfFirst {
+        LSPApplication.normalizeLanguageTag(it.first) == LSPApplication.normalizeLanguageTag(Configs.language)
+    }.coerceAtLeast(0)
+    SettingsChoice(
+        title = stringResource(R.string.settings_language), icon = Icons.Outlined.Language,
+        options = labels, selectedIndex = selectedIndex,
+        onSelected = { index ->
+            if (index != selectedIndex) {
+                Configs.language = LSPApplication.normalizeLanguageTag(LANGUAGE_ENTRIES[index].first)
+                context.startActivity(Intent(context, MainActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                })
+                activity?.finish()
             }
-            context.startActivity(intent)
-            (context as? Activity)?.finish()
-        }
+        },
     )
 }
 
 @Composable
-private fun KeyStore() {
+private fun KeyStorePreference() {
+    val scope = rememberCoroutineScope()
+    val snackbarHost = LocalSnackbarHost.current
+    val unknownError = stringResource(R.string.error_unknown)
+    var showCustom by rememberSaveable { mutableStateOf(false) }
+    val currentPreset = Configs.keyStorePreset
+    DropDownMenuWidget(
+        title = stringResource(R.string.settings_keystore), icon = Icons.Outlined.Key,
+        options = listOf(
+            DropdownOption(0, "NPatch"),
+            DropdownOption(1, "FPA"),
+            DropdownOption(2, stringResource(R.string.settings_keystore_custom)),
+        ),
+        value = currentPreset.ordinal,
+        onValueChange = { index ->
+            if (index == 2) showCustom = true else scope.launch {
+                runCatching { if (index == 0) MyKeyStore.reset() else MyKeyStore.setBuiltinFpa() }
+                    .onFailure { Log.e(TAG, "Failed to change keystore", it); snackbarHost.showSnackbar(unknownError) }
+            }
+        },
+    )
+    CustomKeystoreDialog(show = showCustom, onDismiss = { showCustom = false })
+}
+
+@Composable
+private fun CustomKeystoreDialog(show: Boolean, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val showDialog = remember { mutableStateOf(false) }
-    val currentPreset = Configs.keyStorePreset
-
-    val keyStoreItems = listOf(
-        "NPatch",
-        "FPA",
-        stringResource(R.string.settings_keystore_custom)
-    )
-    var selectedIndex by remember { mutableStateOf(keyStorePresetIndex(currentPreset)) }
-    LaunchedEffect(currentPreset) {
-        selectedIndex = keyStorePresetIndex(currentPreset)
+    var path by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var alias by rememberSaveable { mutableStateOf("") }
+    var aliasPassword by rememberSaveable { mutableStateOf("") }
+    var error by rememberSaveable { mutableStateOf<Int?>(null) }
+    var busy by remember { mutableStateOf(false) }
+    var previouslyShown by rememberSaveable { mutableStateOf(show) }
+    LaunchedEffect(show) {
+        if (show && !previouslyShown) {
+            path = ""
+            password = ""
+            alias = ""
+            aliasPassword = ""
+            error = null
+        }
+        previouslyShown = show
     }
-
-    OverlayDropdownPreference(
-        title = stringResource(R.string.settings_keystore),
-        items = keyStoreItems,
-        selectedIndex = selectedIndex,
-        startAction = {
-            SettingsStartIcon(Icons.Outlined.Key)
-        },
-        onSelectedIndexChange = { index ->
-            selectedIndex = index
-            if (index == 0) {
-                scope.launch { MyKeyStore.reset() }
-            } else if (index == 1) {
-                scope.launch { MyKeyStore.setBuiltinFpa() }
-            } else {
-                showDialog.value = true
-            }
-        }
-    )
-
-    if (showDialog.value) {
-        var wrongKeystore by rememberSaveable { mutableStateOf(false) }
-        var wrongPassword by rememberSaveable { mutableStateOf(false) }
-        var wrongAliasName by rememberSaveable { mutableStateOf(false) }
-        var wrongAliasPassword by rememberSaveable { mutableStateOf(false) }
-
-        var path by rememberSaveable { mutableStateOf("") }
-        var password by rememberSaveable { mutableStateOf("") }
-        var alias by rememberSaveable { mutableStateOf("") }
-        var aliasPassword by rememberSaveable { mutableStateOf("") }
-
-        val dismissDialog = {
-            showDialog.value = false
-            selectedIndex = keyStorePresetIndex(Configs.keyStorePreset)
-        }
-
-        val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-            if (uri == null) return@rememberLauncherForActivityResult
-            context.contentResolver.openInputStream(uri).use { input ->
-                MyKeyStore.tmpFile.outputStream().use { output ->
-                    input?.copyTo(output)
+    // Keep the result launcher registered while its external picker is on screen.
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) scope.launch {
+            busy = true
+            try {
+                withContext(Dispatchers.IO) {
+                    val input = context.contentResolver.openInputStream(uri) ?: throw IOException("No keystore input")
+                    input.use { source -> MyKeyStore.tmpFile.outputStream().use { source.copyTo(it) } }
                 }
-            }
-            path = uri.path ?: ""
+                path = uri.lastPathSegment.orEmpty()
+                error = null
+            } catch (failure: Exception) {
+                Log.e(TAG, "Failed to read keystore", failure)
+                error = R.string.settings_keystore_wrong_keystore
+            } finally { busy = false }
         }
-
-        val interactionSource = remember { MutableInteractionSource() }
-        LaunchedEffect(interactionSource) {
-            interactionSource.interactions.collect { interaction ->
-                if (interaction is PressInteraction.Release) {
-                    launcher.launch("*/*")
+    }
+    SettingsDialog(
+        show = show,
+        title = stringResource(R.string.settings_keystore_dialog_title),
+        onDismissRequest = { if (!busy) onDismiss() },
+        confirmButton = {
+            TextButton(enabled = !busy, onClick = {
+                error = null
+                if (path.isBlank()) {
+                    error = R.string.settings_keystore_wrong_keystore
+                    return@TextButton
                 }
-            }
-        }
-
-        OverlayDialog(
-            title = stringResource(R.string.settings_keystore_dialog_title),
-            show = showDialog.value,
-            onDismissRequest = {
-                dismissDialog()
-            },
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .scrollEndHaptic()
-                    .overScrollVertical()
-                    .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                // Error Message Handling
-                val wrongText = when {
-                    wrongAliasPassword -> stringResource(R.string.settings_keystore_wrong_alias_password)
-                    wrongAliasName -> stringResource(R.string.settings_keystore_wrong_alias)
-                    wrongPassword -> stringResource(R.string.settings_keystore_wrong_password)
-                    wrongKeystore -> stringResource(R.string.settings_keystore_wrong_keystore)
-                    else -> null
-                }
-
-                Text(
-                    modifier = Modifier.padding(bottom = 8.dp),
-                    text = wrongText ?: stringResource(R.string.settings_keystore_desc),
-                    color = if (wrongText != null) COUITheme.colorScheme.error else COUITheme.colorScheme.onSurfaceVariantSummary,
-                    style = COUITheme.textStyles.body2,
-                    textAlign = TextAlign.Center
-                )
-
-                TextField(
-                    value = path,
-                    onValueChange = {},
-                    label = stringResource(R.string.settings_keystore_file),
-                    modifier = Modifier.fillMaxWidth(),
-                    readOnly = true,
-                    interactionSource = interactionSource
-                )
-                TextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = stringResource(R.string.settings_keystore_password),
-                    modifier = Modifier.fillMaxWidth()
-                )
-                TextField(
-                    value = alias,
-                    onValueChange = { alias = it },
-                    label = stringResource(R.string.settings_keystore_alias),
-                    modifier = Modifier.fillMaxWidth()
-                )
-                TextField(
-                    value = aliasPassword,
-                    onValueChange = { aliasPassword = it },
-                    label = stringResource(R.string.settings_keystore_alias_password),
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(Modifier.height(8.dp))
-
-                DialogButtonBar(
-                    negative = DialogButtonBarAction(
-                        text = stringResource(android.R.string.cancel),
-                        onClick = dismissDialog
-                    ),
-                    positive = DialogButtonBarAction(
-                        text = stringResource(android.R.string.ok),
-                        onClick = {
-                            wrongKeystore = false
-                            wrongPassword = false
-                            wrongAliasName = false
-                            wrongAliasPassword = false
-
-                            if (path.isEmpty()) {
-                                wrongKeystore = true
-                                return@DialogButtonBarAction
-                            }
-                            val keyStore = KeyStore.getInstance("BKS")
-                            try {
-                                MyKeyStore.tmpFile.inputStream().use { input ->
-                                    keyStore.load(input, password.toCharArray())
-                                }
-                            } catch (e: IOException) {
-                                wrongKeystore = true
-                                if (e.message == "KeyStore integrity check failed.") {
-                                    wrongPassword = true
-                                }
-                                return@DialogButtonBarAction
-                            }
-                            if (!keyStore.containsAlias(alias)) {
-                                wrongAliasName = true
-                                return@DialogButtonBarAction
-                            }
-                            try {
-                                keyStore.getKey(alias, aliasPassword.toCharArray())
-                            } catch (e: GeneralSecurityException) {
-                                wrongAliasPassword = true
-                                return@DialogButtonBarAction
-                            }
-
-                            scope.launch { MyKeyStore.setCustom(password, alias, aliasPassword) }
-                            showDialog.value = false
+                busy = true
+                scope.launch {
+                    try {
+                        error = withContext(Dispatchers.IO) { validateKeystore(password, alias, aliasPassword) }
+                        if (error == null) {
+                            MyKeyStore.setCustom(password, alias, aliasPassword)
+                            onDismiss()
                         }
-                    )
-                )
-            }
+                    } catch (failure: Exception) {
+                        Log.e(TAG, "Failed to import keystore", failure)
+                        error = R.string.settings_keystore_wrong_keystore
+                    } finally { busy = false }
+                }
+            }) { Text(stringResource(android.R.string.ok)) }
+        },
+    ) {
+        Text(stringResource(R.string.settings_keystore_desc), style = MaterialTheme.typography.bodyMedium)
+        error?.let { SettingsErrorText(stringResource(it)) }
+        // A real accessible button replaces the old read-only field / PressInteraction interception.
+        OutlinedButton(enabled = !busy, onClick = { launcher.launch("*/*") }, modifier = Modifier.fillMaxWidth()) {
+            Icon(Icons.Outlined.FolderOpen, contentDescription = null)
+            Spacer(Modifier.width(8.dp))
+            Text(path.ifBlank { stringResource(R.string.settings_keystore_file) })
         }
+        OutlinedTextField(
+            value = password, onValueChange = { password = it; error = null },
+            label = { Text(stringResource(R.string.settings_keystore_password)) },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            singleLine = true, modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = alias, onValueChange = { alias = it; error = null },
+            label = { Text(stringResource(R.string.settings_keystore_alias)) },
+            singleLine = true, modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = aliasPassword, onValueChange = { aliasPassword = it; error = null },
+            label = { Text(stringResource(R.string.settings_keystore_alias_password)) },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            singleLine = true, modifier = Modifier.fillMaxWidth(),
+        )
+        if (busy) LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }
 }
 
-private fun keyStorePresetIndex(preset: KeystorePreset): Int {
-    return when (preset) {
-        KeystorePreset.NPATCH -> 0
-        KeystorePreset.FPA -> 1
-        KeystorePreset.CUSTOM -> 2
+private fun validateKeystore(password: String, alias: String, aliasPassword: String): Int? {
+    val keystore = KeyStore.getInstance("BKS")
+    try {
+        MyKeyStore.tmpFile.inputStream().use { keystore.load(it, password.toCharArray()) }
+    } catch (error: IOException) {
+        return if (error.message == "KeyStore integrity check failed.") R.string.settings_keystore_wrong_password
+        else R.string.settings_keystore_wrong_keystore
     }
+    if (!keystore.containsAlias(alias)) return R.string.settings_keystore_wrong_alias
+    try {
+        if (keystore.getKey(alias, aliasPassword.toCharArray()) == null) return R.string.settings_keystore_wrong_alias
+    } catch (_: GeneralSecurityException) {
+        return R.string.settings_keystore_wrong_alias_password
+    }
+    return null
 }
 
 @Composable
 private fun DetailPatchLogs() {
-    SwitchPreference(
-        title = stringResource(R.string.settings_detail_patch_logs),
-        startAction = {
-            SettingsStartIcon(Icons.Outlined.BugReport)
-        },
-        checked = Configs.detailPatchLogs,
-        onCheckedChange = { Configs.detailPatchLogs = it }
+    SwitchWidget(
+        title = stringResource(R.string.settings_detail_patch_logs), icon = Icons.Outlined.BugReport,
+        checked = Configs.detailPatchLogs, onCheckedChange = { Configs.detailPatchLogs = it },
     )
 }
 
 @Composable
 private fun OutputFullLog() {
-    SwitchPreference(
+    SwitchWidget(
         title = stringResource(R.string.settings_output_full_log),
-        summary = stringResource(R.string.settings_output_full_log_summary),
-        checked = Configs.outputFullLog,
-        startAction = {
-            SettingsStartIcon(Icons.Outlined.Description)
-        },
-        onCheckedChange = {
-            Configs.outputFullLog = it
-            ManagerLogger.setEnabled(it)
-        }
+        description = stringResource(R.string.settings_output_full_log_summary),
+        icon = Icons.Outlined.Description, checked = Configs.outputFullLog,
+        onCheckedChange = { Configs.outputFullLog = it; ManagerLogger.setEnabled(it) },
     )
 }
 
 @Composable
 private fun WelcomeGuide() {
     val navigator = LocalNavigator.current
-    ArrowPreference(
+    SettingsAction(
         title = stringResource(R.string.settings_view_welcome),
-        summary = stringResource(R.string.settings_view_welcome_summary),
-        startAction = {
-            SettingsStartIcon(Icons.Outlined.Info)
-        },
-        onClick = { navigator.push(Route.Welcome(reviewMode = true)) }
+        description = stringResource(R.string.settings_view_welcome_summary), icon = Icons.Outlined.Info,
+        onClick = { navigator.push(Route.Welcome(reviewMode = true)) },
     )
 }
 
@@ -1079,26 +825,20 @@ fun StorageDirectory() {
     val snackbarHost = LocalSnackbarHost.current
     val scope = rememberCoroutineScope()
     val errorText = stringResource(R.string.patch_select_dir_error)
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-        try {
-            if (it.resultCode == Activity.RESULT_CANCELED) return@rememberLauncherForActivityResult
-            val uri = it.data?.data ?: throw IOException("No data")
-            val takeFlags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            context.contentResolver.takePersistableUriPermission(uri, takeFlags)
-            Configs.storageDirectory = uri.toString()
-            Log.i(TAG, "Storage directory: ${uri.path}")
-        } catch (e: Exception) {
-            Log.e(TAG, "Error when requesting saving directory", e)
-            scope.launch { snackbarHost.showSnackbar(errorText) }
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        if (uri != null) {
+            try {
+                context.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                Configs.storageDirectory = uri.toString()
+            } catch (failure: Exception) {
+                Log.e(TAG, "Error when requesting saving directory", failure)
+                scope.launch { snackbarHost.showSnackbar(errorText) }
+            }
         }
     }
-    ArrowPreference(
-        title = stringResource(R.string.settings_storage_directory),
-        summary = Configs.storageDirectory ?: "no path set",
-        startAction = {
-            SettingsStartIcon(Icons.Outlined.Folder)
-        },
-        onClick = { launcher.launch(Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)) }
+    SettingsAction(
+        title = stringResource(R.string.settings_storage_directory), description = Configs.storageDirectory,
+        icon = Icons.Outlined.Folder, onClick = { launcher.launch(null) },
     )
 }
 
@@ -1106,51 +846,32 @@ fun StorageDirectory() {
 fun ClearManagerCache() {
     val scope = rememberCoroutineScope()
     val snackbarHost = LocalSnackbarHost.current
-    val clearText = stringResource(R.string.settings_manager_cache)
-    val summaryText = stringResource(R.string.settings_manager_cache_summary)
-    val dialogText = stringResource(R.string.settings_manager_cache_dialog_text)
     val successText = stringResource(R.string.settings_manager_cache_success)
     val failedText = stringResource(R.string.settings_manager_cache_failed)
-    val showDialog = remember { mutableStateOf(false) }
-
-    ArrowPreference(
-        title = clearText,
-        summary = summaryText,
-        startAction = {
-            SettingsStartIcon(Icons.Outlined.DeleteSweep)
-        },
-        onClick = { showDialog.value = true }
+    var show by rememberSaveable { mutableStateOf(false) }
+    var clearing by remember { mutableStateOf(false) }
+    SettingsAction(
+        title = stringResource(R.string.settings_manager_cache),
+        description = stringResource(R.string.settings_manager_cache_summary),
+        icon = Icons.Outlined.DeleteSweep, enabled = !clearing, onClick = { show = true },
     )
-
-    if (showDialog.value) {
-        OverlayDialog(
-            title = clearText,
-            summary = dialogText,
-            show = showDialog.value,
-            onDismissRequest = { showDialog.value = false },
-        ) {
-            DialogButtonBar(
-                negative = DialogButtonBarAction(
-                    text = stringResource(android.R.string.cancel),
-                    onClick = { showDialog.value = false }
-                ),
-                positive = DialogButtonBarAction(
-                    text = stringResource(android.R.string.ok),
-                    onClick = {
-                        showDialog.value = false
-                        scope.launch {
-                            runCatching {
-                                ManagerCacheCleaner.clear()
-                            }.onSuccess {
-                                snackbarHost.showSnackbar(successText)
-                            }.onFailure {
-                                Log.e(TAG, "Failed to clear manager cache", it)
-                                snackbarHost.showSnackbar(failedText)
-                            }
-                        }
-                    }
-                )
-            )
-        }
-    }
+    SettingsDialog(
+        show = show, title = stringResource(R.string.settings_manager_cache),
+        onDismissRequest = { show = false },
+        confirmButton = {
+            TextButton(onClick = {
+                show = false
+                clearing = true
+                scope.launch {
+                    try {
+                        ManagerCacheCleaner.clear()
+                        snackbarHost.showSnackbar(successText)
+                    } catch (failure: Exception) {
+                        Log.e(TAG, "Failed to clear manager cache", failure)
+                        snackbarHost.showSnackbar(failedText)
+                    } finally { clearing = false }
+                }
+            }) { Text(stringResource(android.R.string.ok), color = MaterialTheme.colorScheme.error) }
+        },
+    ) { Text(stringResource(R.string.settings_manager_cache_dialog_text)) }
 }

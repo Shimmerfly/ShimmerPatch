@@ -43,7 +43,7 @@ private fun LocalLanguageTagProvider(languageTag: String, content: @Composable (
         Configuration(base).apply { setLocales(LocaleList.forLanguageTags(languageTag)) }
     }
     val localizedContext = remember(localized) { LocalizedContext(context, localized) }
-    val locale = localized.locales.takeIf { it.size() > 0 }?.get(0) ?: Locale.getDefault()
+    val locale = remember(languageTag) { Locale.forLanguageTag(languageTag) }
     val direction = if (TextUtils.getLayoutDirectionFromLocale(locale) == View.LAYOUT_DIRECTION_RTL) {
         LayoutDirection.Rtl
     } else LayoutDirection.Ltr

@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">Toevoegen</string>
     <string name="install">Installeer</string>
     <string name="installing">Installatie van</string>
     <string name="uninstall">Verwijder</string>
@@ -11,9 +10,7 @@
     <string name="shizuku_available">Shizuku-service beschikbaar</string>
     <string name="shizuku_unavailable">Shizuku-service niet verbonden</string>
     <string name="screen_repo">Repo</string>
-    <string name="off">Uit</string>
     <string name="error_unknown">Onbekende fout</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">Sommige functies niet beschikbaar</string>
     <string name="home_api_version">API-versie</string>
     <string name="home_npatch_version">NPatch-versie</string>
@@ -22,10 +19,7 @@
     <string name="home_device">Apparaat</string>
     <string name="home_system_abi">Systeem ABI</string>
     <string name="home_info_copied">Gekopieerd naar het klembord</string>
-    <string name="home_support">Steun</string>
-    <string name="home_description">NPatch is een gratis niet-root Xposed-framework op basis van LSPosed-kern.</string>
-    <string name="about_view_source_code"><![CDATA[Bekijk de broncode op %1$s]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch is een gratis niet-root Xposed-framework gebaseerd op Vector.</string>
     <string name="screen_manage">Beheer</string>
     <string name="manage_loading">Bezig met laden</string>
     <string name="manage_no_apps">Nog geen gepatchte apps</string>
@@ -41,7 +35,6 @@
     <string name="manage_no_modules">Nog geen modules</string>
     <string name="manage_module_settings">Module-instellingen</string>
     <string name="manage_app_info">App info</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">Nieuwe patch</string>
     <string name="patch_select_dir_title">Selecteer opslagmap</string>
     <string name="patch_select_dir_text">Selecteer een map om de gepatchte apks op te slaan</string>
@@ -50,7 +43,7 @@
     <string name="patch_from_applist">Selecteer een geïnstalleerde app</string>
     <string name="patch_mode">Patch-modus</string>
     <string name="patch_local">lokaal</string>
-    <string name="patch_local_desc">Een app patchen zonder geïntegreerde modules.\nXposed scope kan dynamisch worden gewijzigd zonder opnieuw te patchen.\nLokaal gepatchte apps kunnen alleen draaien op het lokale apparaat.</string>
+    <string name="patch_local_desc">Patcht apps zonder modules in te sluiten.\nDe Xposed-scope kan dynamisch worden gewijzigd zonder opnieuw te hoeven patchen.\nDeze modus kan alleen lokaal worden gebruikt met de NPatch Manager.</string>
     <string name="patch_integrated">Geïntegreerd</string>
     <string name="patch_integrated_desc">Patch een app met ingesloten modules.\nDe gepatchte app kan zonder de manager worden uitgevoerd, maar kan niet dynamisch worden beheerd.\nGeïntegreerde gepatchte apps kunnen worden gebruikt op apparaten waarop NPatch Manager niet is geïnstalleerd.</string>
     <string name="patch_embed_modules">Modules insluiten</string>
@@ -67,10 +60,7 @@
     <string name="patch_uninstall_text">Vanwege verschillende handtekeningen moet u de originele app verwijderen voordat u de gepatchte app installeert.\nZorg ervoor dat u een back-up hebt gemaakt van persoonlijke gegevens.</string>
     <string name="patch_install_successfully">Succesvol installeren</string>
     <string name="patch_install_failed">Installatie mislukt</string>
-    <string name="patch_no_xposed_module">Geen Xposed-module(s) gevonden</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">Selecteer toepassingen</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">Instellingen</string>
     <string name="settings_keystore">Handtekening sleutelbewaarplaats</string>
     <string name="settings_keystore_custom">Custom</string>
@@ -86,7 +76,7 @@
     <string name="settings_keystore_wrong_alias_password">Verkeerd alias wachtwoord</string>
     <string name="settings_detail_patch_logs">Detail patch logs</string>
     <string name="patch_output_log_to_media">Log uitvoer naar Media-map</string>
-    <string name="patch_output_log_to_media_desc">Voer de Xposed-logboeken en framework-opstartlogboeken uit naar de Media-map.</string>
+    <string name="patch_output_log_to_media_desc">Legt Xposed API-logboeken, framework-gebeurtenissen en Java/Kotlin-crashes vast.</string>
     <string name="settings_card_background_alpha">Ondoorzichtigheid van kaartachtergrond</string>
     <string name="settings_card_background_alpha_summary">Van toepassing wanneer een aangepaste achtergrondafbeelding is ingeschakeld</string>
 </resources>

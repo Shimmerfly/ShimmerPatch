@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">Addไทย</string>
     <string name="install">ติดตั้ง</string>
     <string name="installing">กำลังติดตั้ง</string>
     <string name="uninstall">ถอนการติดตั้ง</string>
@@ -8,12 +7,10 @@
     <string name="copy_error">ข้อผิดพลาดในการคัดลอก</string>
     <string name="apps">แอพ</string>
     <string name="modules">โมดูล</string>
-    <string name="shizuku_available">ชิซึกุ มีบริการ</string>
+    <string name="shizuku_available">มีบริการ Shizuku</string>
     <string name="shizuku_unavailable">ไม่ได้เชื่อมต่อบริการ Shizuku</string>
     <string name="screen_repo">Repo</string>
-    <string name="off">ปิด</string>
     <string name="error_unknown">Unknown error</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">ฟังก์ชั่นบางอย่างใช้งานไม่ได้</string>
     <string name="home_api_version">เวอร์ชัน API</string>
     <string name="home_npatch_version">เวอร์ชัน NPatch</string>
@@ -22,10 +19,7 @@
     <string name="home_device">อุปกรณ์</string>
     <string name="home_system_abi">ระบบ ABI</string>
     <string name="home_info_copied">คัดลอกไปยังคลิปบอร์ดแล้ว</string>
-    <string name="home_support">สนับสนุน</string>
-    <string name="home_description">NPatch เป็นเฟรมเวิร์ก Xposed ที่ไม่ใช่รูทฟรีโดยอิงตามคอร์ LSPosed</string>
-    <string name="about_view_source_code"><![CDATA[ดูซอร์สโค้ดได้ที่ %1$s]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch เป็นเฟรมเวิร์ก Xposed ที่ไม่ใช่รูทฟรีที่ใช้ Vector</string>
     <string name="screen_manage">จัดการ</string>
     <string name="manage_loading">กำลังโหลด</string>
     <string name="manage_no_apps">ยังไม่มีแอพแพตช์</string>
@@ -41,7 +35,6 @@
     <string name="manage_no_modules">ยังไม่มีโมดูล</string>
     <string name="manage_module_settings">การตั้งค่าโมดูล</string>
     <string name="manage_app_info">ข้อมูลแอพ</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">แพทช์ใหม่</string>
     <string name="patch_select_dir_title">เลือกไดเร็กทอรีการจัดเก็บ</string>
     <string name="patch_select_dir_text">เลือกไดเร็กทอรีเพื่อจัดเก็บ apks ที่แพตช์แล้ว</string>
@@ -50,7 +43,7 @@
     <string name="patch_from_applist">เลือกแอพที่ติดตั้ง</string>
     <string name="patch_mode">โหมดแพทช์</string>
     <string name="patch_local">ท้องถิ่น</string>
-    <string name="patch_local_desc">แพทช์แอปที่ไม่มีโมดูลฝังอยู่\nขอบเขต Xposed สามารถเปลี่ยนแปลงได้แบบไดนามิกโดยไม่ต้องแพตช์ใหม่\nแอพที่ได้รับการติดตั้งในเครื่องสามารถทำงานได้บนอุปกรณ์ในเครื่องเท่านั้น</string>
+    <string name="patch_local_desc">แพทช์แอปโดยไม่ต้องฝังโมดูล\nขอบเขต Xposed สามารถเปลี่ยนแปลงได้แบบไดนามิกโดยไม่จำเป็นต้องแพตช์ใหม่\nโหมดนี้สามารถใช้ได้ภายในเครื่องกับ NPatch Manager เท่านั้น</string>
     <string name="patch_integrated">แบบบูรณาการ</string>
     <string name="patch_integrated_desc">Patch an app with modules embedded.\nThe patched app can run without the manager, but cannot be managed dynamically.\nIntegrated patched apps can be used on devices that do not have NPatch Manager installed.</string>
     <string name="patch_embed_modules">โมดูลฝังตัว</string>
@@ -67,10 +60,7 @@
     <string name="patch_uninstall_text">เนื่องจากลายเซ็นต่างกัน คุณต้องถอนการติดตั้งแอปเดิมก่อนที่จะติดตั้งแอปที่แพตช์\nตรวจสอบให้แน่ใจว่าคุณได้สำรองข้อมูลส่วนบุคคลแล้ว</string>
     <string name="patch_install_successfully">ติดตั้งสำเร็จ</string>
     <string name="patch_install_failed">ติดตั้งไม่สำเร็จ</string>
-    <string name="patch_no_xposed_module"></string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">เลือกแอพ</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">การตั้งค่า</string>
     <string name="settings_keystore">ที่เก็บคีย์ลายเซ็น</string>
     <string name="settings_keystore_custom">กำหนดเอง</string>

@@ -1,20 +1,16 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">افزودن</string>
     <string name="install">نصب</string>
-    <string name="installing">در حال نصب ...</string>
+    <string name="installing">در حال نصب …</string>
     <string name="uninstall">حذف نصب</string>
-    <string name="uninstalling">در حال حذف نصب ...</string>
+    <string name="uninstalling">در حال حذف نصب …</string>
     <string name="copy_error">خطا کپی شود</string>
     <string name="apps">برنامه ها</string>
     <string name="modules">ماژول ها</string>
     <string name="shizuku_available">سرویس Shizuku در دسترس‌ است</string>
     <string name="shizuku_unavailable">سرویس Shizuku متصل نیست</string>
     <string name="screen_repo">مخزن</string>
-
-    <string name="off">خاموش</string>
-    <string name="error_unknown"></string>
-    <!-- Home Screen -->
+    <string name="error_unknown" />
     <string name="home_shizuku_warning">برخی از عملکردها در دسترس نیستند</string>
     <string name="home_api_version">نسخه API</string>
     <string name="home_npatch_version">نسخه NPatch</string>
@@ -23,12 +19,9 @@
     <string name="home_device">مدل دستگاه</string>
     <string name="home_system_abi">نوع پردازنده</string>
     <string name="home_info_copied">در کلیپ بورد کپی شده</string>
-    <string name="home_support">حمایت</string>
-    <string name="home_description">NPatch یک فریمورک Xposed بدون نیاز به روت رایگان بر اساس هسته LSPosed است</string>
-    <string name="about_view_source_code"><![CDATA[کد منبع را در %1$s مشاهده کنید]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch یک فریمورک غیر روت رایگان Xposed بر اساس Vector است.</string>
     <string name="screen_manage">مدیریت</string>
-    <string name="manage_loading">در حال بارگذاری ...</string>
+    <string name="manage_loading">در حال بارگذاری …</string>
     <string name="manage_no_apps">هنوز هیچ برنامه ای پچ نشده</string>
     <string name="manage_rolling">متحرک</string>
     <string name="manage_update_loader">به روز رسانی بارگذاری کننده</string>
@@ -42,7 +35,6 @@
     <string name="manage_no_modules">هنوز ماژولی وجود ندارد</string>
     <string name="manage_module_settings">تنظیمات ماژول</string>
     <string name="manage_app_info">اطلاعات برنامه</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">پچ جدید</string>
     <string name="patch_select_dir_title">پوشه ذخیره سازی را انتخاب کنید</string>
     <string name="patch_select_dir_text">یک پوشه را برای ذخیره apk های پچ شده انتخاب کنید</string>
@@ -51,7 +43,7 @@
     <string name="patch_from_applist">انتخاب یک برنامه نصب شده</string>
     <string name="patch_mode">حالت پچ</string>
     <string name="patch_local">محلی</string>
-    <string name="patch_local_desc">یک برنامه بدون ماژول های تعبیه شده را وصله کنید.\nمحدوده Xposed را می توان به صورت پویا بدون وصله مجدد تغییر داد.\nبرنامه های وصله شده محلی فقط می توانند در دستگاه محلی اجرا شوند.</string>
+    <string name="patch_local_desc">برنامه ها را بدون تعبیه ماژول ها وصله می کند.\nمحدوده Xposed را می توان به صورت پویا بدون نیاز به وصله مجدد تغییر داد.\nاین حالت فقط به صورت محلی با مدیر NPatch قابل استفاده است.</string>
     <string name="patch_integrated">یکپارچه</string>
     <string name="patch_integrated_desc">یک برنامه را با ماژول های تعبیه شده پچ کنید برنامه پچ شده می‌تواند بدون نیاز مدیر اجرا شود اما نمی توان آن را به‌ صورت پویا مدیریت کرد برنامه‌های پچ شده را می‌توان در دستگاه‌ هایی که مدیر NPatch در آن نصب نشده استفاده کرد</string>
     <string name="patch_embed_modules">جاسازی ماژول ها</string>
@@ -68,10 +60,7 @@
     <string name="patch_uninstall_text">به دلیل انجام امضاهای مختلف باید قبل از نصب برنامه پچ شده برنامه اصلی را حذف نصب کنید لطفا قبل از انجام این کار از اطلاعات خود پشتیبان گیری کنید</string>
     <string name="patch_install_successfully">نصب شده</string>
     <string name="patch_install_failed">نصب نشده</string>
-    <string name="patch_no_xposed_module">هیچ ماژول(های) Xposed یافت نشد</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">برنامه ها را انتخاب کنید</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">تنظیمات</string>
     <string name="settings_keystore">فروشگاه کلید امضا</string>
     <string name="settings_keystore_custom">سفارشی</string>

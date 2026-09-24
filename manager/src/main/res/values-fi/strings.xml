@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">Lisätä</string>
     <string name="install">Asenna</string>
     <string name="installing">Asennus</string>
     <string name="uninstall">Poista</string>
@@ -11,9 +10,7 @@
     <string name="shizuku_available">Shizuku-palvelu saatavilla</string>
     <string name="shizuku_unavailable">Shizuku-palvelua ei ole yhdistetty</string>
     <string name="screen_repo">Repo</string>
-    <string name="off">Off</string>
     <string name="error_unknown">Tuntematon virhe</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">Jotkut toiminnot eivät ole käytettävissä</string>
     <string name="home_api_version">API-versio</string>
     <string name="home_npatch_version">NPatch-versio</string>
@@ -22,10 +19,7 @@
     <string name="home_device">Laite</string>
     <string name="home_system_abi">Järjestelmä ABI</string>
     <string name="home_info_copied">Kopioitu leikepöydälle</string>
-    <string name="home_support">Tuki</string>
-    <string name="home_description">NPatch on ilmainen ei-root Xposed -kehys, joka perustuu LSPosed-ytimeen.</string>
-    <string name="about_view_source_code"><![CDATA[Katso lähdekoodi osoitteessa %1$s]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch on ilmainen ei-juuritason Xposed-kehys, joka perustuu Vector:hen.</string>
     <string name="screen_manage">Hallitse</string>
     <string name="manage_loading">Ladataan</string>
     <string name="manage_no_apps">Ei vielä korjattuja sovelluksia</string>
@@ -41,7 +35,6 @@
     <string name="manage_no_modules">Ei vielä moduuleja</string>
     <string name="manage_module_settings">Moduulien asetukset</string>
     <string name="manage_app_info">Sovelluksen tiedot</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">Uusi laastari</string>
     <string name="patch_select_dir_title">Valitse tallennushakemisto</string>
     <string name="patch_select_dir_text">Valitse hakemisto, johon tallennetaan korjatut APK:t</string>
@@ -50,7 +43,7 @@
     <string name="patch_from_applist">Valitse asennettu sovellus</string>
     <string name="patch_mode">Patch-tila</string>
     <string name="patch_local">Paikallinen</string>
-    <string name="patch_local_desc">Korjaa sovellus ilman upotettuja moduuleja.\nXposedin laajuutta voidaan muuttaa dynaamisesti ilman uudelleenpatchausta.\nPaikalliset paikallistetut sovellukset voivat toimia vain paikallisella laitteella.</string>
+    <string name="patch_local_desc">Korjaa sovelluksia ilman moduuleita.\nXposed-skooppi voidaan muuttaa dynaamisesti ilman, että sitä tarvitsee korjata.\nTätä tilaa voidaan käyttää vain paikallisesti NPatch Managerin kanssa.</string>
     <string name="patch_integrated">Integroitu</string>
     <string name="patch_integrated_desc">Korjaa sovellus, jossa on upotettuja moduuleja.\nKorjattu sovellus voi toimia ilman hallintaa, mutta sitä ei voida hallita dynaamisesti.\nIntegroituja korjattuja sovelluksia voidaan käyttää laitteissa, joihin ei ole asennettu NPatch Manageria.</string>
     <string name="patch_embed_modules">Upota moduulit</string>
@@ -67,10 +60,7 @@
     <string name="patch_uninstall_text">Erilaisten allekirjoitusten vuoksi sinun on poistettava alkuperäinen sovellus ennen korjatun sovelluksen asentamista.\nVarmista, että olet varmuuskopioinut henkilökohtaiset tiedot.</string>
     <string name="patch_install_successfully">Asennus onnistui</string>
     <string name="patch_install_failed">Asennus epäonnistui</string>
-    <string name="patch_no_xposed_module">Xposed-moduulia (-moduulia) ei löytynyt</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">Valitse sovellukset</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">Asetukset</string>
     <string name="settings_keystore">Allekirjoituksen avainsäilö</string>
     <string name="settings_keystore_custom">Custom</string>

@@ -28,15 +28,12 @@ object ThirdPartyPackageInstaller {
         val viewIntent = Intent(Intent.ACTION_VIEW).apply {
             setDataAndType(dummyUri, MIME_TYPE_APK)
         }
+        @Suppress("DEPRECATION") // Discover installers that still advertise this legacy action.
         val installPackageIntent = Intent(Intent.ACTION_INSTALL_PACKAGE).apply {
             setDataAndType(dummyUri, MIME_TYPE_APK)
         }
 
-        val flags = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            PackageManager.MATCH_ALL
-        } else {
-            0
-        }
+        val flags = PackageManager.MATCH_ALL
 
         val activities = pm.queryIntentActivities(viewIntent, flags) +
             pm.queryIntentActivities(installPackageIntent, flags)
@@ -51,6 +48,7 @@ object ThirdPartyPackageInstaller {
         }
 
         return discovered.map { DiscoveredInstaller(it.key, it.value) }
+            .filter { isInstallerValid(context, it.packageName) }
             .sortedBy { it.label }
     }
 
@@ -60,7 +58,7 @@ object ThirdPartyPackageInstaller {
         val enabledFromAppInfo = runCatching {
             pm.getApplicationInfo(packageName, 0).enabled
         }.getOrNull()
-        if (enabledFromAppInfo != null) return enabledFromAppInfo
+        if (enabledFromAppInfo == false || packageName == context.packageName) return false
 
         val dummyUri = "content://${context.packageName}.fileprovider/dummy.apk".toUri()
         val testIntent = Intent(Intent.ACTION_VIEW).apply {
@@ -69,12 +67,12 @@ object ThirdPartyPackageInstaller {
         }
         val resolved = runCatching {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                pm.resolveActivity(testIntent, PackageManager.ResolveInfoFlags.of(0))
+                pm.resolveActivity(testIntent, PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong()))
             } else {
-                pm.resolveActivity(testIntent, 0)
+                pm.resolveActivity(testIntent, PackageManager.MATCH_DEFAULT_ONLY)
             }
         }.getOrNull()
-        return resolved != null
+        return resolved?.activityInfo?.let { it.enabled && it.exported } == true
     }
 
     fun install(

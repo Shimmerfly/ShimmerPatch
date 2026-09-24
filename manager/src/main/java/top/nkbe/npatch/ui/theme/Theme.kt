@@ -1,33 +1,33 @@
+// MaterialExpressiveTheme and seed generation follow WeKit's ModuleAppTheme / SeedResolver.
 package top.nkbe.npatch.ui.theme
 
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialExpressiveTheme
+import androidx.compose.material3.MotionScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import com.materialkolor.dynamicColorScheme
 import top.nkbe.npatch.config.DEFAULT_CUSTOM_COLOR
-import io.github.suqi8.coui.kmp.theme.ColorSchemeMode
-import io.github.suqi8.coui.kmp.theme.COUITheme
-import io.github.suqi8.coui.kmp.theme.ThemeController
 
 @Composable
 fun LSPTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
     useMonet: Boolean = false,
     customColor: Int = DEFAULT_CUSTOM_COLOR,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    val controller = remember(isDarkTheme, useMonet, customColor) {
-        if (useMonet) {
-            ThemeController(ColorSchemeMode.MonetSystem)
-        } else {
-            ThemeController(
-                if (isDarkTheme) ColorSchemeMode.MonetDark else ColorSchemeMode.MonetLight,
-                keyColor = Color(customColor)
-            )
+    val context = LocalContext.current
+    val colors = when {
+        useMonet && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ->
+            if (isDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        else -> remember(customColor, isDarkTheme) {
+            dynamicColorScheme(seedColor = Color(customColor), isDark = isDarkTheme)
         }
     }
-    COUITheme(
-        controller = controller,
-        content = content
-    )
+    MaterialExpressiveTheme(colorScheme = colors, motionScheme = MotionScheme.expressive(), content = content)
 }

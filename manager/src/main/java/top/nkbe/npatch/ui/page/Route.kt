@@ -1,12 +1,13 @@
 package top.nkbe.npatch.ui.page
 
-import androidx.navigation3.runtime.NavKey
+import top.yukonga.miuix.kmp.nav.core.NavKey
 import kotlinx.serialization.Serializable
 
 /**
  * Navigation3 路由定义。
  * 包含主页容器 (Main) 和其他全屏页面。
  */
+@Serializable
 sealed interface Route : NavKey {
     @Serializable
     data class Main(

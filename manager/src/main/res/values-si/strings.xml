@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">එකතු කරන්න</string>
     <string name="install">ස්ථාපනය කරන්න</string>
     <string name="installing">ස්ථාපනය කිරීම</string>
     <string name="uninstall">අස්ථාපනය කරන්න</string>
@@ -8,13 +7,10 @@
     <string name="copy_error">පිටපත් කිරීමේ දෝෂයකි</string>
     <string name="apps">යෙදුම්</string>
     <string name="modules">මොඩියුල</string>
-    <string name="shizuku_available">Shizku සේවාව ඇත</string>
-    <string name="shizuku_unavailable">Shizku සේවාව සම්බන්ධ නොවේ</string>
+    <string name="shizuku_available">Shizuku සේවාව තිබේ</string>
+    <string name="shizuku_unavailable">Shizuku සේවාව සම්බන්ධ නොවේ</string>
     <string name="screen_repo">රෙපෝ</string>
-
-    <string name="off">අක්රියයි</string>
     <string name="error_unknown">නොදන්නා දෝෂයකි</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">සමහර කාර්යයන් නොමැත</string>
     <string name="home_api_version">API අනුවාදය</string>
     <string name="home_npatch_version">NPatch අනුවාදය</string>
@@ -23,10 +19,7 @@
     <string name="home_device">උපාංගය</string>
     <string name="home_system_abi">පද්ධතිය ABI</string>
     <string name="home_info_copied">පසුරු පුවරුවට පිටපත් කර ඇත</string>
-    <string name="home_support">සහාය</string>
     <string name="home_description">NPatch යනු Vector core මත පදනම් වූ නොමිලේ Root නොවන Xposed රාමුවකි.</string>
-    <string name="about_view_source_code"><![CDATA[මූල කේතය %1$s]]></string>
-    <!-- Manage Screen -->
     <string name="screen_manage">කළමනාකරණය කරන්න</string>
     <string name="manage_loading">පැටවීම</string>
     <string name="manage_no_apps">තවම පැච් කළ යෙදුම් නැත</string>
@@ -42,7 +35,6 @@
     <string name="manage_no_modules">තවම මොඩියුල නැත</string>
     <string name="manage_module_settings">මොඩියුල සැකසුම්</string>
     <string name="manage_app_info">යෙදුම් තොරතුරු</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">නව පැච්</string>
     <string name="patch_select_dir_title">ගබඩා නාමාවලිය තෝරන්න</string>
     <string name="patch_select_dir_text">පැච් කරන ලද apks ගබඩා කිරීමට නාමාවලියක් තෝරන්න</string>
@@ -51,7 +43,7 @@
     <string name="patch_from_applist">ස්ථාපිත යෙදුමක් තෝරන්න</string>
     <string name="patch_mode">පැච් මාදිලිය</string>
     <string name="patch_local">දේශීය</string>
-    <string name="patch_local_desc">කාවැද්දූ මොඩියුල නොමැති යෙදුමක් පැච් කරන්න.\nXposed විෂය පථය නැවත පැච් කිරීමකින් තොරව ගතිකව වෙනස් කළ හැක.\nදේශීය පැච් කළ යෙදුම් ධාවනය කළ හැක්කේ දේශීය උපාංගයේ පමණි.</string>
+    <string name="patch_local_desc">මොඩියුල කාවැද්දීමකින් තොරව යෙදුම් පැච් කරන්න.\nXposed විෂය පථය නැවත පැච් කිරීමකින් තොරව ගතිකව වෙනස් කළ හැක.\nමෙම මාදිලිය භාවිතා කළ හැක්කේ NPatch කළමනාකරු සමඟ පමණක් දේශීයව ය.</string>
     <string name="patch_integrated">ඒකාබද්ධ</string>
     <string name="patch_integrated_desc">කාවැද්දූ මොඩියුල සහිත යෙදුමක් පැච් කරන්න.\nපැච් කළ යෙදුම කළමනාකරු නොමැතිව ධාවනය කළ හැකි නමුත් ගතිකව කළමනාකරණය කළ නොහැක.\nNPatch Manager ස්ථාපනය කර නොමැති උපාංග මත ඒකාබද්ධ පැච් යෙදුම් භාවිතා කළ හැක.</string>
     <string name="patch_embed_modules">මොඩියුල තැන්පත් කරන්න</string>
@@ -68,10 +60,7 @@
     <string name="patch_uninstall_text">විවිධ අත්සන් හේතුවෙන්, පැච් කළ එක ස්ථාපනය කිරීමට පෙර ඔබට මුල් යෙදුම අස්ථාපනය කිරීමට අවශ්‍ය වේ.\nඔබ පුද්ගලික දත්ත උපස්ථ කර ඇති බවට වග බලා ගන්න.</string>
     <string name="patch_install_successfully">සාර්ථකව ස්ථාපනය කරන්න</string>
     <string name="patch_install_failed">ස්ථාපනය අසාර්ථක විය</string>
-    <string name="patch_no_xposed_module">Xposed මොඩියුල(ය) හමු නොවිණි</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">යෙදුම් තෝරන්න</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">සැකසුම්</string>
     <string name="settings_keystore">අත්සන යතුරු ගබඩාව</string>
     <string name="settings_keystore_custom">අභිරුචි</string>

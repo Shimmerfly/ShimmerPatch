@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">Dodaj</string>
     <string name="install">Zainstaluj</string>
     <string name="installing">Instalowanie</string>
     <string name="uninstall">Odinstaluj</string>
@@ -11,10 +10,7 @@
     <string name="shizuku_available">Dostępna usługa Shizuku</string>
     <string name="shizuku_unavailable">Usługa Shizuku nie jest połączona</string>
     <string name="screen_repo">Repozytorium</string>
-
-    <string name="off">Wyłącz</string>
     <string name="error_unknown">Nieznany błąd</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">Niektóre funkcje niedostępne</string>
     <string name="home_api_version">Wersja API</string>
     <string name="home_npatch_version">Wersja NPatch</string>
@@ -23,10 +19,7 @@
     <string name="home_device">Urządzenie</string>
     <string name="home_system_abi">ABI systemu</string>
     <string name="home_info_copied">Skopiowane do schowka</string>
-    <string name="home_support">Wsparcie</string>
-    <string name="home_description">NPatch jest darmowym odłamem non-root Xposed framework bazowanym na rdzeniu LSPosed.</string>
-    <string name="about_view_source_code"><![CDATA[Zobacz kod źródłowy na %1$s]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch to darmowy framework Xposed inny niż root, oparty na Vector.</string>
     <string name="screen_manage">Zarządzaj</string>
     <string name="manage_loading">Ładowanie</string>
     <string name="manage_no_apps">Brak spatchowanych aplikacji</string>
@@ -42,7 +35,6 @@
     <string name="manage_no_modules">Brak modułów</string>
     <string name="manage_module_settings">Ustawienia modułu</string>
     <string name="manage_app_info">Informacje o aplikacji</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">Nowy Patch</string>
     <string name="patch_select_dir_title">Wybierz katalog przechowywania</string>
     <string name="patch_select_dir_text">Wybierz katalog, w którym chcesz przechowywać spatchowane pliki apk</string>
@@ -51,9 +43,9 @@
     <string name="patch_from_applist">Wybierz zainstalowaną aplikację</string>
     <string name="patch_mode">Tryb Patchu</string>
     <string name="patch_local">Lokalny</string>
-    <string name="patch_local_desc">Patchowanie aplikacji bez osadzonych modułów.\nZakres Xposed może być dynamicznie zmieniany bez konieczności ponownego łatania.\nLokalnie załatane aplikacje mogą działać tylko na lokalnym urządzeniu.</string>
+    <string name="patch_local_desc">Łaty aplikacje bez osadzania modułów.\nZakres Xposed można dynamicznie zmieniać bez konieczności ponownego instalowania poprawek.\nTego trybu można używać wyłącznie lokalnie z menedżerem NPatch.</string>
     <string name="patch_integrated">Zintegrowane</string>
-    <string name="patch_integrated_desc">Patchuj aplikację z osadzonymi modułami.\nSpatchowana aplikacja może działać bez menedżera, ale nie mogą być one dynamicznie zarządzane.\nZintegrowane spatchowane aplikacje mogą być użyte na urządzeniach, które nie mają zainstalowanego menedżera LSPosed.</string>
+    <string name="patch_integrated_desc">Łaty aplikacje z wbudowanymi modułami.\nPoprawiona aplikacja może działać niezależnie bez Menedżera, ale nie może dynamicznie zarządzać konfiguracjami.\nTen tryb jest odpowiedni dla aplikacji, które muszą działać na urządzeniach bez zainstalowanego menedżera NPatch.</string>
     <string name="patch_embed_modules">Osadź moduły</string>
     <string name="patch_debuggable">Możliwość debugowania</string>
     <string name="patch_sigbypass">Ominięcie podpisu</string>
@@ -68,10 +60,7 @@
     <string name="patch_uninstall_text">Ze względu na różne sygnatury musisz odinstalować oryginalną aplikację przed zainstalowaniem poprawionej.\nUpewnij się, że wykonałeś kopię zapasową danych osobowych.</string>
     <string name="patch_install_successfully">Zainstaluj pomyślnie</string>
     <string name="patch_install_failed">Instalacja nie powiodła się</string>
-    <string name="patch_no_xposed_module">Nie znaleziono modułów Xposed</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">Wybierz aplikacje</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">Ustawienia</string>
     <string name="settings_keystore">Podpisz bazę kluczy</string>
     <string name="settings_keystore_custom">Własna strona</string>
@@ -87,7 +76,7 @@
     <string name="settings_keystore_wrong_alias_password">Nieprawidłowe hasło aliasu</string>
     <string name="settings_detail_patch_logs">Szczegóły logów poprawek</string>
     <string name="patch_output_log_to_media">Wyjście logu do katalogu Media</string>
-    <string name="patch_output_log_to_media_desc">Wyjście logów Xposed i logów startu framework do katalogu Media.</string>
+    <string name="patch_output_log_to_media_desc">Przechwytuje dzienniki Xposed API, zdarzenia frameworku i awarie Java/Kotlin.</string>
     <string name="settings_card_background_alpha">Nieprzezroczystość tła kart</string>
     <string name="settings_card_background_alpha_summary">Obowiązuje, gdy włączony jest niestandardowy obraz tła</string>
 </resources>

@@ -3,6 +3,7 @@ package top.nkbe.npatch.config
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.room.Room
+import androidx.room.withTransaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.sync.Mutex
@@ -45,13 +46,10 @@ object ConfigManager {
             withContext(writeDispatcher) {
                 val changed = linkedSetOf<String>()
                 for (LoadedModule in moduleDao.getAll()) {
-                    val apkPath = newModules[LoadedModule.pkgName]
-                    if (apkPath == null) {
-                        moduleDao.delete(LoadedModule)
-                        removeCachedModule(LoadedModule.pkgName)
-                        moduleLoadLocks.remove(LoadedModule.pkgName)
-                        ModuleScopeSyncStore.deleteSnapshot(LoadedModule.pkgName)
-                    } else if (LoadedModule.apkPath != apkPath) {
+                    // A package query can omit installed modules. Discovery must not delete
+                    // their records, because that also cascades into the user's saved scopes.
+                    val apkPath = newModules[LoadedModule.pkgName] ?: continue
+                    if (LoadedModule.apkPath != apkPath) {
                         LoadedModule.apkPath = apkPath
                         moduleDao.update(LoadedModule)
                         removeCachedModule(LoadedModule.pkgName)
@@ -81,6 +79,31 @@ object ConfigManager {
             scopeDao.delete(Scope(appPkgName = pkgName, modulePkgName = LoadedModule.pkgName))
             ModuleScopeSyncStore.saveSnapshot(LoadedModule.pkgName, scopeDao.getAppsForModule(LoadedModule.pkgName))
         }
+
+    suspend fun saveModuleSelection(
+        appPkgName: String,
+        initialPackageNames: Set<String>,
+        selectedPackageNames: Set<String>,
+        availableModules: List<LoadedModule>,
+    ): Set<String> = withContext(writeDispatcher) {
+        val availableByPackage = availableModules.associateBy { it.pkgName }
+        val affectedPackages = db.withTransaction {
+            // Apply only this editor's changes, preserving concurrent scope changes elsewhere.
+            (initialPackageNames - selectedPackageNames).forEach { packageName ->
+                scopeDao.delete(Scope(appPkgName, packageName))
+            }
+            (selectedPackageNames - initialPackageNames).forEach { packageName ->
+                // Keep an existing path when the selected module is temporarily not visible.
+                moduleDao.insert(availableByPackage[packageName] ?: LoadedModule(packageName, ""))
+                scopeDao.insert(Scope(appPkgName, packageName))
+            }
+            initialPackageNames + selectedPackageNames
+        }
+        affectedPackages.forEach { packageName ->
+            ModuleScopeSyncStore.saveSnapshot(packageName, scopeDao.getAppsForModule(packageName))
+        }
+        affectedPackages
+    }
 
     suspend fun getModulesForApp(pkgName: String): List<LoadedModule> =
         withContext(readDispatcher) {
@@ -139,8 +162,7 @@ object ConfigManager {
                         lspApp.packageManager.getApplicationInfo(LoadedModule.pkgName, 0).sourceDir
                     moduleDao.update(LoadedModule)
                 } catch (e: PackageManager.NameNotFoundException) {
-                    moduleDao.delete(LoadedModule)
-                    Log.w(TAG, "LoadedModule may be uninstalled: ${LoadedModule.pkgName}")
+                    Log.w(TAG, "Cannot resolve module APK; keeping saved scope: ${LoadedModule.pkgName}", e)
                     return null
                 }
                 Log.i(TAG, "LoadedModule apk path updated: ${LoadedModule.pkgName}")

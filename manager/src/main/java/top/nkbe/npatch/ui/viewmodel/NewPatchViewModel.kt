@@ -2,6 +2,7 @@ package top.nkbe.npatch.ui.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -50,14 +51,14 @@ class NewPatchViewModel : ViewModel() {
     var overrideVersionCodeValue by mutableStateOf("1")
     var overrideTargetSdk by mutableStateOf(false)
     var overrideTargetSdkValue by mutableStateOf("28")
-    var sigBypassLevel by mutableStateOf(2)
+    var sigBypassLevel by mutableIntStateOf(2)
     var injectProvider by mutableStateOf(false)
     var useMicroG by mutableStateOf(false)
     var outputLog by mutableStateOf(true)
     var usesCleartextTraffic by mutableStateOf(false)
     var injectDex by mutableStateOf(false)
     var hasSubProcesses by mutableStateOf(false)
-    var subProcessCount by mutableStateOf(0)
+    var subProcessCount by mutableIntStateOf(0)
     var subProcesses by mutableStateOf<List<String>>(emptyList())
     var embeddedModules by mutableStateOf<List<AppInfo>>(emptyList())
     var hasExecutedIntent by mutableStateOf(false)
@@ -187,7 +188,6 @@ class NewPatchViewModel : ViewModel() {
             config = config,
             apkPaths = listOf(patchApp.app.sourceDir) + (patchApp.app.splitSourceDirs ?: emptyArray()),
             embeddedModules = embeddedModules.flatMap { listOf(it.app.sourceDir) + (it.app.splitSourceDirs ?: emptyArray()) },
-            targetPackageName = patchApp.app.packageName,
             embeddedModulePackages = embeddedModules.map { it.app.packageName },
             injectDex = injectDex
         )

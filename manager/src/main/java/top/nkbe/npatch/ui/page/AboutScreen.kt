@@ -1,71 +1,42 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// Grouped About page adapted from InstallerX-Revived AboutPage.kt and WeKit M3 widgets.
+// Copyright (C) 2025-2026 InstallerX Revived contributors. See docs/UI_SOURCES.md.
 package top.nkbe.npatch.ui.page
 
 import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.Security
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import top.nkbe.npatch.R
-import top.nkbe.npatch.ui.component.NPatchScaffold
-import top.nkbe.npatch.ui.component.NPatchTopAppBar
-import top.nkbe.npatch.ui.util.backgroundAwareCardColors
-import top.nkbe.npatch.ui.util.backgroundAwareColor
-import top.nkbe.npatch.ui.util.backgroundAwareHazeStyle
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
-import io.github.suqi8.coui.kmp.basic.Card
-import io.github.suqi8.coui.kmp.basic.Icon
-import io.github.suqi8.coui.kmp.basic.IconButton
-import io.github.suqi8.coui.kmp.basic.COUIScrollBehavior
-import io.github.suqi8.coui.kmp.basic.Text
-import io.github.suqi8.coui.kmp.icon.COUIIcons
-import io.github.suqi8.coui.kmp.icon.extended.Back
-import io.github.suqi8.coui.kmp.preference.ArrowPreference
-import io.github.suqi8.coui.kmp.theme.COUITheme
-import io.github.suqi8.coui.kmp.utils.PressFeedbackType
-import io.github.suqi8.coui.kmp.utils.overScrollVertical
-import io.github.suqi8.coui.kmp.utils.scrollEndHaptic
+import top.nkbe.npatch.share.LSPConfig
+import top.nkbe.npatch.ui.component.*
+import top.nkbe.npatch.ui.component.m3.BaseWidget
+import top.nkbe.npatch.ui.component.m3.SegmentedColumn
+import top.nkbe.npatch.ui.util.*
 
 private data class AboutLink(
     val title: String,
@@ -79,303 +50,89 @@ private data class AboutLink(
 @Composable
 fun AboutScreen(onBack: () -> Unit) {
     val context = LocalContext.current
-    val scrollBehavior = COUIScrollBehavior()
-    val hazeState = rememberHazeState()
-    val hazeStyle = backgroundAwareHazeStyle()
-    val showTopBarContent by remember {
-        derivedStateOf { scrollBehavior.state.collapsedFraction == 0f }
-    }
-
+    val layoutDirection = LocalLayoutDirection.current
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val backdrop = rememberMaterial3BlurBackdrop(LocalFloatingGlassBottomBarBlur.current)
+    val links = rememberAboutLinks()
+    val acknowledgments = rememberAcknowledgmentLinks()
     NPatchScaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             NPatchTopAppBar(
-                title = if (showTopBarContent) stringResource(R.string.home_about) else "",
-                navigationIcon = {
-                    if (showTopBarContent) {
-                        IconButton(onClick = onBack) {
-                            Icon(
-                                imageVector = COUIIcons.Regular.Back,
-                                contentDescription = stringResource(R.string.nav_back),
-                                tint = COUITheme.colorScheme.onSurface
-                            )
-                        }
-                    }
-                },
+                title = stringResource(R.string.home_about),
                 scrollBehavior = scrollBehavior,
-                hazeState = hazeState,
-                hazeStyle = hazeStyle,
+                navigationIcon = { ExpressiveBackButton(onClick = onBack) },
+                modifier = Modifier.m3AppBarBlur(backdrop),
+                color = backdrop.m3AppBarColor(),
             )
-        }
-    ) { innerPadding ->
+        },
+    ) { padding ->
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .hazeSource(state = hazeState)
-                .scrollEndHaptic()
-                .overScrollVertical()
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            modifier = Modifier.fillMaxSize().m3BackdropLayer(backdrop),
             contentPadding = PaddingValues(
-                start = 12.dp,
-                top = innerPadding.calculateTopPadding() + 12.dp,
-                end = 12.dp,
-                bottom = innerPadding.calculateBottomPadding() + 24.dp
+                start = padding.calculateStartPadding(layoutDirection),
+                end = padding.calculateEndPadding(layoutDirection),
+                top = padding.calculateTopPadding() + 12.dp,
+                bottom = padding.calculateBottomPadding() + 16.dp,
             ),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            overscrollEffect = null
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             item {
-                ModuleIntroCard()
+                Column(
+                    Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Image(painterResource(R.drawable.ic_launcher_playstore), null, Modifier.size(88.dp).clip(MaterialTheme.shapes.extraLarge))
+                    Spacer(Modifier.height(16.dp))
+                    Text(stringResource(R.string.app_name), style = MaterialTheme.typography.displaySmall, color = MaterialTheme.colorScheme.primary)
+                    Text("${LSPConfig.instance.VERSION_NAME} (${LSPConfig.instance.VERSION_CODE})", style = MaterialTheme.typography.labelLarge)
+                    Text(stringResource(R.string.home_description), style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 8.dp))
+                }
             }
-
             item {
-                AuthorCard(
-                    onClick = { context.openUri(AUTHOR_GITHUB_URL) }
-                )
+                SegmentedColumn {
+                    item { AboutLinkItem(AboutLink("NkBe", stringResource(R.string.about_author_summary), AUTHOR_GITHUB_URL, imageUrl = AUTHOR_AVATAR_URL), context::openUri) }
+                }
             }
-
             item {
-                DisclaimerCard()
+                SegmentedColumn(title = stringResource(R.string.about_disclaimer_title)) {
+                    item {
+                        BaseWidget(
+                            title = stringResource(R.string.about_disclaimer_title),
+                            description = stringResource(R.string.about_disclaimer_body),
+                            icon = Icons.Outlined.Security,
+                        )
+                    }
+                }
             }
-
             item {
-                LinksCard(
-                    onLinkClick = context::openUri
-                )
+                SegmentedColumn(title = stringResource(R.string.about_links_title)) {
+                    links.forEach { link -> item(key = link.title) { AboutLinkItem(link, context::openUri) } }
+                }
             }
-
             item {
-                AcknowledgmentsCard(
-                    onLinkClick = context::openUri
-                )
+                SegmentedColumn(title = stringResource(R.string.about_acknowledgments_title)) {
+                    acknowledgments.forEach { link -> item(key = link.title) { AboutLinkItem(link, context::openUri) } }
+                }
             }
         }
     }
 }
 
 @Composable
-private fun ModuleIntroCard() {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = backgroundAwareCardColors(),
-        showIndication = false,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(R.drawable.ic_launcher_playstore),
-                contentDescription = stringResource(R.string.app_name),
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape)
-            )
-            Spacer(Modifier.height(14.dp))
-            Text(
-                text = "NPatch",
-                fontSize = 30.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = COUITheme.colorScheme.primary,
-                textAlign = TextAlign.Center
-            )
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = stringResource(R.string.home_description),
-                fontSize = COUITheme.textStyles.body2.fontSize,
-                color = COUITheme.colorScheme.onSurfaceVariantSummary,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
-@Composable
-private fun AuthorCard(onClick: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = backgroundAwareCardColors(),
-    ) {
-        ArrowPreference(
-            title = "NkBe",
-            summary = stringResource(R.string.about_author_summary),
-            startAction = {
-                AsyncImage(
-                    model = crossfadeModel(AUTHOR_AVATAR_URL),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .padding(end = 12.dp)
-                        .size(46.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                )
-            },
-            onClick = onClick
-        )
-    }
-}
-
-@Composable
-private fun DisclaimerCard() {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = backgroundAwareCardColors(),
-        showIndication = false,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            AboutSectionHeader(
-                icon = Icons.Outlined.Security,
-                title = stringResource(R.string.about_disclaimer_title)
-            )
-            Spacer(Modifier.height(10.dp))
-            Text(
-                text = stringResource(R.string.about_disclaimer_body),
-                fontSize = COUITheme.textStyles.body2.fontSize,
-                color = COUITheme.colorScheme.onSurfaceVariantSummary,
-                textAlign = TextAlign.Start
-            )
-        }
-    }
-}
-
-@Composable
-private fun LinksCard(onLinkClick: (String) -> Unit) {
-    val links = rememberAboutLinks()
-
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = backgroundAwareCardColors(),
-        showIndication = false,
-    ) {
-        Column(modifier = Modifier.padding(vertical = 8.dp)) {
-            AboutSectionHeader(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                icon = Icons.Outlined.Public,
-                title = stringResource(R.string.about_links_title)
-            )
-            links.forEach { link ->
-                ArrowPreference(
-                    title = link.title,
-                    summary = link.summary,
-                    startAction = {
-                        LinkIcon(link)
-                    },
-                    onClick = { onLinkClick(link.url) }
-                )
+private fun AboutLinkItem(link: AboutLink, onLinkClick: (String) -> Unit) {
+    BaseWidget(
+        title = link.title,
+        description = link.summary,
+        icon = link.icon,
+        onClick = { onLinkClick(link.url) },
+        trailingContent = {
+            when {
+                link.imageUrl != null -> AsyncImage(link.imageUrl, null, Modifier.size(40.dp).clip(CircleShape), contentScale = ContentScale.Crop)
+                link.imageRes != null -> Image(painterResource(link.imageRes), null, Modifier.size(40.dp).clip(CircleShape), contentScale = ContentScale.Crop)
             }
-        }
-    }
-}
-
-@Composable
-private fun AcknowledgmentsCard(onLinkClick: (String) -> Unit) {
-    val contributors = rememberAcknowledgmentLinks()
-
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = backgroundAwareCardColors(),
-        showIndication = false,
-    ) {
-        Column(modifier = Modifier.padding(vertical = 8.dp)) {
-            AboutSectionHeader(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                icon = Icons.Outlined.Favorite,
-                title = stringResource(R.string.about_acknowledgments_title)
-            )
-            contributors.forEach { contributor ->
-                ArrowPreference(
-                    title = contributor.title,
-                    summary = contributor.summary,
-                    startAction = {
-                        LinkIcon(contributor)
-                    },
-                    onClick = { onLinkClick(contributor.url) }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun AboutSectionHeader(
-    icon: ImageVector,
-    title: String,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = COUITheme.colorScheme.primary
-        )
-        Spacer(Modifier.width(8.dp))
-        Text(
-            text = title,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = COUITheme.colorScheme.onSurface
-        )
-    }
-}
-
-@Composable
-private fun LinkIcon(link: AboutLink) {
-    Box(
-        modifier = Modifier
-            .padding(end = 12.dp)
-            .size(42.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(backgroundAwareColor(COUITheme.colorScheme.primaryContainer)),
-        contentAlignment = Alignment.Center
-    ) {
-        when {
-            link.imageUrl != null -> {
-                AsyncImage(
-                    model = crossfadeModel(link.imageUrl),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-
-            link.imageRes != null -> {
-                Image(
-                    painter = painterResource(link.imageRes),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-
-            link.icon != null -> {
-                Icon(
-                    imageVector = link.icon,
-                    contentDescription = null,
-                    modifier = Modifier.size(22.dp),
-                    tint = COUITheme.colorScheme.onPrimaryContainer
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun crossfadeModel(url: String): ImageRequest {
-    val context = LocalContext.current
-    return remember(url, context) {
-        ImageRequest.Builder(context)
-            .data(url)
-            .crossfade(true)
-            .build()
-    }
+        },
+    )
 }
 
 @Composable

@@ -3,7 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <!-- Matches WeKit: blur is runtime-gated; API 28-32 retain opaque Material surfaces. -->
+    <uses-sdk tools:overrideLibrary="top.yukonga.miuix.kmp.blur" />
+
+    <!-- APK file management supports legacy file:// imports as well as SAF. Access is
+         optional and granted by the user; the Play distribution-policy check is inapplicable. -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -34,7 +40,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:largeHeap="true"
-        android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
+        android:theme="@style/Theme.NPatch">
         
         <!-- 专门为小米手机桌面卸载添加了提示，提升用户体验 -->
         <meta-data
@@ -46,6 +52,8 @@
 
         <activity
             android:name=".ui.activity.MainActivity"
+            android:theme="@style/Theme.NPatch.Starting"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -70,6 +78,7 @@
 
         <receiver
             android:name=".install.InstallResultReceiver"
+            tools:ignore="ExportedReceiver"
             android:exported="true" />
 
 
@@ -97,15 +106,19 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <!-- Cross-application bridges are part of the existing module protocol.
+             Keep their established exported/permission behavior during Lint-only cleanup. -->
         <provider
             android:name=".manager.ConfigProvider"
             android:authorities="top.nkbe.npatch.manager.provider.config"
+            tools:ignore="ExportedContentProvider"
             android:exported="true"
             android:enabled="true" />
 
         <provider
             android:name=".manager.RemoteApiProvider"
             android:authorities="${applicationId}.remote"
+            tools:ignore="ExportedContentProvider"
             android:enabled="true"
             android:exported="true" />
 

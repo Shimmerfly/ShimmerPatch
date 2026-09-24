@@ -1,12 +1,10 @@
 package nkbe.util
 
-import android.R
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInstaller
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Parcelable
 import android.util.Log
@@ -15,11 +13,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.core.graphics.createBitmap
 import androidx.documentfile.provider.DocumentFile
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
 import me.zhanghai.android.appiconloader.AppIconLoader
@@ -74,6 +75,7 @@ object NeoPackageManager {
     private val appScanDispatcher by lazy {
         Dispatchers.IO.limitedParallelism(maxOf(2, minOf(Runtime.getRuntime().availableProcessors(), 8)))
     }
+    private val appScanMutex = Mutex()
 
     @Parcelize
     class AppInfo(
@@ -114,11 +116,12 @@ object NeoPackageManager {
         private set
 
     @SuppressLint("StaticFieldLeak")
-    private val iconLoader = AppIconLoader(lspApp.resources.getDimensionPixelSize(R.dimen.app_icon_size), false, lspApp)
+    private val iconLoader = AppIconLoader(lspApp.resources.getDimensionPixelSize(android.R.dimen.app_icon_size), false, lspApp)
     private val appIcon = Collections.synchronizedMap(mutableMapOf<String, ImageBitmap>())
 
 
-    suspend fun fetchAppList() {
+    // Serialize the scan and publication so a pre-Shizuku scan cannot replace newer results.
+    suspend fun fetchAppList() = appScanMutex.withLock {
         val result = withContext(Dispatchers.IO) {
             val pm = lspApp.packageManager
             val packages: List<android.content.pm.PackageInfo>
@@ -181,10 +184,10 @@ object NeoPackageManager {
         appIcon.clear()
     }
 
-    private fun loadIconBitmap(appInfo: ApplicationInfo): ImageBitmap =
+    internal fun loadIconBitmap(appInfo: ApplicationInfo): ImageBitmap =
         runCatching { iconLoader.loadIcon(appInfo).asImageBitmap() }.getOrElse {
             Log.w(TAG, "Failed to load icon for ${appInfo.packageName}", it)
-            Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888).asImageBitmap()
+            createBitmap(1, 1).asImageBitmap()
         }
 
     suspend fun cleanTmpApkDir() {

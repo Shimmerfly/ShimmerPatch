@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">إضافة</string>
     <string name="install">تثبيت</string>
     <string name="installing">جارٍ التثبيت</string>
     <string name="uninstall">إلغاء التثبيت</string>
@@ -11,10 +10,7 @@
     <string name="shizuku_available">خدمة Shizuku متاحة</string>
     <string name="shizuku_unavailable">خدمة Shizuku غير متصلة</string>
     <string name="screen_repo">المستودع</string>
-
-    <string name="off">متوقف</string>
     <string name="error_unknown">Unknown error</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">بعض الوظائف غير متاحة</string>
     <string name="home_api_version">إصدار API</string>
     <string name="home_npatch_version">إصدار NPatch</string>
@@ -23,10 +19,7 @@
     <string name="home_device">الجهاز</string>
     <string name="home_system_abi">نظام ABI</string>
     <string name="home_info_copied">تم النسخ إلى الحافظة</string>
-    <string name="home_support">الدعـم</string>
     <string name="home_description">NPatch هو إطار عمل Non-Root Xposed مجاني يعتمد على Vector core.</string>
-    <string name="about_view_source_code"><![CDATA[عرض كود المصدر على %1$s]]></string>
-    <!-- Manage Screen -->
     <string name="screen_manage">إدارة</string>
     <string name="manage_loading">جارٍ التحميل</string>
     <string name="manage_no_apps">لا توجد تطبيقات معدلة حتى الآن</string>
@@ -42,7 +35,6 @@
     <string name="manage_no_modules">لا توجد وحدات بعد</string>
     <string name="manage_module_settings">إعدادات الوحدة</string>
     <string name="manage_app_info">معلومات التطبيق</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">تعديل جديد</string>
     <string name="patch_select_dir_title">حدد مجلد التخزين</string>
     <string name="patch_select_dir_text">حدد مجلد لتخزين التطبيقات المعدلة</string>
@@ -51,7 +43,7 @@
     <string name="patch_from_applist">تحديد تطبيقًا مثبتًا</string>
     <string name="patch_mode">وضع التعديل</string>
     <string name="patch_local">محلي</string>
-    <string name="patch_local_desc">قم بتصحيح تطبيق بدون وحدات مدمجة.\nيمكن تغيير نطاق Xpose ديناميكيًا دون إعادة التصحيح.\nلا يمكن تشغيل التطبيقات المحلية المصححة إلا على الجهاز المحلي.</string>
+    <string name="patch_local_desc">تصحيحات التطبيقات دون تضمين الوحدات.\nيمكن تغيير نطاق Xposed ديناميكيًا دون الحاجة إلى إعادة التصحيح.\nلا يمكن استخدام هذا الوضع إلا محليًا مع NPatch Manager.</string>
     <string name="patch_integrated">متكامل</string>
     <string name="patch_integrated_desc">تعديل تطبيق بوحدات مدمجة.\nيمكن تشغيل التطبيق المعدل بدون المدير، لكن لا يمكن إدارته ديناميكيًا.\nيمكن استخدام التطبيقات المعدلة المدمجة على الأجهزة التي لم يتم تثبيت NPatch Manager عليها.</string>
     <string name="patch_embed_modules">الوحدات المُضْمَنة</string>
@@ -68,10 +60,7 @@
     <string name="patch_uninstall_text">نظرًا لاختلاف التوقيعات، يلزمك إلغاء تثبيت التطبيق الأصلي قبل تثبيت التطبيق المعدل.\nتأكد من عمل نسخة احتياطية من البيانات الشخصية.</string>
     <string name="patch_install_successfully">تم التثبيت بنجاح</string>
     <string name="patch_install_failed">فشل التثبيت</string>
-    <string name="patch_no_xposed_module">No Xposed module(s) were found</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">تحديد التطبيقات</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">الإعدادات</string>
     <string name="settings_keystore">مخزن مفاتيح التوقيع</string>
     <string name="settings_keystore_custom">مخصص</string>

@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">Dodaj</string>
     <string name="install">Instaliraj</string>
     <string name="installing">Instaliranje</string>
     <string name="uninstall">Deinstaliraj</string>
@@ -11,9 +10,7 @@
     <string name="shizuku_available">Shizuku usluga dostupna</string>
     <string name="shizuku_unavailable">Usluga Shizuku nije povezana</string>
     <string name="screen_repo">Repo</string>
-    <string name="off">Isključeno</string>
     <string name="error_unknown">Nepoznata pogreška</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">Neke funkcije nisu dostupne</string>
     <string name="home_api_version">API verzija</string>
     <string name="home_npatch_version">NPatch verzija</string>
@@ -22,10 +19,7 @@
     <string name="home_device">Uređaj</string>
     <string name="home_system_abi">Sustav ABI</string>
     <string name="home_info_copied">Kopirano u međuspremnik</string>
-    <string name="home_support">Podrška</string>
-    <string name="home_description">NPatch je besplatni Xposed framework bez root-a temeljen na LSPosed jezgri.</string>
-    <string name="about_view_source_code"><![CDATA[Pogledajte izvorni kod na %1$s]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch je besplatni nekorijenski Xposed okvir temeljen na Vector.</string>
     <string name="screen_manage">Upravljanje</string>
     <string name="manage_loading">Učitavanje</string>
     <string name="manage_no_apps">Još nema zakrpanih aplikacija</string>
@@ -41,7 +35,6 @@
     <string name="manage_no_modules">Još nema modula</string>
     <string name="manage_module_settings">Postavke modula</string>
     <string name="manage_app_info">Informacije o aplikaciji</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">Nova zakrpa</string>
     <string name="patch_select_dir_title">Odaberite direktorij za pohranu</string>
     <string name="patch_select_dir_text">Odaberite direktorij za pohranu zakrpanih apk-ova</string>
@@ -50,7 +43,7 @@
     <string name="patch_from_applist">Odaberite instaliranu aplikaciju</string>
     <string name="patch_mode">Način zakrpe</string>
     <string name="patch_local">Lokalni</string>
-    <string name="patch_local_desc">Zakrpite aplikaciju bez ugrađenih modula.\nXposed opseg može se mijenjati dinamički bez ponovnog zakrpa.\nLokalno zakrpane aplikacije mogu se izvoditi samo na lokalnom uređaju.</string>
+    <string name="patch_local_desc">Krpi aplikacije bez modula za ugradnju.\nOpseg Xposed može se dinamički mijenjati bez potrebe za ponovnim krpanjem.\nOvaj način se može koristiti samo lokalno sa NPatch Managerom.</string>
     <string name="patch_integrated">Integriran</string>
     <string name="patch_integrated_desc">Zakrpite aplikaciju s ugrađenim modulima.\nZakrpana aplikacija može raditi bez upravitelja, ali se njome ne može upravljati dinamički.\nIntegrirane zakrpane aplikacije mogu se koristiti na uređajima koji nemaju instaliran NPatch Manager.</string>
     <string name="patch_embed_modules">Ugradite module</string>
@@ -67,10 +60,7 @@
     <string name="patch_uninstall_text">Zbog različitih potpisa morate deinstalirati izvornu aplikaciju prije instaliranja zakrpane.\nProvjerite jeste li sigurnosno kopirali osobne podatke.</string>
     <string name="patch_install_successfully">Instalirajte uspješno</string>
     <string name="patch_install_failed">Instalacija nije uspjela</string>
-    <string name="patch_no_xposed_module">Nisu pronađeni Xposed moduli</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">Odaberite Aplikacije</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">postavke</string>
     <string name="settings_keystore">Spremište ključeva potpisa</string>
     <string name="settings_keystore_custom">Prilagođen</string>

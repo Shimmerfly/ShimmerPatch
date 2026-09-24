@@ -1,7 +1,7 @@
 package top.nkbe.npatch.ui.page
 
 import androidx.compose.runtime.compositionLocalOf
-import androidx.navigation3.runtime.NavKey
+import top.yukonga.miuix.kmp.nav.core.NavKey
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 
@@ -10,14 +10,22 @@ import kotlinx.coroutines.flow.first
  * 包装 SnapshotStateList<NavKey> 提供导航操作。
  */
 class Navigator(
-    val backStack: MutableList<NavKey>,
+    backStack: MutableList<NavKey>,
 ) {
+    // Rebind the restored stack while preserving in-flight result channels across recreation.
+    var backStack: MutableList<NavKey> = backStack
+        private set
+
+    fun attachBackStack(stack: MutableList<NavKey>) {
+        backStack = stack
+    }
+
     private val resultBus = mutableMapOf<NavKey, MutableSharedFlow<Any>>()
 
     private object CancelToken
 
     fun push(key: NavKey) {
-        backStack.add(key)
+        if (backStack.lastOrNull() != key) backStack.add(key)
     }
 
     /** 别名：与 DestinationsNavigator.navigate 对应 */
@@ -47,7 +55,7 @@ class Navigator(
     fun navigateBack() = pop()
 
     fun popUntil(predicate: (NavKey) -> Boolean) {
-        while (backStack.isNotEmpty() && !predicate(backStack.last())) {
+        while (backStack.size > 1 && !predicate(backStack.last())) {
             pop()
         }
     }

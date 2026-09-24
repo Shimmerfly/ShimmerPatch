@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">Thêm vào</string>
     <string name="install">Cài đặt</string>
     <string name="installing">Đang cài đặt</string>
     <string name="uninstall">Gỡ cài đặt</string>
@@ -11,9 +10,7 @@
     <string name="shizuku_available">Có dịch vụ Shizuku</string>
     <string name="shizuku_unavailable">Dịch vụ Shizuku không được kết nối</string>
     <string name="screen_repo">Repo</string>
-    <string name="off">Tắt</string>
     <string name="error_unknown">Lỗi không rõ</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">Một số chức năng không khả dụng</string>
     <string name="home_api_version">Phiên bản API</string>
     <string name="home_npatch_version">NPatch Version</string>
@@ -22,10 +19,7 @@
     <string name="home_device">Thiết bị</string>
     <string name="home_system_abi">Hệ thống ABI</string>
     <string name="home_info_copied">Sao chép vào clipboard</string>
-    <string name="home_support">Hỗ trợ</string>
-    <string name="home_description">NPatch là một khung công tác Xposed không gốc miễn phí dựa trên lõi LSPosed.</string>
-    <string name="about_view_source_code"><![CDATA[Xem mã nguồn tại %1$s]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch là khung Xposed không root miễn phí dựa trên Vector.</string>
     <string name="screen_manage">Quản lý</string>
     <string name="manage_loading">Đang tải</string>
     <string name="manage_no_apps">Chưa có ứng dụng được vá</string>
@@ -41,7 +35,6 @@
     <string name="manage_no_modules">Chưa có mô-đun nào</string>
     <string name="manage_module_settings">Cài đặt mô-đun</string>
     <string name="manage_app_info">Thông tin ứng dụng</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">Bản vá mới</string>
     <string name="patch_select_dir_title">Chọn thư mục lưu trữ</string>
     <string name="patch_select_dir_text">Chọn một thư mục để lưu trữ các bản vá lỗi</string>
@@ -50,7 +43,7 @@
     <string name="patch_from_applist">Chọn một ứng dụng đã cài đặt</string>
     <string name="patch_mode">Chế độ vá lỗi</string>
     <string name="patch_local">Địa phương</string>
-    <string name="patch_local_desc">Vá một ứng dụng không có mô-đun được nhúng.\nXpose có thể được thay đổi linh hoạt mà không cần vá lại.\nCác ứng dụng được vá cục bộ chỉ có thể chạy trên thiết bị cục bộ.</string>
+    <string name="patch_local_desc">Vá các ứng dụng mà không cần nhúng mô-đun.\nPhạm vi Xposed có thể được thay đổi linh hoạt mà không cần phải vá lại.\nChế độ này chỉ có thể được sử dụng cục bộ với Trình quản lý NPatch.</string>
     <string name="patch_integrated">tích hợp</string>
     <string name="patch_integrated_desc">Vá một ứng dụng với các mô-đun được nhúng.\nỨng dụng đã vá có thể chạy mà không cần trình quản lý, nhưng không thể quản lý động.\nCác ứng dụng được vá tích hợp có thể được sử dụng trên các thiết bị chưa cài đặt NPatch Manager.</string>
     <string name="patch_embed_modules">Nhúng mô-đun</string>
@@ -67,10 +60,7 @@
     <string name="patch_uninstall_text">Do các chữ ký khác nhau, bạn cần gỡ cài đặt ứng dụng gốc trước khi cài đặt bản vá.\nĐảm bảo rằng bạn đã sao lưu dữ liệu cá nhân.</string>
     <string name="patch_install_successfully">Cài đặt thành công</string>
     <string name="patch_install_failed">Cài đặt không thành công</string>
-    <string name="patch_no_xposed_module">Không tìm thấy (các) mô-đun Xpose nào</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">Chọn ứng dụng</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">Cài đặt</string>
     <string name="settings_keystore">Kho khóa chữ ký</string>
     <string name="settings_keystore_custom">Tập quán</string>

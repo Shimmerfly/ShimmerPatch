@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add">添加</string>
     <string name="install">安装</string>
     <string name="installing">安装中</string>
     <string name="uninstall">卸载</string>
@@ -12,7 +11,6 @@
     <string name="shizuku_unavailable">Shizuku 服务未连接</string>
     <string name="screen_home">主页</string>
     <string name="screen_repo">仓库</string>
-    <string name="off">关闭</string>
     <string name="error_unknown">未知错误</string>
 
     <!-- Home Screen -->
@@ -25,12 +23,10 @@
     <string name="home_device">设备</string>
     <string name="home_system_abi">系统架构</string>
     <string name="home_info_copied">已复制到剪贴板</string>
-    <string name="home_support">支持</string>
     <string name="home_about">关于 NPatch</string>
     <string name="home_description">NPatch 是一款免费且迭代于 LSPatch 的，基于 Vector 核心的免 Root 的 Xposed 框架。</string>
 
     <!-- About Screen -->
-    <string name="about_view_source_code"><![CDATA[查看源代码 %1$s]]></string>
     <string name="about_author_summary">NPatch 主要开发者</string>
     <string name="about_disclaimer_title">免责声明</string>
     <string name="about_disclaimer_body">NPatch 仅供学习、研究以及合法的应用兼容性工作使用。请尊重当地法律、应用条款以及原开发者的权益。您需自行承担在设备上使用修补应用与模块的全部责任，开发者不对任何直接或间接的设备故障、数据丢失或其他损失承担责任。</string>
@@ -81,7 +77,6 @@
     <string name="manage_module_pipeline_unsupported">不支持的架构</string>
     <string name="manage_module_api_unsupported">不支持的 API %1$d</string>
     <string name="manage_module_unsupported_warning">Modern 架构不支持 API %1$d</string>
-    <string name="manage_check_manager_package_name">该应用由 %1$s 管理\n在本管理器中修改作用域 %2$s 不会生效\n重新修补以解决</string>
 
     <!-- New Patch Screen -->
     <string name="screen_new_patch">新建打包</string>
@@ -90,7 +85,6 @@
     <string name="patch_select_dir_error">设置存储目录时出错</string>
     <string name="patch_from_storage">从存储目录中选择 (多个) apk</string>
     <string name="patch_from_applist">选择已安装的应用程序</string>
-    <string name="patch_from_installed_modules">选择已安装的 Xposed 模组</string>
     <string name="patch_mode">打包模式</string>
     <string name="patch_local">本地模式</string>
     <string name="patch_local_desc">为未嵌入模块的应用程序打补丁。\nXposed 范围可动态更改，无需重新打补丁。\n此模式下的应用程式只能在本地设备上与 NPatch 管理器搭配使用。</string>
@@ -108,10 +102,6 @@
     <string name="patch_sigbypasslv2_desc">基于 Basic，恢复原始 AppComponentFactory，并 hook getPackageArchiveInfo 与 hasSigningCertificate 等更严格的校验路径</string>
     <string name="patch_sigbypasslv3">Extreme</string>
     <string name="patch_sigbypasslv3_desc">基于 High，hook PackageInfo(Parcel) 构造函数，覆盖 Binder 反序列化得到签名信息的路径</string>
-    <string name="patch_sigbypasslv4">Seccomp</string>
-    <string name="patch_sigbypasslv4_desc">在 ARM64 上启用 seccomp v2 过滤与 trusted thread 文件重定向，参考了 FunPatchApp 的实现方案</string>
-    <string name="patch_sigbypasslv5">Stealth</string>
-    <string name="patch_sigbypasslv5_desc">使用 xhook 重定向应用原生库的 GOT/PLT，同时保留 PackageInfo 签名伪装</string>
     <string name="patch_override_version_code">覆写版本号</string>
     <string name="patch_override_version_code_desc">将修补的 App 版本号重写为自定义值，默认为 1\n这将允许更多场景下的降级安装，并且通常来说这不会影响应用实际感知到的版本号</string>
     <string name="patch_custom_version_code">自定义版本号</string>
@@ -119,27 +109,25 @@
     <string name="patch_override_target_sdk_desc">将修补的 App 的 targetSdk 版本重写为自定义值，默认为 28\n这可以提升部分依赖旧版 Android 行为特征的 Xposed 模块的兼容性</string>
     <string name="patch_custom_target_sdk">自定义 targetSdk</string>
     <string name="patch_new_package">修补新包名</string>
-    <string name="hint_patch_new_package">请输入新的包名</string>
     <string name="patch_inject_mt_provider">注入文件提供器</string>
     <string name="patch_inject_mt_provider_desc">注入文件提供器以在没有 Root 权限的情况下管理 data 目录的文件 (来自 MT 管理器)</string>
     <string name="patch_use_microg">强制启用 MicroG 支持</string>
-    <string name="patch_use_microg_desc">重新导向 GMS 请求至社区版 MicroG。适用于 YouTube 等 Google 应用程序，需自行安装对应的 MicroG 服务。</string>
+    <string name="patch_use_microg_desc">将 GMS 请求重定向至社区版 MicroG（例如 ReVanced GmsCore）。适用于 YouTube 等 Google 应用，需自行安装对应的 MicroG 服务。</string>
     <string name="patch_output_log_to_media">输出日志到 Media 目录</string>
     <string name="patch_output_log_to_media_desc">记录 Xposed API 日志、框架事件及 Java/Kotlin 崩溃</string>
-    <string name="patch_hide_libs">豁免环境校验</string>
-    <string name="patch_hide_libs_desc">为执行基础运行环境校验的应用收敛 ART 与敏感系统库的可见性。</string>
     <string name="patch_inject_dex">注入加载器 DEX</string>
-    <string name="patch_inject_dex_desc">将 loader dex 物理写入主 dex 序列。仅当装载的模块明确需要 Hook 独立子进程/沙箱组件时开启此特例选项。</string>
+    <string name="patch_inject_dex_desc">将 加载器 DEX 物理写入主 DEX 序列。仅当装载的模块明确需要 Hook 独立子进程/沙箱组件时开启此特例选项。</string>
     <string name="patch_cleartext_traffic">允许 HTTP 明文流量</string>
-    <string name="patch_cleartext_traffic_desc">在清单中强制启用 usesCleartextTraffic，允许应用程序与模块访问未加密的 HTTP 网络端点以利抓包、代理或调试。</string>
-    <string name="patch_subprocess_detected_hint">检测到目标应用包含 %1$d 个独立子进程/沙箱组件。若模块需要 Hook 这些子进程，建议开启「注入 Loader DEX」。</string>
+    <string name="patch_cleartext_traffic_desc">在清单中强制设置 android:usesCleartextTraffic=\"true\"，允许应用与模块访问未加密的 HTTP 端点，以便进行流量检查、代理或调试。</string>
+    <plurals name="patch_subprocess_detected_hint">
+        <item quantity="other">检测到目标应用包含 %1$d 个独立子进程/沙箱组件。若模块需要 Hook 这些子进程，建议开启「注入加载器 DEX」。</item>
+    </plurals>
     <string name="patch_start">开始打包</string>
     <string name="patch_return">返回</string>
     <string name="patch_uninstall_text">由于签名不同，安装修补的应用前需要先卸载原应用。\n确保您已备份好个人数据。</string>
     <string name="patch_ignore_risk_install">无视风险，继续安装</string>
     <string name="patch_install_successfully">安装成功</string>
     <string name="patch_install_failed">安装失败</string>
-    <string name="patch_no_xposed_module">未找到 Xposed 模块</string>
     <string name="patch_target_already_patched">已修补</string>
     <string name="patch_type_embedded_apk">内嵌原包/插件</string>
     <string name="patch_extract_original_title">检测到已修补应用 (%1$s)</string>
@@ -149,11 +137,10 @@
     <string name="patch_extract_original_extracting">正在提取原版 APK…</string>
     <string name="patch_extract_original_missing">未在该包中找到内置原版 APK（可能使用了 Level 0 无原包模式）。\n\n是否直接对外壳 APK 进行修补？</string>
     <string name="patch_extract_package_mismatch">包名不匹配：外壳包名为「%1$s」，但提取的原包包名为「%2$s」。\n\n是否仍继续使用提取出的 APK？</string>
-    <string name="patch_extract_error">提取原版 APK 失败：%1$s</string>
 
     <!-- Select Apps Screen -->
     <string name="screen_select_apps">选择应用程序</string>
-    <string name="screen_select_modules">选择 Xposed 模组</string>
+    <string name="screen_select_modules">选择模块</string>
 
     <!-- Welcome Screen -->
     <string name="welcome_version">版本 %1$s</string>
@@ -166,7 +153,7 @@
     <string name="welcome_permission_applist_title">读取应用程序列表</string>
     <string name="welcome_permission_applist_summary">用于获取已安装的应用程序，以便您精确选取修补目标。</string>
     <string name="welcome_optional_title">可选扩展：Shizuku</string>
-    <string name="welcome_optional_summary">仅为可选扩展，未连接也不影响 NPatch 核心功能。</string>
+    <string name="welcome_optional_summary">Shizuku 仅为可选扩展，未连接也不影响 NPatch 核心功能。</string>
     <string name="welcome_permission_granted">已授予</string>
     <string name="welcome_permission_authorize">前往授权</string>
 
@@ -220,15 +207,12 @@
     <string name="settings_dns_custom_invalid">请输入有效的 HTTPS 地址。</string>
     <string name="settings_theme_mode">主题模式</string>
     <string name="settings_theme_mode_system">跟随系统</string>
-    <string name="settings_theme_mode_system_summary">自动配合设备的亮色与暗色外观</string>
     <string name="settings_theme_mode_light">亮色模式</string>
-    <string name="settings_theme_mode_light_summary">始终使用明亮界面</string>
     <string name="settings_theme_mode_dark">暗色模式</string>
-    <string name="settings_theme_mode_dark_summary">始终使用深色界面</string>
     <string name="settings_monet_dynamic_color">Monet 动态取色</string>
     <string name="settings_monet_dynamic_color_summary">跟随系统壁纸颜色 (Android 12+)</string>
     <string name="settings_floating_glass_bottom_bar">悬浮分页底栏</string>
-    <string name="settings_floating_glass_bottom_bar_summary">在主界面使用悬浮分页底栏\nAndroid 13 以下效果不完整</string>
+    <string name="settings_floating_glass_bottom_bar_summary">在主界面显示悬浮标签栏。Android 12 及更早版本仅提供不透明样式。</string>
     <string name="settings_floating_glass_bottom_bar_blur">液态玻璃底栏</string>
     <string name="settings_floating_glass_bottom_bar_blur_summary">为悬浮底栏启用模糊、鲜明、透镜与高光效果</string>
     <string name="settings_custom_background_image">自定义背景图片</string>
@@ -236,8 +220,6 @@
     <string name="settings_card_background_alpha_summary">启用自定义背景图片时生效</string>
     <string name="settings_clear">清除</string>
     <string name="accessibility_clear">清除</string>
-    <string name="accessibility_sort">排序</string>
-    <string name="accessibility_selected">已选择</string>
     <string name="settings_builtin_theme_color">内置主題色</string>
     <string name="settings_color_cherry_blossom">樱花粉</string>
     <string name="settings_color_default_blue">冷淡蓝</string>
@@ -252,57 +234,8 @@
     <string name="settings_color_rose">蔷薇红</string>
 
     <!-- Modules Repo-->
-    <string name="sort_by_name">应用程序名称</string>
-    <string name="sort_by_package_name">包名</string>
-    <string name="sort_by_install_time">安装时间</string>
-    <string name="sort_by_update_time">更新时间</string>
-    <string name="refresh_pulling">下拉刷新</string>
-    <string name="refresh_release">松开刷新</string>
-    <string name="refresh_refresh">刷新中</string>
-    <string name="refresh_complete">刷新完成</string>
-    <string name="module_repo">模块仓库</string>
-    <string name="module_repo_up_to_date">所有模块均为最新版</string>
-    <string name="module_repo_published_time">发布于 %s</string>
-    <string name="module_repo_updated_time">更新于 %s</string>
-    <plurals name="module_repo_upgradable">
-        <item quantity="one">%d 个模块可更新</item>
-        <item quantity="other">%d 个模块可更新</item>
-    </plurals>
-    <string name="sort_upgradable_first">可更新优先</string>
     <string name="list_empty">这里空空如也</string>
-    <string name="need_update">需要更新</string>
-    <string name="installed">已安装</string>
-    <string name="menu_open_in_browser">在浏览器中打开</string>
-    <string name="download_latest_version">下载最新版本</string>
-    <string name="module_readme">自述文件</string>
-    <string name="module_releases">版本发布</string>
-    <string name="module_information">信息</string>
-    <string name="unknown_author">未知</string>
-    <string name="unknown_version">未知</string>
-    <string name="unknown_asset">未知资源</string>
-    <string name="module_app_info">应用信息</string>
     <string name="nav_back">返回</string>
-    <string name="module_information_homepage">主页</string>
-    <string name="module_information_source_url">源代码</string>
-    <string name="module_information_collaborators">协作者</string>
-    <string name="module_release_view_assets">资源</string>
-    <string name="module_release_load_more">显示更早版本</string>
-    <string name="module_release_no_more">没有更多版本</string>
-    <string name="repo_load_failed">无法加载模块仓库：%s</string>
-    <string name="repo_loading_mirror">正在加载镜像仓库…</string>
-    <plurals name="module_release_assets_download_count">
-        <item quantity="one">%d 次下载</item>
-        <item quantity="other">%d 次下载</item>
-    </plurals>
-    <string name="download_asset">下载</string>
-    <string name="package_name">包名</string>
-    <string name="author">作者</string>
-    <string name="repo_filter_scope_title">按适用应用筛选</string>
-    <string name="repo_filter_clear">清除应用筛选</string>
-    <string name="time_just_now">刚刚</string>
-    <string name="time_minutes_ago">%d分钟前</string>
-    <string name="time_hours_ago">%d小时前</string>
-    <string name="time_days_ago">%d天前</string>
     <string name="settings_installation_category">安装设置</string>
     <string name="settings_install_notification">安装完成通知</string>
     <string name="settings_install_notification_summary">安装完成后在通知栏提示，点击可直接打开应用</string>

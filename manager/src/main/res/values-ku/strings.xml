@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">Lêzêdekirin</string>
     <string name="install">Lêkirin</string>
     <string name="installing">Sazkirin</string>
     <string name="uninstall">Rakirin</string>
@@ -11,9 +10,7 @@
     <string name="shizuku_available">Karûbarê Shizuku heye</string>
     <string name="shizuku_unavailable">Karûbarê Shizuku ne girêdayî ye</string>
     <string name="screen_repo">Repo</string>
-    <string name="off">Ji</string>
     <string name="error_unknown">Çewtiya nenas</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">Hin fonksiyon ne berdest in</string>
     <string name="home_api_version">Guhertoya API</string>
     <string name="home_npatch_version">Guhertoya NPatch</string>
@@ -22,10 +19,7 @@
     <string name="home_device">Sazî</string>
     <string name="home_system_abi">Pergala ABI</string>
     <string name="home_info_copied">Li clipboardê hate kopî kirin</string>
-    <string name="home_support">Alîkarî</string>
-    <string name="home_description">NPatch çarçoveyek Xposed-a ne-root-a belaş e ku li ser bingeha LSPosed-ê ye.</string>
-    <string name="about_view_source_code"><![CDATA[Koda çavkaniyê li %1$s<br/>bibînin Tevlî %2$s kanala me bibin]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch çarçoveyek Xposed-a ne-root e ku li ser bingeha Vector-ê ye.</string>
     <string name="screen_manage">Rêvebirin</string>
     <string name="manage_loading">Barkirin</string>
     <string name="manage_no_apps">Hê sepanên patched tune</string>
@@ -41,7 +35,6 @@
     <string name="manage_no_modules">Hîn modul tune</string>
     <string name="manage_module_settings">Mîhengên Modulê</string>
     <string name="manage_app_info">Agahdariya app</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">Patch Nû</string>
     <string name="patch_select_dir_title">Peldanka hilanînê hilbijêrin</string>
     <string name="patch_select_dir_text">Ji bo hilanîna apkên patched pelrêçek hilbijêrin</string>
@@ -50,7 +43,7 @@
     <string name="patch_from_applist">Serlêdanek sazkirî hilbijêrin</string>
     <string name="patch_mode">Mode Patch</string>
     <string name="patch_local">Herêmî</string>
-    <string name="patch_local_desc">Serlêdanek bêyî modulên pêvekirî paqij bikin.\nQada Xposed dikare bi dînamîk bêyî nûvekirin were guheztin.\nSerlêdanên paçkirî yên herêmî tenê dikarin li ser cîhaza herêmî bixebitin.</string>
+    <string name="patch_local_desc">Serlêdanan bêyî ku modulên binavkirî bişopînin.\nQada Xposed dikare bi dînamîkî were guheztin bêyî ku hewce bike ku ji nû ve were guheztin.\nVê modê tenê bi Rêvebirê NPatch re herêmî dikare were bikar anîn.</string>
     <string name="patch_integrated">Integrated</string>
     <string name="patch_integrated_desc">Serlêdanek bi modulên pêvekirî veqetînin.\nSerlêdana paçkirî dikare bêyî rêveberê bixebite, lê bi dînamîk nayê rêvebirin.\nSerlêdanên pejirandî yên yekbûyî dikarin li ser cîhazên ku Rêvebirê NPatch-ê sazkirî ne têne bikar anîn.</string>
     <string name="patch_embed_modules">Modulên tevde bikin</string>
@@ -67,10 +60,7 @@
     <string name="patch_uninstall_text">Ji ber îmzeyên cihêreng, hûn hewce ne ku berî ku ya patched saz bikin sepana orîjînal rakin.\nPiştrast bike ku we daneya kesane piştguh kiriye.</string>
     <string name="patch_install_successfully">Bi serkeftî saz bike</string>
     <string name="patch_install_failed">Sazkirin têk çû</string>
-    <string name="patch_no_xposed_module">Modul(ên) Xposed nehatin dîtin</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">Serlêdan hilbijêrin</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">Settings</string>
     <string name="settings_keystore">keystore îmza</string>
     <string name="settings_keystore_custom">Hûnbunî</string>

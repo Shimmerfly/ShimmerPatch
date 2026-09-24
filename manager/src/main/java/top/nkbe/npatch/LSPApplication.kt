@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
-import android.os.Build
 import android.os.LocaleList
+import androidx.core.content.edit
 import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,13 +35,15 @@ class LSPApplication : Application() {
         val rawLanguage = prefs.getString("language", "") ?: ""
         val language = normalizeLanguageTag(rawLanguage)
         if (language != rawLanguage) {
-            prefs.edit().putString("language", language).apply()
+            prefs.edit { putString("language", language) }
         }
         super.attachBaseContext(applyLocale(base, language))
     }
 
     override fun onCreate() {
         super.onCreate()
+        runCatching { HiddenApiBypass.addHiddenApiExemptions("") }
+            .onFailure { it.printStackTrace() }
         ManagerIntegrity.verifyOnStartup(this)
 
         try {
@@ -50,11 +52,6 @@ class LSPApplication : Application() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            runCatching { HiddenApiBypass.addHiddenApiExemptions("") }
-                .onFailure { it.printStackTrace() }
-        }
-
         lspApp = this
         System.setProperty("java.io.tmpdir", cacheDir.absolutePath)
         filesDir.mkdir()
@@ -64,12 +61,17 @@ class LSPApplication : Application() {
         ShizukuApi.init()
         ShizukuApi.addOnReadyListener {
             globalScope.launch {
+                NeoPackageManager.fetchAppList()
+            }
+            globalScope.launch {
                 ModuleScopeSyncStore.syncTrackedModuleScopes()
             }
         }
         AppBroadcastReceiver.register(this)
-        globalScope.launch { 
-            NeoPackageManager.fetchAppList() 
+        if (!ShizukuApi.isReady) {
+            globalScope.launch {
+                NeoPackageManager.fetchAppList()
+            }
         }
     }
 
@@ -90,12 +92,7 @@ class LSPApplication : Application() {
             val locale = Locale.forLanguageTag(normalizedLanguageTag)
             Locale.setDefault(locale)
             val config = Configuration(context.resources.configuration)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                config.setLocales(LocaleList(locale))
-            } else {
-                @Suppress("DEPRECATION")
-                config.locale = locale
-            }
+            config.setLocales(LocaleList(locale))
             return context.createConfigurationContext(config)
         }
     }

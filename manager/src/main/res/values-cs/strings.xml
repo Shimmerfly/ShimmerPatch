@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">Přidat</string>
     <string name="install">Instalace</string>
     <string name="installing">Instalace stránek</string>
     <string name="uninstall">Odinstalujte stránku</string>
@@ -11,9 +10,7 @@
     <string name="shizuku_available">K dispozici služba Shizuku</string>
     <string name="shizuku_unavailable">Služba Shizuku není připojena</string>
     <string name="screen_repo">Repo</string>
-    <string name="off">Vypnuto</string>
     <string name="error_unknown">Neznámá chyba</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">Některé funkce nejsou k dispozici</string>
     <string name="home_api_version">Verze API</string>
     <string name="home_npatch_version">Verze NPatch</string>
@@ -22,10 +19,7 @@
     <string name="home_device">přístroj</string>
     <string name="home_system_abi">Systém ABI</string>
     <string name="home_info_copied">Zkopírováno do schránky</string>
-    <string name="home_support">Podpěra, podpora</string>
-    <string name="home_description">NPatch je bezplatný non-root Xposed framework založený na jádru LSPosed.</string>
-    <string name="about_view_source_code"><![CDATA[Zobrazit zdrojový kód na %1$s]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch je bezplatný non-root rámec Xposed založený na Vector.</string>
     <string name="screen_manage">Správa</string>
     <string name="manage_loading">načítání</string>
     <string name="manage_no_apps">Zatím žádné opravené aplikace</string>
@@ -41,7 +35,6 @@
     <string name="manage_no_modules">Zatím žádné moduly</string>
     <string name="manage_module_settings">Nastavení modulu</string>
     <string name="manage_app_info">Informace o aplikaci</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">Nová záplata</string>
     <string name="patch_select_dir_title">Vyberte adresář úložiště</string>
     <string name="patch_select_dir_text">Vyberte adresář pro uložení opravených souborů APK</string>
@@ -50,7 +43,7 @@
     <string name="patch_from_applist">Vyberte nainstalovanou aplikaci</string>
     <string name="patch_mode">Režim opravy</string>
     <string name="patch_local">Místní</string>
-    <string name="patch_local_desc">Oprava aplikace bez vložených modulů.\nRozsah Xposed lze dynamicky měnit bez opětovného záplatování.\nMístní záplatované aplikace lze spustit pouze na místním zařízení.</string>
+    <string name="patch_local_desc">Opravuje aplikace bez vkládání modulů.\nRozsah Xposed lze dynamicky měnit bez nutnosti oprav.\nTento režim lze použít pouze lokálně se správcem NPatch.</string>
     <string name="patch_integrated">Integrovaný</string>
     <string name="patch_integrated_desc">Opravte aplikaci s vestavěnými moduly.\nOpravená aplikace může běžet bez správce, ale nelze ji spravovat dynamicky.\nIntegrované opravené aplikace lze používat na zařízeních, která nemají nainstalovaný NPatch Manager.</string>
     <string name="patch_embed_modules">Vložit moduly</string>
@@ -67,10 +60,7 @@
     <string name="patch_uninstall_text">Kvůli různým podpisům musíte před instalací opravené odinstalovat původní aplikaci.\nUjistěte se, že máte zálohovaná osobní data.</string>
     <string name="patch_install_successfully">Nainstalujte úspěšně</string>
     <string name="patch_install_failed">Instalace se nezdařila</string>
-    <string name="patch_no_xposed_module">Nebyly nalezeny žádné moduly Xposed</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">Vybrané aplikace</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">Nastavení</string>
     <string name="settings_keystore">Úložiště klíčů s podpisem</string>
     <string name="settings_keystore_custom">Vlastní</string>

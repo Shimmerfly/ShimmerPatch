@@ -1,3 +1,4 @@
+// App rows, native menus and refresh follow InstallerX-Revived ApplyPage/ApplyItemWidget.
 package top.nkbe.npatch.ui.page.manage
 
 import android.content.Intent
@@ -6,48 +7,44 @@ import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.IntOffset
+import kotlin.math.roundToInt
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.viewmodel.compose.viewModel
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.hazeSource
 import nkbe.util.NeoPackageManager
 import top.nkbe.npatch.R
-import top.nkbe.npatch.ui.component.AccessibleMenuItem
+import top.nkbe.npatch.ui.component.m3.DropdownAction
+import top.nkbe.npatch.ui.component.m3.ExpressiveActionDropdown
 import top.nkbe.npatch.ui.component.AppItem
+import top.nkbe.npatch.ui.component.m3.topShape
+import top.nkbe.npatch.ui.component.m3.middleShape
+import top.nkbe.npatch.ui.component.m3.bottomShape
+import top.nkbe.npatch.ui.component.m3.singleShape
 import top.nkbe.npatch.ui.component.NPatchPullToRefresh
 import top.nkbe.npatch.ui.viewmodel.manage.ModuleManageViewModel
-import top.nkbe.npatch.ui.util.ensureVisibleByMix
-import top.nkbe.npatch.ui.util.relativeLuminance
-import io.github.suqi8.coui.kmp.basic.Icon
-import io.github.suqi8.coui.kmp.basic.InfiniteProgressIndicator
-import io.github.suqi8.coui.kmp.basic.ListPopupColumn
-import io.github.suqi8.coui.kmp.basic.PopupPositionProvider
-import io.github.suqi8.coui.kmp.basic.ScrollBehavior
-import io.github.suqi8.coui.kmp.basic.Surface
-import io.github.suqi8.coui.kmp.basic.Text
-import io.github.suqi8.coui.kmp.basic.rememberPullToRefreshState
-import io.github.suqi8.coui.kmp.overlay.OverlayListPopup
-import io.github.suqi8.coui.kmp.theme.COUITheme
-import io.github.suqi8.coui.kmp.utils.overScrollVertical
-import io.github.suqi8.coui.kmp.utils.scrollEndHaptic
 
 private data class ModuleBadgeColors(
     val container: Color,
@@ -59,42 +56,29 @@ private fun rememberModuleBadgeColors(
     isModern: Boolean,
     isLegacy: Boolean
 ): ModuleBadgeColors {
-    val surfaceArgb = COUITheme.colorScheme.surface.toArgb()
-    val surfaceIsDark = relativeLuminance(surfaceArgb) < 0.5
-    fun boostedContainer(candidate: Color): Color {
-        val mixed = ensureVisibleByMix(
-            original = surfaceArgb,
-            candidate = candidate.toArgb(),
-            minRatio = 2.8,
-            mixWithWhiteIfLighter = surfaceIsDark
-        )
-        return Color(mixed)
-    }
-
     return when {
         isModern -> ModuleBadgeColors(
-            container = boostedContainer(COUITheme.colorScheme.primaryContainer),
-            content = COUITheme.colorScheme.onPrimaryContainer
+            container = MaterialTheme.colorScheme.primaryContainer,
+            content = MaterialTheme.colorScheme.onPrimaryContainer
         )
 
         isLegacy -> ModuleBadgeColors(
-            container = boostedContainer(COUITheme.colorScheme.secondaryContainer),
-            content = COUITheme.colorScheme.onSecondaryContainer
+            container = MaterialTheme.colorScheme.secondaryContainer,
+            content = MaterialTheme.colorScheme.onSecondaryContainer
         )
 
         else -> ModuleBadgeColors(
-            container = COUITheme.colorScheme.error,
-            content = COUITheme.colorScheme.onError
+            container = MaterialTheme.colorScheme.error,
+            content = MaterialTheme.colorScheme.onError
         )
     }
 }
 
 @Composable
 fun ModuleManageBody(
+    scrollBehavior: TopAppBarScrollBehavior,
     searchQuery: String = "",
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    scrollBehavior: ScrollBehavior,
-    hazeState: HazeState,
     viewModel: ModuleManageViewModel = viewModel()
 ) {
     val context = LocalContext.current
@@ -112,6 +96,7 @@ fun ModuleManageBody(
 
     NPatchPullToRefresh(
         isRefreshing = viewModel.isRefreshing,
+        scrollBehavior = scrollBehavior,
         onRefresh = { viewModel.refresh() },
         pullToRefreshState = pullToRefreshState,
         contentPadding = contentPadding,
@@ -119,42 +104,39 @@ fun ModuleManageBody(
     ) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .scrollEndHaptic()
-                .overScrollVertical()
-                .hazeSource(state = hazeState),
+                .fillMaxSize(),
             contentPadding = contentPadding,
-            overscrollEffect = null
+            verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             if (filteredList.isEmpty()) {
                 item {
                     Box(Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             if (NeoPackageManager.appList.isEmpty()) {
-                                InfiniteProgressIndicator()
+                                ContainedLoadingIndicator()
                                 Spacer(Modifier.height(16.dp))
                                 Text(
                                     text = stringResource(R.string.manage_loading),
-                                    style = COUITheme.textStyles.body1,
-                                    color = COUITheme.colorScheme.onSurfaceVariantSummary
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             } else {
                                 Text(
                                     text = if (searchQuery.isNotEmpty()) stringResource(R.string.manage_no_search_results) else stringResource(R.string.manage_no_modules),
-                                    style = COUITheme.textStyles.body1,
-                                    color = COUITheme.colorScheme.onSurfaceVariantSummary
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
                     }
                 }
             } else {
-                items(
+                itemsIndexed(
                     items = filteredList,
-                    key = { it.appInfo.app.packageName }
-                ) { item ->
+                    key = { _, item -> item.appInfo.app.packageName },
+                ) { index, item ->
                     val showDropdown = remember { mutableStateOf(false) }
+                    var pressPosition by remember { mutableStateOf(Offset.Zero) }
                     val settingsIntent = remember { NeoPackageManager.getSettingsIntent(item.appInfo.app.packageName) }
                     val apiBadgeColors = rememberModuleBadgeColors(
                         isModern = item.metadata.isModern,
@@ -165,13 +147,24 @@ fun ModuleManageBody(
                         isLegacy = item.metadata.isLegacy
                     )
 
-                    Box(modifier = Modifier.fillMaxWidth()) {
+                    Box(modifier = Modifier.fillMaxWidth().pointerInput(Unit) {
+                        awaitEachGesture {
+                            pressPosition = awaitFirstDown(requireUnconsumed = false).position
+                        }
+                    }) {
                         AppItem(
+                            modifier = Modifier.animateItem(),
+                            shape = when {
+                                filteredList.size == 1 -> singleShape
+                                index == 0 -> topShape
+                                index == filteredList.lastIndex -> bottomShape
+                                else -> middleShape
+                            },
                             icon = {
                                 Image(
                                     bitmap = NeoPackageManager.getIcon(item.appInfo),
                                     contentDescription = null,
-                                    modifier = Modifier.size(48.dp).clip(RoundedCornerShape(14.dp))
+                                    modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(12.dp))
                                 )
                             },
                             label = item.metadata.displayName.ifEmpty { item.appInfo.label },
@@ -180,9 +173,9 @@ fun ModuleManageBody(
                                 if (item.activationEnabled) {
                                     Icon(
                                         imageVector = Icons.Outlined.CheckCircle,
-                                        contentDescription = null,
+                                        contentDescription = stringResource(R.string.manage_module_activation_enabled),
                                         modifier = Modifier.size(18.dp),
-                                        tint = COUITheme.colorScheme.primary
+                                        tint = MaterialTheme.colorScheme.primary
                                     )
                                 }
                             },
@@ -197,9 +190,7 @@ fun ModuleManageBody(
                                             item.metadata.isLegacy -> stringResource(R.string.manage_module_api_version, item.metadata.minApiVersion)
                                             else -> stringResource(R.string.manage_module_api_unsupported, item.metadata.minApiVersion)
                                         },
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        fontFamily = FontFamily.Serif,
+                                        style = MaterialTheme.typography.labelSmall,
                                         color = apiBadgeColors.content,
                                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                                     )
@@ -207,9 +198,8 @@ fun ModuleManageBody(
                                 if (item.metadata.version.isNotEmpty()) {
                                     Text(
                                         text = item.metadata.version,
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Medium,
-                                        color = COUITheme.colorScheme.onSurfaceVariantSummary
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
                             },
@@ -224,9 +214,7 @@ fun ModuleManageBody(
                                             item.metadata.isLegacy -> stringResource(R.string.manage_module_pipeline_legacy)
                                             else -> stringResource(R.string.manage_module_pipeline_unsupported)
                                         },
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        fontFamily = FontFamily.Serif,
+                                        style = MaterialTheme.typography.labelSmall,
                                         color = pipelineBadgeColors.content,
                                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                                     )
@@ -246,38 +234,34 @@ fun ModuleManageBody(
                             }
                         )
 
-                        OverlayListPopup(
-                            show = showDropdown.value,
-                            alignment = PopupPositionProvider.Align.End,
-                            onDismissRequest = { showDropdown.value = false }
-                        ) {
-                            val actions = mutableListOf<Pair<String, () -> Unit>>()
-
+                        val actions = buildList {
                             if (settingsIntent != null) {
-                                actions.add(stringResource(R.string.manage_module_settings) to {
+                                add(DropdownAction(stringResource(R.string.manage_module_settings), Icons.Outlined.Settings) {
                                     context.startActivity(settingsIntent)
                                 })
                             }
-                            actions.add(stringResource(R.string.manage_app_info) to {
+                            add(DropdownAction(stringResource(R.string.manage_app_info), Icons.Outlined.Info) {
                                 val intent = Intent(
                                     Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                                     Uri.fromParts("package", item.appInfo.app.packageName, null)
                                 )
                                 context.startActivity(intent)
                             })
-
-                            ListPopupColumn {
-                                actions.forEachIndexed { index, (text, action) ->
-                                    AccessibleMenuItem(
-                                        text = text,
-                                        onClick = {
-                                            hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
-                                            showDropdown.value = false
-                                            action()
-                                        }
-                                    )
-                                }
-                            }
+                        }
+                        // Same zero-size pointer anchor as DropDownMenuWidget.
+                        Box(Modifier.offset {
+                            IntOffset(pressPosition.x.roundToInt(), pressPosition.y.roundToInt())
+                        }) {
+                            ExpressiveActionDropdown(
+                                expanded = showDropdown.value,
+                                groups = listOf(actions),
+                                onDismissRequest = { showDropdown.value = false },
+                                onAction = { action ->
+                                    hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
+                                    showDropdown.value = false
+                                    action.onClick()
+                                },
+                            )
                         }
                     }
                 }

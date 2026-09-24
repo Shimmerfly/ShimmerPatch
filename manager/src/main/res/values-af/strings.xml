@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">Voeg by</string>
     <string name="install">Installeer</string>
     <string name="installing">Installeer tans</string>
     <string name="uninstall">Deïnstalleer</string>
@@ -11,9 +10,7 @@
     <string name="shizuku_available">Shizuku diens beskikbaar</string>
     <string name="shizuku_unavailable">Shizuku-diens nie gekoppel nie</string>
     <string name="screen_repo">Repo</string>
-    <string name="off">Af</string>
     <string name="error_unknown">Onbekende fout</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">Sommige funksies nie beskikbaar nie</string>
     <string name="home_api_version">API weergawe</string>
     <string name="home_npatch_version">NPatch weergawe</string>
@@ -22,10 +19,7 @@
     <string name="home_device">Toestel</string>
     <string name="home_system_abi">Stelsel ABI</string>
     <string name="home_info_copied">Gekopieer na knipbord</string>
-    <string name="home_support">Ondersteuning</string>
-    <string name="home_description">NPatch is \'n gratis nie-wortel Xposed-raamwerk gebaseer op LSPosed-kern.</string>
-    <string name="about_view_source_code"><![CDATA[Bekyk bronkode by %1$s]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch is \'n gratis nie-wortel Xposed raamwerk gebaseer op Vector.</string>
     <string name="screen_manage">Bestuur</string>
     <string name="manage_loading">Laai tans</string>
     <string name="manage_no_apps">Nog geen reggemaakte programme nie</string>
@@ -41,7 +35,6 @@
     <string name="manage_no_modules">Nog geen modules nie</string>
     <string name="manage_module_settings">Module instellings</string>
     <string name="manage_app_info">App inligting</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">Nuwe Patch</string>
     <string name="patch_select_dir_title">Kies bergingsgids</string>
     <string name="patch_select_dir_text">Kies \'n gids om die gelapte APK te stoor</string>
@@ -50,7 +43,7 @@
     <string name="patch_from_applist">Kies \'n geïnstalleerde toepassing</string>
     <string name="patch_mode">Patch Mode</string>
     <string name="patch_local">Plaaslik</string>
-    <string name="patch_local_desc">Maak \'n toepassing sonder modules ingebed.\nXposed omvang kan dinamies verander word sonder her-patch.\nPlaaslike gelapte programme kan slegs op die plaaslike toestel loop.</string>
+    <string name="patch_local_desc">Plak programme sonder om modules in te sluit.\nDie Xposed omvang kan dinamies verander word sonder dat dit nodig is om weer te pleister.\nHierdie modus kan slegs plaaslik met die NPatch Bestuurder gebruik word.</string>
     <string name="patch_integrated">Geïntegreerde</string>
     <string name="patch_integrated_desc">Patcher une application avec des modules intégrés.\nL\'application corrigée peut fonctionner sans le gestionnaire mais ne peut pas être gérée dynamiquement.\nLes applications patchées intégrées peuvent être utilisées sur des appareils sur lesquels NPatch Manager n\'est pas installé.</string>
     <string name="patch_embed_modules">Sluit modules in</string>
@@ -67,10 +60,7 @@
     <string name="patch_uninstall_text">As gevolg van verskillende handtekeninge, moet u die oorspronklike toepassing deïnstalleer voordat u die gelapte een installeer.\nMaak seker dat jy persoonlike data gerugsteun het.</string>
     <string name="patch_install_successfully">Installeer suksesvol</string>
     <string name="patch_install_failed">Installering het misluk</string>
-    <string name="patch_no_xposed_module">Geen Xposed-module(s) is gevind nie</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">Kies Toepassings</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">Instellings</string>
     <string name="settings_keystore">Armazenamento de assinatura</string>
     <string name="settings_keystore_custom">Pasgemaak</string>

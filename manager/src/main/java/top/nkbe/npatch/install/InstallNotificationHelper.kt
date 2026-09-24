@@ -23,18 +23,16 @@ object InstallNotificationHelper {
     private const val NOTIFICATION_ID_BASE = 10000
 
     fun initChannel(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            val name = context.getString(R.string.settings_install_notification)
-            val descriptionText = context.getString(R.string.settings_install_notification_summary)
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-                enableVibration(true)
-                setShowBadge(true)
-            }
-            notificationManager.createNotificationChannel(channel)
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val name = context.getString(R.string.settings_install_notification)
+        val descriptionText = context.getString(R.string.settings_install_notification_summary)
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+            description = descriptionText
+            enableVibration(true)
+            setShowBadge(true)
         }
+        notificationManager.createNotificationChannel(channel)
     }
 
     fun hasNotificationPermission(context: Context): Boolean {

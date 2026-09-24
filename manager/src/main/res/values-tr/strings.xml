@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="add">Ekle</string>
     <string name="install">Düzenlemek</string>
     <string name="installing">yükleme</string>
     <string name="uninstall">Kaldır</string>
@@ -11,9 +10,7 @@
     <string name="shizuku_available">Shizuku servisi mevcut</string>
     <string name="shizuku_unavailable">Shizuku hizmeti bağlı değil</string>
     <string name="screen_repo">Repo</string>
-    <string name="off">Kapalı</string>
     <string name="error_unknown">Bilinmeyen hata</string>
-    <!-- Home Screen -->
     <string name="home_shizuku_warning">Bazı işlevler kullanılamıyor</string>
     <string name="home_api_version">API Sürümü</string>
     <string name="home_npatch_version">NPatch Sürümü</string>
@@ -22,10 +19,7 @@
     <string name="home_device">Cihaz</string>
     <string name="home_system_abi">Sistem ABI\'si</string>
     <string name="home_info_copied">Panoya kopyalandı</string>
-    <string name="home_support">Destek</string>
-    <string name="home_description">NPatch, LSPosed çekirdeğine dayalı ücretsiz bir kök olmayan Xposed çerçevesidir.</string>
-    <string name="about_view_source_code"><![CDATA[Kaynak kodunu %1$sgörüntüleyin]]></string>
-    <!-- Manage Screen -->
+    <string name="home_description">NPatch, Vector\'yi temel alan, root olmayan ücretsiz bir Xposed çerçevesidir.</string>
     <string name="screen_manage">Yönetmek</string>
     <string name="manage_loading">Yükleniyor</string>
     <string name="manage_no_apps">Henüz yama uygulanmış uygulama yok</string>
@@ -41,7 +35,6 @@
     <string name="manage_no_modules">Henüz modül yok</string>
     <string name="manage_module_settings">Modül ayarları</string>
     <string name="manage_app_info">Uygulama bilgisi</string>
-    <!-- New Patch Screen -->
     <string name="screen_new_patch">Yeni Yama</string>
     <string name="patch_select_dir_title">Depolama dizini seçin</string>
     <string name="patch_select_dir_text">Yamalı apk\'leri saklamak için bir dizin seçin</string>
@@ -50,7 +43,7 @@
     <string name="patch_from_applist">Yüklü bir uygulama seçin</string>
     <string name="patch_mode">Yama Modu</string>
     <string name="patch_local">Yerel</string>
-    <string name="patch_local_desc">Gömülü modüller olmadan bir uygulamayı yamalayın.\nXposed kapsamı yeniden yama yapılmadan dinamik olarak değiştirilebilir.\nYerel yamalı uygulamalar yalnızca yerel cihazda çalışabilir.</string>
+    <string name="patch_local_desc">Modülleri yerleştirmeden uygulamaları yamalar.\nXposed kapsamı, yeniden yama yapılmasına gerek kalmadan dinamik olarak değiştirilebilir.\nBu mod yalnızca NPatch Yöneticisi ile yerel olarak kullanılabilir.</string>
     <string name="patch_integrated">Birleşik</string>
     <string name="patch_integrated_desc">Gömülü modüller içeren bir uygulamaya yama yapın.\nYamalı uygulama, yönetici olmadan çalışabilir ancak dinamik olarak yönetilemez.\nTümleşik yamalı uygulamalar, NPatch Yöneticisi yüklü olmayan cihazlarda kullanılabilir.</string>
     <string name="patch_embed_modules">Gömülü modüller</string>
@@ -67,10 +60,7 @@
     <string name="patch_uninstall_text">Farklı imzalar nedeniyle, yamalı uygulamayı yüklemeden önce orijinal uygulamayı kaldırmanız gerekir.\nKişisel verilerinizi yedeklediğinizden emin olun.</string>
     <string name="patch_install_successfully">başarıyla yükle</string>
     <string name="patch_install_failed">Yükleme başarısız</string>
-    <string name="patch_no_xposed_module">Xposed modül(ler)i bulunamadı</string>
-    <!-- Select Apps Screen -->
     <string name="screen_select_apps">Uygulamaları Seçin</string>
-    <!-- Settings Screen -->
     <string name="screen_settings">Ayarlar</string>
     <string name="settings_keystore">imza anahtar deposu</string>
     <string name="settings_keystore_custom">Gelenek</string>
@@ -86,7 +76,7 @@
     <string name="settings_keystore_wrong_alias_password">Yanlış takma ad şifresi</string>
     <string name="settings_detail_patch_logs">Ayrıntılı yama günlükleri</string>
     <string name="patch_output_log_to_media">Media dizinine günlük çıktısı</string>
-    <string name="patch_output_log_to_media_desc">Xposed günlüklerini ve framework başlangıç günlüklerini Media dizinine çıkarın.</string>
+    <string name="patch_output_log_to_media_desc">Xposed API günlüklerini, çerçeve olaylarını ve Java/Kotlin çökmelerini yakalar.</string>
     <string name="settings_card_background_alpha">Kart arka plan opaklığı</string>
     <string name="settings_card_background_alpha_summary">Özel arka plan resmi etkinleştirildiğinde uygulanır</string>
 </resources>

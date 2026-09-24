@@ -1,18 +1,18 @@
 package top.nkbe.npatch.ui.component
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.union
-import io.github.suqi8.coui.kmp.basic.FabPosition
-import io.github.suqi8.coui.kmp.basic.Scaffold as COUIScaffold
-import io.github.suqi8.coui.kmp.basic.ToolbarPosition
-import io.github.suqi8.coui.kmp.utils.COUIPopupUtils.Companion.COUIPopupHost
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import top.nkbe.npatch.ui.util.LocalBackgroundImagePath
 
+/** A destination owns its complete surface, including the optional wallpaper, during transitions. */
 @Composable
 fun NPatchScaffold(
     modifier: Modifier = Modifier,
@@ -20,26 +20,33 @@ fun NPatchScaffold(
     bottomBar: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     floatingActionButtonPosition: FabPosition = FabPosition.End,
-    floatingToolbar: @Composable () -> Unit = {},
-    floatingToolbarPosition: ToolbarPosition = ToolbarPosition.BottomCenter,
     snackbarHost: @Composable () -> Unit = {},
-    popupHost: @Composable () -> Unit = { COUIPopupHost() },
-    containerColor: Color = Color.Transparent,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
     contentWindowInsets: WindowInsets = WindowInsets.systemBars.union(WindowInsets.displayCutout),
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    COUIScaffold(
-        modifier = modifier,
-        topBar = topBar,
-        bottomBar = bottomBar,
-        floatingActionButton = floatingActionButton,
-        floatingActionButtonPosition = floatingActionButtonPosition,
-        floatingToolbar = floatingToolbar,
-        floatingToolbarPosition = floatingToolbarPosition,
-        snackbarHost = snackbarHost,
-        popupHost = popupHost,
-        containerColor = containerColor,
-        contentWindowInsets = contentWindowInsets,
-        content = content,
-    )
+    val background = LocalBackgroundImagePath.current
+    Box(modifier = modifier.fillMaxSize().background(containerColor.copy(alpha = 1f))) {
+        if (background.isNotEmpty()) {
+            AsyncImage(
+                model = background,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.matchParentSize().blur(20.dp),
+            )
+            Box(Modifier.matchParentSize().background(Color.Black.copy(alpha = 0.35f)))
+        }
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = topBar,
+            bottomBar = bottomBar,
+            floatingActionButton = floatingActionButton,
+            floatingActionButtonPosition = floatingActionButtonPosition,
+            snackbarHost = snackbarHost,
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            contentWindowInsets = contentWindowInsets,
+            content = content,
+        )
+    }
 }

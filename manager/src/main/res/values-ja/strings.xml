@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="add">追加</string>
     <string name="install">インストール</string>
     <string name="installing">インストール中</string>
     <string name="uninstall">アンインストール</string>
@@ -12,7 +11,6 @@
     <string name="shizuku_unavailable">Shizukuが有効化されていません</string>
     <string name="screen_repo">リポジトリ</string>
 
-    <string name="off">オフ</string>
     <string name="error_unknown">不明なエラー</string>
     <!-- Home Screen -->
     <string name="home_shizuku_warning">一部の機能が使用できません</string>
@@ -23,9 +21,7 @@
     <string name="home_device">デバイス</string>
     <string name="home_system_abi">システムABI</string>
     <string name="home_info_copied">クリップボードにコピーしました</string>
-    <string name="home_support">サポート</string>
-    <string name="home_description">NPatchは、LSPosedコアに基づく無料の非root環境向けXposedフレームワークです。</string>
-    <string name="about_view_source_code"><![CDATA[%1$sでソースコードを見る]]></string>
+    <string name="home_description">NPatch は Vector をベースにした、Root 不要の無料の Xposed フレームワークです。</string>
     <!-- Manage Screen -->
     <string name="screen_manage">管理</string>
     <string name="manage_loading">読み込み中</string>
@@ -51,7 +47,7 @@
     <string name="patch_from_applist">インストールされているアプリを選択</string>
     <string name="patch_mode">パッチモード</string>
     <string name="patch_local">ローカル</string>
-    <string name="patch_local_desc">モジュールを埋め込んでいないアプリにパッチを当てる。\nXposedのスコープは、再パッチなしで動的に変更できます。\nローカルでパッチを適用したアプリは、ローカルデバイスでのみ実行できます。</string>
+    <string name="patch_local_desc">モジュールを埋め込まずにアプリへパッチを適用します。\nパッチを適用し直すことなく、Xposed のスコープを動的に変更できます。\nこのモードは NPatch マネージャーと併用する場合に限り、この端末上で利用できます。</string>
     <string name="patch_integrated">統合</string>
     <string name="patch_integrated_desc">モジュールが埋め込まれたアプリにパッチを適用します。\nパッチ適用されたアプリはマネージャーなしで実行できますが、動的に管理することはできません。\n統合されたパッチ適用済みアプリは、NPatch Manager がインストールされていないデバイスでも使用できます。</string>
     <string name="patch_embed_modules">モジュールを埋め込む</string>
@@ -68,7 +64,6 @@
     <string name="patch_uninstall_text">署名が異なるため、パッチを適用したアプリをインストールする前に、元のアプリをアンインストールする必要があります。\nデータは必要に応じてバックアップしてください。</string>
     <string name="patch_install_successfully">正常にインストールされました</string>
     <string name="patch_install_failed">インストールに失敗しました</string>
-    <string name="patch_no_xposed_module">Xposedモジュールが見つかりませんでした</string>
     <!-- Select Apps Screen -->
     <string name="screen_select_apps">アプリを選択</string>
     <!-- Settings Screen -->

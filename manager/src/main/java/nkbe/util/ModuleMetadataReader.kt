@@ -248,6 +248,7 @@ object ModuleMetadataReader {
 
     private fun readString(properties: Properties, key: String): String? = properties.getProperty(key)?.trim()?.takeIf { it.isNotEmpty() }
 
+    @Suppress("DEPRECATION") // Legacy metadata can encode the same key using several value types.
     private fun readLegacyString(metaData: Bundle?, key: String): String? {
         if (metaData == null || !metaData.containsKey(key)) return null
         val rawValue = metaData.get(key) ?: return null
@@ -258,6 +259,7 @@ object ModuleMetadataReader {
         }
     }
 
+    @Suppress("DEPRECATION") // Legacy metadata can encode the same key using several value types.
     private fun readLegacyInt(metaData: Bundle?, key: String): Int? {
         if (metaData == null || !metaData.containsKey(key)) return null
         val rawValue = metaData.get(key) ?: return null
@@ -269,6 +271,7 @@ object ModuleMetadataReader {
         }
     }
 
+    @Suppress("DEPRECATION") // Legacy metadata can encode the same key using several value types.
     private fun readLegacyBoolean(metaData: Bundle?, key: String): Boolean? {
         if (metaData == null || !metaData.containsKey(key)) return null
         val rawValue = metaData.get(key) ?: return null

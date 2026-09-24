@@ -5,7 +5,7 @@ plugins {
 }
 
 extensions.configure<com.android.build.api.dsl.ApplicationExtension> {
-    ndkVersion = "29.0.13846066"
+    ndkVersion = "30.0.16248370"
     defaultConfig {
         multiDexEnabled = false
 
@@ -26,6 +26,7 @@ extensions.configure<com.android.build.api.dsl.ApplicationExtension> {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -95,7 +96,7 @@ dependencies {
     implementation("vector:legacy")
     implementation(projects.share.android)
     implementation(projects.share.java)
-    implementation(npatch.hiddenapibypass)
+    implementation(libs.hiddenapibypass)
 
     implementation(libs.gson)
 }

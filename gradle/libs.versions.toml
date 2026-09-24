@@ -1,39 +1,52 @@
 [versions]
+agp = "9.3.1"
 room = "2.8.3"
 shizuku = "13.1.5"
 hiddenapi = "4.4.0"
-compose-bom = "2025.12.01"
+compose-bom = "2026.09.00"
 kotlin = "2.4.10-RC"
 ksp = "2.3.10"
 commons-io = "2.20.0"
 beust-jcommander = "1.82"
 google-gson = "2.13.1"
 core-ktx = "1.17.0"
-coui = "1.1.0"
-haze = "2.0.0-alpha01"
-backdrop = "1.0.6"
-navigation3 = "1.0.1"
+material3 = "1.5.0-alpha28"
+miuix = "0.9.4-rc01"
 webkit = "1.14.0"
 datastore = "1.1.3"
 coil = "2.7.0"
 
 [plugins]
+agp-lib = { id = "com.android.library", version.ref = "agp" }
+agp-app = { id = "com.android.application", version.ref = "agp" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 rikka-tools-refine = { id = "dev.rikka.tools.refine", version.ref = "hiddenapi" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 [libraries]
+vector-daemon-service = { module = "vector:daemon-service" }
+androidx-preference = "androidx.preference:preference-ktx:1.2.1"
+okhttp = "com.squareup.okhttp3:okhttp:5.5.0"
+okhttp-dnsoverhttps = "com.squareup.okhttp3:okhttp-dnsoverhttps:5.5.0"
+appiconloader = "me.zhanghai.android.appiconloader:appiconloader:1.5.0"
+androidx-concurrent-futures = "androidx.concurrent:concurrent-futures:1.3.0"
+androidx-test-runner = "androidx.test:runner:1.7.0"
+androidx-test-ext-junit = "androidx.test.ext:junit:1.3.0"
+androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+# Preserve the manager/loader Gson version previously provided by the core catalog.
+gson = { module = "com.google.code.gson:gson", version = "2.14.0" }
 androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 # Androidx Libraries
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
+androidx-splashscreen = "androidx.core:core-splashscreen:1.2.0"
 androidx-customview = "androidx.customview:customview:1.2.0"
 androidx-customview-poolingcontainer = "androidx.customview:customview-poolingcontainer:1.1.0"
-androidx-activity-compose = "androidx.activity:activity-compose:1.10.1"
+androidx-activity-compose = "androidx.activity:activity-compose:1.13.0"
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
-androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
-androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
-androidx-lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2"
+androidx-lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0"
 
 # Jetpack Compose Libraries
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
@@ -41,7 +54,7 @@ androidx-compose-ui = { module = "androidx.compose.ui:ui" }
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
-androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 
 # Database Libraries
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
@@ -58,8 +71,9 @@ rikka-hidden-stub = { module = "dev.rikka.hidden:stub", version.ref = "hiddenapi
 commons-io = { module = "commons-io:commons-io", version.ref = "commons-io" }
 beust-jcommander = { module = "com.beust:jcommander", version.ref = "beust-jcommander" }
 google-gson = { module = "com.google.code.gson:gson", version.ref = "google-gson" }
-haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
-hazeBlur = { module = "dev.chrisbanes.haze:haze-blur", version.ref = "haze" }
-backdrop = { module = "io.github.kyant0:backdrop", version.ref = "backdrop" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 hiddenapibypass = { module = "org.lsposed.hiddenapibypass:hiddenapibypass", version = "4.3" }
+miuix-nav = { module = "top.yukonga.miuix.kmp:miuix-nav-android", version.ref = "miuix" }
+miuix-blur = { module = "top.yukonga.miuix.kmp:miuix-blur-android", version.ref = "miuix" }
+miuix-shader = { module = "top.yukonga.miuix.kmp:miuix-shader-android", version.ref = "miuix" }
+materialkolor = "com.materialkolor:material-kolor:5.0.1"

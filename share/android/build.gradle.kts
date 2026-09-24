@@ -5,8 +5,9 @@ plugins {
 android {
     namespace = "top.nkbe.npatch.share"
 
+    androidResources.enable = false
+
     buildFeatures {
-        androidResources = false
         buildConfig = false
     }
 }

@@ -14,14 +14,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
-    versionCatalogs {
-        create("libs") {
-            from(files("core/gradle/libs.versions.toml"))
-        }
-        create("npatch") {
-            from(files("gradle/npatch.versions.toml"))
-        }
-    }
 }
 
 rootProject.name = "NPatch"

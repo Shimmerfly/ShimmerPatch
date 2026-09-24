@@ -1,14 +1,16 @@
+import java.security.KeyStore
+import java.security.MessageDigest
 import java.util.Base64
 import java.util.Locale
 import com.android.build.api.artifact.SingleArtifact
+import com.android.build.api.variant.BuildConfigField
 
-val defaultManagerPackageName: String by rootProject.extra
-val apiCode: Int by rootProject.extra
-val verCode: Int by rootProject.extra
-val verName: String by rootProject.extra
-val coreVerCode: Int by rootProject.extra
-val coreVerName: String by rootProject.extra
-val couiVersion = npatch.versions.coui.get()
+val defaultManagerPackageName = rootProject.extra["defaultManagerPackageName"] as String
+val apiCode = rootProject.extra["apiCode"] as Int
+val verCode = rootProject.extra["verCode"] as Int
+val verName = rootProject.extra["verName"] as String
+val coreVerCode = rootProject.extra["coreVerCode"] as Int
+val coreVerName = rootProject.extra["coreVerName"] as String
 
 fun decodeSha256Hex(value: String): ByteArray {
     require(value.length == 64) { "Manager signature digest must be 64 hex chars: $value" }
@@ -25,30 +27,17 @@ fun encodeAllowlistEntry(value: String): String {
 
 plugins {
     alias(libs.plugins.agp.app)
-    alias(npatch.plugins.kotlin.android)
-    alias(npatch.plugins.compose.compiler)
-    alias(npatch.plugins.google.devtools.ksp)
-    alias(npatch.plugins.rikka.tools.refine)
-    id("kotlin-parcelize")
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.google.devtools.ksp)
+    alias(libs.plugins.rikka.tools.refine)
+    alias(libs.plugins.kotlin.parcelize)
 }
 
 android {
     defaultConfig {
         applicationId = defaultManagerPackageName
-        val managerSignatureAllowlist = (
-            System.getenv("NPATCH_MANAGER_SIGNATURE_SHA256")
-                ?: project.findProperty("npatchManagerSignatureSha256")?.toString()
-                ?: listOf(
-                    "DB73788534AFFC4BFA3AE16040A2D3A2",
-                    "C2B63EDEA1E07F3A1CF9AFF4DD0995A8",
-                ).joinToString("")
-            )
-            .split(',', ';', ' ', '\n', '\r', '\t')
-            .map { it.trim().uppercase(Locale.ROOT) }
-            .filter { it.isNotEmpty() }
-            .distinct()
-            .joinToString(",") { encodeAllowlistEntry(it) }
-        buildConfigField("String", "MANAGER_SIGNATURE_SHA256_ALLOWLIST", "\"$managerSignatureAllowlist\"")
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     dependenciesInfo {
@@ -80,7 +69,7 @@ android {
             )
         }
         all {
-            sourceSets[name].assets.srcDirs(rootProject.projectDir.resolve("out/assets/$name"))
+            sourceSets[name].assets.directories.add(rootProject.projectDir.resolve("out/assets/$name").absolutePath)
         }
     }
 
@@ -90,6 +79,9 @@ android {
         buildConfig = true
     }
 
+    // In-app language selection must work offline without Play language-split downloads.
+    bundle.language.enableSplit = false
+
     namespace = "top.nkbe.npatch"
 
 }
@@ -98,6 +90,35 @@ androidComponents {
     onVariants { variant ->
         val variantLowered = variant.name.lowercase()
         val variantCapped = variant.name.replaceFirstChar { it.uppercase() }
+
+        val configuredSignature = providers.environmentVariable("NPATCH_MANAGER_SIGNATURE_SHA256")
+            .orElse(providers.gradleProperty("npatchManagerSignatureSha256"))
+        val signingConfig = android.buildTypes.getByName(requireNotNull(variant.buildType)).signingConfig
+        val signatureAllowlist = configuredSignature.orElse(providers.provider {
+            val config = requireNotNull(signingConfig) { "Missing manager signing config for ${variant.name}" }
+            val storeFile = requireNotNull(config.storeFile) { "Missing manager signing keystore for ${variant.name}" }
+            val store = KeyStore.getInstance(config.storeType ?: KeyStore.getDefaultType())
+            storeFile.inputStream().use { store.load(it, config.storePassword?.toCharArray()) }
+            val certificate = requireNotNull(store.getCertificate(config.keyAlias)) {
+                "Missing manager signing certificate for ${variant.name}"
+            }
+            MessageDigest.getInstance("SHA-256").digest(certificate.encoded)
+                .joinToString("") { "%02X".format(Locale.ROOT, it) }
+        })
+        requireNotNull(variant.buildConfigFields).put("MANAGER_SIGNATURE_SHA256_ALLOWLIST", signatureAllowlist.map { fingerprints ->
+            val encoded = fingerprints.split(',', ';', ' ', '\n', '\r', '\t')
+                .map { it.trim().uppercase(Locale.ROOT) }
+                .filter { it.isNotEmpty() }
+                .distinct()
+                .joinToString(",", transform = ::encodeAllowlistEntry)
+            BuildConfigField("String", "\"$encoded\"", "SHA-256 fingerprints for the selected signing certificate")
+        })
+        // validateSigning also creates the default debug keystore on a fresh checkout.
+        tasks.configureEach {
+            if (name == "generate${variantCapped}BuildConfig") {
+                dependsOn("validateSigning$variantCapped")
+            }
+        }
 
         val copyAssetsTaskProvider = tasks.register<Copy>("copy${variantCapped}Assets") {
             dependsOn(":meta-loader:copy$variantCapped")
@@ -116,6 +137,15 @@ androidComponents {
             if (name == "merge${variantCapped}Assets") {
                 dependsOn(copyAssetsTaskProvider)
             }
+            // Lint inspects the same asset directory. If packaging is requested in the
+            // same invocation, wait for its producers; standalone Lint need not build JNI.
+            if (name == "generate${variantCapped}LintReportModel" || name == "lintAnalyze${variantCapped}") {
+                mustRunAfter(
+                    ":meta-loader:copyDex$variantCapped",
+                    ":patch-loader:copyDex$variantCapped",
+                    ":patch-loader:copySo$variantCapped",
+                )
+            }
         }
 
         tasks.register<Copy>("build$variantCapped") {
@@ -131,52 +161,66 @@ dependencies {
     implementation(projects.patch)
     implementation(projects.share.android)
     implementation(projects.share.java)
-    implementation("vector:daemon-service")
+    implementation(libs.vector.daemon.service)
 
-    implementation(platform(npatch.androidx.compose.bom))
-    implementation(npatch.androidx.activity.compose)
-    implementation(npatch.androidx.compose.material.icons.extended)
-    implementation(npatch.androidx.compose.material3)
-    implementation(npatch.androidx.compose.ui)
-    implementation(npatch.androidx.compose.ui.tooling.preview)
-    implementation(npatch.androidx.core.ktx)
-    implementation("com.google.android.material:material:1.12.0")
-    implementation(npatch.androidx.datastore.preferences)
-    implementation(npatch.coil.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.materialkolor)
+    // Miuix is confined to navigation and blur; all widgets use Material 3.
+    implementation(libs.miuix.nav)
+    implementation(libs.miuix.blur)
+    implementation(libs.miuix.shader)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.splashscreen)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.coil.compose)
     implementation(libs.gson)
-    implementation(npatch.androidx.lifecycle.viewmodel.compose)
-    implementation(npatch.androidx.navigation3.runtime)
-    implementation(npatch.androidx.navigation3.ui)
-    implementation("androidx.preference:preference-ktx:1.2.1")
-    implementation(npatch.androidx.room.ktx)
-    implementation(npatch.androidx.room.runtime)
-    implementation("com.squareup.okhttp3:okhttp:5.3.2")
-    implementation("com.squareup.okhttp3:okhttp-dnsoverhttps:5.3.2")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.preference)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.dnsoverhttps)
 
     implementation(libs.gson)
-    implementation(npatch.rikka.shizuku.api)
-    implementation(npatch.rikka.shizuku.provider)
-    implementation(npatch.rikka.refine)
-    //implementation(npatch.raamcosta.compose.destinations)
-    implementation("me.zhanghai.android.appiconloader:appiconloader:1.5.0")
-    implementation(npatch.hiddenapibypass)
+    implementation(libs.rikka.shizuku.api)
+    implementation(libs.rikka.shizuku.provider)
+    implementation(libs.rikka.refine)
+    //implementation(libs.raamcosta.compose.destinations)
+    implementation(libs.appiconloader)
+    implementation(libs.hiddenapibypass)
 
-    // COUI & Haze
-    implementation(npatch.haze)
-    implementation(npatch.hazeBlur)
-    implementation(npatch.backdrop)
-    implementation("io.github.suqi8.coui.kmp:coui-ui:$couiVersion")
-    implementation("io.github.suqi8.coui.kmp:coui-preference:$couiVersion")
-    implementation("io.github.suqi8.coui.kmp:coui-icons:$couiVersion")
-    implementation(npatch.androidx.webkit)
+    implementation(libs.androidx.webkit)
 
 
-    annotationProcessor(npatch.androidx.room.compiler)
-    compileOnly(npatch.rikka.hidden.stub)
-    ksp(npatch.androidx.room.compiler)
-    //ksp(npatch.raamcosta.compose.destinations.ksp)
+    annotationProcessor(libs.androidx.room.compiler)
+    compileOnly(libs.rikka.hidden.stub)
+    ksp(libs.androidx.room.compiler)
+    //ksp(libs.raamcosta.compose.destinations.ksp)
 
-    debugImplementation(npatch.androidx.compose.ui.tooling)
-    debugImplementation(npatch.androidx.customview)
-    debugImplementation(npatch.androidx.customview.poolingcontainer)
+    // Keep app/test runtime versions aligned with AndroidX Test 1.7.
+    implementation(libs.androidx.concurrent.futures)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.customview)
+    debugImplementation(libs.androidx.customview.poolingcontainer)
+}
+
+kotlin {
+    compilerOptions {
+        // Match WeKit: all manager compilations, including tests, use these Material APIs.
+        optIn.addAll(
+            "androidx.compose.material3.ExperimentalMaterial3Api",
+            "androidx.compose.material3.ExperimentalMaterial3ExpressiveApi",
+        )
+    }
 }

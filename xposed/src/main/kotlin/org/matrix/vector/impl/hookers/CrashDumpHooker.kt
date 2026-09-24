@@ -15,7 +15,7 @@ object CrashDumpHooker : XposedInterface.Hooker {
             if (throwable != null) {
                 VectorLogBridge.log(
                     Log.ERROR,
-                    "NPatchCrash",
+                    "ShimmerPatchCrash",
                     "Uncaught exception in ${Thread.currentThread().name}",
                     throwable,
                 )

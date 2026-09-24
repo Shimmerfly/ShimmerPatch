@@ -42,7 +42,7 @@ public final class XposedBridge {
      */
     public static final ClassLoader BOOTCLASSLOADER = XposedBridge.class.getClassLoader();
 
-    public static final String TAG = "NPatchLegacyBridge";
+    public static final String TAG = "ShimmerPatchLegacyBridge";
 
     public static String FRAMEWORK_NAME = BuildConfig.FRAMEWORK_NAME;
     public static String FRAMEWORK_VERSION = BuildConfig.VERSION_NAME;

@@ -33,7 +33,7 @@ android {
         "DEFAULT_MANAGER_PACKAGE_NAME",
         """"$defaultManagerPackageName"""",
     )
-    buildConfigField("String", "FRAMEWORK_NAME", """"NPatch"""")
+    buildConfigField("String", "FRAMEWORK_NAME", """"ShimmerPatch"""")
     buildConfigField("String", "MANAGER_INJECTED_PKG_NAME", """"$injectedPackageName"""")
     buildConfigField("int", "MANAGER_INJECTED_UID", """$injectedPackageUid""")
     buildConfigField("String", "VERSION_NAME", """"${versionNameProvider.get()}"""")
@@ -113,7 +113,7 @@ androidComponents {
     val variantLowered = variant.name.lowercase()
 
     // `:manager` only exists in the Vector repository. This build is also consumed as an included
-    // build (e.g. by NPatch), where that project is absent, so wire the signing certificate only
+    // build (e.g. by ShimmerPatch), where that project is absent, so wire the signing certificate only
     // when it is actually there instead of failing task creation during IDE sync.
     val managerProject = rootProject.findProject(":manager")
 

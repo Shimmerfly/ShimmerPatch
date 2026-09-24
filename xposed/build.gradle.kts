@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         consumerProguardFiles("consumer-rules.pro")
-        buildConfigField("String", "FRAMEWORK_NAME", """"NPatch"""")
+        buildConfigField("String", "FRAMEWORK_NAME", """"ShimmerPatch"""")
         buildConfigField("String", "VERSION_NAME", """"${versionNameProvider.get()}"""")
         buildConfigField("long", "VERSION_CODE", versionCodeProvider.get())
     }

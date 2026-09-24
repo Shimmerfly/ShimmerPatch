@@ -310,7 +310,7 @@ fun Project.configureAndroid() {
             minSdk = androidMinSdkVersion
             ndk { abiFilters.addAll(listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")) }
 
-            buildConfigField("String", "FRAMEWORK_NAME", "\"NPatch\"")
+            buildConfigField("String", "FRAMEWORK_NAME", "\"ShimmerPatch\"")
             buildConfigField("String", "VERSION_NAME", "\"${versionNameProvider.get()}\"")
             buildConfigField("int", "VERSION_CODE", versionCodeProvider.get())
 
@@ -427,7 +427,7 @@ tasks.register<KtfmtFormatTask>("format") {
     dependsOn(":daemon:ktfmtFormat")
     dependsOn(":xposed:ktfmtFormat")
     // `:manager` and `:zygisk` only exist in the Vector repository. This build is also consumed as
-    // an included build (e.g. by NPatch), where neither project exists.
+    // an included build (e.g. by ShimmerPatch), where neither project exists.
     listOf(":manager", ":zygisk")
         .filter { rootProject.findProject(it) != null }
         .forEach { dependsOn("$it:ktfmtFormat") }

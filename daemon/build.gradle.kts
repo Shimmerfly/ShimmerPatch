@@ -38,8 +38,8 @@ android {
     buildConfigField("int", "MANAGER_INJECTED_UID", """$injectedPackageUid""")
     buildConfigField("String", "VERSION_NAME", """"${versionNameProvider.get()}"""")
     buildConfigField("long", "VERSION_CODE", versionCodeProvider.get())
-    // The version code is the commit count on origin/master, so it is identical for a branch
-    // build and a master build. The hash is what tells a bug report which one it came from.
+    // The version code is the commit count on the host repository's default branch, so a branch
+    // build and a default-branch build share it. The hash tells a bug report which one it was.
     buildConfigField("String", "VERSION_HASH", """"${versionHashProvider.get()}"""")
 
     val cliToken = UUID.randomUUID()
@@ -112,23 +112,29 @@ androidComponents {
     val variantCapped = variant.name.replaceFirstChar { it.uppercase() }
     val variantLowered = variant.name.lowercase()
 
+    // `:manager` only exists in the Vector repository. This build is also consumed as an included
+    // build (e.g. by NPatch), where that project is absent, so wire the signing certificate only
+    // when it is actually there instead of failing task creation during IDE sync.
+    val managerProject = rootProject.findProject(":manager")
+
     val signInfoTask =
         tasks.register<GenerateSignInfoTask>("generate${variantCapped}SignInfo") {
-          dependsOn(":manager:validateSigning${variantCapped}")
-          val sign =
-              rootProject
-                  .project(":manager")
-                  .extensions
-                  .getByType(ApplicationExtension::class.java)
-                  .buildTypes
-                  .named(variantLowered)
-                  .get()
-                  .signingConfig
-          storeType.set(sign?.storeType)
-          storeFilePath.set(sign?.storeFile?.absolutePath)
-          storePassword.set(sign?.storePassword)
-          keyPassword.set(sign?.keyPassword)
-          keyAlias.set(sign?.keyAlias)
+          if (managerProject != null) {
+            dependsOn(":manager:validateSigning${variantCapped}")
+            val sign =
+                managerProject
+                    .extensions
+                    .getByType(ApplicationExtension::class.java)
+                    .buildTypes
+                    .named(variantLowered)
+                    .get()
+                    .signingConfig
+            storeType.set(sign?.storeType)
+            storeFilePath.set(sign?.storeFile?.absolutePath)
+            storePassword.set(sign?.storePassword)
+            keyPassword.set(sign?.keyPassword)
+            keyAlias.set(sign?.keyAlias)
+          }
         }
 
     variant.sources.kotlin?.addGeneratedSourceDirectory(

@@ -13,12 +13,18 @@
 [submodule "external/lsplt"]
 	path = external/lsplt
 	url = https://github.com/JingMatrix/LSPlt
+# The libxposed organisation was taken down with its owner's suspended account, so the api and
+# service repositories no longer resolve and upstream Vector still points at the dead URLs. Both
+# histories are mirrored onto dedicated branches of this repository instead, pinned to the same
+# commits the rest of the tree was built against.
 [submodule "services/libxposed"]
 	path = services/libxposed
-	url = https://github.com/libxposed/service.git
+	url = https://github.com/Shimmerfly/ShimmerPatch.git
+	branch = libxposed-service
 [submodule "xposed/libxposed"]
 	path = xposed/libxposed
-	url = https://github.com/libxposed/api.git
+	url = https://github.com/Shimmerfly/ShimmerPatch.git
+	branch = libxposed-api
 [submodule "external/apache/commons-lang"]
 	path = external/apache/commons-lang
 	url = https://github.com/apache/commons-lang.git

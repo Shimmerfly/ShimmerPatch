@@ -1,6 +1,6 @@
 # Shimmerfly Framework
 
-[![Build](https://img.shields.io/github/actions/workflow/status/Shimmerfly/ShimmerPatch/ci.yml?branch=master&logo=github&label=Build&event=push)](https://github.com/7723mod/NPatch/actions/workflows/main.yml?query=event%3Apush+is%3Acompleted+branch%3Amaster) [![Download](https://img.shields.io/github/v/release/Shimmerfly/ShimmerPatch?color=orange&logoColor=orange&label=Download&logo=DocuSign)](https://github.com/Shimmerfly/ShimmerPatch/releases/latest) [![Total](https://shields.io/github/downloads/Shimmerfly/ShimmerPatch/total?logo=Bookmeter&label=Counts&logoColor=yellow&color=yellow)](https://github.com/7723mod/NPatch/releases)
+[![Build](https://img.shields.io/github/actions/workflow/status/Shimmerfly/ShimmerPatch/ci.yml?branch=ShimmerPatch&logo=github&label=Build&event=push)](https://github.com/Shimmerfly/ShimmerPatch/actions/workflows/ci.yml?query=event%3Apush+is%3Acompleted+branch%3Amaster) [![Download](https://img.shields.io/github/v/release/Shimmerfly/ShimmerPatch?color=orange&logoColor=orange&label=Download&logo=DocuSign)](https://github.com/Shimmerfly/ShimmerPatch/releases/latest) [![Total](https://shields.io/github/downloads/Shimmerfly/ShimmerPatch/total?logo=Bookmeter&label=Counts&logoColor=yellow&color=yellow)](https://github.com/7723mod/NPatch/releases)
 
 ## Introduction 
 

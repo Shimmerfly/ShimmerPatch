@@ -327,6 +327,15 @@ fun Project.configureAndroid() {
                     "-DVERSION_NAME='\"${versionNameProvider.get()}\"'",
                     "-DPHMAP_HAVE_SSE2=0",
                     "-DPHMAP_HAVE_SSSE3=0",
+                    // parallel_hashmap, the hash map shipped inside lsplant and dex_builder, still
+                    // names the allocation traits member `is_always_equal`, which libc++ deprecated
+                    // in C++23. Since every translation unit here is compiled as C++23, upstream
+                    // headers we do not own would otherwise flood the build log with one
+                    // -Wdeprecated-declarations report per instantiation and per ABI. The macro
+                    // turns libc++'s own deprecation notices off, the flag covers the plain
+                    // `[[deprecated]]` uses, and neither changes what the compiler emits.
+                    "-D_LIBCPP_DISABLE_DEPRECATION_WARNINGS",
+                    "-Wno-deprecated-declarations",
                 )
 
             val args =

@@ -663,7 +663,7 @@ private fun KeyStorePreference() {
     DropDownMenuWidget(
         title = stringResource(R.string.settings_keystore), icon = Icons.Outlined.Key,
         options = listOf(
-            DropdownOption(0, "ShimmerPatch"),
+            DropdownOption(0, "NPatch"),
             DropdownOption(1, "FPA"),
             DropdownOption(2, stringResource(R.string.settings_keystore_custom)),
         ),

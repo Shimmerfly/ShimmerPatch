@@ -126,7 +126,7 @@ object Patcher {
                 if (config.hideLibs) add("--hidelibs")
                 if (config.usesCleartextTraffic) add("--cleartext")
                 when (Configs.keyStorePreset) {
-                    KeystorePreset.SHIMMERPATCH -> add("-npa")
+                    KeystorePreset.NPATCH -> add("-npa")
                     KeystorePreset.FPA -> add("-fpa")
                     KeystorePreset.CUSTOM -> addAll(arrayOf("-k", MyKeyStore.file.path, Configs.keyStorePassword, Configs.keyStoreAlias, Configs.keyStoreAliasPassword))
                 }

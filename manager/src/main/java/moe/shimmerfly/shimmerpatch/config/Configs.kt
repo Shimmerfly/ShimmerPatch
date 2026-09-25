@@ -22,7 +22,7 @@ object Configs {
         return if (File(lspApp.filesDir, "keystore.bks").exists()) {
             KeystorePreset.CUSTOM
         } else {
-            KeystorePreset.SHIMMERPATCH
+            KeystorePreset.NPATCH
         }
     }
 

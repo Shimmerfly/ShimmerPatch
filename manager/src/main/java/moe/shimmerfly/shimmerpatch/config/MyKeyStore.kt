@@ -6,13 +6,18 @@ import moe.shimmerfly.shimmerpatch.lspApp
 import java.io.File
 
 enum class KeystorePreset(val prefValue: String) {
-    SHIMMERPATCH("shimmerpatch"),
+    NPATCH("npatch"),
     FPA("fpa"),
     CUSTOM("custom");
 
     companion object {
+        /** Pref values written by older builds, mapped back to the preset they meant. */
+        private val LEGACY_PREF_VALUES = mapOf("shimmerpatch" to NPATCH)
+
         fun fromPrefValue(value: String?, fallback: KeystorePreset): KeystorePreset {
-            return values().firstOrNull { it.prefValue == value } ?: fallback
+            return values().firstOrNull { it.prefValue == value }
+                ?: LEGACY_PREF_VALUES[value]
+                ?: fallback
         }
     }
 }
@@ -39,7 +44,7 @@ object MyKeyStore {
         Configs.keyStorePassword = "123456"
         Configs.keyStoreAlias = "key0"
         Configs.keyStoreAliasPassword = "123456"
-        Configs.keyStorePreset = KeystorePreset.SHIMMERPATCH
+        Configs.keyStorePreset = KeystorePreset.NPATCH
     }
 
     suspend fun setBuiltinFpa() {

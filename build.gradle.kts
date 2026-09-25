@@ -2,10 +2,14 @@ import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.ApplicationDefaultConfig
 import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
-import org.eclipse.jgit.api.Git
-import org.eclipse.jgit.internal.storage.file.FileRepository
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+import java.io.ByteArrayOutputStream
+import javax.inject.Inject
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.provider.ValueSource
+import org.gradle.api.provider.ValueSourceParameters
 import org.gradle.kotlin.dsl.extra
+import org.gradle.process.ExecOperations
 
 plugins {
     alias(libs.plugins.agp.lib) apply false
@@ -14,42 +18,109 @@ plugins {
     alias(libs.plugins.kotlin.parcelize) apply false
 }
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
+/**
+ * A ValueSource that counts the commits reachable from the first ref that resolves.
+ *
+ * The ref is not always `master`: the repository may have renamed its default branch (this one
+ * calls it `ShimmerPatch`), so the conventional names are probed behind the requested one. A ref
+ * that does not resolve is expected and must not print a fatal error into the build log, so every
+ * probe captures its stderr.
+ *
+ * This runs as a ValueSource because it has to start an external process while the configuration
+ * cache is being written, where a build script may not: the previous JGit-based version failed the
+ * build for that reason, and JGit itself probes the local git installation by starting
+ * `git --version` and `git config --system ...`.
+ */
+abstract class GitCommitCountValueSource : ValueSource<Int, GitCommitCountValueSource.Parameters> {
+    interface Parameters : ValueSourceParameters {
+        val workingDirectory: Property<String>
+
+        /** The refs to probe, in order. */
+        val candidateRefs: ListProperty<String>
+
+        /** Used when no ref resolves, so a checkout without git metadata still has a version. */
+        val fallback: Property<Int>
     }
-    dependencies {
-        classpath("org.eclipse.jgit:org.eclipse.jgit:7.3.0.202506031305-r")
+
+    @get:Inject abstract val execOperations: ExecOperations
+
+    override fun obtain(): Int {
+        for (ref in parameters.candidateRefs.get()) {
+            val output = ByteArrayOutputStream()
+            val result = execOperations.exec {
+                commandLine("git", "-C", parameters.workingDirectory.get(), "rev-list", "--count", ref)
+                standardOutput = output
+                errorOutput = ByteArrayOutputStream()
+                isIgnoreExitValue = true
+            }
+            if (result.exitValue == 0) {
+                output.toString().trim().toIntOrNull()?.let { return it }
+            }
+        }
+        return parameters.fallback.get()
     }
 }
 
-val commitCount = runCatching {
-    val repo = FileRepository(rootProject.file(".git"))
-    // The checked-out branch is not necessarily the one holding the release history, so probe
-    // the remote default branch, then the conventional names, then HEAD. The default branch here
-    // is `ShimmerPatch`, not `master`, and a missing ref would make versionCode 0 and fail the
-    // build.
-    val refId = listOf(
-        "refs/remotes/origin/HEAD",
-        "refs/remotes/origin/ShimmerPatch",
-        "refs/remotes/origin/master",
-        "refs/heads/ShimmerPatch",
-        "refs/heads/master",
-        "HEAD",
-    ).firstNotNullOfOrNull { repo.refDatabase.exactRef(it)?.objectId }
-    if (refId != null) Git(repo).log().add(refId).call().count() else 0
-}.getOrElse {0}.coerceAtLeast(1)
-
-val coreCommitCount = runCatching {
-    // A submodule's .git is a gitdir pointer file, not the repository directory.
-    FileRepositoryBuilder().findGitDir(rootProject.file("core"))
-        .setWorkTree(rootProject.file("core"))
-        .build().use { repo ->
-            val git = Git(repo)
-            git.log().add(repo.resolve("HEAD")).call().count()
+/**
+ * Rewrites AGP's optimized resource archive through `aapt2 optimize`, in place.
+ *
+ * The action deliberately captures nothing but plain files. Holding the AGP extension, the project
+ * or a lazy delegate here used to drag AGP's whole service graph - Kotlin's built-in compilation
+ * state included - into the configuration cache, which cannot serialise any of it, and a task class
+ * declared in this script would not be serialisable either. The archive is an output of AGP's own
+ * `optimizeReleaseResources`, so it is not tracked as an input or an output.
+ */
+fun Project.registerResourceOptimizer(androidComponents: ApplicationAndroidComponentsExtension) {
+    val isWindows = providers.systemProperty("os.name").get().lowercase().contains("windows")
+    tasks.register("optimizeReleaseRes") {
+        val aapt2 = File(
+            androidComponents.sdkComponents.sdkDirectory.get().asFile,
+            "build-tools/$androidBuildToolsVersion/${if (isWindows) "aapt2.exe" else "aapt2"}",
+        )
+        val archive = layout.buildDirectory.get().asFile.resolve(
+            "intermediates/optimized_processed_res/release/optimizeReleaseResources/resources-release-optimize.ap_"
+        )
+        doLast {
+            if (!archive.isFile) return@doLast
+            val optimized = File(archive.parentFile, "${archive.name}.opt")
+            optimized.delete()
+            val process = ProcessBuilder(
+                aapt2.absolutePath,
+                "optimize",
+                "--collapse-resource-names",
+                "--enable-sparse-encoding",
+                "-o", optimized.absolutePath,
+                archive.absolutePath,
+            ).redirectErrorStream(true).start()
+            val output = process.inputStream.bufferedReader().readText()
+            check(process.waitFor() == 0) { "aapt2 optimize failed for ${archive.name}: $output" }
+            archive.delete()
+            check(optimized.renameTo(archive)) { "Could not replace ${archive.name} with its optimized copy" }
         }
-}.getOrDefault(3083)
+    }
+}
+
+val commitCount = providers.of(GitCommitCountValueSource::class) {
+    parameters.workingDirectory.set(rootDir.absolutePath)
+    parameters.candidateRefs.set(
+        listOf(
+            "refs/remotes/origin/HEAD",
+            "refs/remotes/origin/ShimmerPatch",
+            "refs/remotes/origin/master",
+            "refs/heads/ShimmerPatch",
+            "refs/heads/master",
+            "HEAD",
+        )
+    )
+    parameters.fallback.set(1)
+}.get().coerceAtLeast(1)
+
+val coreCommitCount = providers.of(GitCommitCountValueSource::class) {
+    // A submodule's .git is a gitdir pointer file, which the git CLI resolves on its own.
+    parameters.workingDirectory.set(File(rootDir, "core").absolutePath)
+    parameters.candidateRefs.set(listOf("HEAD"))
+    parameters.fallback.set(3083)
+}.get()
 
 val defaultManagerPackageName = "moe.shimmerfly.shimmerpatch"
 val apiCode = 102
@@ -248,44 +319,11 @@ fun Project.configureApplicationExtension(extension: ApplicationExtension) {
     }
 
     extensions.findByType(ApplicationAndroidComponentsExtension::class)?.let { androidComponents ->
-        val resourceBuildDirectory = layout.buildDirectory
-        val processProviders = providers
-        val optimizeReleaseRes = tasks.register("optimizeReleaseRes") {
-            doLast {
-                val isWindows = System.getProperty("os.name").lowercase().contains("windows")
-                val aapt2Name = if (isWindows) "aapt2.exe" else "aapt2"
-
-                val aapt2 = File(
-                    androidComponents.sdkComponents.sdkDirectory.get().asFile,
-                    "build-tools/${androidBuildToolsVersion}/$aapt2Name"
-                )
-                val zip = resourceBuildDirectory.get().asFile.toPath()
-                    .resolve("intermediates")
-                    .resolve("optimized_processed_res")
-                    .resolve("release")
-                    .resolve("optimizeReleaseResources")
-                    .resolve("resources-release-optimize.ap_")
-                val optimized = File("${zip}.opt")
-                val cmd = processProviders.exec {
-                    commandLine(
-                        aapt2, "optimize",
-                        "--collapse-resource-names",
-                        "--enable-sparse-encoding",
-                        "-o", optimized,
-                        zip
-                    )
-                    isIgnoreExitValue = false
-                }.result.get()
-                if (cmd.exitValue == 0) {
-                    java.nio.file.Files.deleteIfExists(zip)
-                    optimized.renameTo(zip.toFile())
-                }
-            }
-        }
+        registerResourceOptimizer(androidComponents)
 
         tasks.configureEach {
             if (name == "optimizeReleaseResources") {
-                finalizedBy(optimizeReleaseRes)
+                finalizedBy("optimizeReleaseRes")
             }
         }
     }

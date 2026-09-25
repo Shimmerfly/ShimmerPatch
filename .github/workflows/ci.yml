@@ -64,6 +64,22 @@ jobs:
       - name: Remove the Android-bundled CMake
         run: rm -rf "$ANDROID_HOME/cmake"
 
+      # A runner that has never built an Android app has no debug keystore, and AGP only creates it
+      # lazily, while validating the signing config - after the configuration cache has been written.
+      # The manager reads the signing fingerprint at that earlier point, so create the well-known
+      # debug key up front: the APKs then pin the very key they are signed with, instead of falling
+      # back to no pinning at all. AGP looks for it under ANDROID_USER_HOME when that is set.
+      - name: Create the Android debug keystore
+        run: |
+          KEYSTORE_DIR="${ANDROID_USER_HOME:-$HOME/.android}"
+          mkdir -p "$KEYSTORE_DIR"
+          keytool -genkeypair \
+            -keystore "$KEYSTORE_DIR/debug.keystore" \
+            -storepass android -keypass android \
+            -alias androiddebugkey \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US"
+
       - name: Grant execute permission
         run: chmod +x gradlew
 

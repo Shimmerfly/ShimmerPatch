@@ -92,13 +92,23 @@ androidComponents {
         val configuredValue = configuredSignature.orNull
         val signatureAllowlist = providers.provider {
             val fingerprints = configuredValue ?: run {
-                val store = KeyStore.getInstance(keystoreType)
-                File(keystorePath).inputStream().use { store.load(it, keystorePassword.toCharArray()) }
-                val certificate = requireNotNull(store.getCertificate(keystoreAlias)) {
-                    "Missing manager signing certificate for $variantName"
+                val keystore = File(keystorePath)
+                if (!keystore.isFile) {
+                    // A machine that has never built this project - CI, a fresh clone - has no debug
+                    // keystore yet: AGP creates it while validating the signing config, which runs
+                    // after the configuration cache has been written, so reading the file here would
+                    // fail the build instead of the task that needs it. An empty allowlist is what
+                    // the runtime check already treats as "not pinned".
+                    ""
+                } else {
+                    val store = KeyStore.getInstance(keystoreType)
+                    keystore.inputStream().use { store.load(it, keystorePassword.toCharArray()) }
+                    val certificate = requireNotNull(store.getCertificate(keystoreAlias)) {
+                        "Missing manager signing certificate for $variantName"
+                    }
+                    MessageDigest.getInstance("SHA-256").digest(certificate.encoded)
+                        .joinToString("") { "%02X".format(Locale.ROOT, it) }
                 }
-                MessageDigest.getInstance("SHA-256").digest(certificate.encoded)
-                    .joinToString("") { "%02X".format(Locale.ROOT, it) }
             }
             fingerprints.split(',', ';', ' ', '\n', '\r', '\t')
                 .map { entry -> entry.trim().uppercase(Locale.ROOT) }

@@ -134,7 +134,10 @@ fun MainScreen(
                     onSelectedPageChange = onSelectedManageTabChange,
                     contentPadding = contentPadding,
                 )
-                MainTab.Settings -> SettingsScreen(contentPadding = contentPadding)
+                MainTab.Settings -> SettingsScreen(
+                    contentPadding = contentPadding,
+                    onOpenAbout = { navigator.navigate(Route.About) },
+                )
             }
         }
     }

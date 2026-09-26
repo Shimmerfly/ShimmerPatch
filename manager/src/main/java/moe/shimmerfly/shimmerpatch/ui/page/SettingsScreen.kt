@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -76,7 +77,10 @@ private const val TAG = "SettingsScreen"
 
 /** Settings groups and item shapes are copied from WeKit's Material 3 settings UI. */
 @Composable
-fun SettingsScreen(contentPadding: PaddingValues = PaddingValues()) {
+fun SettingsScreen(
+    contentPadding: PaddingValues = PaddingValues(),
+    onOpenAbout: () -> Unit = {},
+) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val scrollState = rememberScrollState()
     val layoutDirection = LocalLayoutDirection.current
@@ -116,6 +120,17 @@ fun SettingsScreen(contentPadding: PaddingValues = PaddingValues()) {
                 item(key = "welcome") { WelcomeGuide() }
                 item(key = "storage") { StorageDirectory() }
                 item(key = "cache") { ClearManagerCache() }
+            }
+            // Where the home screen used to carry it.
+            SegmentedColumn(title = stringResource(R.string.settings_about)) {
+                item(key = "about") {
+                    BaseWidget(
+                        title = stringResource(R.string.home_about),
+                        description = stringResource(R.string.home_description),
+                        icon = Icons.Outlined.Info,
+                        onClick = onOpenAbout,
+                    )
+                }
             }
         }
     }

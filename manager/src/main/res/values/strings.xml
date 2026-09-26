@@ -198,6 +198,7 @@
     <string name="settings_manager_cache_success">Manager cache cleared</string>
     <string name="settings_manager_cache_failed">Failed to clear manager cache</string>
     <string name="settings_appearance_theme">Appearance &amp; Theme</string>
+    <string name="settings_about">About</string>
     <string name="settings_other_settings">Other Settings</string>
     <string name="settings_network">Network</string>
     <string name="settings_dns">DNS</string>

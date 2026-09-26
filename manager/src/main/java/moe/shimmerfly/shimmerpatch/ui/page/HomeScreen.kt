@@ -17,7 +17,6 @@ import androidx.compose.material.icons.outlined.Android
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.DeveloperBoard
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Layers
 import androidx.compose.material.icons.outlined.Smartphone
 import androidx.compose.material.icons.outlined.Tag
@@ -95,18 +94,6 @@ fun HomeScreen(navigator: Navigator, onManageShortcut: (Int) -> Unit = {}, conte
                 Spacer(Modifier.height(8.dp))
             }
             item { DeviceInformation() }
-            item {
-                SegmentedColumn {
-                    item {
-                        BaseWidget(
-                            title = stringResource(R.string.home_about),
-                            description = stringResource(R.string.home_description),
-                            icon = Icons.Outlined.Info,
-                            onClick = { navigator.navigate(Route.About) },
-                        )
-                    }
-                }
-            }
         }
     }
 }

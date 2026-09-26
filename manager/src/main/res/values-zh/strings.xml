@@ -193,6 +193,7 @@
     <string name="settings_manager_cache_success">管理器缓存已清除</string>
     <string name="settings_manager_cache_failed">清除管理器缓存失败</string>
     <string name="settings_appearance_theme">外观与主题</string>
+    <string name="settings_about">关于</string>
     <string name="settings_other_settings">其他设置</string>
     <string name="settings_network">网络</string>
     <string name="settings_dns">DNS</string>

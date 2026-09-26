@@ -87,6 +87,9 @@ import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchScaffold
 import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchTopAppBar
 import moe.shimmerfly.shimmerpatch.ui.component.m3.BaseItemContainer
 import moe.shimmerfly.shimmerpatch.ui.component.m3.BaseWidget
+import moe.shimmerfly.shimmerpatch.ui.component.m3.DetailChip
+import moe.shimmerfly.shimmerpatch.ui.component.m3.neutralTone
+import moe.shimmerfly.shimmerpatch.ui.component.m3.patcherTone
 import moe.shimmerfly.shimmerpatch.ui.component.m3.DropdownAction
 import moe.shimmerfly.shimmerpatch.ui.component.m3.ExpressiveActionDropdown
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SegmentedColumn
@@ -411,7 +414,7 @@ fun AppDetailScreen(
                                     // Which patcher produced the bundle, then - for our own - how the
                                     // loader inside it compares with this manager. Only the patcher
                                     // chip is toned, so the tone keeps meaning something.
-                                    val (neutralContainer, neutralContent) = patcherTone(null)
+                                    val (neutralContainer, neutralContent) = neutralTone()
                                     if (patcherLabel != null) {
                                         val (container, content) = patcherTone(appInfo?.patchedType)
                                         DetailChip(Icons.Outlined.Build, patcherLabel, container, content)
@@ -636,50 +639,6 @@ fun AppDetailScreen(
                     }
                 }
             }
-        }
-    }
-}
-
-/**
- * The tonal pair a patcher's chip is painted with.
- *
- * All three tones come from the expressive scheme MaterialKolor derives from the seed, so a chip
- * follows the wallpaper like the rest of the manager: this project takes the primary tone, and the
- * patchers it can also read take the supporting ones - secondary and tertiary, because a single
- * tone would leave them indistinguishable. A type we cannot name stays neutral.
- */
-@Composable
-private fun patcherTone(type: PatchedType?): Pair<Color, Color> = when (type) {
-    PatchedType.SHIMMERPATCH ->
-        MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
-    PatchedType.NPATCH ->
-        MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
-    PatchedType.LSPATCH, PatchedType.FPA ->
-        MaterialTheme.colorScheme.tertiaryContainer to MaterialTheme.colorScheme.onTertiaryContainer
-    else ->
-        MaterialTheme.colorScheme.surfaceContainerHighest to MaterialTheme.colorScheme.onSurfaceVariant
-}
-
-/** A short label chip: a leading icon and a label, in the rounded language of the rows around it. */
-@Composable
-private fun DetailChip(
-    icon: ImageVector,
-    text: String,
-    container: Color,
-    content: Color,
-) {
-    Surface(
-        color = container,
-        contentColor = content,
-        shape = MaterialTheme.shapes.small,
-    ) {
-        Row(
-            modifier = Modifier.padding(start = 10.dp, end = 12.dp, top = 5.dp, bottom = 5.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(imageVector = icon, contentDescription = null, modifier = Modifier.size(15.dp))
-            Text(text = text, style = MaterialTheme.typography.labelMedium)
         }
     }
 }

@@ -21,6 +21,8 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Memory
+import androidx.compose.material.icons.outlined.Work
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardCapslock
 import androidx.compose.material.icons.outlined.SystemUpdate
@@ -72,6 +74,9 @@ import moe.shimmerfly.shimmerpatch.ui.component.m3.DropdownAction
 import moe.shimmerfly.shimmerpatch.ui.component.m3.ExpressiveActionDropdown
 import moe.shimmerfly.shimmerpatch.ui.component.AppItem
 import moe.shimmerfly.shimmerpatch.ui.component.m3.BaseWidget
+import moe.shimmerfly.shimmerpatch.ui.component.m3.DetailChip
+import moe.shimmerfly.shimmerpatch.ui.component.m3.neutralTone
+import moe.shimmerfly.shimmerpatch.ui.component.m3.patcherTone
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SegmentedColumn
 import moe.shimmerfly.shimmerpatch.ui.component.m3.topShape
 import moe.shimmerfly.shimmerpatch.ui.component.m3.middleShape
@@ -329,52 +334,46 @@ fun AppManageBody(
                             label = appInfo.label,
                             packageName = appInfo.app.packageName,
                             summaryRow = {
-                                val patchColor = if (isLocal) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                                // The same chips the app's own page shows, so a row and the page
+                                // behind it read alike: only the patcher chip is toned, and a
+                                // trailing mark says when its loader is worth updating.
+                                val (neutralContainer, neutralContent) = neutralTone()
+                                val (patcherContainer, patcherContent) = patcherTone(appInfo.patchedType)
 
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    // Which patcher produced the bundle comes first; only our own patches
-                                    // can also say how their loader was built.
-                                    Text(
+                                if (appInfo.patchedType.displayName.isNotEmpty()) {
+                                    DetailChip(
+                                        icon = Icons.Outlined.Build,
                                         text = appInfo.patchedType.displayName,
-                                        color = patchColor,
-                                        style = MaterialTheme.typography.labelMedium,
+                                        container = patcherContainer,
+                                        content = patcherContent,
                                     )
+                                }
 
-                                    if (isOurs) {
-                                        Spacer(modifier = Modifier.width(6.dp))
-                                        val modeLabel = if (isLocal) {
-                                            "${stringResource(R.string.patch_local)} ${stringResource(R.string.manage_rolling)}"
-                                        } else {
-                                            stringResource(R.string.patch_integrated)
-                                        }
-                                        Text(
-                                            text = modeLabel,
-                                            color = patchColor,
-                                            style = MaterialTheme.typography.labelMedium,
-                                        )
+                                if (isOurs) {
+                                    val modeLabel = if (isLocal) {
+                                        "${stringResource(R.string.patch_local)} · ${stringResource(R.string.manage_rolling)}"
+                                    } else {
+                                        stringResource(R.string.patch_integrated)
                                     }
+                                    DetailChip(Icons.Outlined.Work, modeLabel, neutralContainer, neutralContent)
+                                }
 
-                                    versionText?.let { version ->
-                                        Spacer(modifier = Modifier.width(4.dp))
-                                        Text(
-                                            text = version,
-                                            color = patchColor,
-                                            style = MaterialTheme.typography.labelMedium,
-                                        )
-                                    }
+                                versionText?.let { version ->
+                                    DetailChip(
+                                        icon = Icons.Outlined.Memory,
+                                        text = "${stringResource(R.string.app_detail_loader_version)} $version",
+                                        container = neutralContainer,
+                                        content = neutralContent,
+                                    )
+                                }
 
-                                    if (canUpdateLoader) {
-                                        Spacer(modifier = Modifier.width(6.dp))
-                                        with(LocalDensity.current) {
-                                            val size = 16.sp * 1.2
-                                            Icon(
-                                                imageVector = Icons.Filled.KeyboardCapslock,
-                                                contentDescription = null,
-                                                modifier = Modifier.size(size.toDp()),
-                                                tint = patchColor
-                                            )
-                                        }
-                                    }
+                                if (canUpdateLoader) {
+                                    Icon(
+                                        imageVector = Icons.Filled.KeyboardCapslock,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(18.dp),
+                                        tint = neutralContent,
+                                    )
                                 }
                             },
                             // The row opens the app's own page. Which patcher produced the bundle,

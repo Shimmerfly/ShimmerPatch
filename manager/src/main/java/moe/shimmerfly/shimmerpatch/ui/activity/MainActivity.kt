@@ -201,6 +201,13 @@ class MainActivity : ComponentActivity() {
                                     NewPatchScreen(id = route.id, data = route.data)
                                 }
 
+                                entry<Route.AppDetail>(swipeDismiss = NavSwipeDirection.LeftToRight) { route ->
+                                    AppDetailScreen(
+                                        packageName = route.packageName,
+                                        onBack = { navigator.pop() },
+                                    )
+                                }
+
                                 entry<Route.SelectApps>(swipeDismiss = NavSwipeDirection.LeftToRight) { route ->
                                     SelectAppsScreen(
                                         multiSelect = route.multiSelect,

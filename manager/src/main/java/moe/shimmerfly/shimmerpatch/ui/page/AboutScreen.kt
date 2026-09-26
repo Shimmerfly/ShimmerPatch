@@ -14,6 +14,7 @@ import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.Security
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -104,6 +105,7 @@ fun AboutScreen(onBack: () -> Unit) {
                                 title = "𝘚𝘩𝘪𝘮𝘮𝘦𝘳𝘧𝘭𝘺 · 星沫",
                                 summary = stringResource(R.string.about_author_shimmerfly_summary),
                                 url = AUTHOR_GITHUB,
+                                icon = Icons.Outlined.Star,
                                 imageUrl = if (avatarsReady) AUTHOR_AVATAR_URL else null,
                             ),
                             context::openUri,

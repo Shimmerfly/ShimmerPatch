@@ -83,10 +83,19 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
+      - name: Resolve the version
+        id: version
+        # A build is named after the commit it was built from: the name is `git+<sha>` and the code
+        # is that commit's position in the branch. Both are handed to Gradle, so stamping a build
+        # means pushing, not editing a version file.
+        run: |
+          echo "name=git+$(git rev-parse --short=7 HEAD)" >> "$GITHUB_OUTPUT"
+          echo "code=$(git rev-list --count HEAD)" >> "$GITHUB_OUTPUT"
+
       # No signing secrets are provided, so the Gradle signing config falls
       # back to the Android debug keystore and Release artifacts stay installable.
       - name: Build
-        run: ./gradlew buildAll
+        run: ./gradlew buildAll -PverName="${{ steps.version.outputs.name }}" -PverCode="${{ steps.version.outputs.code }}"
 
       - name: Upload Release artifacts
         uses: actions/upload-artifact@v7

@@ -124,8 +124,13 @@ val coreCommitCount = providers.of(GitCommitCountValueSource::class) {
 
 val defaultManagerPackageName = "moe.shimmerfly.shimmerpatch"
 val apiCode = 102
-val verCode = commitCount
-val verName = "1.1.4"
+
+// CI resolves both of these and hands them over, so a release is named after the commit it was
+// built from and no file has to be edited to cut one: the name is `git+<sha>` and the code is that
+// commit's position in the branch. A local build keeps the two values below, which is what an
+// unstamped build has always shown.
+val verCode = providers.gradleProperty("verCode").orNull?.toIntOrNull() ?: commitCount
+val verName = providers.gradleProperty("verName").orNull ?: "1.1.4"
 val coreVerCode = coreCommitCount
 val coreVerName = "v2.2-core"
 val androidMinSdkVersion = 28

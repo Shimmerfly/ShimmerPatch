@@ -174,7 +174,9 @@ androidComponents {
             dependsOn("assemble$variantCapped")
             from(variant.artifacts.get(SingleArtifact.APK))
             into("${rootProject.projectDir}/out/$variantLowered")
-            rename(".*.apk", "ShimmerPatch-v$verName-$verCode-$variantLowered.apk")
+            // The version a CI build reports is `git+<sha>`, so the file name takes the sha alone:
+            // an artefact called `v<something>+<something>` reads as a typo.
+            rename(".*.apk", "ShimmerPatch-v${verName.removePrefix("git+")}-$verCode-$variantLowered.apk")
         }
     }
 }

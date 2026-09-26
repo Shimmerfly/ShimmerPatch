@@ -170,6 +170,10 @@
     <string name="welcome_btn_finish">Get started</string>
     <string name="welcome_btn_return">Return</string>
 
+    <!-- Navigation rail -->
+    <string name="nav_rail_expand">Expand the navigation rail</string>
+    <string name="nav_rail_collapse">Collapse the navigation rail</string>
+
     <!-- Settings Screen -->
     <string name="screen_settings">Settings</string>
     <string name="settings_language">Language</string>

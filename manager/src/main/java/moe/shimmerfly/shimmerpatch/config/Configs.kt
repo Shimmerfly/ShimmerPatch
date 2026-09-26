@@ -88,4 +88,9 @@ object Configs {
     var customInstallerPackage by delegateStateOf(lspApp.prefs.getString(PREFS_CUSTOM_INSTALLER, "") ?: "") {
         lspApp.prefs.edit { putString(PREFS_CUSTOM_INSTALLER, it) }
     }
+
+    private const val PREFS_NAVIGATION_RAIL_EXPANDED = "navigation_rail_expanded"
+    var navigationRailExpanded by delegateStateOf(lspApp.prefs.getBoolean(PREFS_NAVIGATION_RAIL_EXPANDED, false)) {
+        lspApp.prefs.edit { putBoolean(PREFS_NAVIGATION_RAIL_EXPANDED, it) }
+    }
 }

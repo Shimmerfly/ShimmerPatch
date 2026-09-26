@@ -166,6 +166,10 @@
     <string name="welcome_btn_finish">开始体验</string>
     <string name="welcome_btn_return">返回</string>
 
+    <!-- Navigation rail -->
+    <string name="nav_rail_expand">展开导航栏</string>
+    <string name="nav_rail_collapse">收起导航栏</string>
+
     <!-- Settings Screen -->
     <string name="screen_settings">设置</string>
     <string name="settings_language">语言</string>

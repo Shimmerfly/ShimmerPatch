@@ -44,6 +44,9 @@ fun MainScreen(
     }
     val floating = LocalFloatingGlassBottomBar.current
     val blur = LocalFloatingGlassBottomBarBlur.current
+    // A wide window keeps its destinations beside the content. The floating bar is a phone
+    // affordance, so asking for it still wins over the rail, as it does in KernelSU.
+    val useNavigationRail = shouldShowSplitPane() && !floating
     val surface = MaterialTheme.colorScheme.surfaceContainer
     val backdrop = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && isRenderEffectSupported()) rememberLayerBackdrop { drawRect(surface); drawContent() } else null
 
@@ -74,8 +77,9 @@ fun MainScreen(
     ShimmerPatchScaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
-            if (floating) {
-                Box(
+            when {
+                useNavigationRail -> Unit
+                floating -> Box(
                     Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 16.dp, vertical = 12.dp),
                     contentAlignment = Alignment.Center,
                 ) {
@@ -100,45 +104,65 @@ fun MainScreen(
                         )
                     }
                 }
-            } else {
-                NavigationBar(content = navigationItems)
+                else -> NavigationBar(content = navigationItems)
             }
         },
     ) { chromePadding ->
         // Keep all three page compositions and their scroll state alive. Content can pass behind
         // the floating bar; each list gets the measured chrome inset as scrollable end padding.
-        val navigationHeight = chromePadding.calculateBottomPadding()
+        // Behind a rail there is no bar to clear, only the system navigation area.
+        val navigationHeight = if (useNavigationRail) {
+            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+        } else {
+            chromePadding.calculateBottomPadding()
+        }
         SideEffect { onNavigationBarHeightChanged(navigationHeight) }
         val contentPadding = PaddingValues(bottom = navigationHeight)
-        HorizontalPager(
-            state = pager,
-            modifier = Modifier.fillMaxSize().m3BackdropLayer(backdrop),
-            key = { tabs[it].name },
-            beyondViewportPageCount = tabs.lastIndex,
-        ) { page ->
-            when (tabs[page]) {
-                MainTab.Home -> HomeScreen(
-                    navigator = navigator,
-                    contentPadding = contentPadding,
-                    onManageShortcut = { manageTab ->
-                        manageController.snapToPage(manageTab) {
-                            onSelectedManageTabChange(manageTab)
-                            onSelectedTabChange(MainTab.Manage.ordinal)
-                        }
-                    },
-                )
-                MainTab.Manage -> ManageScreen(
-                    navigator = navigator,
-                    controller = manageController,
-                    selectedPage = selectedManageTab,
-                    onSelectedPageChange = onSelectedManageTabChange,
-                    contentPadding = contentPadding,
-                )
-                MainTab.Settings -> SettingsScreen(
-                    contentPadding = contentPadding,
-                    onOpenAbout = { navigator.navigate(Route.About) },
-                )
+        val pages: @Composable () -> Unit = {
+            HorizontalPager(
+                state = pager,
+                modifier = Modifier.fillMaxSize().m3BackdropLayer(backdrop),
+                key = { tabs[it].name },
+                beyondViewportPageCount = tabs.lastIndex,
+            ) { page ->
+                when (tabs[page]) {
+                    MainTab.Home -> HomeScreen(
+                        navigator = navigator,
+                        contentPadding = contentPadding,
+                        onManageShortcut = { manageTab ->
+                            manageController.snapToPage(manageTab) {
+                                onSelectedManageTabChange(manageTab)
+                                onSelectedTabChange(MainTab.Manage.ordinal)
+                            }
+                        },
+                    )
+                    MainTab.Manage -> ManageScreen(
+                        navigator = navigator,
+                        controller = manageController,
+                        selectedPage = selectedManageTab,
+                        onSelectedPageChange = onSelectedManageTabChange,
+                        contentPadding = contentPadding,
+                    )
+                    MainTab.Settings -> SettingsScreen(
+                        contentPadding = contentPadding,
+                        onOpenAbout = { navigator.navigate(Route.About) },
+                    )
+                }
             }
+        }
+        if (useNavigationRail) {
+            val startInsets = WindowInsets.systemBars.union(WindowInsets.displayCutout)
+                .only(WindowInsetsSides.Start)
+            Row(Modifier.fillMaxSize()) {
+                SideNavigationRail(
+                    tabs = tabs,
+                    selectedIndex = controller.selectedPage,
+                    onSelected = selectTab,
+                )
+                Box(Modifier.weight(1f).consumeWindowInsets(startInsets)) { pages() }
+            }
+        } else {
+            pages()
         }
     }
 }

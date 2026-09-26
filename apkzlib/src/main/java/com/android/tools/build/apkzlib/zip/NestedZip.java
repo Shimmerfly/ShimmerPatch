@@ -13,6 +13,9 @@ public class NestedZip extends ZFile {
         String getName(ZFile file) throws IOException;
     }
 
+    // A subclass cannot use the openReadOnly/openReadWrite factories, so the deprecated
+    // superclass constructor is the only way to build the nested zip's backing store.
+    @SuppressWarnings("deprecation")
     public NestedZip(NameCallback name, ZFile target, File src, boolean mayCompress) throws IOException {
         super(src, new ZFileOptions(), true);
         this.target = target;

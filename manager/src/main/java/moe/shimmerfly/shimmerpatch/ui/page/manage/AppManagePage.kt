@@ -46,9 +46,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import kotlin.math.roundToInt
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import moe.shimmerfly.shimmerpatch.ui.util.backgroundAwareCardColors
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
@@ -349,33 +351,29 @@ fun AppManageBody(
                                 // One line that can be swiped, the way the app's own page shows them,
                                 // instead of wrapping onto a second line inside the row.
                                 val chipScroll = rememberScrollState()
-                                val rowColor = backgroundAwareCardColors().containerColor
                                 Row(
                                     modifier = Modifier
+                                        // Its own layer, so the alpha mask below erases only these
+                                        // chips and never the card they sit on.
+                                        .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
                                         .horizontalScroll(chipScroll)
-                                        // Soften whichever end still has chips behind it, so the
-                                        // line reads as continuing rather than cut off.
+                                        // Fade the chips themselves out at whichever end still
+                                        // hides some, instead of veiling them with an opaque scrim.
                                         .drawWithContent {
                                             drawContent()
-                                            val fade = 20.dp.toPx()
-                                            if (chipScroll.value > 0) {
-                                                drawRect(
-                                                    brush = Brush.horizontalGradient(
-                                                        colors = listOf(rowColor, Color.Transparent),
-                                                        startX = 0f,
-                                                        endX = fade,
-                                                    ),
-                                                )
-                                            }
-                                            if (chipScroll.value < chipScroll.maxValue) {
-                                                drawRect(
-                                                    brush = Brush.horizontalGradient(
-                                                        colors = listOf(Color.Transparent, rowColor),
-                                                        startX = size.width - fade,
-                                                        endX = size.width,
-                                                    ),
-                                                )
-                                            }
+                                            val width = size.width
+                                            if (width <= 0f) return@drawWithContent
+                                            val fade = (16.dp.toPx() / width).coerceAtMost(0.45f)
+                                            val mask = Color.Black
+                                            drawRect(
+                                                brush = Brush.horizontalGradient(
+                                                    0f to mask.copy(alpha = if (chipScroll.value > 0) 0f else 1f),
+                                                    fade to mask,
+                                                    1f - fade to mask,
+                                                    1f to mask.copy(alpha = if (chipScroll.value < chipScroll.maxValue) 0f else 1f),
+                                                ),
+                                                blendMode = BlendMode.DstIn,
+                                            )
                                         },
                                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                                     verticalAlignment = Alignment.CenterVertically,

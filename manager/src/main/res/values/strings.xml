@@ -274,8 +274,8 @@
     <string name="app_detail_export_apk_summary">Save a copy of the installed APK set into a folder</string>
     <string name="app_detail_export_apk_done">Exported %1$d file(s)</string>
     <string name="app_detail_export_apk_failed">Failed to export the APK set</string>
-    <string name="app_detail_export_diagnostics_summary">Collect this app's patch and loader logs</string>
-    <string name="app_detail_optimize_summary">Ask the platform to optimize this app's dex files</string>
+    <string name="app_detail_export_diagnostics_summary">Collect this app\'s patch and loader logs</string>
+    <string name="app_detail_optimize_summary">Ask the platform to optimize this app\'s dex files</string>
     <string name="app_detail_force_stop_summary">Stop every process of this app</string>
     <string name="app_detail_force_restart_summary">Stop this app and start it again</string>
     <string name="app_detail_app_info_summary">Open the system page for this app</string>

@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.channels.Channel
 import moe.shimmerfly.shimmerpatch.util.ShizukuApi
 import moe.shimmerfly.shimmerpatch.R
 import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchScaffold
@@ -84,10 +85,24 @@ fun ManageScreen(
     // One continuous gesture across two pagers: the inner one keeps the drag while it still has a
     // page to reach, and the moment it is at an edge the leftover travels to the screen pager. So
     // swiping on 应用 stops at 模块, and only a swipe that starts from 模块 carries on to 设置.
-    val handOff = remember(pagerState, screenPagerState) {
+    val snapRequests = remember { Channel<Int>(Channel.CONFLATED) }
+    LaunchedEffect(screenPagerState, snapRequests) {
+        // The move is animated from here rather than inside the gesture: a fling's own scope can
+        // end with the finger, which used to cut the animation short and leave the pager parked
+        // between two pages.
+        for (target in snapRequests) {
+            screenPagerState.animateScrollToPage(target.coerceIn(0, screenPagerState.pageCount - 1))
+        }
+    }
+    // One continuous gesture across two pagers: this screen's pager keeps the drag while it still
+    // has a page to reach, and the moment it is at an edge the leftover travels to the screen pager.
+    // A hand-off that got anything at all always lands exactly one page away from where the gesture
+    // started - short swipe or long, the page changes once.
+    val handOff = remember(pagerState, screenPagerState, snapRequests) {
         object : NestedScrollConnection {
             // What this gesture handed to the screen pager so far, in its own scroll direction.
             private var handed = 0f
+            private var startPage = -1
 
             override fun onPostScroll(
                 consumed: Offset,
@@ -95,6 +110,7 @@ fun ManageScreen(
                 source: NestedScrollSource,
             ): Offset {
                 if (source != NestedScrollSource.UserInput || available.x == 0f) return Offset.Zero
+                if (startPage < 0) startPage = screenPagerState.currentPage
                 // Nested scroll reports where the finger went; dispatchRawDelta wants the scroll
                 // that follows from it, which runs the other way. One gesture carries the screen
                 // pager at most one page over, however far the finger travelled.
@@ -108,20 +124,11 @@ fun ManageScreen(
             }
 
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-                // The screen pager never saw a gesture of its own, so it is settled here - and it
-                // finishes the move the finger asked for rather than snapping back unless the
-                // drag happened to cover half a page: one swipe past the inner edge is one page.
-                if (handed != 0f && abs(screenPagerState.currentPageOffsetFraction) > 0.001f) {
-                    val target = if (handed > 0f) {
-                        screenPagerState.currentPage + 1
-                    } else {
-                        screenPagerState.currentPage - 1
-                    }
-                    screenPagerState.animateScrollToPage(
-                        target.coerceIn(0, screenPagerState.pageCount - 1),
-                    )
+                if (handed != 0f && startPage >= 0) {
+                    snapRequests.trySend(if (handed > 0f) startPage + 1 else startPage - 1)
                 }
                 handed = 0f
+                startPage = -1
                 return Velocity.Zero
             }
         }
@@ -151,9 +158,11 @@ fun ManageScreen(
             .distinctUntilChanged()
             .collect { scrolling ->
                 if (!scrolling && !controller.isNavigating &&
+                    !screenPagerState.isScrollInProgress &&
                     abs(screenPagerState.currentPageOffsetFraction) > 0.001f
                 ) {
-                    screenPagerState.animateScrollToPage(screenPagerState.currentPage)
+                    // Nothing asked for a page, so finish on the nearest one.
+                    snapRequests.trySend(screenPagerState.currentPage)
                 }
             }
     }

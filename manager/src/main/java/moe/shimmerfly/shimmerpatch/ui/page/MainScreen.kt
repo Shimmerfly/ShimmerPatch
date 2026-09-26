@@ -130,6 +130,7 @@ fun MainScreen(
                 MainTab.Manage -> ManageScreen(
                     navigator = navigator,
                     controller = manageController,
+                    screenPagerState = pager,
                     selectedPage = selectedManageTab,
                     onSelectedPageChange = onSelectedManageTabChange,
                     contentPadding = contentPadding,

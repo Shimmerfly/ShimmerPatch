@@ -21,6 +21,14 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.runtime.remember
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.Velocity
+import kotlin.math.abs
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
@@ -56,6 +64,8 @@ import moe.shimmerfly.shimmerpatch.ui.viewmodel.manage.ModuleManageViewModel
 fun ManageScreen(
     navigator: Navigator,
     controller: MainPagerState,
+    /** The pager the bottom bar drives, which this screen's own pager hands its swipes over to. */
+    screenPagerState: PagerState,
     modifier: Modifier = Modifier,
     selectedPage: Int = 0,
     onSelectedPageChange: (Int) -> Unit = {},
@@ -68,6 +78,29 @@ fun ManageScreen(
     var searchQuery by rememberSaveable { mutableStateOf("") }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val moduleManageViewModel = viewModel<ModuleManageViewModel>()
+    // One continuous gesture across two pagers: the inner one keeps the drag while it still has a
+    // page to reach, and the moment it is at an edge the leftover travels to the screen pager. So
+    // swiping on 应用 stops at 模块, and only a swipe that starts from 模块 carries on to 设置.
+    val handOff = remember(pagerState, screenPagerState) {
+        object : NestedScrollConnection {
+            override fun onPostScroll(
+                consumed: Offset,
+                available: Offset,
+                source: NestedScrollSource,
+            ): Offset {
+                if (source != NestedScrollSource.UserInput || available.x == 0f) return Offset.Zero
+                return Offset(screenPagerState.dispatchRawDelta(available.x), 0f)
+            }
+
+            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+                // The screen pager never saw a gesture of its own, so settle it here.
+                if (abs(screenPagerState.currentPageOffsetFraction) > 0.01f) {
+                    screenPagerState.animateScrollToPage(screenPagerState.currentPage)
+                }
+                return Velocity.Zero
+            }
+        }
+    }
     val backdrop = rememberMaterial3BlurBackdrop()
     val layoutDirection = LocalLayoutDirection.current
     val bottomInset = maxOf(contentPadding.calculateBottomPadding(), WindowInsets.ime.asPaddingValues().calculateBottomPadding())
@@ -143,14 +176,8 @@ fun ManageScreen(
     ) { innerPadding ->
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize().m3BackdropLayer(backdrop),
+            modifier = Modifier.fillMaxSize().m3BackdropLayer(backdrop).nestedScroll(handOff),
             beyondViewportPageCount = 1,
-            // This pager sits inside the one the bottom bar drives, and a swipe goes to the
-            // innermost pager that wants it: with its own gestures on, it swallowed every sideways
-            // drag on this screen and the outer pager never saw one. Its two pages are switched
-            // from the tab row or from Home's shortcuts, both of which animate through the same
-            // state, so nothing is lost and swiping between Home, Manage and Settings works again.
-            userScrollEnabled = false,
         ) { page ->
             val listPadding = PaddingValues(
                 start = innerPadding.calculateStartPadding(layoutDirection) + 16.dp,

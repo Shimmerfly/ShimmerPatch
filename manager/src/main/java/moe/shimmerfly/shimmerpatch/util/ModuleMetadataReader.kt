@@ -79,8 +79,9 @@ object ModuleMetadataReader {
         if (!apkFile.exists()) return null
 
         // For installed apps, we already have the metadata if it was passed in.
-        // We only need to check shimmerpatch metadata to exclude patched apps from the LoadedModule list.
-        if (appInfo.metaData?.containsKey("shimmerpatch") == true) {
+        // A patched app is not a module: the loader adds the module metadata itself when it embeds
+        // modules, so it has to be excluded whichever patcher produced it.
+        if (NeoPackageManager.isPatched(appInfo)) {
             return null
         }
 

@@ -262,7 +262,7 @@ object ShizukuApi {
         return if (app == null) {
             false // Not installed
         } else {
-            app.metaData?.containsKey("shimmerpatch") != true
+            !NeoPackageManager.isPatched(app)
         }
     }
 

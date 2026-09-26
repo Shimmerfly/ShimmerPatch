@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
+import moe.shimmerfly.shimmerpatch.util.NeoPackageManager
 
 val LazyListState.lastVisibleItemIndex
     get() = layoutInfo.visibleItemsInfo.lastOrNull()?.index
@@ -18,7 +19,7 @@ fun checkIsApkFixedByLSP(context: Context, packageName: String): Boolean {
     return try {
         val app =
             context.packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
-        (app.metaData?.containsKey("shimmerpatch") != true)
+        !NeoPackageManager.isPatched(app)
     } catch (_: PackageManager.NameNotFoundException) {
         Log.e("ShimmerPatch", "Package not found: $packageName")
         false

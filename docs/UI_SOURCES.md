@@ -78,6 +78,15 @@ Tapping a row in Manage -> Apps opens `ui/page/AppDetailScreen.kt` instead of th
 - Loader and scope rows only appear for our own bundles, and a foreign one gets a note naming its patcher instead.
 - Export writes the installed APK set, base plus splits, into a folder the user picks through the system document tree.
 
+## Manage tabs
+
+Manage -> Apps and Manage -> Modules are one pager. Its tabs lead with an icon and carry the section's count on that icon's top corner, the arrangement KernelSU uses for its destinations, rather than widening the label with a number.
+
+- `Icons.Outlined.Apps` and `Icons.Outlined.Extension` are reused from the welcome permission rows and the module sections, so no new icon vocabulary was introduced. They are 20 dp beside a 14 sp label, and take the tab's own content colour, which leaves the selected one primary and the other onSurfaceVariant.
+- The app count excludes patcher managers: they appear on the same page in their own group, because they produced patched apps rather than being patched themselves.
+- Both tabs read the view models their bodies already read, so the page still performs one package scan.
+- Counts are decoration, so Settings -> Other Settings carries a switch for them; the icons stay either way, and a count of zero draws no badge at all.
+
 ## Regression checks
 
 `manager/src/androidTest` contains focused tests for ordinary action semantics, single switch/radio state nodes, and native dialog dismissal. Run on an explicitly selected test emulator:

@@ -151,7 +151,7 @@ fun ManageScreen(
                                         BadgedBox(
                                             badge = { if (showTabBadges) CountBadge(count) },
                                         ) {
-                                            Icon(icon, contentDescription = null, modifier = Modifier.size(24.dp))
+                                            Icon(icon, contentDescription = null, modifier = Modifier.size(20.dp))
                                         }
                                         Text(title)
                                     }

@@ -74,6 +74,8 @@ import moe.shimmerfly.shimmerpatch.ui.component.m3.DetailChip
 import moe.shimmerfly.shimmerpatch.ui.component.m3.neutralTone
 import moe.shimmerfly.shimmerpatch.ui.component.m3.patcherTone
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SegmentedColumn
+import moe.shimmerfly.shimmerpatch.ui.component.m3.SettingsDialog
+import moe.shimmerfly.shimmerpatch.ui.component.m3.lazySegmentedItems
 import moe.shimmerfly.shimmerpatch.ui.component.m3.topShape
 import moe.shimmerfly.shimmerpatch.ui.component.m3.middleShape
 import moe.shimmerfly.shimmerpatch.ui.component.m3.bottomShape
@@ -568,6 +570,12 @@ fun AppManageFab(
     val scope = rememberCoroutineScope()
     val shouldSelectDirectory = remember { mutableStateOf(false) }
     val showNewPatchDialog = remember { mutableStateOf(false) }
+    val newPatchSources = remember {
+        listOf(
+            R.string.patch_from_storage to ACTION_STORAGE,
+            R.string.patch_from_applist to ACTION_APPLIST,
+        )
+    }
 
     val errorText = stringResource(R.string.patch_select_dir_error)
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -604,34 +612,25 @@ fun AppManageFab(
         )
     }
 
-    if (showNewPatchDialog.value) {
-        AlertDialog(
-            title = { Text(stringResource(R.string.screen_new_patch)) },
-            onDismissRequest = { showNewPatchDialog.value = false },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FilledTonalButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            showNewPatchDialog.value = false
-                            navigator.navigate(Route.NewPatch(id = ACTION_STORAGE))
-                        },
-                    ) { Text(stringResource(R.string.patch_from_storage)) }
-                    FilledTonalButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            showNewPatchDialog.value = false
-                            navigator.navigate(Route.NewPatch(id = ACTION_APPLIST))
-                        },
-                    ) { Text(stringResource(R.string.patch_from_applist)) }
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = { showNewPatchDialog.value = false }) {
-                    Text(stringResource(android.R.string.cancel))
-                }
-            },
-        )
+    // Same dialog as the language picker: one row per choice, no selection control because each
+    // row leaves the dialog instead of choosing a value.
+    SettingsDialog(
+        show = showNewPatchDialog.value,
+        title = stringResource(R.string.screen_new_patch),
+        onDismissRequest = { showNewPatchDialog.value = false },
+        scrollable = false,
+    ) {
+        LazyColumn(Modifier.weight(1f, fill = false).fillMaxWidth()) {
+            lazySegmentedItems(newPatchSources, key = { it.second }) { (labelRes, action) ->
+                BaseWidget(
+                    title = stringResource(labelRes),
+                    onClick = {
+                        showNewPatchDialog.value = false
+                        navigator.navigate(Route.NewPatch(id = action))
+                    },
+                )
+            }
+        }
     }
 
     ExtendedFloatingActionButton(

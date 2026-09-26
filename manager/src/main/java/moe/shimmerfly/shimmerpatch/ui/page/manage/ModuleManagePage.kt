@@ -49,28 +49,23 @@ private data class ModuleBadgeColors(
     val content: Color
 )
 
+/**
+ * The pair the API-version badge is painted with. A module row carries two badges, so they take
+ * different tones - the API version the primary one and the pipeline the secondary one - the way
+ * the patcher chips on the patched-app page do.
+ */
 @Composable
-private fun rememberModuleBadgeColors(
-    isModern: Boolean,
-    isLegacy: Boolean
-): ModuleBadgeColors {
-    return when {
-        isModern -> ModuleBadgeColors(
-            container = MaterialTheme.colorScheme.primaryContainer,
-            content = MaterialTheme.colorScheme.onPrimaryContainer
-        )
+private fun apiBadgeTone(): ModuleBadgeColors = ModuleBadgeColors(
+    container = MaterialTheme.colorScheme.primaryContainer,
+    content = MaterialTheme.colorScheme.onPrimaryContainer
+)
 
-        isLegacy -> ModuleBadgeColors(
-            container = MaterialTheme.colorScheme.secondaryContainer,
-            content = MaterialTheme.colorScheme.onSecondaryContainer
-        )
-
-        else -> ModuleBadgeColors(
-            container = MaterialTheme.colorScheme.error,
-            content = MaterialTheme.colorScheme.onError
-        )
-    }
-}
+/** The pipeline badge's pair, kept apart from the API version's so neither reads as the other. */
+@Composable
+private fun pipelineBadgeTone(): ModuleBadgeColors = ModuleBadgeColors(
+    container = MaterialTheme.colorScheme.secondaryContainer,
+    content = MaterialTheme.colorScheme.onSecondaryContainer
+)
 
 @Composable
 fun ModuleManageBody(
@@ -136,14 +131,8 @@ fun ModuleManageBody(
                     val showDropdown = remember { mutableStateOf(false) }
                     var pressPosition by remember { mutableStateOf(Offset.Zero) }
                     val settingsIntent = remember { NeoPackageManager.getSettingsIntent(item.appInfo.app.packageName) }
-                    val apiBadgeColors = rememberModuleBadgeColors(
-                        isModern = item.metadata.isModern,
-                        isLegacy = item.metadata.isLegacy
-                    )
-                    val pipelineBadgeColors = rememberModuleBadgeColors(
-                        isModern = item.metadata.isModern,
-                        isLegacy = item.metadata.isLegacy
-                    )
+                    val apiBadgeColors = apiBadgeTone()
+                    val pipelineBadgeColors = pipelineBadgeTone()
 
                     Box(modifier = Modifier.fillMaxWidth().pointerInput(Unit) {
                         awaitEachGesture {

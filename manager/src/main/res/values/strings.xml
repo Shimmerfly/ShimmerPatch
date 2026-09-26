@@ -73,8 +73,9 @@
     <string name="manage_export_diagnostics_chooser">Share patched-app diagnostic logs</string>
     <string name="manage_export_diagnostics_failed">Failed to export diagnostic logs</string>
     <string name="manage_repatch">Re-patch</string>
-    <string name="manage_module_pipeline_modern" translatable="false">Modern</string>
-<string name="manage_module_pipeline_legacy" translatable="false">Legacy</string>
+    <!-- The pipeline names the API family, not a state: the badge tone already says which. -->
+    <string name="manage_module_pipeline_modern" translatable="false">libxposed</string>
+    <string name="manage_module_pipeline_legacy" translatable="false">legacy</string>
     <string name="manage_module_pipeline_unsupported">Unsupported</string>
     <string name="manage_module_api_version" translatable="false">API %1$d</string>
     <string name="manage_module_api_unsupported">Unsupported API %1$d</string>

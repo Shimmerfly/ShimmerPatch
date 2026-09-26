@@ -25,10 +25,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Extension
-import androidx.compose.material.icons.outlined.Apps
+import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.outlined.Extension
+import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
@@ -87,7 +87,7 @@ fun ManageScreen(
     val showTabBadges = Configs.manageTabBadges
     // Patcher managers are not patched apps; they have their own group in the app list.
     val tabs = listOf(
-        ManageTab(stringResource(R.string.apps), Icons.Filled.Apps, Icons.Outlined.Apps, appManageViewModel.patchedAppCount),
+        ManageTab(stringResource(R.string.apps), Icons.Filled.GridView, Icons.Outlined.GridView, appManageViewModel.patchedAppCount),
         ManageTab(stringResource(R.string.modules), Icons.Filled.Extension, Icons.Outlined.Extension, moduleManageViewModel.appList.size),
     )
     val backdrop = rememberMaterial3BlurBackdrop()

@@ -128,6 +128,11 @@ fun AboutScreen(onBack: () -> Unit) {
                 }
             }
             item {
+                SegmentedColumn(title = stringResource(R.string.about_acknowledgments_title)) {
+                    acknowledgments.forEach { link -> item(key = link.title) { AboutLinkItem(link, context::openUri) } }
+                }
+            }
+            item {
                 // Not an acknowledgment: the one entry that earned its own heading.
                 SegmentedColumn(title = stringResource(R.string.about_apart_title)) {
                     item {
@@ -141,11 +146,6 @@ fun AboutScreen(onBack: () -> Unit) {
                             context::openUri,
                         )
                     }
-                }
-            }
-            item {
-                SegmentedColumn(title = stringResource(R.string.about_acknowledgments_title)) {
-                    acknowledgments.forEach { link -> item(key = link.title) { AboutLinkItem(link, context::openUri) } }
                 }
             }
         }

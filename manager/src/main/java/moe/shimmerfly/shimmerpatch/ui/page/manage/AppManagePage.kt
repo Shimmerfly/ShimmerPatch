@@ -343,9 +343,17 @@ fun AppManageBody(
                                 val (patcherContainer, patcherContent) = patcherTone(appInfo.patchedType)
 
                                 // One line that can be swiped, the way the app's own page shows them,
-                                // instead of wrapping onto a second line inside the row.
+                                // instead of wrapping onto a second line inside the row. A scrollable
+                                // strip swallows sideways drags even when it has nothing to scroll,
+                                // so only attach it when the chips really do overflow - otherwise the
+                                // swipe belongs to the pager behind the list.
+                                val chipScroll = rememberScrollState()
                                 Row(
-                                    modifier = Modifier.horizontalScroll(rememberScrollState()),
+                                    modifier = if (chipScroll.maxValue > 0) {
+                                        Modifier.horizontalScroll(chipScroll)
+                                    } else {
+                                        Modifier
+                                    },
                                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {

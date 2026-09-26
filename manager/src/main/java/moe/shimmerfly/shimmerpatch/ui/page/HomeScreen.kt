@@ -124,7 +124,7 @@ private fun ShizukuStatusCard(modifier: Modifier = Modifier) {
     val active = ShizukuApi.isPermissionGranted
     val container = if (active) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.tertiaryContainer
     val content = if (active) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onTertiaryContainer
-    ElevatedCard(
+    Card(
         onClick = { if (ShizukuApi.isBinderAvailable && !active) ShizukuApi.requestPermission() },
         modifier = modifier.fillMaxWidth(),
         colors = backgroundAwareCardColors(container, content),
@@ -181,7 +181,7 @@ private fun StatCard(
     containerColor: Color,
     onClick: () -> Unit = {},
 ) {
-    ElevatedCard(
+    Card(
         onClick = onClick,
         modifier = modifier,
         colors = CardDefaults.cardColors(containerColor = containerColor),

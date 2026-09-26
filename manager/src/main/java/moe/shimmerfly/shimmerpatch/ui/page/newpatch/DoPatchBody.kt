@@ -110,7 +110,8 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        // The mark sits close to what it marks, the way KernelSU spaces it.
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
                         modifier = Modifier.semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite },
                     ) {
                         // Every state carries a mark, the running one included.

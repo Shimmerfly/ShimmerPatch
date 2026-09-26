@@ -33,4 +33,10 @@ sealed interface Route : NavKey {
         val multiSelect: Boolean, 
         val initialSelected: List<String>? = null
     ) : Route
+
+    /** One patched app: what patched it, what it embeds and what can be done about it. */
+    @Serializable
+    data class AppDetail(
+        val packageName: String
+    ) : Route
 }

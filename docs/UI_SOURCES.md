@@ -68,6 +68,15 @@ The launcher icon is adaptive and carries the complete artwork, wordmark include
 - The splash uses `ic_launcher_artwork.png`, a 512 px raster of the same artwork. The vector it replaced still spelled NPatch in its traced wordmark, and a raster reuses the supplier's lettering instead of retracing twelve glyphs as path data.
 - `ic_notification.xml` draws the mark on its own 24 dp canvas. Notification small icons are rendered as a system-tinted silhouette, so the full artwork arrived as a single solid block.
 
+## Patched-app page
+
+Tapping a row in Manage -> Apps opens `ui/page/AppDetailScreen.kt` instead of the module picker, because which patcher produced a bundle decides which actions apply. It is assembled from the repository's own widgets (`SegmentedColumn`, `BaseWidget`, `ExpressiveActionDropdown`) rather than modeled on another manager's layout.
+
+- The header names the patcher, and the mode and loader version when the bundle is ours.
+- The module list is read from the archive under `assets/{shimmerpatch,npatch,lspatch}/modules/`, so a bundle another patcher produced still lists its modules; each entry is resolved against the installed apps for a label and icon.
+- Loader and scope rows only appear for our own bundles, and a foreign one gets a note naming its patcher instead.
+- Export writes the installed APK set, base plus splits, into a folder the user picks through the system document tree.
+
 ## Regression checks
 
 `manager/src/androidTest` contains focused tests for ordinary action semantics, single switch/radio state nodes, and native dialog dismissal. Run on an explicitly selected test emulator:

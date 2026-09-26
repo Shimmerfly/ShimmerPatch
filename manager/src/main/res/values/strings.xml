@@ -257,4 +257,35 @@
     <string name="settings_third_party_installer_invalid_pkg">Selected or entered package is not installed or invalid</string>
     <string name="install_notification_title">%s installed successfully</string>
     <string name="install_notification_text">Tap to launch the application</string>
+
+    <!-- App detail: reached by tapping a patched app, rather than opening its module scope. -->
+    <string name="app_detail_modules">Modules</string>
+    <string name="app_detail_modules_empty">No modules are embedded in this app</string>
+    <string name="app_detail_modules_embedded">Modules are embedded in this APK. Changing them needs a repatch and a reinstall of %1$s.</string>
+    <string name="app_detail_foreign_bundle">This bundle was produced by %1$s, so its loader and modules are not managed here.</string>
+    <string name="app_detail_deep_scan_failed">Could not read the archive of this app</string>
+    <string name="app_detail_module_not_installed">Not installed</string>
+    <string name="app_detail_actions">Actions</string>
+    <string name="app_detail_repatch">Repatch</string>
+    <string name="app_detail_repatch_summary">Rebuild the bundle and change the modules it embeds</string>
+    <string name="app_detail_update_loader_summary">Replace the loader inside this bundle with the one in this manager</string>
+    <string name="app_detail_module_scope_summary">Choose which modules this app activates</string>
+    <string name="app_detail_export_apk">Export APK</string>
+    <string name="app_detail_export_apk_summary">Save a copy of the installed APK set into a folder</string>
+    <string name="app_detail_export_apk_done">Exported %1$d file(s)</string>
+    <string name="app_detail_export_apk_failed">Failed to export the APK set</string>
+    <string name="app_detail_export_diagnostics_summary">Collect this app's patch and loader logs</string>
+    <string name="app_detail_optimize_summary">Ask the platform to optimize this app's dex files</string>
+    <string name="app_detail_force_stop_summary">Stop every process of this app</string>
+    <string name="app_detail_force_restart_summary">Stop this app and start it again</string>
+    <string name="app_detail_app_info_summary">Open the system page for this app</string>
+    <string name="app_detail_uninstall_summary">Remove this app from the device</string>
+    <string name="app_detail_details">Details</string>
+    <string name="app_detail_patcher">Patcher</string>
+    <string name="app_detail_mode">Mode</string>
+    <string name="app_detail_loader_version">Loader</string>
+    <string name="app_detail_version">Version</string>
+    <string name="app_detail_package_name">Package</string>
+    <string name="app_detail_install_path">Install path</string>
+    <string name="app_detail_missing">This app is no longer installed</string>
 </resources>

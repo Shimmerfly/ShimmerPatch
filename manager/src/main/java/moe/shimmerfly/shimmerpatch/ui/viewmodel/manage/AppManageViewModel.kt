@@ -1,7 +1,6 @@
 package moe.shimmerfly.shimmerpatch.ui.viewmodel.manage
 
 import android.content.pm.PackageInstaller
-import android.util.Base64
 import android.util.Log
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -9,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -20,6 +18,7 @@ import moe.shimmerfly.shimmerpatch.share.Constants
 import moe.shimmerfly.shimmerpatch.share.PatchConfig
 import moe.shimmerfly.shimmerpatch.ui.viewstate.ProcessingState
 import moe.shimmerfly.shimmerpatch.util.NeoPackageManager
+import moe.shimmerfly.shimmerpatch.util.PatchConfigReader
 import moe.shimmerfly.shimmerpatch.util.NeoPackageManager.AppInfo
 import moe.shimmerfly.shimmerpatch.util.ShizukuApi
 import moe.shimmerfly.shimmerpatch.patch.util.Logger
@@ -48,22 +47,8 @@ class AppManageViewModel : ViewModel() {
     val appList: List<Pair<AppInfo, PatchConfig?>> by derivedStateOf {
         NeoPackageManager.appList
             .filter { it.isPatched }
-            .map { appInfo -> appInfo to appInfo.ownPatchConfig() }
+            .map { appInfo -> appInfo to PatchConfigReader.read(appInfo.app) }
     }
-
-    /**
-     * The configuration our patcher stored in the manifest, read from the current key or from the one
-     * this project used before the brand rename. A bundle another patcher produced has neither, and its
-     * configuration is not ours to interpret.
-     */
-    private fun AppInfo.ownPatchConfig(): PatchConfig? = runCatching {
-        listOf(NeoPackageManager.META_DATA_SHIMMERPATCH, NeoPackageManager.META_DATA_NPATCH)
-            .firstNotNullOfOrNull { key -> app.metaData?.getString(key) }
-            ?.let { encoded ->
-                val json = Base64.decode(encoded, Base64.DEFAULT).toString(Charsets.UTF_8)
-                Gson().fromJson(json, PatchConfig::class.java)?.takeIf { config -> config.lspConfig != null }
-            }
-    }.getOrNull()
 
     var isRefreshing by mutableStateOf(false)
         private set

@@ -37,6 +37,7 @@ import moe.shimmerfly.shimmerpatch.config.Configs
 import moe.shimmerfly.shimmerpatch.config.ThemeConfig
 import moe.shimmerfly.shimmerpatch.config.ThemeMode
 import moe.shimmerfly.shimmerpatch.ui.page.AboutScreen
+import moe.shimmerfly.shimmerpatch.ui.page.AppDetailScreen
 import moe.shimmerfly.shimmerpatch.ui.page.LocalNavigator
 import moe.shimmerfly.shimmerpatch.ui.page.MainScreen
 import moe.shimmerfly.shimmerpatch.ui.page.MainTab

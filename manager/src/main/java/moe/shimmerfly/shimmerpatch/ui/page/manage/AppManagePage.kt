@@ -370,9 +370,10 @@ fun AppManageBody(
                                     }
                                 }
                             },
-                            // A foreign bundle has no module scope of ours to edit, so its row opens the
-                            // system app page rather than a picker that could not affect it.
-                            onClick = if (isOurs) openScope else openAppInfo,
+                            // The row opens the app's own page. Which patcher produced the bundle,
+                            // what it embeds and which actions apply all belong there, rather than
+                            // behind the module picker this used to open.
+                            onClick = { navigator.navigate(Route.AppDetail(appInfo.app.packageName)) },
                             onLongPress = {
                                 showDropdown.value = true
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)

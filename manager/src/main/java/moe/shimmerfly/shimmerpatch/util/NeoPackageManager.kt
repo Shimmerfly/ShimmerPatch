@@ -44,6 +44,19 @@ object NeoPackageManager {
     private const val MAX_ARCHIVE_APK_COUNT = 256
     private const val MAX_ARCHIVE_EXTRACTED_BYTES = 4L * 1024 * 1024 * 1024
 
+    /** Manifest entries the patchers write their configuration into. */
+    const val META_DATA_SHIMMERPATCH = "shimmerpatch"
+
+    /** The key this project used before the brand rename; upstream NPatch and Vector write it too. */
+    const val META_DATA_NPATCH = "npatch"
+    const val META_DATA_LSPATCH = "lspatch"
+    const val META_DATA_FPA = "fpa"
+
+    /** Loader packages, used when a bundle carries no metadata we can read. */
+    private const val PACKAGE_SHIMMERPATCH = "moe.shimmerfly.shimmerpatch"
+    private const val PACKAGE_NPATCH = "top.nkbe.npatch"
+    private const val PACKAGE_LSPATCH = "org.lsposed.lspatch"
+
     const val STATUS_USER_CANCELLED = -2
 
     enum class InstallMethod {
@@ -54,6 +67,12 @@ object NeoPackageManager {
     enum class PatchedType(val displayName: String) {
         NONE(""),
         SHIMMERPATCH("ShimmerPatch"),
+
+        /**
+         * Bundles this project produced before the brand rename, and bundles upstream NPatch and
+         * Vector produced: same loader, same configuration layout, older marker names.
+         */
+        NPATCH("NPatch"),
         LSPATCH("LSPatch"),
         FPA("FPA"),
         EMBEDDED("Embedded APK");
@@ -84,32 +103,78 @@ object NeoPackageManager {
         val versionName: String,
         val versionCode: Long,
         val moduleMetadata: ModuleMetadataSnapshot? = null,
+        /**
+         * Which patcher produced this bundle. Resolved while the package scan reads the manifest, and
+         * the archive when the manifest says nothing, so neither happens on the main thread.
+         */
+        val patchedType: PatchedType = PatchedType.NONE,
     ) : Parcelable {
         val isXposedModule: Boolean
             get() = moduleMetadata != null
 
-        // Fast in-memory Tier 1 & 2 detection (for zero-IO UI rendering)
-        val patchedType: PatchedType
-            get() {
-                val meta = app.metaData
-                val factory = app.appComponentFactory.orEmpty()
-                val className = app.className.orEmpty()
-
-                // Tier 1: Manifest Meta-Data (Outermost explicit marker)
-                if (meta?.containsKey("shimmerpatch") == true) return PatchedType.SHIMMERPATCH
-                if (meta?.containsKey("lspatch") == true) return PatchedType.LSPATCH
-                if (meta?.containsKey("fpa") == true) return PatchedType.FPA
-
-                // Tier 2: AppComponentFactory & Application class name
-                if (factory.contains("moe.shimmerfly.shimmerpatch") || className.contains("moe.shimmerfly.shimmerpatch")) return PatchedType.SHIMMERPATCH
-                if (factory.contains("org.lsposed.lspatch") || className.contains("org.lsposed.lspatch")) return PatchedType.LSPATCH
-                if (factory.startsWith("fpa.") || className.startsWith("fpa.") || factory.contains("fun.fpa") || className.contains("fun.fpa")) return PatchedType.FPA
-
-                return PatchedType.NONE
-            }
-
         val isPatched: Boolean
             get() = patchedType != PatchedType.NONE
+    }
+
+    /**
+     * Reads the markers a patched bundle carries in its manifest: the metadata the patcher wrote, then
+     * the AppComponentFactory and application class the loader installs. No file access.
+     */
+    private fun detectPatchedTypeFromManifest(app: ApplicationInfo): PatchedType {
+        val meta = app.metaData
+        val factory = app.appComponentFactory.orEmpty()
+        val className = app.className.orEmpty()
+
+        // Tier 1: manifest meta-data, the outermost explicit marker.
+        if (meta?.containsKey(META_DATA_SHIMMERPATCH) == true) return PatchedType.SHIMMERPATCH
+        if (meta?.containsKey(META_DATA_NPATCH) == true) return PatchedType.NPATCH
+        if (meta?.containsKey(META_DATA_LSPATCH) == true) return PatchedType.LSPATCH
+        if (meta?.containsKey(META_DATA_FPA) == true) return PatchedType.FPA
+
+        // Tier 2: AppComponentFactory and application class name.
+        if (factory.contains(PACKAGE_SHIMMERPATCH) || className.contains(PACKAGE_SHIMMERPATCH)) {
+            return PatchedType.SHIMMERPATCH
+        }
+        if (factory.contains(PACKAGE_NPATCH) || className.contains(PACKAGE_NPATCH)) return PatchedType.NPATCH
+        if (factory.contains(PACKAGE_LSPATCH) || className.contains(PACKAGE_LSPATCH)) return PatchedType.LSPATCH
+        if (factory.startsWith("fpa.") || className.startsWith("fpa.") ||
+            factory.contains("fun.fpa") || className.contains("fun.fpa")
+        ) {
+            return PatchedType.FPA
+        }
+
+        return PatchedType.NONE
+    }
+
+    /**
+     * Reads the markers a patched bundle carries in its archive. This opens the APK, so it runs while
+     * the package scan is already off the main thread.
+     */
+    private fun detectPatchedTypeFromArchive(sourceDir: String?): PatchedType {
+        if (sourceDir.isNullOrEmpty()) return PatchedType.NONE
+        val sourceFile = File(sourceDir)
+        if (!sourceFile.isFile) return PatchedType.NONE
+
+        return runCatching {
+            ZipFile(sourceFile).use { zip ->
+                when {
+                    zip.getEntry("assets/shimmerpatch/config.json") != null ||
+                        zip.getEntry("assets/shimmerpatch/loader.bin") != null ||
+                        zip.getEntry("assets/shimmerpatch/origin.apk") != null -> PatchedType.SHIMMERPATCH
+                    // Pre-rename layouts of this project, and upstream NPatch and Vector.
+                    zip.getEntry("assets/npatch/config.json") != null ||
+                        zip.getEntry("assets/npatch/loader.bin") != null ||
+                        zip.getEntry("assets/npatch/origin.apk") != null -> PatchedType.NPATCH
+                    zip.getEntry("assets/lspatch/config.json") != null ||
+                        zip.getEntry("assets/lspatch/loader.dex") != null ||
+                        zip.getEntry("assets/lspatch/origin.apk") != null -> PatchedType.LSPATCH
+                    zip.getEntry("fpa/config.json") != null || zip.getEntry("extra/core.dex") != null ||
+                        zip.getEntry("fpa/source.apk") != null || zip.getEntry("fpa/o_app.apk") != null -> PatchedType.FPA
+                    zip.getEntry("assets/origin.apk") != null -> PatchedType.EMBEDDED
+                    else -> PatchedType.NONE
+                }
+            }
+        }.getOrDefault(PatchedType.NONE)
     }
 
     var appList by mutableStateOf(listOf<AppInfo>())
@@ -151,12 +216,18 @@ object NeoPackageManager {
                         val moduleMetadata = runCatching {
                             ModuleMetadataReader.read(pkgInfo, pm)
                         }.getOrNull()
+                        // The manifest first; only a bundle that says nothing there costs an archive
+                        // open, and this already runs on the background scan dispatcher.
+                        val patchedType = detectPatchedTypeFromManifest(appInfo).takeIf {
+                            it != PatchedType.NONE
+                        } ?: detectPatchedTypeFromArchive(appInfo.sourceDir)
                         AppInfo(
                             app = appInfo,
                             label = label,
                             versionName = pkgInfo.versionName ?: "",
                             versionCode = androidx.core.content.pm.PackageInfoCompat.getLongVersionCode(pkgInfo),
-                            moduleMetadata = moduleMetadata
+                            moduleMetadata = moduleMetadata,
+                            patchedType = patchedType,
                         )
                     }
                 }.awaitAll().filterNotNull().toMutableList()
@@ -642,26 +713,17 @@ object NeoPackageManager {
             )
     }
 
-    fun detectPatchedTypeDeep(appInfo: AppInfo): PatchedType {
-        val fastType = appInfo.patchedType
-        if (fastType != PatchedType.NONE) return fastType
+    /** The scan resolves this already; only a caller holding older data pays for a second archive read. */
+    fun detectPatchedTypeDeep(appInfo: AppInfo): PatchedType =
+        if (appInfo.patchedType != PatchedType.NONE) appInfo.patchedType
+        else detectPatchedTypeFromArchive(appInfo.app.sourceDir)
 
-        val sourceDir = appInfo.app.sourceDir ?: return PatchedType.NONE
-        val sourceFile = File(sourceDir)
-        if (!sourceFile.isFile) return PatchedType.NONE
-
-        return runCatching {
-            ZipFile(sourceFile).use { zip ->
-                when {
-                    zip.getEntry("assets/shimmerpatch/config.json") != null || zip.getEntry("assets/shimmerpatch/loader.bin") != null || zip.getEntry("assets/shimmerpatch/origin.apk") != null -> PatchedType.SHIMMERPATCH
-                    zip.getEntry("assets/lspatch/config.json") != null || zip.getEntry("assets/lspatch/loader.bin") != null || zip.getEntry("assets/lspatch/origin.apk") != null -> PatchedType.LSPATCH
-                    zip.getEntry("fpa/config.json") != null || zip.getEntry("extra/core.dex") != null || zip.getEntry("fpa/source.apk") != null || zip.getEntry("fpa/o_app.apk") != null -> PatchedType.FPA
-                    zip.getEntry("assets/origin.apk") != null -> PatchedType.EMBEDDED
-                    else -> PatchedType.NONE
-                }
-            }
-        }.getOrDefault(PatchedType.NONE)
-    }
+    /**
+     * Whether an installed app carries a patch marker we know, read from its manifest alone. For a
+     * caller that already holds an [ApplicationInfo] and does not need to know which patcher it was.
+     */
+    fun isPatched(app: ApplicationInfo): Boolean =
+        detectPatchedTypeFromManifest(app) != PatchedType.NONE
 
     suspend fun extractOriginalApk(patchedApp: AppInfo): ExtractResult {
         return withContext(Dispatchers.IO) {
@@ -677,6 +739,14 @@ object NeoPackageManager {
             val targetType = detectPatchedTypeDeep(patchedApp)
             val candidatePaths = when (targetType) {
                 PatchedType.SHIMMERPATCH -> listOf(
+                    "assets/shimmerpatch/origin.apk",
+                    "assets/origin.apk",
+                    "assets/lspatch/origin.apk",
+                    "fpa/source.apk",
+                    "fpa/o_app.apk"
+                )
+                PatchedType.NPATCH -> listOf(
+                    "assets/npatch/origin.apk",
                     "assets/shimmerpatch/origin.apk",
                     "assets/origin.apk",
                     "assets/lspatch/origin.apk",

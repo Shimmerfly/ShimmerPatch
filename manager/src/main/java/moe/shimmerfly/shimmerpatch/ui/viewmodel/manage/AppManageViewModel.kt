@@ -45,17 +45,25 @@ class AppManageViewModel : ViewModel() {
     }
 
     // Both management tabs derive their lists from the same completed package scan.
-    val appList: List<Pair<AppInfo, PatchConfig>> by derivedStateOf {
-        NeoPackageManager.appList.mapNotNull { appInfo ->
-            runCatching {
-                appInfo.app.metaData?.getString("shimmerpatch")?.let {
-                    val json = Base64.decode(it, Base64.DEFAULT).toString(Charsets.UTF_8)
-                    val config = Gson().fromJson(json, PatchConfig::class.java)
-                    if (config?.lspConfig == null) null else appInfo to config
-                }
-            }.getOrNull()
-        }
+    val appList: List<Pair<AppInfo, PatchConfig?>> by derivedStateOf {
+        NeoPackageManager.appList
+            .filter { it.isPatched }
+            .map { appInfo -> appInfo to appInfo.ownPatchConfig() }
     }
+
+    /**
+     * The configuration our patcher stored in the manifest, read from the current key or from the one
+     * this project used before the brand rename. A bundle another patcher produced has neither, and its
+     * configuration is not ours to interpret.
+     */
+    private fun AppInfo.ownPatchConfig(): PatchConfig? = runCatching {
+        listOf(NeoPackageManager.META_DATA_SHIMMERPATCH, NeoPackageManager.META_DATA_NPATCH)
+            .firstNotNullOfOrNull { key -> app.metaData?.getString(key) }
+            ?.let { encoded ->
+                val json = Base64.decode(encoded, Base64.DEFAULT).toString(Charsets.UTF_8)
+                Gson().fromJson(json, PatchConfig::class.java)?.takeIf { config -> config.lspConfig != null }
+            }
+    }.getOrNull()
 
     var isRefreshing by mutableStateOf(false)
         private set

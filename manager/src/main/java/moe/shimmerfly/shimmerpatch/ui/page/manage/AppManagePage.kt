@@ -238,22 +238,23 @@ fun AppManageBody(
                     items = filteredList,
                     key = { _, item -> item.first.app.packageName },
                 ) { index, (appInfo, patchConfig) ->
-
-                    val isLocal = patchConfig.useManager
-                    val currentVersion = patchConfig.lspConfig.VERSION_CODE
+                    // A bundle another patcher produced carries no configuration of ours, so the row
+                    // names that patcher and offers nothing that would manage our loader.
+                    val isOurs = patchConfig != null
+                    val isLocal = patchConfig?.useManager == true
+                    val loaderVersion = patchConfig?.lspConfig?.VERSION_CODE
                     val managerVersion = LSPConfig.instance.VERSION_CODE
 
-                    val showVersionNumber = if (isLocal) {
-                        currentVersion < Constants.MIN_ROLLING_VERSION_CODE
+                    val loaderOutdated = loaderVersion != null && if (isLocal) {
+                        loaderVersion < Constants.MIN_ROLLING_VERSION_CODE
                     } else {
-                        currentVersion != managerVersion
+                        loaderVersion != managerVersion
                     }
+                    val managerPackageMismatch = patchConfig != null && !isLocal &&
+                        patchConfig.managerPackageName != BuildConfig.APPLICATION_ID
 
-                    val canUpdateLoader = if (isLocal) {
-                        currentVersion < Constants.MIN_ROLLING_VERSION_CODE
-                    } else {
-                        (currentVersion != managerVersion) || (patchConfig.managerPackageName != BuildConfig.APPLICATION_ID)
-                    }
+                    val versionText = if (loaderOutdated || managerPackageMismatch) loaderVersion?.toString() else null
+                    val canUpdateLoader = loaderOutdated || managerPackageMismatch
 
                     val showDropdown = remember { mutableStateOf(false) }
                     var pressPosition by remember { mutableStateOf(Offset.Zero) }
@@ -290,6 +291,14 @@ fun AppManageBody(
                         }
                     }
 
+                    val openAppInfo: () -> Unit = {
+                        context.startActivity(
+                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                data = "package:${appInfo.app.packageName}".toUri()
+                            }
+                        )
+                    }
+
                     Box(modifier = Modifier.fillMaxWidth().pointerInput(Unit) {
                         awaitEachGesture {
                             pressPosition = awaitFirstDown(requireUnconsumed = false).position
@@ -316,25 +325,35 @@ fun AppManageBody(
                                 val patchColor = if (isLocal) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
 
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    val modeLabel = if (isLocal) {
-                                        "${stringResource(R.string.patch_local)} ${stringResource(R.string.manage_rolling)}"
-                                    } else {
-                                        stringResource(R.string.patch_integrated)
-                                    }
-
+                                    // Which patcher produced the bundle comes first; only our own patches
+                                    // can also say how their loader was built.
                                     Text(
-                                        text = modeLabel,
+                                        text = appInfo.patchedType.displayName,
                                         color = patchColor,
                                         style = MaterialTheme.typography.labelMedium,
                                     )
 
-                                    if (showVersionNumber) {
-                                        Spacer(modifier = Modifier.width(4.dp))
+                                    if (isOurs) {
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        val modeLabel = if (isLocal) {
+                                            "${stringResource(R.string.patch_local)} ${stringResource(R.string.manage_rolling)}"
+                                        } else {
+                                            stringResource(R.string.patch_integrated)
+                                        }
                                         Text(
-                                            text = currentVersion.toString(),
+                                            text = modeLabel,
                                             color = patchColor,
                                             style = MaterialTheme.typography.labelMedium,
-                                            )
+                                        )
+                                    }
+
+                                    versionText?.let { version ->
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                        Text(
+                                            text = version,
+                                            color = patchColor,
+                                            style = MaterialTheme.typography.labelMedium,
+                                        )
                                     }
 
                                     if (canUpdateLoader) {
@@ -351,7 +370,9 @@ fun AppManageBody(
                                     }
                                 }
                             },
-                            onClick = openScope,
+                            // A foreign bundle has no module scope of ours to edit, so its row opens the
+                            // system app page rather than a picker that could not affect it.
+                            onClick = if (isOurs) openScope else openAppInfo,
                             onLongPress = {
                                 showDropdown.value = true
                                 hapticFeedback.performHapticFeedback(HapticFeedbackType.ContextClick)
@@ -360,10 +381,12 @@ fun AppManageBody(
 
                         val actions = buildList {
 
-                            if (canUpdateLoader || BuildConfig.DEBUG) {
-                                add(DropdownAction(stringResource(R.string.manage_update_loader), Icons.Outlined.SystemUpdate) {
-                                    scope.launch { viewModel.dispatch(AppManageViewModel.ViewAction.UpdateLoader(appInfo, patchConfig)) }
-                                })
+                            patchConfig?.let { config ->
+                                if (canUpdateLoader || BuildConfig.DEBUG) {
+                                    add(DropdownAction(stringResource(R.string.manage_update_loader), Icons.Outlined.SystemUpdate) {
+                                        scope.launch { viewModel.dispatch(AppManageViewModel.ViewAction.UpdateLoader(appInfo, config)) }
+                                    })
+                                }
                             }
                             if (isLocal) {
                                 add(DropdownAction(stringResource(R.string.manage_module_scope), Icons.Outlined.Extension) {
@@ -431,10 +454,7 @@ fun AppManageBody(
                                 if (ShizukuApi.isReady) {
                                     scope.launch { viewModel.dispatch(AppManageViewModel.ViewAction.PerformForceStop(appInfo)) }
                                 } else {
-                                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                        data = "package:${appInfo.app.packageName}".toUri()
-                                    }
-                                    context.startActivity(intent)
+                                    openAppInfo()
                                 }
                             })
                             add(DropdownAction(stringResource(R.string.manage_force_restart), Icons.Outlined.RestartAlt) {
@@ -443,18 +463,10 @@ fun AppManageBody(
                                         viewModel.dispatch(AppManageViewModel.ViewAction.PerformForceRestart(appInfo))
                                     }
                                 } else {
-                                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                        data = "package:${appInfo.app.packageName}".toUri()
-                                    }
-                                    context.startActivity(intent)
+                                    openAppInfo()
                                 }
                             })
-                            add(DropdownAction(stringResource(R.string.manage_app_info), Icons.Outlined.Info) {
-                                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                    data = "package:${appInfo.app.packageName}".toUri()
-                                }
-                                context.startActivity(intent)
-                            })
+                            add(DropdownAction(stringResource(R.string.manage_app_info), Icons.Outlined.Info, onClick = openAppInfo))
                             add(DropdownAction(stringResource(R.string.uninstall), Icons.Outlined.Delete, isDestructive = true) {
                                 val intent = Intent(Intent.ACTION_DELETE).apply {
                                     data = "package:${appInfo.app.packageName}".toUri()

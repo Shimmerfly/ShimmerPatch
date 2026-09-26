@@ -4,7 +4,6 @@ package moe.shimmerfly.shimmerpatch.ui.page
 
 import android.app.Activity
 import android.widget.Toast
-import android.content.ClipData
 import android.content.Intent
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -60,7 +59,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.CoroutineScope
@@ -97,6 +95,7 @@ import moe.shimmerfly.shimmerpatch.ui.viewmodel.manage.AppDetailViewModel
 import moe.shimmerfly.shimmerpatch.ui.viewmodel.manage.AppManageViewModel
 import moe.shimmerfly.shimmerpatch.ui.viewmodel.manage.ModuleManageViewModel
 import moe.shimmerfly.shimmerpatch.ui.viewstate.ProcessingState
+import moe.shimmerfly.shimmerpatch.util.shareFileWithGrant
 import moe.shimmerfly.shimmerpatch.util.NeoPackageManager
 import moe.shimmerfly.shimmerpatch.util.PatchConfigReader
 import moe.shimmerfly.shimmerpatch.util.ShizukuApi
@@ -282,22 +281,7 @@ fun AppDetailScreen(
         scope.launch {
             runCatching {
                 val result = DiagnosticLogExporter.export(context, packageName)
-                val uri = FileProvider.getUriForFile(
-                    context,
-                    "${context.packageName}.fileprovider",
-                    result.file,
-                )
-                // Spelled out rather than chained through apply(): the share and the chooser that
-                // carries it each need the read grant, and the analyzer has to see both.
-                val share = Intent(Intent.ACTION_SEND)
-                share.type = "application/zip"
-                share.putExtra(Intent.EXTRA_STREAM, uri)
-                share.clipData = ClipData.newUri(context.contentResolver, result.file.name, uri)
-                share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-                val chooser = Intent.createChooser(share, diagnosticsChooserText)
-                chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                context.startActivity(chooser)
+                shareFileWithGrant(context, result.file, diagnosticsChooserText, "application/zip")
             }.onFailure {
                 snackbarHost.showSnackbar(diagnosticsFailedText)
             }

@@ -2,7 +2,6 @@
 package moe.shimmerfly.shimmerpatch.ui.page.manage
 
 import android.app.Activity
-import android.content.ClipData
 import android.content.Intent
 import android.provider.Settings
 import android.util.Log
@@ -48,7 +47,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.viewModelScope
@@ -87,6 +85,7 @@ import moe.shimmerfly.shimmerpatch.ui.page.SelectAppsResult
 import moe.shimmerfly.shimmerpatch.ui.viewmodel.manage.AppManageViewModel
 import moe.shimmerfly.shimmerpatch.ui.viewmodel.manage.ModuleManageViewModel
 import moe.shimmerfly.shimmerpatch.ui.viewstate.ProcessingState
+import moe.shimmerfly.shimmerpatch.util.shareFileWithGrant
 import moe.shimmerfly.shimmerpatch.util.NeoPackageManager
 import moe.shimmerfly.shimmerpatch.util.ShizukuApi
 import java.io.IOException
@@ -419,22 +418,7 @@ fun AppManageBody(
                                             context,
                                             appInfo.app.packageName,
                                         )
-                                        val uri = FileProvider.getUriForFile(
-                                            context,
-                                            "${context.packageName}.fileprovider",
-                                            result.file,
-                                        )
-                                        Intent(Intent.ACTION_SEND).also { share ->
-                                            share.type = "application/zip"
-                                            share.putExtra(Intent.EXTRA_STREAM, uri)
-                                            share.clipData = ClipData.newUri(context.contentResolver, result.file.name, uri)
-                                            share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-                                            // The chooser needs the grant as well, or the receiver cannot read the zip.
-                                            val chooser = Intent.createChooser(share, diagnosticsChooser)
-                                            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                            context.startActivity(chooser)
-                                        }
+                                        shareFileWithGrant(context, result.file, diagnosticsChooser, "application/zip")
                                     }.onFailure {
                                         Log.e(TAG, "Failed to export diagnostics for ${appInfo.app.packageName}", it)
                                         Toast.makeText(

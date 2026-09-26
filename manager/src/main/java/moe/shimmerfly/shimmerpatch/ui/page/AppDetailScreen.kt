@@ -287,17 +287,16 @@ fun AppDetailScreen(
                     "${context.packageName}.fileprovider",
                     result.file,
                 )
-                // Spelled out rather than chained through apply(): the share and the chooser that
-                // carries it each need the read grant, and the analyzer has to see both.
-                val share = Intent(Intent.ACTION_SEND)
-                share.type = "application/zip"
-                share.putExtra(Intent.EXTRA_STREAM, uri)
-                share.clipData = ClipData.newUri(context.contentResolver, result.file.name, uri)
-                share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-                val chooser = Intent.createChooser(share, diagnosticsChooserText)
-                chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                context.startActivity(chooser)
+                Intent(Intent.ACTION_SEND).apply {
+                    type = "application/zip"
+                    putExtra(Intent.EXTRA_STREAM, uri)
+                    clipData = ClipData.newUri(context.contentResolver, result.file.name, uri)
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }.let { shareIntent ->
+                    context.startActivity(
+                        Intent.createChooser(shareIntent, diagnosticsChooserText),
+                    )
+                }
             }.onFailure {
                 snackbarHost.showSnackbar(diagnosticsFailedText)
             }

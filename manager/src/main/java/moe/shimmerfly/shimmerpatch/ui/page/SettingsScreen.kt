@@ -62,6 +62,7 @@ import moe.shimmerfly.shimmerpatch.ui.component.m3AppBarBlur
 import moe.shimmerfly.shimmerpatch.ui.component.m3AppBarColor
 import moe.shimmerfly.shimmerpatch.ui.component.m3BackdropLayer
 import moe.shimmerfly.shimmerpatch.ui.component.m3.*
+import moe.shimmerfly.shimmerpatch.ui.component.settings.CustomKeystoreDialog
 import moe.shimmerfly.shimmerpatch.ui.util.BackgroundImageStorage
 import moe.shimmerfly.shimmerpatch.ui.util.LocalSnackbarHost
 import moe.shimmerfly.shimmerpatch.ui.util.LocalThemeSettings
@@ -675,120 +676,13 @@ private fun KeyStorePreference() {
             }
         },
     )
-    CustomKeystoreDialog(show = showCustom, onDismiss = { showCustom = false })
-}
-
-@Composable
-private fun CustomKeystoreDialog(show: Boolean, onDismiss: () -> Unit) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    var path by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var alias by rememberSaveable { mutableStateOf("") }
-    var aliasPassword by rememberSaveable { mutableStateOf("") }
-    var error by rememberSaveable { mutableStateOf<Int?>(null) }
-    var busy by remember { mutableStateOf(false) }
-    var previouslyShown by rememberSaveable { mutableStateOf(show) }
-    LaunchedEffect(show) {
-        if (show && !previouslyShown) {
-            path = ""
-            password = ""
-            alias = ""
-            aliasPassword = ""
-            error = null
-        }
-        previouslyShown = show
-    }
-    // Keep the result launcher registered while its external picker is on screen.
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        if (uri != null) scope.launch {
-            busy = true
-            try {
-                withContext(Dispatchers.IO) {
-                    val input = context.contentResolver.openInputStream(uri) ?: throw IOException("No keystore input")
-                    input.use { source -> MyKeyStore.tmpFile.outputStream().use { source.copyTo(it) } }
-                }
-                path = uri.lastPathSegment.orEmpty()
-                error = null
-            } catch (failure: Exception) {
-                Log.e(TAG, "Failed to read keystore", failure)
-                error = R.string.settings_keystore_wrong_keystore
-            } finally { busy = false }
-        }
-    }
-    SettingsDialog(
-        show = show,
-        title = stringResource(R.string.settings_keystore_dialog_title),
-        onDismissRequest = { if (!busy) onDismiss() },
-        confirmButton = {
-            TextButton(enabled = !busy, onClick = {
-                error = null
-                if (path.isBlank()) {
-                    error = R.string.settings_keystore_wrong_keystore
-                    return@TextButton
-                }
-                busy = true
-                scope.launch {
-                    try {
-                        error = withContext(Dispatchers.IO) { validateKeystore(password, alias, aliasPassword) }
-                        if (error == null) {
-                            MyKeyStore.setCustom(password, alias, aliasPassword)
-                            onDismiss()
-                        }
-                    } catch (failure: Exception) {
-                        Log.e(TAG, "Failed to import keystore", failure)
-                        error = R.string.settings_keystore_wrong_keystore
-                    } finally { busy = false }
-                }
-            }) { Text(stringResource(android.R.string.ok)) }
+    CustomKeystoreDialog(
+        show = showCustom,
+        onDismiss = { showCustom = false },
+        onConfirm = { _, _, password, alias, aliasPassword ->
+            MyKeyStore.setCustom(password, alias, aliasPassword)
         },
-    ) {
-        Text(stringResource(R.string.settings_keystore_desc), style = MaterialTheme.typography.bodyMedium)
-        error?.let { SettingsErrorText(stringResource(it)) }
-        // A real accessible button replaces the old read-only field / PressInteraction interception.
-        OutlinedButton(enabled = !busy, onClick = { launcher.launch("*/*") }, modifier = Modifier.fillMaxWidth()) {
-            Icon(Icons.Outlined.FolderOpen, contentDescription = null)
-            Spacer(Modifier.width(8.dp))
-            Text(path.ifBlank { stringResource(R.string.settings_keystore_file) })
-        }
-        OutlinedTextField(
-            value = password, onValueChange = { password = it; error = null },
-            label = { Text(stringResource(R.string.settings_keystore_password)) },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            singleLine = true, modifier = Modifier.fillMaxWidth(),
-        )
-        OutlinedTextField(
-            value = alias, onValueChange = { alias = it; error = null },
-            label = { Text(stringResource(R.string.settings_keystore_alias)) },
-            singleLine = true, modifier = Modifier.fillMaxWidth(),
-        )
-        OutlinedTextField(
-            value = aliasPassword, onValueChange = { aliasPassword = it; error = null },
-            label = { Text(stringResource(R.string.settings_keystore_alias_password)) },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            singleLine = true, modifier = Modifier.fillMaxWidth(),
-        )
-        if (busy) LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-    }
-}
-
-private fun validateKeystore(password: String, alias: String, aliasPassword: String): Int? {
-    val keystore = KeyStore.getInstance("BKS")
-    try {
-        MyKeyStore.tmpFile.inputStream().use { keystore.load(it, password.toCharArray()) }
-    } catch (error: IOException) {
-        return if (error.message == "KeyStore integrity check failed.") R.string.settings_keystore_wrong_password
-        else R.string.settings_keystore_wrong_keystore
-    }
-    if (!keystore.containsAlias(alias)) return R.string.settings_keystore_wrong_alias
-    try {
-        if (keystore.getKey(alias, aliasPassword.toCharArray()) == null) return R.string.settings_keystore_wrong_alias
-    } catch (_: GeneralSecurityException) {
-        return R.string.settings_keystore_wrong_alias_password
-    }
-    return null
+    )
 }
 
 @Composable

@@ -81,6 +81,42 @@ class NewPatchViewModel : ViewModel() {
      * persisted: it is a per-patch choice, and null keeps following the setting.
      */
     var keystoreOverride by mutableStateOf<KeystorePreset?>(null)
+    /** A keystore imported for this patch only, staged in the cache. */
+    var tempKeystore by mutableStateOf<Patcher.CustomKeystore?>(null)
+        private set
+    /** The picked file's display name, so the sheet can show which one is in use. */
+    var tempKeystoreLabel by mutableStateOf<String?>(null)
+        private set
+    /** Whether the keystore import dialog is open. */
+    var showKeystoreDialog by mutableStateOf(false)
+
+    /** Where an imported keystore is staged; the patcher reads it straight from there. */
+    val keystoreStageFile: File get() = File(lspApp.cacheDir, "keystore-import.bks")
+
+    /**
+     * Picks a keystore for this patch. Custom opens the import dialog instead of applying
+     * straight away: without a file it could only fall back to the stored custom keystore.
+     */
+    fun chooseKeystore(preset: KeystorePreset?) {
+        if (preset == KeystorePreset.CUSTOM) {
+            showKeystoreDialog = true
+            return
+        }
+        dropTemporaryKeystore()
+        keystoreOverride = preset
+    }
+
+    fun setTemporaryKeystore(file: File, name: String, password: String, alias: String, aliasPassword: String) {
+        tempKeystore = Patcher.CustomKeystore(file, password, alias, aliasPassword)
+        tempKeystoreLabel = name
+        keystoreOverride = KeystorePreset.CUSTOM
+    }
+
+    private fun dropTemporaryKeystore() {
+        tempKeystore?.file?.delete()
+        tempKeystore = null
+        tempKeystoreLabel = null
+    }
     /** Whether the extra-permission editor is open. */
     var permissionsExpanded by mutableStateOf(false)
     /** The permission currently being typed, before it is added to the list. */
@@ -252,6 +288,7 @@ class NewPatchViewModel : ViewModel() {
             extractNativeLibs = extractNativeLibs,
             addedPermissions = addedPermissions.toList(),
             keystorePreset = keystoreOverride,
+            customKeystore = tempKeystore,
         )
         patchState = PatchState.PATCHING
     }

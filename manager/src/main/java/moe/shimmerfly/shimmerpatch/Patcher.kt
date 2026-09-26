@@ -22,6 +22,14 @@ import java.util.zip.ZipOutputStream
 
 object Patcher {
 
+    /** A keystore file plus the credentials that open it: everything signing a patch needs. */
+    data class CustomKeystore(
+        val file: File,
+        val password: String,
+        val alias: String,
+        val aliasPassword: String,
+    )
+
     class Options(
         val newPackageName: String,
         private val config: PatchConfig,
@@ -38,6 +46,8 @@ object Patcher {
         private val addedPermissions: List<String> = emptyList(),
         /** Signs this patch with another keystore than the configured default; null keeps it. */
         private val keystorePreset: KeystorePreset? = null,
+        /** Used when [keystorePreset] is CUSTOM; null falls back to the stored custom keystore. */
+        private val customKeystore: CustomKeystore? = null,
     ) {
         internal val inputApks: List<File>
             get() = resolveActualApkPaths().map { File(it).absoluteFile }
@@ -143,7 +153,14 @@ object Patcher {
                 when (keystorePreset ?: Configs.keyStorePreset) {
                     KeystorePreset.NPATCH -> add("-npa")
                     KeystorePreset.FPA -> add("-fpa")
-                    KeystorePreset.CUSTOM -> addAll(arrayOf("-k", MyKeyStore.file.path, Configs.keyStorePassword, Configs.keyStoreAlias, Configs.keyStoreAliasPassword))
+                    KeystorePreset.CUSTOM -> {
+                        val custom = customKeystore
+                        if (custom != null) {
+                            addAll(arrayOf("-k", custom.file.path, custom.password, custom.alias, custom.aliasPassword))
+                        } else {
+                            addAll(arrayOf("-k", MyKeyStore.file.path, Configs.keyStorePassword, Configs.keyStoreAlias, Configs.keyStoreAliasPassword))
+                        }
+                    }
                 }
                 addAll(actualApks)
             }.toTypedArray()

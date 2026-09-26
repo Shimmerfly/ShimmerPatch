@@ -41,6 +41,7 @@ import moe.shimmerfly.shimmerpatch.ui.component.m3.DropdownOption
 import moe.shimmerfly.shimmerpatch.ui.component.m3.RadioButtonWidget
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SegmentedColumn
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SwitchWidget
+import moe.shimmerfly.shimmerpatch.ui.component.settings.CustomKeystoreDialog
 import moe.shimmerfly.shimmerpatch.ui.component.settings.SettingsEditor
 import moe.shimmerfly.shimmerpatch.ui.viewmodel.NewPatchViewModel
 import moe.shimmerfly.shimmerpatch.ui.viewmodel.NewPatchViewModel.ViewAction
@@ -438,7 +439,14 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit, onAddFromStorag
                         // effective keystore has to be spelled out here.
                         description = stringResource(
                             R.string.patch_keystore_temp_only,
-                            presetName(viewModel.keystoreOverride ?: Configs.keyStorePreset),
+                            when (viewModel.keystoreOverride) {
+                                null -> presetName(Configs.keyStorePreset)
+                                KeystorePreset.CUSTOM -> stringResource(
+                                    R.string.patch_keystore_custom_file,
+                                    viewModel.tempKeystoreLabel.orEmpty(),
+                                )
+                                else -> presetName(viewModel.keystoreOverride ?: Configs.keyStorePreset)
+                            },
                         ),
                         value = viewModel.keystoreOverride,
                         options = listOf(
@@ -450,7 +458,7 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit, onAddFromStorag
                             DropdownOption<KeystorePreset?>(KeystorePreset.FPA, "FPA"),
                             DropdownOption<KeystorePreset?>(KeystorePreset.CUSTOM, customLabel),
                         ),
-                        onValueChange = { viewModel.keystoreOverride = it },
+                        onValueChange = { viewModel.chooseKeystore(it) },
                     )
                 }
             }
@@ -473,6 +481,17 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit, onAddFromStorag
                 }
             }
         }
+    }
+
+    if (viewModel.showKeystoreDialog) {
+        CustomKeystoreDialog(
+            show = true,
+            stageFile = viewModel.keystoreStageFile,
+            onDismiss = { viewModel.showKeystoreDialog = false },
+            onConfirm = { file, name, password, alias, aliasPassword ->
+                viewModel.setTemporaryKeystore(file, name, password, alias, aliasPassword)
+            },
+        )
     }
 }
 

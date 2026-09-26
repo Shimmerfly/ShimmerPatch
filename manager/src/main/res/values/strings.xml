@@ -265,6 +265,7 @@
     <string name="patch_extract_native_libs_desc">Force the installer to unpack the app\'s native libraries, so a module that needs the app\'s own native code on disk can read them.</string>
     <string name="patch_keystore">Signature keystore</string>
     <string name="patch_keystore_follow_setting">Follow the setting (%1$s)</string>
+    <string name="patch_keystore_custom_file">Custom (%1$s)</string>
     <string name="patch_keystore_temp_only">This patch is signed with %1$s; the default in Settings stays as it is.</string>
     <string name="patch_hide_libs">Hide libraries</string>
     <string name="patch_hide_libs_desc">Hide ART and the sensitive system libraries a hardened app inspects to notice the framework. Applies from Basic signature bypass up.</string>

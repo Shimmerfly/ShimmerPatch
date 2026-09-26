@@ -113,7 +113,6 @@ fun SettingsScreen(
                 item(key = "keystore") { KeyStorePreference() }
                 item(key = "patch_logs") { DetailPatchLogs() }
                 item(key = "full_logs") { OutputFullLog() }
-                item(key = "tab_badges") { ManageTabBadges() }
                 item(key = "welcome") { WelcomeGuide() }
                 item(key = "storage") { StorageDirectory() }
                 item(key = "cache") { ClearManagerCache() }
@@ -241,6 +240,7 @@ fun AppearanceSettings() {
                 onCheckedChange = { checked -> scope.launch { context.dataStore.edit { it[ThemeConfig.USE_FLOATING_GLASS_BOTTOM_BAR_BLUR] = checked } } },
             )
         }
+        item(key = "tab_badges") { ManageTabBadges() }
         item(key = "background") {
             BaseWidget(
                 title = stringResource(R.string.settings_custom_background_image),

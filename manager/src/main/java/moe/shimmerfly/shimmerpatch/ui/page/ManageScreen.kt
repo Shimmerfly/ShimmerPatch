@@ -25,6 +25,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Apps
+import androidx.compose.material.icons.filled.Extension
 import androidx.compose.material.icons.outlined.Apps
 import androidx.compose.material.icons.outlined.Extension
 import androidx.compose.material3.Badge
@@ -41,6 +43,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
@@ -84,8 +87,8 @@ fun ManageScreen(
     val showTabBadges = Configs.manageTabBadges
     // Patcher managers are not patched apps; they have their own group in the app list.
     val tabs = listOf(
-        Triple(stringResource(R.string.apps), Icons.Outlined.Apps, appManageViewModel.patchedAppCount),
-        Triple(stringResource(R.string.modules), Icons.Outlined.Extension, moduleManageViewModel.appList.size),
+        ManageTab(stringResource(R.string.apps), Icons.Filled.Apps, Icons.Outlined.Apps, appManageViewModel.patchedAppCount),
+        ManageTab(stringResource(R.string.modules), Icons.Filled.Extension, Icons.Outlined.Extension, moduleManageViewModel.appList.size),
     )
     val backdrop = rememberMaterial3BlurBackdrop()
     val layoutDirection = LocalLayoutDirection.current
@@ -137,9 +140,10 @@ fun ManageScreen(
                             )
                         },
                     ) {
-                        tabs.forEachIndexed { index, (title, icon, count) ->
+                        tabs.forEachIndexed { index, tab ->
+                            val selected = pagerState.currentPage == index
                             Tab(
-                                selected = pagerState.currentPage == index,
+                                selected = selected,
                                 onClick = { onPageChanged(index) },
                                 text = {
                                     Row(
@@ -149,11 +153,15 @@ fun ManageScreen(
                                         // The count hangs off the icon's top corner, as it does in
                                         // KernelSU, rather than widening the label.
                                         BadgedBox(
-                                            badge = { if (showTabBadges) CountBadge(count) },
+                                            badge = { if (showTabBadges) CountBadge(tab.count) },
                                         ) {
-                                            Icon(icon, contentDescription = null, modifier = Modifier.size(20.dp))
+                                            Icon(
+                                                if (selected) tab.selectedIcon else tab.unselectedIcon,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(24.dp),
+                                            )
                                         }
-                                        Text(title)
+                                        Text(tab.title)
                                     }
                                 },
                             )
@@ -193,6 +201,14 @@ fun ManageScreen(
         }
     }
 }
+
+/** A tab label, the icon it shows while it is the current page, and its count. */
+private data class ManageTab(
+    val title: String,
+    val selectedIcon: ImageVector,
+    val unselectedIcon: ImageVector,
+    val count: Int,
+)
 
 /** A tab label's count, hidden while there is nothing to count. */
 @Composable

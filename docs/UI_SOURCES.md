@@ -82,10 +82,10 @@ Tapping a row in Manage -> Apps opens `ui/page/AppDetailScreen.kt` instead of th
 
 Manage -> Apps and Manage -> Modules are one pager. Its tabs lead with an icon and carry the section's count on that icon's top corner, the arrangement KernelSU uses for its destinations, rather than widening the label with a number.
 
-- `Icons.Outlined.Apps` and `Icons.Outlined.Extension` are reused from the welcome permission rows and the module sections, so no new icon vocabulary was introduced. They are 20 dp beside a 14 sp label, and take the tab's own content colour, which leaves the selected one primary and the other onSurfaceVariant.
+- `Icons.Apps` and `Icons.Extension` are reused from the welcome permission rows and the module sections, so no new icon vocabulary was introduced. Each tab draws the filled variant while it is the current page and the outlined one otherwise, the same contract the bottom bar's destinations already use. They are 24 dp beside a 14 sp label, and take the tab's own content colour, which leaves the selected one primary and the other onSurfaceVariant.
 - The app count excludes patcher managers: they appear on the same page in their own group, because they produced patched apps rather than being patched themselves.
 - Both tabs read the view models their bodies already read, so the page still performs one package scan.
-- Counts are decoration, so Settings -> Other Settings carries a switch for them; the icons stay either way, and a count of zero draws no badge at all.
+- Counts are decoration, so Settings -> Appearance and theme carries a switch for them; the icons stay either way, and a count of zero draws no badge at all.
 
 ## Regression checks
 

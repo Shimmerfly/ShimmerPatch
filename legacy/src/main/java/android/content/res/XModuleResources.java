@@ -13,6 +13,9 @@ import hidden.HiddenApiBridge;
  * Provides access to resources from a certain path (usually the module's own path).
  */
 public class XModuleResources extends Resources {
+	// A Resources subclass has to chain to a superclass constructor, and this is still the only one
+	// that takes the asset manager, metrics and configuration of another resources object.
+	@SuppressWarnings("deprecation")
 	private XModuleResources(AssetManager assets, DisplayMetrics metrics, Configuration config) {
 		super(assets, metrics, config);
 	}

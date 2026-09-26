@@ -83,6 +83,9 @@ abstract public class XCallback {
         /**
          * Returns an object stored with {@link #setObjectExtra}.
          */
+        // The type-checked Bundle overload only exists from API 33, and this library is loaded on
+        // older platforms too, so the value has to be read without naming its class.
+        @SuppressWarnings("deprecation")
         public Object getObjectExtra(String key) {
             Serializable o = getExtra().getSerializable(key);
             if (o instanceof SerializeWrapper)

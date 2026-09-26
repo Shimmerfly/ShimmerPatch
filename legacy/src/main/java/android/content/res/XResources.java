@@ -57,7 +57,10 @@ import xposed.dummy.XTypedArraySuperClass;
  * retrieving individual resources and adds possibilities to replace them. These replacements can
  * be set using the methods made available via the API methods in this class.
  */
-@SuppressWarnings("JniMissingFunction")
+// The overrides in this class exist to keep the pre-Theme Resources signatures alive for modules
+// and for the framework, and each one forwards to the same deprecated method on the target
+// resources, so the deprecated calls are the class's whole purpose.
+@SuppressWarnings({"JniMissingFunction", "deprecation"})
 public class XResources extends XResourcesSuperClass {
 	private static final SparseArray<HashMap<String, Object>> sReplacements = new SparseArray<>();
 	private static final SparseArray<HashMap<String, ResourceNames>> sResourceNames = new SparseArray<>();
@@ -1300,6 +1303,9 @@ public class XResources extends XResourcesSuperClass {
 	 * Mainly used when inflating layouts.
 	 * @hide
 	 */
+	// Same reason as the enclosing class: the index-based getters forward to the deprecated
+	// Resources methods so that a typed array keeps working the way modules expect.
+	@SuppressWarnings("deprecation")
 	public static class XTypedArray extends XTypedArraySuperClass {
 
         public XTypedArray(Resources resources) {

@@ -97,6 +97,7 @@ import java.io.IOException
 
 private const val TAG = "AppManagePage"
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AppManageBody(
     navigator: Navigator,
@@ -340,6 +341,11 @@ fun AppManageBody(
                                 val (neutralContainer, neutralContent) = neutralTone()
                                 val (patcherContainer, patcherContent) = patcherTone(appInfo.patchedType)
 
+                                FlowRow(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                                ) {
                                 if (appInfo.patchedType.displayName.isNotEmpty()) {
                                     DetailChip(
                                         icon = Icons.Outlined.Build,
@@ -374,6 +380,7 @@ fun AppManageBody(
                                         modifier = Modifier.size(18.dp),
                                         tint = neutralContent,
                                     )
+                                }
                                 }
                             },
                             // The row opens the app's own page. Which patcher produced the bundle,

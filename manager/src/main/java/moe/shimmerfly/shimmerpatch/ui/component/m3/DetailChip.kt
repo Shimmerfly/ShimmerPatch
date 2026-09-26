@@ -60,7 +60,13 @@ fun DetailChip(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(imageVector = icon, contentDescription = null, modifier = Modifier.size(15.dp))
-            Text(text = text, style = MaterialTheme.typography.labelMedium)
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelMedium,
+                // A chip is one unit: it moves to the next line rather than breaking apart.
+                maxLines = 1,
+                softWrap = false,
+            )
         }
     }
 }

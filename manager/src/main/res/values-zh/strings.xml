@@ -294,4 +294,7 @@
     <string name="patch_permission_remove">移除</string>
     <string name="patch_hide_libs">隐藏敏感库</string>
     <string name="patch_hide_libs_desc">对应用隐藏 ART 与敏感系统库，让检查运行环境的加固应用不容易发现框架。需要签名绕过等级达到 Basic 及以上。</string>
+    <string name="patch_keystore">签名密钥库</string>
+    <string name="patch_keystore_follow_setting">跟随设置（%1$s）</string>
+    <string name="patch_keystore_temp_only">本次打包使用 %1$s，设置里的默认值不会改动。</string>
 </resources>

@@ -36,6 +36,8 @@ object Patcher {
         private val extractNativeLibs: Boolean = false,
         /** Extra permissions the modules need, already usable as manifest entries. */
         private val addedPermissions: List<String> = emptyList(),
+        /** Signs this patch with another keystore than the configured default; null keeps it. */
+        private val keystorePreset: KeystorePreset? = null,
     ) {
         internal val inputApks: List<File>
             get() = resolveActualApkPaths().map { File(it).absoluteFile }
@@ -138,7 +140,7 @@ object Patcher {
                 addedPermissions.forEach {
                     add("--add-permission"); add(it)
                 }
-                when (Configs.keyStorePreset) {
+                when (keystorePreset ?: Configs.keyStorePreset) {
                     KeystorePreset.NPATCH -> add("-npa")
                     KeystorePreset.FPA -> add("-fpa")
                     KeystorePreset.CUSTOM -> addAll(arrayOf("-k", MyKeyStore.file.path, Configs.keyStorePassword, Configs.keyStoreAlias, Configs.keyStoreAliasPassword))

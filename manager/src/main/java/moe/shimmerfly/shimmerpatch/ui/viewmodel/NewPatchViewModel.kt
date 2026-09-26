@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import moe.shimmerfly.shimmerpatch.Patcher
+import moe.shimmerfly.shimmerpatch.config.KeystorePreset
 import moe.shimmerfly.shimmerpatch.lspApp
 import moe.shimmerfly.shimmerpatch.share.PatchConfig
 import moe.shimmerfly.shimmerpatch.patch.util.ManifestParser
@@ -75,6 +76,11 @@ class NewPatchViewModel : ViewModel() {
     var extractNativeLibs by mutableStateOf(false)
     /** Hides ART and the sensitive system libraries from the app's own environment checks. */
     var hideLibs by mutableStateOf(false)
+    /**
+     * Signs this patch with another keystore than the configured default. Deliberately not
+     * persisted: it is a per-patch choice, and null keeps following the setting.
+     */
+    var keystoreOverride by mutableStateOf<KeystorePreset?>(null)
     /** Whether the extra-permission editor is open. */
     var permissionsExpanded by mutableStateOf(false)
     /** The permission currently being typed, before it is added to the list. */
@@ -245,6 +251,7 @@ class NewPatchViewModel : ViewModel() {
             labelOverride = overrideLabel.trim().ifEmpty { null },
             extractNativeLibs = extractNativeLibs,
             addedPermissions = addedPermissions.toList(),
+            keystorePreset = keystoreOverride,
         )
         patchState = PatchState.PATCHING
     }

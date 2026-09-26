@@ -31,9 +31,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import moe.shimmerfly.shimmerpatch.util.NeoPackageManager
 import moe.shimmerfly.shimmerpatch.R
+import moe.shimmerfly.shimmerpatch.config.Configs
+import moe.shimmerfly.shimmerpatch.config.KeystorePreset
 import moe.shimmerfly.shimmerpatch.share.Constants
 import moe.shimmerfly.shimmerpatch.ui.component.m3.BaseItemContainer
 import moe.shimmerfly.shimmerpatch.ui.component.m3.BaseWidget
+import moe.shimmerfly.shimmerpatch.ui.component.m3.DropDownMenuWidget
+import moe.shimmerfly.shimmerpatch.ui.component.m3.DropdownOption
 import moe.shimmerfly.shimmerpatch.ui.component.m3.RadioButtonWidget
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SegmentedColumn
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SwitchWidget
@@ -411,6 +415,42 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit, onAddFromStorag
                         icon = Icons.Outlined.Http,
                         checked = viewModel.usesCleartextTraffic,
                         onCheckedChange = { viewModel.usesCleartextTraffic = it },
+                    )
+                }
+            }
+        }
+        item(key = "keystore") {
+            val customLabel = stringResource(R.string.settings_keystore_custom)
+            val presetName = { preset: KeystorePreset ->
+                when (preset) {
+                    KeystorePreset.NPATCH -> "NPatch"
+                    KeystorePreset.FPA -> "FPA"
+                    KeystorePreset.CUSTOM -> customLabel
+                }
+            }
+            val defaultName = presetName(Configs.keyStorePreset)
+            SegmentedColumn(title = stringResource(R.string.settings_keystore)) {
+                item {
+                    DropDownMenuWidget(
+                        icon = Icons.Outlined.Key,
+                        title = stringResource(R.string.patch_keystore),
+                        // The widget shows the description instead of the picked label, so the
+                        // effective keystore has to be spelled out here.
+                        description = stringResource(
+                            R.string.patch_keystore_temp_only,
+                            presetName(viewModel.keystoreOverride ?: Configs.keyStorePreset),
+                        ),
+                        value = viewModel.keystoreOverride,
+                        options = listOf(
+                            DropdownOption<KeystorePreset?>(
+                                value = null,
+                                label = stringResource(R.string.patch_keystore_follow_setting, defaultName),
+                            ),
+                            DropdownOption<KeystorePreset?>(KeystorePreset.NPATCH, "NPatch"),
+                            DropdownOption<KeystorePreset?>(KeystorePreset.FPA, "FPA"),
+                            DropdownOption<KeystorePreset?>(KeystorePreset.CUSTOM, customLabel),
+                        ),
+                        onValueChange = { viewModel.keystoreOverride = it },
                     )
                 }
             }

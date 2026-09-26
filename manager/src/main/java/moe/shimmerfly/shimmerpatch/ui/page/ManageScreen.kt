@@ -22,8 +22,14 @@ import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Apps
+import androidx.compose.material.icons.outlined.Extension
 import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
@@ -67,8 +73,7 @@ fun ManageScreen(
     onSelectedPageChange: (Int) -> Unit = {},
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
-    val tabTitles = listOf(stringResource(R.string.apps), stringResource(R.string.modules))
-    val safeSelectedPage = selectedPage.coerceIn(tabTitles.indices)
+    val safeSelectedPage = selectedPage.coerceIn(0, 1)
     val pagerState = controller.pagerState
     val onPageChanged by rememberUpdatedState(onSelectedPageChange)
     var searchQuery by rememberSaveable { mutableStateOf("") }
@@ -78,7 +83,10 @@ fun ManageScreen(
     val moduleManageViewModel = viewModel<ModuleManageViewModel>()
     val showTabBadges = Configs.manageTabBadges
     // Patcher managers are not patched apps; they have their own group in the app list.
-    val tabCounts = listOf(appManageViewModel.patchedAppCount, moduleManageViewModel.appList.size)
+    val tabs = listOf(
+        Triple(stringResource(R.string.apps), Icons.Outlined.Apps, appManageViewModel.patchedAppCount),
+        Triple(stringResource(R.string.modules), Icons.Outlined.Extension, moduleManageViewModel.appList.size),
+    )
     val backdrop = rememberMaterial3BlurBackdrop()
     val layoutDirection = LocalLayoutDirection.current
     val bottomInset = maxOf(contentPadding.calculateBottomPadding(), WindowInsets.ime.asPaddingValues().calculateBottomPadding())
@@ -129,17 +137,23 @@ fun ManageScreen(
                             )
                         },
                     ) {
-                        tabTitles.forEachIndexed { index, title ->
+                        tabs.forEachIndexed { index, (title, icon, count) ->
                             Tab(
                                 selected = pagerState.currentPage == index,
                                 onClick = { onPageChanged(index) },
                                 text = {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                                     ) {
+                                        // The count hangs off the icon's top corner, as it does in
+                                        // KernelSU, rather than widening the label.
+                                        BadgedBox(
+                                            badge = { if (showTabBadges) CountBadge(count) },
+                                        ) {
+                                            Icon(icon, contentDescription = null, modifier = Modifier.size(24.dp))
+                                        }
                                         Text(title)
-                                        if (showTabBadges) CountBadge(tabCounts.getOrElse(index) { 0 })
                                     }
                                 },
                             )

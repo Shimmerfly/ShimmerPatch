@@ -31,6 +31,7 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -98,14 +99,16 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
         ) {
             Surface(
                 // The app's own container corner, not Material's extra-large one.
+                // Narrower than the screen: this banner is a status line, not a full card.
+                modifier = Modifier.widthIn(max = 320.dp),
                 shape = RoundedCornerShape(CornerRadius),
                 color = if (viewModel.patchState == PatchState.ERROR) {
                     MaterialTheme.colorScheme.errorContainer
                 } else MaterialTheme.colorScheme.primaryContainer,
             ) {
                 Column(
-                    Modifier.fillMaxWidth().padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    Modifier.fillMaxWidth().padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -120,7 +123,7 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                                 else -> Icons.Outlined.AutoFixHigh
                             },
                             contentDescription = null,
-                            modifier = Modifier.size(32.dp),
+                            modifier = Modifier.size(24.dp),
                         )
                         Column(Modifier.weight(1f)) {
                             Text(
@@ -129,9 +132,14 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                                     PatchState.ERROR -> R.string.patch_ui_failed
                                     else -> R.string.patch_ui_running
                                 }),
-                                style = MaterialTheme.typography.headlineSmall,
+                                style = MaterialTheme.typography.titleMedium,
                             )
-                            Text(viewModel.patchApp.app.packageName, style = MaterialTheme.typography.bodyMedium)
+                            Text(
+                                text = viewModel.patchApp.app.packageName,
+                                style = MaterialTheme.typography.bodySmall,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
                         }
                     }
                     if (viewModel.patchState == PatchState.PATCHING) {

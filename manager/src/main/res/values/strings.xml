@@ -37,12 +37,11 @@
     <string name="about_acknowledgments_title">Special thanks (unordered)</string>
     <string name="about_ack_rovo89_summary">Founder of the Xposed Framework; the originator and pioneer of the entire modular ecosystem.</string>
     <string name="about_ack_lsposed_team_summary">With thanks to the LSPosed Team for their continuous contributions to the Xposed ecosystem and low-level injection techniques.</string>
-    <string name="about_ack_nkbe_summary">Lead developer of upstream NPatch and a developer who cannot develop at all</string>
+    <string name="about_apart_title">Apart from this one…</string>
+    <string name="about_apart_nkbe_summary">Contributes nothing to this project but cat noises\nThe one who writes code worst in this project\nThe most arrogant of them all\nMay I suggest you delete your repository? It is pure pollution of the Copilot corpus</string>
     <string name="about_ack_jingmatrix_summary">Author of Vector, whose outstanding framework architecture provided a vital foundation and inspiration for ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">A pioneer in rootless patching solutions, proving the feasibility of dynamic Xposed environment loading via manager-side implementation.</string>
     <string name="about_ack_libxposed_summary">The driving force behind Xposed API standardisation, bringing type safety and clear conventions to the module development world.</string>
-    <string name="about_ack_winter_summary">My very first financial supporter; thank you for such early and direct encouragement.</string>
-    <string name="about_ack_m558_summary">The one who keeps the gears turning behind the scenes — thank you for the quiet but indispensable support.</string>
     <string name="about_ack_community_summary">Thanks to all users involved in testing, submitting PRs, and reporting issues to drive the project forward together.</string>
 
     <!-- Manage Screen -->

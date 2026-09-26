@@ -36,13 +36,12 @@
     <string name="about_link_telegram_summary">订阅我们的频道</string>
     <string name="about_acknowledgments_title">特别鸣谢（排名不分先后）</string>
     <string name="about_ack_rovo89_summary">Xposed 框架创始人，一切模块化生态的起源与奠基者。</string>
-    <string name="about_ack_nkbe_summary">上游 NPatch 的主要开发者 完全不会开发的开发者</string>
+    <string name="about_apart_title">除了此人……</string>
+    <string name="about_apart_nkbe_summary">除了猫猫语对本项目豪无贡献之人\n本项目之中最不会写代码之人\n最目中无人之人\n这边建议您删除您的仓库 纯纯污染 Copilot 语料库</string>
     <string name="about_ack_jingmatrix_summary">Vector 作者，其优秀的框架工作为 ShimmerPatch 的持续迭代提供了重要基础与启发。</string>
     <string name="about_ack_lsposed_team_summary">感谢 LSPosed 团队在现代化 Xposed 生态与底层注入技术上的持续贡献。</string>
     <string name="about_ack_lspatch_summary">免 Root 修补方案的先行者，证明了在管理器侧动态加载 Xposed 环境的可行性。</string>
     <string name="about_ack_libxposed_summary">现代 Xposed API 标准化推手，为模块开发带来了类型安全与更清晰的秩序。</string>
-    <string name="about_ack_winter_summary">首位打赏我的支持者，感谢这份很早、也很直接的鼓励。</string>
-    <string name="about_ack_m558_summary">幕后默默转动齿轮的人，感谢这份不可或缺的支持。</string>
     <string name="about_ack_community_summary">感谢所有参与测试、提交 PR 与回报 Issue 的用户，共同推动项目前进。</string>
 
     <!-- Manage Screen -->

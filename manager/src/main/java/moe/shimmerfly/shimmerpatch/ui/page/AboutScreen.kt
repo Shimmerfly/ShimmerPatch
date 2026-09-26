@@ -128,6 +128,22 @@ fun AboutScreen(onBack: () -> Unit) {
                 }
             }
             item {
+                // Not an acknowledgment: the one entry that earned its own heading.
+                SegmentedColumn(title = stringResource(R.string.about_apart_title)) {
+                    item {
+                        AboutLinkItem(
+                            AboutLink(
+                                title = "NkBe",
+                                summary = stringResource(R.string.about_apart_nkbe_summary),
+                                url = NKBE_GITHUB_URL,
+                                imageUrl = if (avatarsReady) NKBE_AVATAR_URL else null,
+                            ),
+                            context::openUri,
+                        )
+                    }
+                }
+            }
+            item {
                 SegmentedColumn(title = stringResource(R.string.about_acknowledgments_title)) {
                     acknowledgments.forEach { link -> item(key = link.title) { AboutLinkItem(link, context::openUri) } }
                 }
@@ -185,16 +201,13 @@ private fun rememberAboutLinks(): List<AboutLink> {
 @Composable
 private fun rememberAcknowledgmentLinks(avatarsReady: Boolean): List<AboutLink> {
     val rovo89 = stringResource(R.string.about_ack_rovo89_summary)
-    val nkbe = stringResource(R.string.about_ack_nkbe_summary)
     val lsposed = stringResource(R.string.about_ack_lsposed_team_summary)
     val jingMatrix = stringResource(R.string.about_ack_jingmatrix_summary)
     val lspatch = stringResource(R.string.about_ack_lspatch_summary)
     val libxposed = stringResource(R.string.about_ack_libxposed_summary)
-    val winter = stringResource(R.string.about_ack_winter_summary)
-    val m558 = stringResource(R.string.about_ack_m558_summary)
     val community = stringResource(R.string.about_ack_community_summary)
 
-    return remember(avatarsReady, rovo89, nkbe, jingMatrix, lsposed, lspatch, libxposed, winter, m558, community) {
+    return remember(avatarsReady, rovo89, jingMatrix, lsposed, lspatch, libxposed, community) {
         // An avatar URL only reaches the list once the page has arrived.
         fun avatar(url: String) = if (avatarsReady) url else null
         listOf(
@@ -203,12 +216,6 @@ private fun rememberAcknowledgmentLinks(avatarsReady: Boolean): List<AboutLink> 
                 summary = rovo89,
                 url = "https://github.com/rovo89/XposedBridge",
                 imageUrl = avatar(ROVO89_AVATAR_URL)
-            ),
-            AboutLink(
-                title = "NkBe",
-                summary = nkbe,
-                url = NKBE_GITHUB_URL,
-                imageUrl = avatar(NKBE_AVATAR_URL)
             ),
             AboutLink(
                 title = "JingMatrix",
@@ -233,18 +240,6 @@ private fun rememberAcknowledgmentLinks(avatarsReady: Boolean): List<AboutLink> 
                 summary = libxposed,
                 url = "https://github.com/libxposed/api",
                 imageUrl = avatar(LIBXPOSED_AVATAR_URL)
-            ),
-            AboutLink(
-                title = "winter",
-                summary = winter,
-                url = TELEGRAM_URL,
-                imageRes = R.drawable.winter
-            ),
-            AboutLink(
-                title = "M558",
-                summary = m558,
-                url = TELEGRAM_URL,
-                imageRes = R.drawable.m558
             ),
             AboutLink(
                 title = "Community",

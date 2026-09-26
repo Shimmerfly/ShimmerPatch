@@ -99,8 +99,6 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
         ) {
             Surface(
                 // The app's own container corner, not Material's extra-large one.
-                // Narrower than the screen: this banner is a status line, not a full card.
-                modifier = Modifier.widthIn(max = 320.dp),
                 shape = RoundedCornerShape(CornerRadius),
                 color = if (viewModel.patchState == PatchState.ERROR) {
                     MaterialTheme.colorScheme.errorContainer

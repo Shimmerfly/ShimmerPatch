@@ -73,7 +73,6 @@ import moe.shimmerfly.shimmerpatch.ui.component.m3.ExpressiveActionDropdown
 import moe.shimmerfly.shimmerpatch.ui.component.AppItem
 import moe.shimmerfly.shimmerpatch.ui.component.m3.BaseWidget
 import moe.shimmerfly.shimmerpatch.ui.component.m3.DetailChip
-import moe.shimmerfly.shimmerpatch.ui.component.m3.neutralTone
 import moe.shimmerfly.shimmerpatch.ui.component.m3.patcherTone
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SegmentedColumn
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SettingsDialog
@@ -336,10 +335,17 @@ fun AppManageBody(
                             packageName = appInfo.app.packageName,
                             summaryRow = {
                                 // The same chips the app's own page shows, so a row and the page
-                                // behind it read alike: only the patcher chip is toned, and a
-                                // trailing mark says when its loader is worth updating.
-                                val (neutralContainer, neutralContent) = neutralTone()
+                                // behind it read alike. Only the patcher chip takes the brighter
+                                // tone, and the two behind it stay in its family - the primary
+                                // container pair for our own bundles, the secondary one for another
+                                // patcher's - so the row says whose patch it is without repeating
+                                // the name. A trailing mark says when its loader is worth updating.
                                 val (patcherContainer, patcherContent) = patcherTone(appInfo.patchedType)
+                                val (detailContainer, detailContent) = if (isOurs) {
+                                    MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
+                                } else {
+                                    MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
+                                }
 
                                 // One line that can be swiped, the way the app's own page shows them,
                                 // instead of wrapping onto a second line inside the row. A scrollable
@@ -371,15 +377,15 @@ fun AppManageBody(
                                     } else {
                                         stringResource(R.string.patch_integrated)
                                     }
-                                    DetailChip(Icons.Outlined.Work, modeLabel, neutralContainer, neutralContent)
+                                    DetailChip(Icons.Outlined.Work, modeLabel, detailContainer, detailContent)
                                 }
 
                                 versionText?.let { version ->
                                     DetailChip(
                                         icon = Icons.Outlined.Memory,
                                         text = "${stringResource(R.string.app_detail_loader_version)} $version",
-                                        container = neutralContainer,
-                                        content = neutralContent,
+                                        container = detailContainer,
+                                        content = detailContent,
                                     )
                                 }
 
@@ -388,7 +394,7 @@ fun AppManageBody(
                                         imageVector = Icons.Filled.KeyboardCapslock,
                                         contentDescription = null,
                                         modifier = Modifier.size(18.dp),
-                                        tint = neutralContent,
+                                        tint = detailContent,
                                     )
                                 }
                                 }
@@ -555,11 +561,7 @@ fun AppManageBody(
                                                 verticalAlignment = Alignment.CenterVertically,
                                             ) {
                                                 ToneBadge(managerName, badgeContainer, badgeContent)
-                                                Text(
-                                                    text = managerInfo.app.packageName,
-                                                    style = MaterialTheme.typography.bodyMedium,
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                )
+                                                ToneBadge(managerInfo.app.packageName, badgeContainer, badgeContent)
                                             }
                                         },
                                         onClick = {

@@ -83,9 +83,14 @@ Tapping a row in Manage -> Apps opens `ui/page/AppDetailScreen.kt` instead of th
 Manage -> Apps and Manage -> Modules are one pager. Its tabs lead with an icon and carry the section's count on that icon's top corner, the arrangement KernelSU uses for its destinations, rather than widening the label with a number.
 
 - `Icons.Widgets` and `Icons.Extension`: the module icon is the one the module sections already use, and the app icon had to be changed twice - `Icons.Apps` and then `Icons.GridView` both draw the same shape in their filled and outlined variants at 24 dp, so the selected tab looked unselected. Each tab draws the filled variant while it is the current page and the outlined one otherwise, the same contract the bottom bar's destinations already use. They are 24 dp beside a 14 sp label, and take the tab's own content colour, which leaves the selected one primary and the other onSurfaceVariant.
-- The app count excludes patcher managers: they appear on the same page in their own group, because they produced patched apps rather than being patched themselves. Each of those rows leads its package with a badge naming the manager, in the same tone rule as the chips (`primary` for this project, `primaryContainer` for the others), because which tool produced a bundle is what a reader looks for first.
+- The app count excludes patcher managers: they appear on the same page in their own group, because they produced patched apps rather than being patched themselves. Each of those rows leads with a badge naming the manager and follows it with the package, both in the same tone rule as the chips (`primary` for this project, `primaryContainer` for the others), because which tool produced a bundle is what a reader looks for first.
 - Both tabs read the view models their bodies already read, so the page still performs one package scan.
 - Counts are decoration, so Settings -> Appearance and theme carries a switch for them; the icons stay either way, and a count of zero draws no badge at all.
+
+## Chips and row height
+
+- The chip naming the patcher takes the brighter tone of the pair - `primary` on our own bundles, `primaryContainer` on another patcher's. The mode and loader chips behind it stay in that same family rather than turning neutral, so a row says whose patch it is without repeating the name; a bundle from another patcher takes the `secondaryContainer` pair so it does not read as ours at a glance.
+- `AppItem` keeps its blocks four dp apart and eight dp from the row's edges. Rows are the densest thing the page shows and each one already carries a name, a package and a line of chips, so the padding is what decides whether a list of them reads as a list.
 
 ## Module badges
 
@@ -94,6 +99,7 @@ A module row carries two badges, and both used to be painted from the module's k
 - A modern module splits the primary family between its badges: the API version takes the light `primary` tone and the pipeline the darker `primaryContainer` under it. A legacy module keeps the pair it had - the version in `primaryContainer`, the pipeline in `secondaryContainer` - because there the pipeline is the constant and the version is what moves.
 - Both badges sit in the row's top corner, level with the module name, the way LSPatch shows them. `AppItem`'s `topRightContent` slot is what places them there; it had been invoked inside the left-aligned block, so the slot's name and its position disagreed. The version and the description keep the left column to themselves, unchanged.
 - The name and the package under it are one block with no gap of their own: the label's line box already carries more room below its glyphs than the smaller package line does, so the two read as separated without one.
+- The version rides with the package as `package · version` rather than on a line of its own: a module row is about one package, and the two are read together.
 - The pipeline badge names the API family the module was written against - `libxposed` or `legacy` - rather than the abstract `Modern`/`Legacy`: the tone already carries the state, and the label says which side of the API split the module sits on.
 
 ## Regression checks

@@ -189,7 +189,13 @@ fun ModuleManageBody(
                                 )
                             },
                             label = item.metadata.displayName.ifEmpty { item.appInfo.label },
-                            packageName = item.appInfo.app.packageName,
+                            // The version rides with the package rather than on a line of its own:
+                            // a module row is about one package, so the two belong together.
+                            packageName = if (item.metadata.version.isNotEmpty()) {
+                                "${item.appInfo.app.packageName} · ${item.metadata.version}"
+                            } else {
+                                item.appInfo.app.packageName
+                            },
                             labelTrailingContent = {
                                 if (item.activationEnabled) {
                                     Icon(
@@ -200,17 +206,8 @@ fun ModuleManageBody(
                                     )
                                 }
                             },
-                            summaryRow = {
-                                if (item.metadata.version.isNotEmpty()) {
-                                    Text(
-                                        text = item.metadata.version,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                            },
                             // Both badges sit in the row's top corner, the way LSPatch shows them,
-                            // so the version and the description keep the left column to themselves.
+                            // so the name, package and description keep the left column to themselves.
                             topRightContent = {
                                 ModuleBadge(apiBadgeText, apiBadgeColors)
                                 ModuleBadge(pipelineBadgeText, pipelineBadgeColors)

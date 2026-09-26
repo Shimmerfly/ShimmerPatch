@@ -73,7 +73,7 @@ fun AppItem(
             .clip(shape)
             .then(interactionModifier)
             .animateContentSize()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Row(
@@ -84,7 +84,7 @@ fun AppItem(
             Box(Modifier.size(40.dp).alpha(if (isEnabled) 1f else 0.45f)) { icon() }
             Column(
                 modifier = Modifier.weight(1f).alpha(if (isEnabled) 1f else 0.45f),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 // The name and the package under it sit closer than the row's other blocks: a 16 sp
                 // line already keeps more room below its glyphs than an 11 sp one, so an equal gap

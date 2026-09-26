@@ -256,7 +256,7 @@ public final class XposedInit {
                     continue;
                 }
 
-                final Object moduleInstance = moduleClass.newInstance();
+                final Object moduleInstance = moduleClass.getDeclaredConstructor().newInstance();
 
                 if (moduleInstance instanceof IXposedHookZygoteInit) {
                     IXposedHookZygoteInit.StartupParam param = new IXposedHookZygoteInit.StartupParam();

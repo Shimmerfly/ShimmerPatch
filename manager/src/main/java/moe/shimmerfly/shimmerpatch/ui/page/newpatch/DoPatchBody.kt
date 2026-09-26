@@ -17,6 +17,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.AutoFixHigh
+import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.*
@@ -89,115 +91,131 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
         }
     }
 
-    Column(
-        modifier = modifier.fillMaxSize().padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        Surface(
-            // The app's own container corner, not Material's extra-large one.
-            shape = RoundedCornerShape(CornerRadius),
-            color = if (viewModel.patchState == PatchState.ERROR) {
-                MaterialTheme.colorScheme.errorContainer
-            } else MaterialTheme.colorScheme.primaryContainer,
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Column(
-                Modifier.fillMaxWidth().padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+            Surface(
+                // The app's own container corner, not Material's extra-large one.
+                shape = RoundedCornerShape(CornerRadius),
+                color = if (viewModel.patchState == PatchState.ERROR) {
+                    MaterialTheme.colorScheme.errorContainer
+                } else MaterialTheme.colorScheme.primaryContainer,
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite },
+                Column(
+                    Modifier.fillMaxWidth().padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    if (viewModel.patchState != PatchState.PATCHING) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite },
+                    ) {
+                        // Every state carries a mark, the running one included.
                         Icon(
-                            imageVector = if (viewModel.patchState == PatchState.FINISHED) {
-                                Icons.Outlined.CheckCircle
-                            } else Icons.Outlined.ErrorOutline,
+                            imageVector = when (viewModel.patchState) {
+                                PatchState.FINISHED -> Icons.Outlined.CheckCircle
+                                PatchState.ERROR -> Icons.Outlined.ErrorOutline
+                                else -> Icons.Outlined.AutoFixHigh
+                            },
                             contentDescription = null,
-                            modifier = Modifier.size(40.dp),
+                            modifier = Modifier.size(32.dp),
                         )
+                        Column(Modifier.weight(1f)) {
+                            Text(
+                                text = stringResource(when (viewModel.patchState) {
+                                    PatchState.FINISHED -> R.string.patch_ui_finished
+                                    PatchState.ERROR -> R.string.patch_ui_failed
+                                    else -> R.string.patch_ui_running
+                                }),
+                                style = MaterialTheme.typography.headlineSmall,
+                            )
+                            Text(viewModel.patchApp.app.packageName, style = MaterialTheme.typography.bodyMedium)
+                        }
                     }
-                    Column(Modifier.weight(1f)) {
-                        Text(
-                            text = stringResource(when (viewModel.patchState) {
-                                PatchState.FINISHED -> R.string.patch_ui_finished
-                                PatchState.ERROR -> R.string.patch_ui_failed
-                                else -> R.string.patch_ui_running
-                            }),
-                            style = MaterialTheme.typography.headlineSmall,
-                        )
-                        Text(viewModel.patchApp.app.packageName, style = MaterialTheme.typography.bodyMedium)
+                    if (viewModel.patchState == PatchState.PATCHING) {
+                        LinearWavyProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
-                }
-                if (viewModel.patchState == PatchState.PATCHING) {
-                    LinearWavyProgressIndicator(modifier = Modifier.fillMaxWidth())
                 }
             }
-        }
 
-        Surface(
-            modifier = Modifier.weight(1f).fillMaxWidth(),
-            // The app's own container corner, not Material's extra-large one.
-            shape = RoundedCornerShape(CornerRadius),
-            color = MaterialTheme.colorScheme.surfaceBright,
-        ) {
-            Column {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 8.dp, top = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = stringResource(R.string.patch_ui_log),
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.weight(1f),
-                    )
-                    IconButton(onClick = ::copyLogs, enabled = viewModel.logs.isNotEmpty()) {
-                        Icon(Icons.Outlined.ContentCopy, stringResource(R.string.patch_ui_copy_log))
-                    }
-                }
-                SelectionContainer {
-                    LazyColumn(
-                        state = logState,
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+            Surface(
+                modifier = Modifier.weight(1f).fillMaxWidth(),
+                // The app's own container corner, not Material's extra-large one.
+                shape = RoundedCornerShape(CornerRadius),
+                color = MaterialTheme.colorScheme.surfaceBright,
+            ) {
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 8.dp, top = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        itemsIndexed(viewModel.logs, key = { index, _ -> index }) { _, log ->
-                            Text(
-                                text = log.second,
-                                style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
-                                color = if (log.first == Log.ERROR) MaterialTheme.colorScheme.error
-                                    else MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.fillMaxWidth(),
-                            )
+                        Text(
+                            text = stringResource(R.string.patch_ui_log),
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.weight(1f),
+                        )
+                        IconButton(onClick = ::copyLogs, enabled = viewModel.logs.isNotEmpty()) {
+                            Icon(Icons.Outlined.ContentCopy, stringResource(R.string.patch_ui_copy_log))
+                        }
+                    }
+                    SelectionContainer {
+                        LazyColumn(
+                            state = logState,
+                            modifier = Modifier.fillMaxSize(),
+                            // Room at the end for the button floating over this card.
+                            contentPadding = PaddingValues(
+                                start = 20.dp,
+                                top = 12.dp,
+                                end = 20.dp,
+                                bottom = 88.dp,
+                            ),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            itemsIndexed(viewModel.logs, key = { index, _ -> index }) { _, log ->
+                                Text(
+                                    text = log.second,
+                                    style = MaterialTheme.typography.bodySmall.copy(fontFamily = FontFamily.Monospace),
+                                    color = if (log.first == Log.ERROR) MaterialTheme.colorScheme.error
+                                        else MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.fillMaxWidth(),
+                                )
+                            }
                         }
                     }
                 }
             }
-        }
 
-        if (viewModel.patchState == PatchState.FINISHED || viewModel.patchState == PatchState.ERROR) {
-            FlowRow(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.End),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                OutlinedButton(onClick = { navigator.pop() }) { Text(stringResource(R.string.patch_return)) }
-                if (viewModel.patchState == PatchState.FINISHED) {
-                    Button(onClick = {
+            }
+
+        // A finished patch is one step from done, so the step floats over the log instead of
+        // sitting under it: the log is what is left to read, and the button never drifts out of
+        // reach while scrolling it.
+        val finished = viewModel.patchState == PatchState.FINISHED
+        val failed = viewModel.patchState == PatchState.ERROR
+        if (finished || failed) {
+            ExtendedFloatingActionButton(
+                modifier = Modifier.align(Alignment.BottomEnd).padding(24.dp),
+                onClick = {
+                    if (finished) {
                         installation = InstallAttempt(
                             id = System.nanoTime(),
                             method = if (ShizukuApi.isReady) NewPatchViewModel.InstallMethod.SHIZUKU
                                 else NewPatchViewModel.InstallMethod.SYSTEM,
                         )
-                    }) { Text(stringResource(R.string.install)) }
-                } else {
-                    Button(onClick = ::copyLogs) { Text(stringResource(R.string.copy_error)) }
-                }
-            }
-        } else {
-            Spacer(Modifier.height(0.dp))
+                    } else {
+                        copyLogs()
+                    }
+                },
+                icon = {
+                    Icon(
+                        imageVector = if (finished) Icons.Outlined.Download else Icons.Outlined.ContentCopy,
+                        contentDescription = null,
+                    )
+                },
+                text = { Text(stringResource(if (finished) R.string.install else R.string.copy_error)) },
+            )
         }
     }
 

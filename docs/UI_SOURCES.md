@@ -56,12 +56,15 @@ Direct Miuix dependencies are restricted to `miuix-nav-android`, `miuix-blur-and
 
 ## Launcher icon
 
-The launcher icon is adaptive. A plain bitmap made launchers fall back to drawing their own white plate behind it, which is the white ring the previous icon showed.
+The launcher icon is adaptive and carries the complete artwork, wordmark included. A plain bitmap made launchers fall back to drawing their own white plate behind it, which is the white ring the previous icon showed.
 
 - Colours are sampled from the supplied artwork: field `#86B752`, arc `#E7F2D7`, mark `#FFFFFF`, wordmark `#496025`.
-- `mipmap-anydpi-v26/ic_launcher.xml` and `ic_launcher_round.xml` combine `ic_launcher_background` with `ic_launcher_foreground`, and add `ic_launcher_monochrome` for Android 13+ themed icons.
-- The mark is centred in the canvas and scaled to 0.86 about its own centre, so its arm tips reach `(53.6 / 2) * sqrt(2) * 0.86 = 32.6` of the guaranteed-visible circle's 36-unit radius. The first cut used 0.94, which reached 35.6 and left the mark looking wedged against a circular launcher mask.
-- `mipmap-{m,h,xh,xxh,xxxh}dpi/ic_launcher.png` carry the complete artwork, wordmark included, for API levels without adaptive icons, generated from the source artwork at 48-192 px.
+- An adaptive mask hides roughly a third of the canvas, and the artwork puts its wordmark at y 89.7-98.4 of 108, well outside that visible circle. The whole lockup is therefore scaled to 0.62 about the artwork's content centre `(54.43, 58.31)` and moved onto the canvas centre, which puts the wordmark's outer corners 34.6 units from the middle, inside the mask's 36-unit radius: nothing is cropped.
+- At 48 dp the lettering is about 2.4 dp tall, so it reads as a lockup rather than as text. A twelve-letter wordmark cannot be legible inside a 48 dp circular icon; raising the scale to 0.72 makes it larger but starts cropping the outer letters under a circular mask.
+- `mipmap-anydpi-v26/ic_launcher.xml` and `ic_launcher_round.xml` combine `ic_launcher_background` with `ic_launcher_foreground`, and reuse the same foreground for `monochrome`, the Android 13+ themed layer: only its alpha is read, so one asset keeps the two layers identical.
+- `ic_launcher_background.xml` is the green field plus the arc, the arc transformed exactly like the lockup so the wordmark still lands on it. After the transform the arc is a circle centred `(53.61, 138.24)` with radius 71.03, cresting at y 67.2.
+- `drawable-{m,h,xh,xxh,xxxh}dpi/ic_launcher_foreground.png` are the mark and the wordmark keyed out of the artwork with per-pixel alpha, one 108 dp canvas each. The arc's antialiased edge is deliberately left out: the vector background draws it.
+- `mipmap-{m,h,xh,xxh,xxxh}dpi/ic_launcher.png` carry the complete artwork for API levels without adaptive icons, generated from the source artwork at 48-192 px.
 - The splash uses `ic_launcher_artwork.png`, a 512 px raster of the same artwork. The vector it replaced still spelled NPatch in its traced wordmark, and a raster reuses the supplier's lettering instead of retracing twelve glyphs as path data.
 - `ic_notification.xml` draws the mark on its own 24 dp canvas. Notification small icons are rendered as a system-tinted silhouette, so the full artwork arrived as a single solid block.
 

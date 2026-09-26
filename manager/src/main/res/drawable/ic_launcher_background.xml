@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Adaptive icon background: the flat green field with the light arc that the artwork draws along
-  the bottom. Colours are sampled from the source artwork.
+  Adaptive icon background: the flat green field plus the light arc the artwork draws under the
+  wordmark. The arc carries the same lockup transform as the foreground, so the wordmark still sits
+  on it once both layers are scaled into the mask's guaranteed-visible circle.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
         android:width="108dp"
@@ -13,8 +14,16 @@
         <path
                 android:fillColor="#86B752"
                 android:pathData="M0,0H108V108H0Z" />
-        <path
-                android:fillColor="#E7F2D7"
-                android:pathData="M53.8 308.74C115.9 308.74 166.24 257.45 166.24 194.18C166.24 130.91 115.9 79.62 53.8 79.62C-8.3 79.62 -58.64 130.91 -58.64 194.18C-58.64 257.45 -8.3 308.74 53.8 308.74Z" />
+        <group
+                android:pivotX="54.43"
+                android:pivotY="58.31"
+                android:scaleX="0.62"
+                android:scaleY="0.62"
+                android:translateX="-0.43"
+                android:translateY="-4.31">
+            <path
+                    android:fillColor="#E7F2D7"
+                    android:pathData="M53.8 308.74C115.9 308.74 166.24 257.45 166.24 194.18C166.24 130.91 115.9 79.62 53.8 79.62C-8.3 79.62 -58.64 130.91 -58.64 194.18C-58.64 257.45 -8.3 308.74 53.8 308.74Z" />
+        </group>
     </group>
 </vector>

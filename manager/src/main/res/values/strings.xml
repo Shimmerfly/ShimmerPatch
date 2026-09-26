@@ -27,7 +27,7 @@
     <string name="home_description">ShimmerPatch is a free non-root Xposed framework based on Vector.</string>
 
     <!-- About Screen -->
-    <string name="about_author_summary">ShimmerPatch maintainer</string>
+    <string name="about_author_shimmerfly_summary">Maintainer of ShimmerPatch.\nOh, you found me! 🎉 The one and only, absolutely cutest Momoko is here (loudly!) ੭ ᐕ)੭*</string>
     <string name="about_disclaimer_title">Disclaimer</string>
     <string name="about_disclaimer_body">ShimmerPatch is provided only for learning, research, and legitimate app compatibility work. Please respect local laws, app terms, and the rights of original developers. You are responsible for how patched apps and modules are used on your device.</string>
     <string name="about_links_title">Links</string>
@@ -38,6 +38,7 @@
     <string name="about_acknowledgments_title">Special thanks (unordered)</string>
     <string name="about_ack_rovo89_summary">Founder of the Xposed Framework; the originator and pioneer of the entire modular ecosystem.</string>
     <string name="about_ack_lsposed_team_summary">With thanks to the LSPosed Team for their continuous contributions to the Xposed ecosystem and low-level injection techniques.</string>
+    <string name="about_ack_nkbe_summary">Lead developer of upstream NPatch and a developer who cannot develop at all</string>
     <string name="about_ack_jingmatrix_summary">Author of Vector, whose outstanding framework architecture provided a vital foundation and inspiration for ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">A pioneer in rootless patching solutions, proving the feasibility of dynamic Xposed environment loading via manager-side implementation.</string>
     <string name="about_ack_libxposed_summary">The driving force behind Xposed API standardisation, bringing type safety and clear conventions to the module development world.</string>

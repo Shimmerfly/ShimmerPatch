@@ -27,7 +27,7 @@
     <string name="home_description">ShimmerPatch 是一款免费且迭代于 LSPatch 的，基于 Vector 核心的免 Root 的 Xposed 框架。</string>
 
     <!-- About Screen -->
-    <string name="about_author_summary">ShimmerPatch 主要开发者</string>
+    <string name="about_author_shimmerfly_summary">ShimmerPatch 的主要开发者\n呀 被你发现了喵～ 🎉 这里是究极无敌巨™可爱的沫沫子喵（大声！） ੭ ᐕ)੭*</string>
     <string name="about_disclaimer_title">免责声明</string>
     <string name="about_disclaimer_body">ShimmerPatch 仅供学习、研究以及合法的应用兼容性工作使用。请尊重当地法律、应用条款以及原开发者的权益。您需自行承担在设备上使用修补应用与模块的全部责任，开发者不对任何直接或间接的设备故障、数据丢失或其他损失承担责任。</string>
     <string name="about_links_title">相关链接</string>
@@ -37,6 +37,7 @@
     <string name="about_link_telegram_summary">订阅我们的频道</string>
     <string name="about_acknowledgments_title">特别鸣谢（排名不分先后）</string>
     <string name="about_ack_rovo89_summary">Xposed 框架创始人，一切模块化生态的起源与奠基者。</string>
+    <string name="about_ack_nkbe_summary">上游 NPatch 的主要开发者 完全不会开发的开发者</string>
     <string name="about_ack_jingmatrix_summary">Vector 作者，其优秀的框架工作为 ShimmerPatch 的持续迭代提供了重要基础与启发。</string>
     <string name="about_ack_lsposed_team_summary">感谢 LSPosed 团队在现代化 Xposed 生态与底层注入技术上的持续贡献。</string>
     <string name="about_ack_lspatch_summary">免 Root 修补方案的先行者，证明了在管理器侧动态加载 Xposed 环境的可行性。</string>

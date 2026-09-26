@@ -101,9 +101,9 @@ fun AboutScreen(onBack: () -> Unit) {
                     item {
                         AboutLinkItem(
                             AboutLink(
-                                title = "NkBe",
-                                summary = stringResource(R.string.about_author_summary),
-                                url = AUTHOR_GITHUB_URL,
+                                title = "Shimmerfly",
+                                summary = stringResource(R.string.about_author_shimmerfly_summary),
+                                url = AUTHOR_BLOG_URL,
                                 imageUrl = if (avatarsReady) AUTHOR_AVATAR_URL else null,
                             ),
                             context::openUri,
@@ -186,6 +186,7 @@ private fun rememberAboutLinks(): List<AboutLink> {
 @Composable
 private fun rememberAcknowledgmentLinks(avatarsReady: Boolean): List<AboutLink> {
     val rovo89 = stringResource(R.string.about_ack_rovo89_summary)
+    val nkbe = stringResource(R.string.about_ack_nkbe_summary)
     val lsposed = stringResource(R.string.about_ack_lsposed_team_summary)
     val jingMatrix = stringResource(R.string.about_ack_jingmatrix_summary)
     val lspatch = stringResource(R.string.about_ack_lspatch_summary)
@@ -194,7 +195,7 @@ private fun rememberAcknowledgmentLinks(avatarsReady: Boolean): List<AboutLink> 
     val m558 = stringResource(R.string.about_ack_m558_summary)
     val community = stringResource(R.string.about_ack_community_summary)
 
-    return remember(avatarsReady, rovo89, jingMatrix, lsposed, lspatch, libxposed, winter, m558, community) {
+    return remember(avatarsReady, rovo89, nkbe, jingMatrix, lsposed, lspatch, libxposed, winter, m558, community) {
         // An avatar URL only reaches the list once the page has arrived.
         fun avatar(url: String) = if (avatarsReady) url else null
         listOf(
@@ -203,6 +204,12 @@ private fun rememberAcknowledgmentLinks(avatarsReady: Boolean): List<AboutLink> 
                 summary = rovo89,
                 url = "https://github.com/rovo89/XposedBridge",
                 imageUrl = avatar(ROVO89_AVATAR_URL)
+            ),
+            AboutLink(
+                title = "NkBe",
+                summary = nkbe,
+                url = AUTHOR_GITHUB_URL,
+                imageUrl = avatar(NKBE_AVATAR_URL)
             ),
             AboutLink(
                 title = "JingMatrix",
@@ -257,8 +264,10 @@ private fun Context.openUri(uri: String) {
 private const val ABOUT_WEBSITE_URL = "https://www.nkbe.top"
 private const val GITHUB_URL = "https://github.com/7723mod/NPatch"
 private const val TELEGRAM_URL = "https://t.me/NPatch"
+private const val AUTHOR_BLOG_URL = "https://shimmerfly.github.io/"
+private const val AUTHOR_AVATAR_URL = "https://github.com/Shimmerfly.png?size=256"
 private const val AUTHOR_GITHUB_URL = "https://github.com/HSSkyBoy"
-private const val AUTHOR_AVATAR_URL = "https://avatars.githubusercontent.com/u/122550437?s=256"
+private const val NKBE_AVATAR_URL = "https://avatars.githubusercontent.com/u/122550437?s=256"
 private const val ROVO89_AVATAR_URL = "https://avatars.githubusercontent.com/u/1573299?s=256"
 private const val JING_MATRIX_AVATAR_URL = "https://avatars.githubusercontent.com/u/24476093?s=256"
 private const val LSPOSED_TEAM_AVATAR_URL = "https://avatars.githubusercontent.com/u/75879071?s=256&v=4"

@@ -8,7 +8,9 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -21,6 +23,7 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.material3.Badge
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
@@ -29,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -39,6 +43,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import moe.shimmerfly.shimmerpatch.util.ShizukuApi
 import moe.shimmerfly.shimmerpatch.R
+import moe.shimmerfly.shimmerpatch.config.Configs
 import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchScaffold
 import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchTopAppBar
 import moe.shimmerfly.shimmerpatch.ui.component.SearchBar
@@ -50,6 +55,7 @@ import moe.shimmerfly.shimmerpatch.ui.component.rememberMaterial3BlurBackdrop
 import moe.shimmerfly.shimmerpatch.ui.page.manage.AppManageBody
 import moe.shimmerfly.shimmerpatch.ui.page.manage.AppManageFab
 import moe.shimmerfly.shimmerpatch.ui.page.manage.ModuleManageBody
+import moe.shimmerfly.shimmerpatch.ui.viewmodel.manage.AppManageViewModel
 import moe.shimmerfly.shimmerpatch.ui.viewmodel.manage.ModuleManageViewModel
 
 @Composable
@@ -67,7 +73,12 @@ fun ManageScreen(
     val onPageChanged by rememberUpdatedState(onSelectedPageChange)
     var searchQuery by rememberSaveable { mutableStateOf("") }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    // The bodies below read the same view models, so both tabs share one scan.
+    val appManageViewModel = viewModel<AppManageViewModel>()
     val moduleManageViewModel = viewModel<ModuleManageViewModel>()
+    val showTabBadges = Configs.manageTabBadges
+    // Patcher managers are not patched apps; they have their own group in the app list.
+    val tabCounts = listOf(appManageViewModel.patchedAppCount, moduleManageViewModel.appList.size)
     val backdrop = rememberMaterial3BlurBackdrop()
     val layoutDirection = LocalLayoutDirection.current
     val bottomInset = maxOf(contentPadding.calculateBottomPadding(), WindowInsets.ime.asPaddingValues().calculateBottomPadding())
@@ -122,7 +133,15 @@ fun ManageScreen(
                             Tab(
                                 selected = pagerState.currentPage == index,
                                 onClick = { onPageChanged(index) },
-                                text = { Text(title) },
+                                text = {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                    ) {
+                                        Text(title)
+                                        if (showTabBadges) CountBadge(tabCounts.getOrElse(index) { 0 })
+                                    }
+                                },
                             )
                         }
                     }
@@ -158,5 +177,17 @@ fun ManageScreen(
                 1 -> ModuleManageBody(scrollBehavior, searchQuery, listPadding, moduleManageViewModel)
             }
         }
+    }
+}
+
+/** A tab label's count, hidden while there is nothing to count. */
+@Composable
+private fun CountBadge(count: Int) {
+    if (count <= 0) return
+    Badge(
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    ) {
+        Text(count.toString())
     }
 }

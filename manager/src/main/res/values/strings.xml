@@ -194,6 +194,8 @@
     <string name="settings_detail_patch_logs">Detail patch logs</string>
     <string name="settings_output_full_log">Output manager log to media</string>
     <string name="settings_output_full_log_summary">Write manager logs to Android/media/moe.shimmerfly.shimmerpatch/log for debugging</string>
+    <string name="settings_manage_tab_badges">Count badges on the manage tabs</string>
+    <string name="settings_manage_tab_badges_summary">Show how many apps and modules each tab holds</string>
     <string name="settings_view_welcome">View guide</string>
     <string name="settings_view_welcome_summary">Review the welcome and permission guide</string>
     <string name="settings_manager_cache">Clear manager cache</string>

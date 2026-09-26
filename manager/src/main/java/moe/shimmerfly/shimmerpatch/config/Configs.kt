@@ -93,4 +93,9 @@ object Configs {
     var navigationRailExpanded by delegateStateOf(lspApp.prefs.getBoolean(PREFS_NAVIGATION_RAIL_EXPANDED, false)) {
         lspApp.prefs.edit { putBoolean(PREFS_NAVIGATION_RAIL_EXPANDED, it) }
     }
+
+    private const val PREFS_MANAGE_TAB_BADGES = "manage_tab_badges"
+    var manageTabBadges by delegateStateOf(lspApp.prefs.getBoolean(PREFS_MANAGE_TAB_BADGES, true)) {
+        lspApp.prefs.edit { putBoolean(PREFS_MANAGE_TAB_BADGES, it) }
+    }
 }

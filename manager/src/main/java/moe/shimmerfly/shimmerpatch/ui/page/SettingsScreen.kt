@@ -113,6 +113,7 @@ fun SettingsScreen(
                 item(key = "keystore") { KeyStorePreference() }
                 item(key = "patch_logs") { DetailPatchLogs() }
                 item(key = "full_logs") { OutputFullLog() }
+                item(key = "tab_badges") { ManageTabBadges() }
                 item(key = "welcome") { WelcomeGuide() }
                 item(key = "storage") { StorageDirectory() }
                 item(key = "cache") { ClearManagerCache() }
@@ -711,6 +712,16 @@ private fun OutputFullLog() {
         description = stringResource(R.string.settings_output_full_log_summary),
         icon = Icons.Outlined.Description, checked = Configs.outputFullLog,
         onCheckedChange = { Configs.outputFullLog = it; ManagerLogger.setEnabled(it) },
+    )
+}
+
+@Composable
+private fun ManageTabBadges() {
+    SwitchWidget(
+        title = stringResource(R.string.settings_manage_tab_badges),
+        description = stringResource(R.string.settings_manage_tab_badges_summary),
+        icon = Icons.Outlined.Numbers, checked = Configs.manageTabBadges,
+        onCheckedChange = { Configs.manageTabBadges = it },
     )
 }
 

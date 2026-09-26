@@ -52,8 +52,15 @@ class AppManageViewModel : ViewModel() {
             .map { appInfo -> appInfo to PatchConfigReader.read(appInfo.app) }
     }
 
-    /** How many bundles are patched apps, which is what the home summary reports. */
-    val patchedAppCount: Int by derivedStateOf { NeoPackageManager.appList.count { it.isPatched } }
+    /**
+     * How many bundles are patched apps, which is what the manage page's app tab counts.
+     *
+     * <p>Patcher managers sit in their own group on that page: they are what produced the patched
+     * apps, not patched apps themselves.
+     */
+    val patchedAppCount: Int by derivedStateOf {
+        NeoPackageManager.appList.count { it.isPatched && !it.isPatcherManager }
+    }
 
     var isRefreshing by mutableStateOf(false)
         private set

@@ -188,6 +188,8 @@
     <string name="settings_detail_patch_logs">详细修补日志</string>
     <string name="settings_output_full_log">输出管理器日志到 Media</string>
     <string name="settings_output_full_log_summary">将管理器日志写入 Android/media/moe.shimmerfly.shimmerpatch/log 以便调试</string>
+    <string name="settings_manage_tab_badges">管理页数量角标</string>
+    <string name="settings_manage_tab_badges_summary">在「应用」与「模块」标签上显示各自的数量</string>
     <string name="settings_view_welcome">查看导览界面</string>
     <string name="settings_view_welcome_summary">重新查看欢迎与权限导览</string>
     <string name="settings_storage_directory">变更存储目录</string>

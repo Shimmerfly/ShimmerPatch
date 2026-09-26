@@ -20,6 +20,7 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Apps
 import androidx.compose.material.icons.outlined.Memory
 import androidx.compose.material.icons.outlined.Work
 import androidx.compose.material.icons.filled.Add
@@ -27,6 +28,7 @@ import androidx.compose.material.icons.filled.KeyboardCapslock
 import androidx.compose.material.icons.outlined.SystemUpdate
 import androidx.compose.material.icons.outlined.Extension
 import androidx.compose.material.icons.outlined.FileUpload
+import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.material.icons.outlined.StopCircle
@@ -571,9 +573,10 @@ fun AppManageFab(
     val shouldSelectDirectory = remember { mutableStateOf(false) }
     val showNewPatchDialog = remember { mutableStateOf(false) }
     val newPatchSources = remember {
+        // The same icons the welcome screen uses for the storage and app-list permissions.
         listOf(
-            R.string.patch_from_storage to ACTION_STORAGE,
-            R.string.patch_from_applist to ACTION_APPLIST,
+            Triple(R.string.patch_from_storage, Icons.Outlined.Folder, ACTION_STORAGE),
+            Triple(R.string.patch_from_applist, Icons.Outlined.Apps, ACTION_APPLIST),
         )
     }
 
@@ -621,8 +624,9 @@ fun AppManageFab(
         scrollable = false,
     ) {
         LazyColumn(Modifier.weight(1f, fill = false).fillMaxWidth()) {
-            lazySegmentedItems(newPatchSources, key = { it.second }) { (labelRes, action) ->
+            lazySegmentedItems(newPatchSources, key = { it.third }) { (labelRes, icon, action) ->
                 BaseWidget(
+                    icon = icon,
                     title = stringResource(labelRes),
                     onClick = {
                         showNewPatchDialog.value = false

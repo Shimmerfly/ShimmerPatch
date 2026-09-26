@@ -40,6 +40,9 @@ public final class RemotePreferences implements SharedPreferences {
         this.mGroup = group;
     }
 
+    // The type-checked Bundle overload only exists from API 33, and modules run on older
+    // platforms too, so the preference map has to be read without naming its class.
+    @SuppressWarnings("deprecation")
     @NonNull
     static RemotePreferences newInstance(XposedService service, String group) throws RemoteException {
         var output = service.asInterface().requestRemotePreferences(group);

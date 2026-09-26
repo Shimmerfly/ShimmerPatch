@@ -84,7 +84,7 @@ fun AppItem(
             Box(Modifier.size(40.dp).alpha(if (isEnabled) 1f else 0.45f)) { icon() }
             Column(
                 modifier = Modifier.weight(1f).alpha(if (isEnabled) 1f else 0.45f),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(6.dp),

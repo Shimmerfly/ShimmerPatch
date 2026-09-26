@@ -178,7 +178,7 @@ fun ModuleManageBody(
                                     Icon(
                                         imageVector = Icons.Outlined.CheckCircle,
                                         contentDescription = stringResource(R.string.manage_module_activation_enabled),
-                                        modifier = Modifier.size(18.dp),
+                                        modifier = Modifier.size(16.dp),
                                         tint = MaterialTheme.colorScheme.primary
                                     )
                                 }

@@ -90,7 +90,9 @@ fun HomeScreen(navigator: Navigator, onManageShortcut: (Int) -> Unit = {}, conte
         ) {
             item {
                 ShizukuStatusCard(Modifier.padding(horizontal = 16.dp))
-                Spacer(Modifier.height(12.dp))
+                // Half of the gap a section carries on its own, so the next container sits the
+                // same distance away as the ones below it.
+                Spacer(Modifier.height(8.dp))
             }
             item { DeviceInformation() }
             item {

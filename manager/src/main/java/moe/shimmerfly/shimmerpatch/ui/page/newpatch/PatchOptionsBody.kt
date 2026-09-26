@@ -1,5 +1,15 @@
 package moe.shimmerfly.shimmerpatch.ui.page.newpatch
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -140,14 +150,27 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit, onAddFromStorag
         }
         // What the integrated mode embeds gets its own section under the mode, the way LSPatch
         // presents it: picking modules is a step of its own, not a detail of one radio button.
-        if (!viewModel.useManager) {
-            item(key = "embed_modules") {
-                SegmentedColumn(
-                    // The section comes and goes with the mode, so it fades in and out instead of
-                    // snapping into place under the card the user just tapped.
-                    modifier = Modifier.animateItem(),
-                    title = stringResource(R.string.patch_embed_modules),
-                ) {
+        item(key = "embed_modules") {
+            // The section belongs to the integrated mode. It drops down from under the mode card
+            // and withdraws upwards again, so the sheet grows where the user just tapped.
+            AnimatedVisibility(
+                visible = !viewModel.useManager,
+                enter = expandVertically(
+                    animationSpec = tween(durationMillis = 260, easing = LinearOutSlowInEasing),
+                    expandFrom = Alignment.Top,
+                ) + slideInVertically(
+                    animationSpec = tween(durationMillis = 260, easing = LinearOutSlowInEasing),
+                    initialOffsetY = { -it / 3 },
+                ) + fadeIn(animationSpec = tween(durationMillis = 180)),
+                exit = shrinkVertically(
+                    animationSpec = tween(durationMillis = 200, easing = FastOutLinearInEasing),
+                    shrinkTowards = Alignment.Top,
+                ) + slideOutVertically(
+                    animationSpec = tween(durationMillis = 200, easing = FastOutLinearInEasing),
+                    targetOffsetY = { -it / 3 },
+                ) + fadeOut(animationSpec = tween(durationMillis = 140)),
+            ) {
+                SegmentedColumn(title = stringResource(R.string.patch_embed_modules)) {
                     if (viewModel.embeddedModules.isEmpty()) {
                         item(key = "empty") {
                             BaseWidget(

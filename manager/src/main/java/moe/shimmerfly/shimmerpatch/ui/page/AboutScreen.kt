@@ -20,6 +20,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
@@ -42,6 +43,7 @@ private data class AboutLink(
     val summary: String,
     val url: String,
     val icon: ImageVector? = null,
+    val iconColor: Color? = null,
     val imageUrl: String? = null,
     val imageRes: Int? = null,
 )
@@ -106,6 +108,7 @@ fun AboutScreen(onBack: () -> Unit) {
                                 summary = stringResource(R.string.about_author_shimmerfly_summary),
                                 url = AUTHOR_GITHUB,
                                 icon = Icons.Outlined.Star,
+                                iconColor = MaterialTheme.colorScheme.primary,
                                 imageUrl = if (avatarsReady) AUTHOR_AVATAR_URL else null,
                             ),
                             context::openUri,
@@ -160,6 +163,7 @@ private fun AboutLinkItem(link: AboutLink, onLinkClick: (String) -> Unit) {
         title = link.title,
         description = link.summary,
         icon = link.icon,
+        iconColor = link.iconColor,
         onClick = { onLinkClick(link.url) },
         trailingContent = {
             when {

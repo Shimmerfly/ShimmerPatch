@@ -259,14 +259,12 @@
     <string name="install_notification_text">Tap to launch the application</string>
 
     <!-- App detail: reached by tapping a patched app, rather than opening its module scope. -->
-    <string name="app_detail_modules">Modules</string>
     <string name="app_detail_modules_empty">No modules are embedded in this app</string>
     <string name="app_detail_modules_embedded">Modules are embedded in this APK. Changing them needs a repatch and a reinstall of %1$s.</string>
     <string name="app_detail_foreign_bundle">This bundle was produced by %1$s, so its loader and modules are not managed here.</string>
     <string name="app_detail_deep_scan_failed">Could not read the archive of this app</string>
     <string name="app_detail_module_not_installed">Not installed</string>
     <string name="app_detail_actions">Actions</string>
-    <string name="app_detail_repatch">Repatch</string>
     <string name="app_detail_repatch_summary">Rebuild the bundle and change the modules it embeds</string>
     <string name="app_detail_update_loader_summary">Replace the loader inside this bundle with the one in this manager</string>
     <string name="app_detail_module_scope_summary">Choose which modules this app activates</string>

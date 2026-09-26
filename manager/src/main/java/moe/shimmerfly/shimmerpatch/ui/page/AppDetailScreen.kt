@@ -141,6 +141,17 @@ fun AppDetailScreen(
         appInfo?.let { detailViewModel.loadModules(it) }
     }
 
+    // Only say something worth reading: a bundle from another patcher explains why its loader is not
+    // managed here, and our own needs the repatch note only when it really embeds modules - otherwise
+    // the module section already says it embeds none. Resolved here because only composition may
+    // read a string resource.
+    val bundleNotice: String? = when {
+        appInfo == null -> null
+        !isOurs -> stringResource(R.string.app_detail_foreign_bundle, appInfo.patchedType.displayName)
+        detailViewModel.modules.isNotEmpty() -> stringResource(R.string.app_detail_modules_embedded, appInfo.label)
+        else -> null
+    }
+
     // --- result plumbing, shared with the list page's actions --------------------------------
 
     val uninstallSuccessfully = stringResource(R.string.manage_uninstall_successfully)
@@ -382,16 +393,11 @@ fun AppDetailScreen(
                             },
                         )
                     }
-                    appInfo?.let { info ->
-                        val patcherName = info.patchedType.displayName
+                    if (bundleNotice != null) {
                         item {
                             BaseWidget(
                                 icon = Icons.Outlined.Info,
-                                title = if (isOurs) {
-                                    stringResource(R.string.app_detail_modules_embedded, info.label)
-                                } else {
-                                    stringResource(R.string.app_detail_foreign_bundle, patcherName)
-                                },
+                                title = bundleNotice,
                                 titleStyle = MaterialTheme.typography.bodyMedium,
                                 enabled = false,
                             )
@@ -401,7 +407,7 @@ fun AppDetailScreen(
             }
 
             item(key = "modules") {
-                SegmentedColumn(title = stringResource(R.string.app_detail_modules)) {
+                SegmentedColumn(title = stringResource(R.string.modules)) {
                     val modules = detailViewModel.modules
                     if (modules.isEmpty()) {
                         item {
@@ -449,7 +455,7 @@ fun AppDetailScreen(
                     item {
                         BaseWidget(
                             icon = Icons.Outlined.Build,
-                            title = stringResource(R.string.app_detail_repatch),
+                            title = stringResource(R.string.manage_repatch),
                             description = stringResource(R.string.app_detail_repatch_summary),
                             onClick = {
                                 navigator.navigate(Route.NewPatch(id = ACTION_APPLIST, data = packageName))

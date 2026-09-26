@@ -142,12 +142,20 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit, onAddFromStorag
         // presents it: picking modules is a step of its own, not a detail of one radio button.
         if (!viewModel.useManager) {
             item(key = "embed_modules") {
-                SegmentedColumn(title = stringResource(R.string.patch_embed_modules)) {
+                SegmentedColumn(
+                    // The section comes and goes with the mode, so it fades in and out instead of
+                    // snapping into place under the card the user just tapped.
+                    modifier = Modifier.animateItem(),
+                    title = stringResource(R.string.patch_embed_modules),
+                ) {
                     if (viewModel.embeddedModules.isEmpty()) {
                         item(key = "empty") {
                             BaseWidget(
+                                icon = Icons.Outlined.Inbox,
                                 title = stringResource(R.string.patch_embed_modules_empty),
                                 description = stringResource(R.string.patch_embed_modules_empty_hint),
+                                // Dimmed: there is nothing here to tap yet.
+                                enabled = false,
                             )
                         }
                     } else {

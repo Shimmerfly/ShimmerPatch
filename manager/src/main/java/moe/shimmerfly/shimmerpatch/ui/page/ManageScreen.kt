@@ -21,6 +21,9 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
+import kotlin.math.max
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Offset
@@ -93,8 +96,13 @@ fun ManageScreen(
             ): Offset {
                 if (source != NestedScrollSource.UserInput || available.x == 0f) return Offset.Zero
                 // Nested scroll reports where the finger went; dispatchRawDelta wants the scroll
-                // that follows from it, which runs the other way.
-                val taken = screenPagerState.dispatchRawDelta(-available.x)
+                // that follows from it, which runs the other way. One gesture carries the screen
+                // pager at most one page over, however far the finger travelled.
+                val requested = -available.x
+                val room = screenPagerState.layoutInfo.pageSize.toFloat() - abs(handed)
+                val delta = requested.coerceIn(-max(room, 0f), max(room, 0f))
+                if (delta == 0f) return Offset.Zero
+                val taken = screenPagerState.dispatchRawDelta(delta)
                 handed += taken
                 return Offset(taken, 0f)
             }
@@ -135,6 +143,21 @@ fun ManageScreen(
                 }
             }
     }
+    // A fast flick can end without the hand-off's settle ever running, which leaves the screen
+    // pager parked between two pages. Once this screen's own pager has stopped moving, finish the
+    // move - the last page it asked for, or the nearest one.
+    LaunchedEffect(pagerState, screenPagerState) {
+        snapshotFlow { pagerState.isScrollInProgress }
+            .distinctUntilChanged()
+            .collect { scrolling ->
+                if (!scrolling && !controller.isNavigating &&
+                    abs(screenPagerState.currentPageOffsetFraction) > 0.001f
+                ) {
+                    screenPagerState.animateScrollToPage(screenPagerState.currentPage)
+                }
+            }
+    }
+
     LaunchedEffect(pagerState.settledPage, ShizukuApi.isReady, moduleManageViewModel.enabledActivationPackagesKey) {
         if (pagerState.settledPage == 1) {
             moduleManageViewModel.refreshScopedActivationState()

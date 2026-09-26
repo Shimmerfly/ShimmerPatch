@@ -505,7 +505,13 @@ fun AppManageBody(
                 // page, which is where their version and archive live.
                 if (managerRows.isNotEmpty()) {
                     item(key = "managers") {
-                        SegmentedColumn(title = stringResource(R.string.manage_managers)) {
+                        SegmentedColumn(
+                            title = stringResource(R.string.manage_managers),
+                            // The list already carries the page margin, so this section must not add
+                            // its own horizontal padding: the managers used to sit inset from the apps.
+                            contentPadding = PaddingValues(vertical = 8.dp),
+                            titlePadding = PaddingValues(top = 8.dp, bottom = 16.dp),
+                        ) {
                             managerRows.forEach { (managerInfo, _) ->
                                 item(key = managerInfo.app.packageName) {
                                     BaseWidget(

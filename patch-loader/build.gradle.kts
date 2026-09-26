@@ -15,6 +15,9 @@ extensions.configure<com.android.build.api.dsl.ApplicationExtension> {
                 arguments += "-DEXTERNAL_ROOT=${File(rootDir.absolutePath, "core/external") }"
                 arguments += "-DVERSION_CODE=${rootProject.extra["verCode"]}"
                 arguments += "-DVERSION_NAME=${rootProject.extra["verName"]}"
+                // phmap, vendored under core/external, still declares allocator traits C++17
+                // deprecated. Nothing here can change that, so stop the compiler repeating it.
+                cppFlags += "-Wno-deprecated-declarations"
             }
         }
     }

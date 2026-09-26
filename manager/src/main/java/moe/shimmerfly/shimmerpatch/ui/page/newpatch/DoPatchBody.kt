@@ -9,6 +9,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.*
@@ -149,7 +153,13 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                             )
                         }
                     }
-                    if (viewModel.patchState == PatchState.PATCHING) {
+                    // The line fades rather than blinking out; the card's own size animation takes
+                    // care of the height it leaves behind.
+                    AnimatedVisibility(
+                        visible = viewModel.patchState == PatchState.PATCHING,
+                        enter = fadeIn(animationSpec = tween(durationMillis = 180)),
+                        exit = fadeOut(animationSpec = tween(durationMillis = 220)),
+                    ) {
                         LinearWavyProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
                 }

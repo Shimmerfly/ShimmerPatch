@@ -357,7 +357,7 @@ fun AppManageBody(
 
                                 if (isOurs) {
                                     val modeLabel = if (isLocal) {
-                                        "${stringResource(R.string.patch_local)} · ${stringResource(R.string.manage_rolling)}"
+                                        "${stringResource(R.string.patch_local_short)} · ${stringResource(R.string.manage_rolling)}"
                                     } else {
                                         stringResource(R.string.patch_integrated)
                                     }

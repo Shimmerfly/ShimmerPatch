@@ -90,6 +90,8 @@
     <string name="patch_from_applist">Select an installed app</string>
     <string name="patch_mode">Patch Mode</string>
     <string name="patch_local">Local</string>
+    <!-- The short form the chips use, where the full name would not fit. -->
+    <string name="patch_local_short">Local</string>
     <string name="patch_local_desc">Patches apps without embedding modules.\nThe Xposed scope can be dynamically changed without needing to re-patch.\nThis mode can only be used locally with the ShimmerPatch Manager.</string>
     <string name="patch_integrated">Integrated</string>
     <string name="patch_integrated_desc">Patches apps with built-in modules.\nThe patched app can run independently without the Manager, but it cannot dynamically manage configurations.\nThis mode is suitable for apps that need to run on devices without the ShimmerPatch Manager installed.</string>

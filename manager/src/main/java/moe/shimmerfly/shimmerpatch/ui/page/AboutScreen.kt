@@ -101,7 +101,7 @@ fun AboutScreen(onBack: () -> Unit) {
                     item {
                         AboutLinkItem(
                             AboutLink(
-                                title = "Shimmerfly",
+                                title = "𝘚𝘩𝘪𝘮𝘮𝘦𝘳𝘧𝘭𝘺 · 星沫",
                                 summary = stringResource(R.string.about_author_shimmerfly_summary),
                                 url = AUTHOR_BLOG_URL,
                                 imageUrl = if (avatarsReady) AUTHOR_AVATAR_URL else null,

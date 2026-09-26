@@ -424,22 +424,16 @@ fun AppManageBody(
                                             "${context.packageName}.fileprovider",
                                             result.file,
                                         )
-                                        Intent(Intent.ACTION_SEND).apply {
-                                            type = "application/zip"
-                                            putExtra(Intent.EXTRA_STREAM, uri)
-                                            clipData = ClipData.newUri(
-                                                context.contentResolver,
-                                                result.file.name,
-                                                uri,
-                                            )
-                                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                                        }.let { shareIntent ->
-                                            context.startActivity(
-                                                Intent.createChooser(
-                                                    shareIntent,
-                                                    diagnosticsChooser,
-                                                ),
-                                            )
+                                        Intent(Intent.ACTION_SEND).also { share ->
+                                            share.type = "application/zip"
+                                            share.putExtra(Intent.EXTRA_STREAM, uri)
+                                            share.clipData = ClipData.newUri(context.contentResolver, result.file.name, uri)
+                                            share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+                                            // The chooser needs the grant as well, or the receiver cannot read the zip.
+                                            val chooser = Intent.createChooser(share, diagnosticsChooser)
+                                            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                            context.startActivity(chooser)
                                         }
                                     }.onFailure {
                                         Log.e(TAG, "Failed to export diagnostics for ${appInfo.app.packageName}", it)

@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.Dispatchers
@@ -79,7 +80,7 @@ fun sigBypassLvDesc(level: Int): String = stringResource(
  * WeKit ui/content/m3 (ported from InstallerX-Revived's Material 3 settings widgets).
  */
 @Composable
-fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit) {
+fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit, onAddFromStorage: () -> Unit) {
     val viewModel = viewModel<NewPatchViewModel>()
     val app = viewModel.patchApp
     val appIcon by produceState<ImageBitmap?>(null, app) {
@@ -134,17 +135,69 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit) {
                         selected = !viewModel.useManager,
                         onSelect = { viewModel.setUseManager(false) },
                         extraContent = {
-                            // LSPatch's SelectionItem expands its action inside the selected mode.
+                            // The embedded modules expand inside the selected mode, where they belong:
+                            // what is listed, what can be added, and how to take one back out.
                             AnimatedVisibility(
                                 visible = !viewModel.useManager,
                                 enter = fadeIn() + expandVertically(expandFrom = Alignment.Top),
                                 exit = fadeOut() + shrinkVertically(shrinkTowards = Alignment.Bottom),
                             ) {
-                                TextButton(onClick = onAddEmbed) {
-                                    Text(
-                                        text = "${stringResource(R.string.patch_embed_modules)} (${viewModel.embeddedModules.size})",
-                                        style = MaterialTheme.typography.bodyLarge,
-                                    )
+                                Column(Modifier.fillMaxWidth().padding(top = 4.dp)) {
+                                    if (viewModel.embeddedModules.isEmpty()) {
+                                        Text(
+                                            text = stringResource(R.string.patch_embed_modules_empty),
+                                            style = MaterialTheme.typography.labelLarge,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            modifier = Modifier.padding(start = 4.dp, top = 4.dp, bottom = 8.dp),
+                                        )
+                                    } else {
+                                        viewModel.embeddedModules.forEach { module ->
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                            ) {
+                                                val bitmap = module.appInfo?.let { NeoPackageManager.getIcon(it) }
+                                                if (bitmap != null) {
+                                                    Image(
+                                                        bitmap = bitmap,
+                                                        contentDescription = null,
+                                                        modifier = Modifier.size(32.dp).clip(RoundedCornerShape(10.dp)),
+                                                    )
+                                                } else {
+                                                    Icon(Icons.Outlined.Extension, null, Modifier.size(32.dp))
+                                                }
+                                                Column(Modifier.weight(1f)) {
+                                                    Text(
+                                                        text = module.label,
+                                                        style = MaterialTheme.typography.bodyLarge,
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis,
+                                                    )
+                                                    Text(
+                                                        text = module.packageName,
+                                                        style = MaterialTheme.typography.bodySmall,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis,
+                                                    )
+                                                }
+                                                IconButton(onClick = { viewModel.removeEmbeddedModule(module.packageName) }) {
+                                                    Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.patch_embed_remove))
+                                                }
+                                            }
+                                        }
+                                    }
+                                    TextButton(onClick = onAddEmbed) {
+                                        Icon(Icons.Outlined.Extension, null, Modifier.size(18.dp))
+                                        Spacer(Modifier.width(8.dp))
+                                        Text(stringResource(R.string.patch_embed_add_installed))
+                                    }
+                                    TextButton(onClick = onAddFromStorage) {
+                                        Icon(Icons.Outlined.FolderOpen, null, Modifier.size(18.dp))
+                                        Spacer(Modifier.width(8.dp))
+                                        Text(stringResource(R.string.patch_embed_add_storage))
+                                    }
                                 }
                             }
                         },

@@ -1,5 +1,6 @@
 package moe.shimmerfly.shimmerpatch.ui.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -8,8 +9,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import java.io.File
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import moe.shimmerfly.shimmerpatch.Patcher
+import moe.shimmerfly.shimmerpatch.lspApp
 import moe.shimmerfly.shimmerpatch.share.PatchConfig
 import moe.shimmerfly.shimmerpatch.patch.util.ManifestParser
 import moe.shimmerfly.shimmerpatch.util.NeoPackageManager
@@ -60,7 +65,19 @@ class NewPatchViewModel : ViewModel() {
     var hasSubProcesses by mutableStateOf(false)
     var subProcessCount by mutableIntStateOf(0)
     var subProcesses by mutableStateOf<List<String>>(emptyList())
-    var embeddedModules by mutableStateOf<List<AppInfo>>(emptyList())
+    /**
+     * A module that will be embedded into the patched APK: one the user picked from the installed
+     * modules, or an APK they picked from storage, which has no installed app behind it.
+     */
+    data class EmbeddedModule(
+        val packageName: String,
+        val label: String,
+        val appInfo: AppInfo?,
+        val apkPaths: List<String>,
+    )
+
+    var embeddedModules by mutableStateOf<List<EmbeddedModule>>(emptyList())
+        private set
     var hasExecutedIntent by mutableStateOf(false)
 
     lateinit var patchApp: AppInfo
@@ -187,11 +204,55 @@ class NewPatchViewModel : ViewModel() {
             newPackageName = newPackageName,
             config = config,
             apkPaths = listOf(patchApp.app.sourceDir) + (patchApp.app.splitSourceDirs ?: emptyArray()),
-            embeddedModules = embeddedModules.flatMap { listOf(it.app.sourceDir) + (it.app.splitSourceDirs ?: emptyArray()) },
-            embeddedModulePackages = embeddedModules.map { it.app.packageName },
+            embeddedModules = embeddedModules.flatMap { it.apkPaths },
+            embeddedModulePackages = embeddedModules.map { it.packageName },
             injectDex = injectDex
         )
         patchState = PatchState.PATCHING
+    }
+
+    /** Replaces the selection with the installed modules the picker returned. */
+    fun applyEmbeddedModuleSelection(apps: List<AppInfo>) {
+        embeddedModules = apps.map { app ->
+            EmbeddedModule(
+                packageName = app.app.packageName,
+                label = app.label,
+                appInfo = app,
+                apkPaths = (listOf(app.app.sourceDir) + (app.app.splitSourceDirs ?: emptyArray()).toList())
+                    .filterNotNull()
+                    .filter { it.isNotEmpty() },
+            )
+        }
+    }
+
+    fun removeEmbeddedModule(packageName: String) {
+        embeddedModules = embeddedModules.filterNot { it.packageName == packageName }
+    }
+
+    /**
+     * Adds a module APK the user picked from storage. It is copied into the cache first, because the
+     * patcher reads plain paths and the document provider only hands out a stream, and its package
+     * name and label are read from that copy.
+     */
+    suspend fun addEmbeddedModuleFromStorage(uri: Uri): Result<Unit> = withContext(Dispatchers.IO) {
+        runCatching {
+            val directory = File(lspApp.cacheDir, "embedded_modules").apply { mkdirs() }
+            val target = File(directory, "${System.currentTimeMillis()}.apk")
+            val input = lspApp.contentResolver.openInputStream(uri)
+                ?: error("The selected module could not be opened")
+            input.use { source -> target.outputStream().use { sink -> source.copyTo(sink) } }
+
+            val info = lspApp.packageManager.getPackageArchiveInfo(target.absolutePath, 0)
+                ?: error("The selected file is not an APK")
+            val packageName = info.packageName ?: error("The selected APK has no package name")
+            val application = info.applicationInfo?.apply { sourceDir = target.absolutePath }
+            val label = application
+                ?.let { lspApp.packageManager.getApplicationLabel(it).toString() }
+                ?: packageName
+
+            val entry = EmbeddedModule(packageName, label, null, listOf(target.absolutePath))
+            embeddedModules = embeddedModules.filterNot { it.packageName == packageName } + entry
+        }
     }
 
     private suspend fun launchPatch() {

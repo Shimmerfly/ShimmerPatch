@@ -258,6 +258,13 @@
     <string name="install_notification_title">%s installed successfully</string>
     <string name="install_notification_text">Tap to launch the application</string>
 
+    <!-- Embedded modules, inside the integrated patch mode. -->
+    <string name="patch_embed_modules_empty">No modules added yet</string>
+    <string name="patch_embed_add_installed">Add from installed modules</string>
+    <string name="patch_embed_add_storage">Add from storage</string>
+    <string name="patch_embed_add_failed">That file could not be added as a module</string>
+    <string name="patch_embed_remove">Remove</string>
+
     <!-- Patcher managers, listed apart from the apps they produce. -->
     <string name="manage_managers">Managers</string>
 

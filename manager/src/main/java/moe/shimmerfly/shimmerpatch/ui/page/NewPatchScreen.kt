@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import moe.shimmerfly.shimmerpatch.ui.component.ExpressiveBackButton
@@ -57,6 +58,17 @@ fun NewPatchScreen(
     val flowViewModel = viewModel<PatchFlowViewModel>()
     val scope = flowViewModel.viewModelScope
     val errorUnknown = stringResource(R.string.error_unknown)
+    // Modules can also be added from storage; the document is copied and read by the view model.
+    val moduleFilePicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            scope.launch {
+                patchViewModel.addEmbeddedModuleFromStorage(uri).onFailure {
+                    Toast.makeText(activity, R.string.patch_embed_add_failed, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     var pendingPatchedApp by flowViewModel.pendingPatchedApp
     var pendingPatchedType by flowViewModel.pendingPatchedType
     var isExtracting by flowViewModel.isExtracting
@@ -174,10 +186,17 @@ fun NewPatchScreen(
                     onAddEmbed = {
                         scope.launch {
                             val result = navigator.navigateForResult<SelectAppsResult>(
-                                Route.SelectApps(true, patchViewModel.embeddedModules.mapTo(ArrayList()) { it.app.packageName })
+                                Route.SelectApps(true, patchViewModel.embeddedModules.mapTo(ArrayList()) { it.packageName })
                             )
-                            if (result is SelectAppsResult.MultipleApps) patchViewModel.embeddedModules = result.selected
+                            if (result is SelectAppsResult.MultipleApps) {
+                                patchViewModel.applyEmbeddedModuleSelection(result.selected)
+                            }
                         }
+                    },
+                    onAddFromStorage = {
+                        moduleFilePicker.launch(
+                            arrayOf("application/vnd.android.package-archive", "application/octet-stream")
+                        )
                     },
                 )
                 PatchState.PATCHING, PatchState.FINISHED, PatchState.ERROR -> {

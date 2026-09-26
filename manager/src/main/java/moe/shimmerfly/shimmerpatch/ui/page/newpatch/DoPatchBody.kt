@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -106,7 +107,10 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                 // KernelSU's status card: a supporting tone, not the bright primary one, with the
                 // secondary line dimmed the way its list items dim theirs. The size animates so
                 // the card's bottom edge rises as the running progress line goes away.
-                modifier = Modifier.fillMaxWidth().animateContentSize(),
+                modifier = Modifier.fillMaxWidth()
+                    .animateContentSize(
+                        animationSpec = tween(durationMillis = 320, easing = LinearOutSlowInEasing),
+                    ),
                 colors = CardDefaults.cardColors(
                     containerColor = if (viewModel.patchState == PatchState.ERROR) {
                         MaterialTheme.colorScheme.errorContainer
@@ -156,7 +160,7 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                             AnimatedVisibility(
                                 visible = viewModel.patchState == PatchState.PATCHING,
                                 enter = fadeIn(animationSpec = tween(durationMillis = 180)),
-                                exit = fadeOut(animationSpec = tween(durationMillis = 220)),
+                                exit = fadeOut(animationSpec = tween(durationMillis = 140)),
                             ) {
                                 LinearWavyProgressIndicator(
                                     modifier = Modifier.fillMaxWidth().padding(top = 4.dp),

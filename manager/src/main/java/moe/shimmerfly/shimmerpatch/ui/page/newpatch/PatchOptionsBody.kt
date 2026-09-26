@@ -40,6 +40,7 @@ import moe.shimmerfly.shimmerpatch.config.Configs
 import moe.shimmerfly.shimmerpatch.config.KeystorePreset
 import moe.shimmerfly.shimmerpatch.share.Constants
 import moe.shimmerfly.shimmerpatch.ui.component.m3.BaseItemContainer
+import moe.shimmerfly.shimmerpatch.ui.component.m3.CornerRadius
 import moe.shimmerfly.shimmerpatch.ui.component.m3.BaseWidget
 import moe.shimmerfly.shimmerpatch.ui.component.m3.DropDownMenuWidget
 import moe.shimmerfly.shimmerpatch.ui.component.m3.DropdownOption
@@ -237,6 +238,8 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit, onAddFromStorag
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp),
+                    // The same corner the segmented containers use, not Material's card default.
+                    shape = RoundedCornerShape(CornerRadius),
                     colors = backgroundAwareCardColors(
                         MaterialTheme.colorScheme.tertiaryContainer,
                         MaterialTheme.colorScheme.onTertiaryContainer,
@@ -245,7 +248,9 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit, onAddFromStorag
                     Column(Modifier.fillMaxWidth().padding(16.dp)) {
                         Text(
                             text = stringResource(R.string.patch_inject_dex),
-                            style = MaterialTheme.typography.titleMediumEmphasized,
+                            // One size with the body below, like the LSPosed notice: only the
+                            // emphasis separates the heading from its explanation.
+                            style = MaterialTheme.typography.bodyMediumEmphasized,
                         )
                         Text(
                             text = pluralStringResource(

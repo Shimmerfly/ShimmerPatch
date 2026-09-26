@@ -89,7 +89,9 @@ fun ManageScreen(
                 source: NestedScrollSource,
             ): Offset {
                 if (source != NestedScrollSource.UserInput || available.x == 0f) return Offset.Zero
-                return Offset(screenPagerState.dispatchRawDelta(available.x), 0f)
+                // Nested scroll reports where the finger went; dispatchRawDelta wants the scroll
+                // that follows from it, which runs the other way.
+                return Offset(screenPagerState.dispatchRawDelta(-available.x), 0f)
             }
 
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {

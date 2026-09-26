@@ -145,6 +145,12 @@ fun ManageScreen(
             state = pagerState,
             modifier = Modifier.fillMaxSize().m3BackdropLayer(backdrop),
             beyondViewportPageCount = 1,
+            // This pager sits inside the one the bottom bar drives, and a swipe goes to the
+            // innermost pager that wants it: with its own gestures on, it swallowed every sideways
+            // drag on this screen and the outer pager never saw one. Its two pages are switched
+            // from the tab row or from Home's shortcuts, both of which animate through the same
+            // state, so nothing is lost and swiping between Home, Manage and Settings works again.
+            userScrollEnabled = false,
         ) { page ->
             val listPadding = PaddingValues(
                 start = innerPadding.calculateStartPadding(layoutDirection) + 16.dp,

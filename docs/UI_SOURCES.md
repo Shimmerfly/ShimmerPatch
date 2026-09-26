@@ -82,7 +82,7 @@ Tapping a row in Manage -> Apps opens `ui/page/AppDetailScreen.kt` instead of th
 
 Manage -> Apps and Manage -> Modules are one pager. Its tabs lead with an icon and carry the section's count on that icon's top corner, the arrangement KernelSU uses for its destinations, rather than widening the label with a number.
 
-- `Icons.GridView` and `Icons.Extension`: the module icon is the one the module sections already use, and the app icon was `Icons.Apps` until the filled and outlined variants turned out to read as the same nine dots at 24 dp. Each tab draws the filled variant while it is the current page and the outlined one otherwise, the same contract the bottom bar's destinations already use. They are 24 dp beside a 14 sp label, and take the tab's own content colour, which leaves the selected one primary and the other onSurfaceVariant.
+- `Icons.Widgets` and `Icons.Extension`: the module icon is the one the module sections already use, and the app icon had to be changed twice - `Icons.Apps` and then `Icons.GridView` both draw the same shape in their filled and outlined variants at 24 dp, so the selected tab looked unselected. Each tab draws the filled variant while it is the current page and the outlined one otherwise, the same contract the bottom bar's destinations already use. They are 24 dp beside a 14 sp label, and take the tab's own content colour, which leaves the selected one primary and the other onSurfaceVariant.
 - The app count excludes patcher managers: they appear on the same page in their own group, because they produced patched apps rather than being patched themselves.
 - Both tabs read the view models their bodies already read, so the page still performs one package scan.
 - Counts are decoration, so Settings -> Appearance and theme carries a switch for them; the icons stay either way, and a count of zero draws no badge at all.
@@ -91,7 +91,7 @@ Manage -> Apps and Manage -> Modules are one pager. Its tabs lead with an icon a
 
 A module row carries two badges, and both used to be painted from the module's kind, so a modern module showed two identical green labels.
 
-- The API-version badge takes the primary tone and the pipeline badge the secondary one, the same split the patcher chips on the patched-app page use, so the two never read as one label repeated.
+- A modern module splits the primary family between its badges: the API version takes the light `primary` tone and the pipeline the darker `primaryContainer` under it. A legacy module keeps the pair it had - the version in `primaryContainer`, the pipeline in `secondaryContainer` - because there the pipeline is the constant and the version is what moves.
 - The pipeline badge names the API family the module was written against - `libxposed` or `legacy` - rather than the abstract `Modern`/`Legacy`: the tone already carries the state, and the label says which side of the API split the module sits on.
 
 ## Regression checks

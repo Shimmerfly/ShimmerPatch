@@ -50,22 +50,39 @@ private data class ModuleBadgeColors(
 )
 
 /**
- * The pair the API-version badge is painted with. A module row carries two badges, so they take
- * different tones - the API version the primary one and the pipeline the secondary one - the way
- * the patcher chips on the patched-app page do.
+ * The pair the API-version badge is painted with.
+ *
+ * A row carries two badges, so a modern module splits the primary family between them: the version
+ * takes the light `primary` tone and the pipeline the darker `primaryContainer` underneath it. A
+ * legacy module keeps the pair it had - the version in `primaryContainer`, the pipeline in
+ * `secondaryContainer` - because there the version is the one that moves between releases.
  */
 @Composable
-private fun apiBadgeTone(): ModuleBadgeColors = ModuleBadgeColors(
-    container = MaterialTheme.colorScheme.primaryContainer,
-    content = MaterialTheme.colorScheme.onPrimaryContainer
-)
+private fun apiBadgeTone(isModern: Boolean): ModuleBadgeColors = if (isModern) {
+    ModuleBadgeColors(
+        container = MaterialTheme.colorScheme.primary,
+        content = MaterialTheme.colorScheme.onPrimary
+    )
+} else {
+    ModuleBadgeColors(
+        container = MaterialTheme.colorScheme.primaryContainer,
+        content = MaterialTheme.colorScheme.onPrimaryContainer
+    )
+}
 
 /** The pipeline badge's pair, kept apart from the API version's so neither reads as the other. */
 @Composable
-private fun pipelineBadgeTone(): ModuleBadgeColors = ModuleBadgeColors(
-    container = MaterialTheme.colorScheme.secondaryContainer,
-    content = MaterialTheme.colorScheme.onSecondaryContainer
-)
+private fun pipelineBadgeTone(isModern: Boolean): ModuleBadgeColors = if (isModern) {
+    ModuleBadgeColors(
+        container = MaterialTheme.colorScheme.primaryContainer,
+        content = MaterialTheme.colorScheme.onPrimaryContainer
+    )
+} else {
+    ModuleBadgeColors(
+        container = MaterialTheme.colorScheme.secondaryContainer,
+        content = MaterialTheme.colorScheme.onSecondaryContainer
+    )
+}
 
 @Composable
 fun ModuleManageBody(
@@ -131,8 +148,8 @@ fun ModuleManageBody(
                     val showDropdown = remember { mutableStateOf(false) }
                     var pressPosition by remember { mutableStateOf(Offset.Zero) }
                     val settingsIntent = remember { NeoPackageManager.getSettingsIntent(item.appInfo.app.packageName) }
-                    val apiBadgeColors = apiBadgeTone()
-                    val pipelineBadgeColors = pipelineBadgeTone()
+                    val apiBadgeColors = apiBadgeTone(isModern = item.metadata.isModern)
+                    val pipelineBadgeColors = pipelineBadgeTone(isModern = item.metadata.isModern)
 
                     Box(modifier = Modifier.fillMaxWidth().pointerInput(Unit) {
                         awaitEachGesture {

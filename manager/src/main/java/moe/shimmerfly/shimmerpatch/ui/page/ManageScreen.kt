@@ -83,6 +83,9 @@ fun ManageScreen(
     // swiping on 应用 stops at 模块, and only a swipe that starts from 模块 carries on to 设置.
     val handOff = remember(pagerState, screenPagerState) {
         object : NestedScrollConnection {
+            // What this gesture handed to the screen pager so far, in its own scroll direction.
+            private var handed = 0f
+
             override fun onPostScroll(
                 consumed: Offset,
                 available: Offset,
@@ -91,14 +94,26 @@ fun ManageScreen(
                 if (source != NestedScrollSource.UserInput || available.x == 0f) return Offset.Zero
                 // Nested scroll reports where the finger went; dispatchRawDelta wants the scroll
                 // that follows from it, which runs the other way.
-                return Offset(screenPagerState.dispatchRawDelta(-available.x), 0f)
+                val taken = screenPagerState.dispatchRawDelta(-available.x)
+                handed += taken
+                return Offset(taken, 0f)
             }
 
             override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-                // The screen pager never saw a gesture of its own, so settle it here.
-                if (abs(screenPagerState.currentPageOffsetFraction) > 0.01f) {
-                    screenPagerState.animateScrollToPage(screenPagerState.currentPage)
+                // The screen pager never saw a gesture of its own, so it is settled here - and it
+                // finishes the move the finger asked for rather than snapping back unless the
+                // drag happened to cover half a page: one swipe past the inner edge is one page.
+                if (handed != 0f && abs(screenPagerState.currentPageOffsetFraction) > 0.001f) {
+                    val target = if (handed > 0f) {
+                        screenPagerState.currentPage + 1
+                    } else {
+                        screenPagerState.currentPage - 1
+                    }
+                    screenPagerState.animateScrollToPage(
+                        target.coerceIn(0, screenPagerState.pageCount - 1),
+                    )
                 }
+                handed = 0f
                 return Velocity.Zero
             }
         }

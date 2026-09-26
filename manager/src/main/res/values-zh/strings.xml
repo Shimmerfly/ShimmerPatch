@@ -278,6 +278,7 @@
     <string name="app_detail_missing">此应用已不再安装</string>
     <string name="manage_managers">管理器</string>
     <string name="patch_embed_modules_empty">尚未添加模块</string>
+    <string name="patch_embed_modules_empty_hint">在下面添加模块，它们会被内嵌进修补后的 APK。</string>
     <string name="patch_embed_add_installed">从已安装的模块添加</string>
     <string name="patch_embed_add_storage">从存储添加</string>
     <string name="patch_embed_add_failed">无法将该文件添加为模块</string>

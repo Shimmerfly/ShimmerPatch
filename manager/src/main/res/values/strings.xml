@@ -279,6 +279,7 @@
 
     <!-- Embedded modules, inside the integrated patch mode. -->
     <string name="patch_embed_modules_empty">No modules added yet</string>
+    <string name="patch_embed_modules_empty_hint">Add one below and it is embedded into the patched APK.</string>
     <string name="patch_embed_add_installed">Add from installed modules</string>
     <string name="patch_embed_add_storage">Add from storage</string>
     <string name="patch_embed_add_failed">That file could not be added as a module</string>

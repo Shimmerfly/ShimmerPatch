@@ -282,4 +282,16 @@
     <string name="patch_embed_add_storage">从存储添加</string>
     <string name="patch_embed_add_failed">无法将该文件添加为模块</string>
     <string name="patch_embed_remove">移除</string>
+    <string name="patch_override_label">应用名称</string>
+    <string name="patch_override_label_hint">留空则保持原名</string>
+    <string name="patch_extract_native_libs">解压原生库</string>
+    <string name="patch_extract_native_libs_desc">强制安装器解压应用的原生库，让需要读取应用原生代码的模块能够直接读到文件。</string>
+    <string name="patch_add_permission">添加权限</string>
+    <string name="patch_add_permission_hint">例如 INTERNET</string>
+    <string name="patch_add_permission_count">已声明 %1$d 个</string>
+    <string name="patch_add_permission_desc">声明应用本身没有申请的权限，供模块使用。短名称会自动补全为 android.permission.NAME。</string>
+    <string name="patch_permission_add">添加</string>
+    <string name="patch_permission_remove">移除</string>
+    <string name="patch_hide_libs">隐藏敏感库</string>
+    <string name="patch_hide_libs_desc">对应用隐藏 ART 与敏感系统库，让检查运行环境的加固应用不容易发现框架。需要签名绕过等级达到 Basic 及以上。</string>
 </resources>

@@ -10,6 +10,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import java.io.File
+import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,6 +27,17 @@ class NewPatchViewModel : ViewModel() {
 
     companion object {
         private const val TAG = "NewPatchViewModel"
+
+        /**
+         * Completes a permission written the short way, so the list shows exactly what the patcher
+         * will declare: `INTERNET` and `android.permission.INTERNET` are the same entry.
+         */
+        fun normalizePermission(raw: String): String {
+            val trimmed = raw.trim()
+            if (trimmed.isEmpty()) return ""
+            if (trimmed.contains('.')) return trimmed
+            return "android.permission." + trimmed.uppercase(Locale.ROOT)
+        }
     }
 
     enum class PatchState {
@@ -57,6 +69,17 @@ class NewPatchViewModel : ViewModel() {
     var overrideTargetSdk by mutableStateOf(false)
     var overrideTargetSdkValue by mutableStateOf("28")
     var sigBypassLevel by mutableIntStateOf(2)
+    /** Replaces the launcher name of the patched app; blank keeps the original one. */
+    var overrideLabel by mutableStateOf("")
+    /** Forces the installer to unpack the app's native libraries. */
+    var extractNativeLibs by mutableStateOf(false)
+    /** Hides ART and the sensitive system libraries from the app's own environment checks. */
+    var hideLibs by mutableStateOf(false)
+    /** Whether the extra-permission editor is open. */
+    var permissionsExpanded by mutableStateOf(false)
+    /** The permission currently being typed, before it is added to the list. */
+    var permissionInput by mutableStateOf("")
+    val addedPermissions = mutableStateListOf<String>()
     var injectProvider by mutableStateOf(false)
     var useMicroG by mutableStateOf(false)
     var outputLog by mutableStateOf(true)
@@ -75,6 +98,18 @@ class NewPatchViewModel : ViewModel() {
         val appInfo: AppInfo?,
         val apkPaths: List<String>,
     )
+
+    /** Records the permission being typed, completing a short name the way the patcher does. */
+    fun addPermission() {
+        val permission = normalizePermission(permissionInput)
+        if (permission.isEmpty()) return
+        if (!addedPermissions.contains(permission)) addedPermissions.add(permission)
+        permissionInput = ""
+    }
+
+    fun removePermission(permission: String) {
+        addedPermissions.remove(permission)
+    }
 
     var embeddedModules by mutableStateOf<List<EmbeddedModule>>(emptyList())
         private set
@@ -195,7 +230,7 @@ class NewPatchViewModel : ViewModel() {
             outputLog,
             newPackageName,
             useMicroG,
-            false,
+            hideLibs,
             usesCleartextTraffic,
             overrideTargetSdk,
             patchTargetSdk
@@ -206,7 +241,10 @@ class NewPatchViewModel : ViewModel() {
             apkPaths = listOf(patchApp.app.sourceDir) + (patchApp.app.splitSourceDirs ?: emptyArray()),
             embeddedModules = embeddedModules.flatMap { it.apkPaths },
             embeddedModulePackages = embeddedModules.map { it.packageName },
-            injectDex = injectDex
+            injectDex = injectDex,
+            labelOverride = overrideLabel.trim().ifEmpty { null },
+            extractNativeLibs = extractNativeLibs,
+            addedPermissions = addedPermissions.toList(),
         )
         patchState = PatchState.PATCHING
     }

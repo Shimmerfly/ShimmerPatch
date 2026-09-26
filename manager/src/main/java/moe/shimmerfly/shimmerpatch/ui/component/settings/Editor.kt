@@ -18,11 +18,14 @@ fun SettingsEditor(
     text: String,
     onValueChange: (String) -> Unit,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    /** Shown greyed out while the field is empty, for fields whose blank value means "unchanged". */
+    placeholder: String? = null,
 ) {
     OutlinedTextField(
         value = text,
         onValueChange = onValueChange,
         label = { Text(label) },
+        placeholder = placeholder?.let { { Text(it) } },
         singleLine = true,
         shape = MaterialTheme.shapes.medium,
         keyboardOptions = keyboardOptions,

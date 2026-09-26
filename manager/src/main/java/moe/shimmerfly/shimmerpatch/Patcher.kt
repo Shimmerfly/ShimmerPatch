@@ -29,7 +29,13 @@ object Patcher {
         private val embeddedModules: List<String>?,
         val targetPackageName: String? = null,
         val embeddedModulePackages: List<String>? = null,
-        private val injectDex: Boolean = false
+        private val injectDex: Boolean = false,
+        /** Replaces the launcher name of the patched app. Blank keeps the original one. */
+        private val labelOverride: String? = null,
+        /** Forces android:extractNativeLibs="true" so a module can read the app's native code. */
+        private val extractNativeLibs: Boolean = false,
+        /** Extra permissions the modules need, already usable as manifest entries. */
+        private val addedPermissions: List<String> = emptyList(),
     ) {
         internal val inputApks: List<File>
             get() = resolveActualApkPaths().map { File(it).absoluteFile }
@@ -125,6 +131,13 @@ object Patcher {
                 if (config.useMicroG) add("--useMicroG")
                 if (config.hideLibs) add("--hidelibs")
                 if (config.usesCleartextTraffic) add("--cleartext")
+                if (!labelOverride.isNullOrBlank()) {
+                    add("--name"); add(labelOverride.trim())
+                }
+                if (extractNativeLibs) add("--extract-libs")
+                addedPermissions.forEach {
+                    add("--add-permission"); add(it)
+                }
                 when (Configs.keyStorePreset) {
                     KeystorePreset.NPATCH -> add("-npa")
                     KeystorePreset.FPA -> add("-fpa")

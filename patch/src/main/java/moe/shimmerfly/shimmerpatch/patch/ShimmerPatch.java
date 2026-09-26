@@ -108,6 +108,15 @@ public class ShimmerPatch {
     @Parameter(names = {"--cleartext", "--usesCleartextTraffic"}, description = "Force android:usesCleartextTraffic=\"true\" in manifest to allow plain HTTP traffic")
     private boolean usesCleartextTraffic = false;
 
+    @Parameter(names = {"--name"}, description = "Override the patched app's launcher label")
+    private String labelOverride = null;
+
+    @Parameter(names = {"--extract-libs"}, description = "Force android:extractNativeLibs=true in the manifest so the installer unpacks the app's native libraries")
+    private boolean extractNativeLibs = false;
+
+    @Parameter(names = {"--add-permission"}, description = "Declare an extra uses-permission (repeatable). A bare name is completed to android.permission.NAME")
+    private List<String> addedPermissions = new ArrayList<>();
+
     @Parameter(names = {"-k", "--keystore"}, arity = 4, description = "Set custom signature keystore. Followed by 4 arguments: keystore path, keystore password, keystore alias, keystore alias password")
     private List<String> keystoreArgs = null;
 
@@ -671,6 +680,26 @@ public class ShimmerPatch {
             property.addApplicationAttribute(new AttributeItem("usesCleartextTraffic", true));
         }
 
+        if (labelOverride != null && !labelOverride.trim().isEmpty()) {
+            logger.i("Override label: " + labelOverride.trim());
+            property.addApplicationAttribute(new AttributeItem(NodeValue.Application.LABEL, labelOverride.trim()));
+        }
+
+        if (extractNativeLibs) {
+            logger.i("Override extractNativeLibs: true");
+            property.addApplicationAttribute(new AttributeItem(NodeValue.Application.EXTRACTNATIVELIBS, true));
+        }
+
+        // The editor keys uses-permission by name and ignores one the manifest already declares, so
+        // handing it a permission the app already carries is harmless.
+        for (String permission : addedPermissions) {
+            String normalized = normalizePermission(permission);
+            if (!normalized.isEmpty()) {
+                logger.i("Add permission: " + normalized);
+                property.addUsesPermission(normalized);
+            }
+        }
+
         if (!targetPackage.equals(originPackage)) {
             property.addManifestAttribute(new AttributeItem(NodeValue.Manifest.PACKAGE, targetPackage).setNamespace(null));
             property.setAuthorityMapper(authority -> remapAuthority(authority, originPackage, targetPackage));
@@ -719,6 +748,18 @@ public class ShimmerPatch {
         } finally {
             if (is != null) is.close();
         }
+    }
+
+    /**
+     * Completes a permission written the short way, so {@code INTERNET} and
+     * {@code android.permission.INTERNET} both end up as the same manifest entry.
+     */
+    static String normalizePermission(String raw) {
+        if (raw == null) return "";
+        String trimmed = raw.trim();
+        if (trimmed.isEmpty()) return "";
+        if (trimmed.indexOf('.') >= 0) return trimmed;
+        return "android.permission." + trimmed.toUpperCase(Locale.ROOT);
     }
 
     private static void addOrReplaceMetaData(ModificationProperty property, String name, String value) {

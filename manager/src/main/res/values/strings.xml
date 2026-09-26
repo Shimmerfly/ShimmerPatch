@@ -258,6 +258,20 @@
     <string name="install_notification_title">%s installed successfully</string>
     <string name="install_notification_text">Tap to launch the application</string>
 
+    <!-- Manifest overrides a module may need, inside the advanced options. -->
+    <string name="patch_override_label">App name</string>
+    <string name="patch_override_label_hint">Leave blank to keep the original name</string>
+    <string name="patch_extract_native_libs">Extract native libraries</string>
+    <string name="patch_extract_native_libs_desc">Force the installer to unpack the app\'s native libraries, so a module that needs the app\'s own native code on disk can read them.</string>
+    <string name="patch_hide_libs">Hide libraries</string>
+    <string name="patch_hide_libs_desc">Hide ART and the sensitive system libraries a hardened app inspects to notice the framework. Applies from Basic signature bypass up.</string>
+    <string name="patch_add_permission">Add permission</string>
+    <string name="patch_add_permission_hint">e.g. INTERNET</string>
+    <string name="patch_add_permission_count">%1$d declared</string>
+    <string name="patch_add_permission_desc">Declare a permission the app does not ask for, so a module can use it. A short name is completed to android.permission.NAME.</string>
+    <string name="patch_permission_add">Add</string>
+    <string name="patch_permission_remove">Remove</string>
+
     <!-- Embedded modules, inside the integrated patch mode. -->
     <string name="patch_embed_modules_empty">No modules added yet</string>
     <string name="patch_embed_add_installed">Add from installed modules</string>

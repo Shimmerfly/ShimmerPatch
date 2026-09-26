@@ -233,6 +233,16 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit, onAddFromStorag
                         )
                     }
                 }
+                item(key = "label") {
+                    BaseItemContainer {
+                        SettingsEditor(
+                            label = stringResource(R.string.patch_override_label),
+                            text = viewModel.overrideLabel,
+                            onValueChange = { viewModel.overrideLabel = it },
+                            placeholder = stringResource(R.string.patch_override_label_hint),
+                        )
+                    }
+                }
                 item(key = "debuggable") {
                     SwitchWidget(
                         title = stringResource(R.string.patch_debuggable),
@@ -282,6 +292,79 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit, onAddFromStorag
                                 onValueChange = { value -> viewModel.overrideTargetSdkValue = value.filter { it in '0'..'9' } },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             )
+                        }
+                    },
+                )
+                item(key = "extract_native_libs") {
+                    SwitchWidget(
+                        title = stringResource(R.string.patch_extract_native_libs),
+                        description = stringResource(R.string.patch_extract_native_libs_desc),
+                        icon = Icons.Outlined.Unarchive,
+                        checked = viewModel.extractNativeLibs,
+                        onCheckedChange = { viewModel.extractNativeLibs = it },
+                    )
+                }
+                item(key = "hide_libs") {
+                    SwitchWidget(
+                        title = stringResource(R.string.patch_hide_libs),
+                        description = stringResource(R.string.patch_hide_libs_desc),
+                        icon = Icons.Outlined.VisibilityOff,
+                        // The loader only hides them once the signature bypass runs at all.
+                        enabled = viewModel.sigBypassLevel >= Constants.SIGBYPASS_BASIC,
+                        checked = viewModel.hideLibs,
+                        onCheckedChange = { viewModel.hideLibs = it },
+                    )
+                }
+                expandableItem(
+                    expanded = viewModel.permissionsExpanded,
+                    topContent = {
+                        BaseWidget(
+                            icon = Icons.Outlined.Key,
+                            title = stringResource(R.string.patch_add_permission),
+                            description = stringResource(
+                                R.string.patch_add_permission_count,
+                                viewModel.addedPermissions.size,
+                            ),
+                            onClick = { viewModel.permissionsExpanded = !viewModel.permissionsExpanded },
+                            trailingContent = {
+                                Icon(
+                                    imageVector = if (viewModel.permissionsExpanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            },
+                        )
+                    },
+                    bottomContent = {
+                        BaseItemContainer {
+                            Column {
+                                SettingsEditor(
+                                    label = stringResource(R.string.patch_add_permission_hint),
+                                    text = viewModel.permissionInput,
+                                    onValueChange = { viewModel.permissionInput = it },
+                                )
+                                Text(
+                                    text = stringResource(R.string.patch_add_permission_desc),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.padding(horizontal = 16.dp),
+                                )
+                                viewModel.addedPermissions.forEach { permission ->
+                                    PermissionRow(
+                                        permission = permission,
+                                        onRemove = { viewModel.removePermission(permission) },
+                                    )
+                                }
+                                TextButton(
+                                    onClick = { viewModel.addPermission() },
+                                    enabled = viewModel.permissionInput.isNotBlank(),
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                ) {
+                                    Icon(Icons.Outlined.Add, null, Modifier.size(18.dp))
+                                    Spacer(Modifier.width(8.dp))
+                                    Text(stringResource(R.string.patch_permission_add))
+                                }
+                            }
                         }
                     },
                 )
@@ -349,6 +432,29 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit, onAddFromStorag
                     }
                 }
             }
+        }
+    }
+}
+
+/** One declared permission, removable again while the extra-permission editor is open. */
+@Composable
+private fun PermissionRow(permission: String, onRemove: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 8.dp, top = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = permission,
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f),
+        )
+        IconButton(onClick = onRemove) {
+            Icon(
+                imageVector = Icons.Outlined.Delete,
+                contentDescription = stringResource(R.string.patch_permission_remove),
+            )
         }
     }
 }

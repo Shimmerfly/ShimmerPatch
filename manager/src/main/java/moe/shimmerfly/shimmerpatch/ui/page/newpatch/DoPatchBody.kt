@@ -39,6 +39,8 @@ import moe.shimmerfly.shimmerpatch.util.NeoPackageManager.AppInfo
 import moe.shimmerfly.shimmerpatch.util.ShizukuApi
 import moe.shimmerfly.shimmerpatch.R
 import moe.shimmerfly.shimmerpatch.lspApp
+import androidx.compose.foundation.shape.RoundedCornerShape
+import moe.shimmerfly.shimmerpatch.ui.component.m3.CornerRadius
 import moe.shimmerfly.shimmerpatch.ui.component.LoadingDialog
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SettingsDialog
 import moe.shimmerfly.shimmerpatch.ui.page.Navigator
@@ -92,7 +94,8 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Surface(
-            shape = MaterialTheme.shapes.extraLarge,
+            // The app's own container corner, not Material's extra-large one.
+            shape = RoundedCornerShape(CornerRadius),
             color = if (viewModel.patchState == PatchState.ERROR) {
                 MaterialTheme.colorScheme.errorContainer
             } else MaterialTheme.colorScheme.primaryContainer,
@@ -135,7 +138,8 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
 
         Surface(
             modifier = Modifier.weight(1f).fillMaxWidth(),
-            shape = MaterialTheme.shapes.extraLarge,
+            // The app's own container corner, not Material's extra-large one.
+            shape = RoundedCornerShape(CornerRadius),
             color = MaterialTheme.colorScheme.surfaceBright,
         ) {
             Column {

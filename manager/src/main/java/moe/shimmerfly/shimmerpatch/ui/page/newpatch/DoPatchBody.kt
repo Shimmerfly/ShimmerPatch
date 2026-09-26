@@ -97,20 +97,25 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
             modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Surface(
-                // The app's own container corner, not Material's extra-large one.
+            Card(
+                // KernelSU's status card: a supporting tone, not the bright primary one, with the
+                // secondary line dimmed the way its list items dim theirs.
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (viewModel.patchState == PatchState.ERROR) {
+                        MaterialTheme.colorScheme.errorContainer
+                    } else {
+                        MaterialTheme.colorScheme.secondaryContainer
+                    },
+                ),
                 shape = RoundedCornerShape(CornerRadius),
-                color = if (viewModel.patchState == PatchState.ERROR) {
-                    MaterialTheme.colorScheme.errorContainer
-                } else MaterialTheme.colorScheme.primaryContainer,
             ) {
                 Column(
-                    Modifier.fillMaxWidth().padding(12.dp),
+                    Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        // The mark sits close to what it marks, the way KernelSU spaces it.
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
                         modifier = Modifier.semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite },
                     ) {
@@ -135,7 +140,8 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                             )
                             Text(
                                 text = viewModel.patchApp.app.packageName,
-                                style = MaterialTheme.typography.bodySmall,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = LocalContentColor.current.copy(alpha = 0.7f),
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
@@ -147,11 +153,13 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                 }
             }
 
-            Surface(
+            Card(
+                // KernelSU's tonal card: surfaceBright, the app's own corner.
                 modifier = Modifier.weight(1f).fillMaxWidth(),
-                // The app's own container corner, not Material's extra-large one.
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceBright,
+                ),
                 shape = RoundedCornerShape(CornerRadius),
-                color = MaterialTheme.colorScheme.surfaceBright,
             ) {
                 Column {
                     Row(

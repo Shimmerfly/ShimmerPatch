@@ -72,7 +72,8 @@ The launcher icon is adaptive and carries the complete artwork, wordmark include
 
 Tapping a row in Manage -> Apps opens `ui/page/AppDetailScreen.kt` instead of the module picker, because which patcher produced a bundle decides which actions apply. It is assembled from the repository's own widgets (`SegmentedColumn`, `BaseWidget`, `ExpressiveActionDropdown`) rather than modeled on another manager's layout.
 
-- The header names the patcher, and the mode and loader version when the bundle is ours.
+- The header keeps the icon and app name on one row and puts the chips on their own row underneath, each with a leading icon, so a wide icon cannot squeeze them and every chip starts at the same left edge as the sections below.
+- Those chips name the patcher and, when the bundle is ours, the mode and the loader version.
 - The module list is read from the archive under `assets/{shimmerpatch,npatch,lspatch}/modules/`, so a bundle another patcher produced still lists its modules; each entry is resolved against the installed apps for a label and icon.
 - Loader and scope rows only appear for our own bundles, and a foreign one gets a note naming its patcher instead.
 - Export writes the installed APK set, base plus splits, into a folder the user picks through the system document tree.

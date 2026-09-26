@@ -10,6 +10,8 @@ import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
@@ -27,6 +29,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Memory
+import androidx.compose.material.icons.outlined.Work
 import androidx.compose.material.icons.outlined.Android
 import androidx.compose.material.icons.outlined.Build
 import androidx.compose.material.icons.outlined.Delete
@@ -55,6 +59,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -79,6 +84,7 @@ import moe.shimmerfly.shimmerpatch.share.LSPConfig
 import moe.shimmerfly.shimmerpatch.ui.component.ExpressiveBackButton
 import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchScaffold
 import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchTopAppBar
+import moe.shimmerfly.shimmerpatch.ui.component.m3.BaseItemContainer
 import moe.shimmerfly.shimmerpatch.ui.component.m3.BaseWidget
 import moe.shimmerfly.shimmerpatch.ui.component.m3.DropdownAction
 import moe.shimmerfly.shimmerpatch.ui.component.m3.ExpressiveActionDropdown
@@ -145,6 +151,15 @@ fun AppDetailScreen(
     // managed here, and our own needs the repatch note only when it really embeds modules - otherwise
     // the module section already says it embeds none. Resolved here because only composition may
     // read a string resource.
+    // Header labels, resolved here because only composition may read a string resource.
+    val patcherLabel = appInfo?.patchedType?.displayName?.takeIf { it.isNotEmpty() }
+    val modeLabel = if (isLocal) {
+        "${stringResource(R.string.patch_local)} · ${stringResource(R.string.manage_rolling)}"
+    } else {
+        stringResource(R.string.patch_integrated)
+    }
+    val loaderLabel = loaderVersion?.let { "${stringResource(R.string.app_detail_loader_version)} $it" }
+
     val bundleNotice: String? = when {
         appInfo == null -> null
         !isOurs -> stringResource(R.string.app_detail_foreign_bundle, appInfo.patchedType.displayName)
@@ -351,47 +366,60 @@ fun AppDetailScreen(
             item(key = "header") {
                 SegmentedColumn {
                     item {
-                        BaseWidget(
-                            iconContent = {
-                                if (appInfo != null) {
-                                    Image(
-                                        bitmap = NeoPackageManager.getIcon(appInfo),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(44.dp).clip(RoundedCornerShape(14.dp)),
-                                    )
-                                } else {
-                                    Icon(Icons.Outlined.Android, null, Modifier.size(44.dp))
-                                }
-                            },
-                            title = appInfo?.label ?: stringResource(R.string.app_detail_missing),
-                            titleStyle = MaterialTheme.typography.headlineSmall,
-                            description = packageName,
-                            // One row of chips says which patcher produced this bundle and, for our
-                            // own, how its loader compares with this manager.
-                            extraContent = {
+                        // The icon and the app name share the first row; the chips get their own row
+                        // underneath, so a wide icon cannot squeeze them and every chip starts at the
+                        // same left edge as the sections below.
+                        BaseItemContainer {
+                            Column(
+                                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(14.dp),
+                            ) {
                                 Row(
-                                    modifier = Modifier.padding(top = 10.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(14.dp),
+                                ) {
+                                    if (appInfo != null) {
+                                        Image(
+                                            bitmap = NeoPackageManager.getIcon(appInfo),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(56.dp).clip(RoundedCornerShape(16.dp)),
+                                        )
+                                    } else {
+                                        Icon(Icons.Outlined.Android, null, Modifier.size(56.dp))
+                                    }
+                                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                        Text(
+                                            text = appInfo?.label ?: stringResource(R.string.app_detail_missing),
+                                            style = MaterialTheme.typography.headlineSmall,
+                                        )
+                                        Text(
+                                            text = packageName,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        )
+                                    }
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .horizontalScroll(rememberScrollState()),
                                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    appInfo?.patchedType?.displayName?.takeIf { it.isNotEmpty() }?.let { patcher ->
-                                        DetailChip(patcher, emphasized = isLocal)
+                                    // Which patcher produced the bundle, then - for our own - how the
+                                    // loader inside it compares with this manager.
+                                    if (patcherLabel != null) {
+                                        DetailChip(Icons.Outlined.Build, patcherLabel, emphasized = isLocal)
                                     }
                                     if (isOurs) {
-                                        DetailChip(
-                                            if (isLocal) {
-                                                "${stringResource(R.string.patch_local)} · ${stringResource(R.string.manage_rolling)}"
-                                            } else {
-                                                stringResource(R.string.patch_integrated)
-                                            }
-                                        )
+                                        DetailChip(Icons.Outlined.Work, modeLabel)
                                     }
-                                    if (isOurs && loaderVersion != null) {
-                                        DetailChip("${stringResource(R.string.app_detail_loader_version)} $loaderVersion")
+                                    if (isOurs && loaderLabel != null) {
+                                        DetailChip(Icons.Outlined.Memory, loaderLabel)
                                     }
                                 }
-                            },
-                        )
+                            }
+                        }
                     }
                     if (bundleNotice != null) {
                         item {
@@ -607,9 +635,9 @@ fun AppDetailScreen(
     }
 }
 
-/** A short label chip, in the same rounded language as the grouped rows around it. */
+/** A short label chip: a leading icon and a label, in the rounded language of the rows around it. */
 @Composable
-private fun DetailChip(text: String, emphasized: Boolean = false) {
+private fun DetailChip(icon: ImageVector, text: String, emphasized: Boolean = false) {
     Surface(
         color = if (emphasized) {
             MaterialTheme.colorScheme.primaryContainer
@@ -623,11 +651,14 @@ private fun DetailChip(text: String, emphasized: Boolean = false) {
         },
         shape = MaterialTheme.shapes.small,
     ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-        )
+        Row(
+            modifier = Modifier.padding(start = 10.dp, end = 12.dp, top = 5.dp, bottom = 5.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(imageVector = icon, contentDescription = null, modifier = Modifier.size(15.dp))
+            Text(text = text, style = MaterialTheme.typography.labelMedium)
+        }
     }
 }
 

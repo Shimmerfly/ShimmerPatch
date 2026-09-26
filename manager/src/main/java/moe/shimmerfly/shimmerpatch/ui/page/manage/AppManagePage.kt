@@ -501,8 +501,9 @@ fun AppManageBody(
                     }
                 }
 
-                // The tools themselves, under the apps they produced. Each row opens the same detail
-                // page, which is where their version and archive live.
+                // The tools themselves, under the apps they produced. Our own row is about this
+                // manager, which is already on screen as a setting; another patcher's row is about
+                // that app, so it opens the system page for it.
                 if (managerRows.isNotEmpty()) {
                     item(key = "managers") {
                         SegmentedColumn(
@@ -513,6 +514,7 @@ fun AppManageBody(
                             titlePadding = PaddingValues(top = 8.dp, bottom = 16.dp),
                         ) {
                             managerRows.forEach { (managerInfo, _) ->
+                                val isSelf = managerInfo.app.packageName == context.packageName
                                 item(key = managerInfo.app.packageName) {
                                     BaseWidget(
                                         iconContent = {
@@ -525,7 +527,15 @@ fun AppManageBody(
                                         title = managerInfo.label,
                                         description = "${managerInfo.app.packageName} · ${managerInfo.patcherManagerName}",
                                         onClick = {
-                                            navigator.navigate(Route.AppDetail(managerInfo.app.packageName))
+                                            if (isSelf) {
+                                                navigator.navigate(Route.About)
+                                            } else {
+                                                context.startActivity(
+                                                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                                        data = "package:${managerInfo.app.packageName}".toUri()
+                                                    }
+                                                )
+                                            }
                                         },
                                     )
                                 }

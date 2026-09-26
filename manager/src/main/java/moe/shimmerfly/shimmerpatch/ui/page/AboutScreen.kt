@@ -82,7 +82,7 @@ fun AboutScreen(onBack: () -> Unit) {
                     Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Image(painterResource(R.drawable.ic_launcher_playstore), null, Modifier.size(88.dp).clip(MaterialTheme.shapes.extraLarge))
+                    Image(painterResource(R.drawable.ic_launcher_artwork), null, Modifier.size(88.dp).clip(MaterialTheme.shapes.extraLarge))
                     Spacer(Modifier.height(16.dp))
                     Text(stringResource(R.string.app_name), style = MaterialTheme.typography.displaySmall, color = MaterialTheme.colorScheme.primary)
                     Text("${LSPConfig.instance.VERSION_NAME} (${LSPConfig.instance.VERSION_CODE})", style = MaterialTheme.typography.labelLarge)

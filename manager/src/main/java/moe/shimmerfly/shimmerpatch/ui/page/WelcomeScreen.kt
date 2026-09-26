@@ -191,7 +191,7 @@ private fun WelcomeIntroPage() {
                             verticalArrangement = Arrangement.spacedBy(16.dp),
                         ) {
                             Image(
-                                painter = painterResource(R.drawable.ic_launcher_playstore),
+                                painter = painterResource(R.drawable.ic_launcher_artwork),
                                 contentDescription = null,
                                 modifier = Modifier.size(88.dp).clip(CircleShape),
                             )

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Adaptive icon background: the flat green field with the light arc that the artwork draws along
+  the bottom. Colours are sampled from the source artwork.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="108dp"
+        android:height="108dp"
+        android:viewportWidth="108"
+        android:viewportHeight="108">
+    <group>
+        <clip-path android:pathData="M0,0H108V108H0Z" />
+        <path
+                android:fillColor="#86B752"
+                android:pathData="M0,0H108V108H0Z" />
+        <path
+                android:fillColor="#E7F2D7"
+                android:pathData="M53.8 308.74C115.9 308.74 166.24 257.45 166.24 194.18C166.24 130.91 115.9 79.62 53.8 79.62C-8.3 79.62 -58.64 130.91 -58.64 194.18C-58.64 257.45 -8.3 308.74 53.8 308.74Z" />
+    </group>
+</vector>

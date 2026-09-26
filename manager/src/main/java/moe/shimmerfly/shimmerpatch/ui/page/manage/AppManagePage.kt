@@ -335,17 +335,11 @@ fun AppManageBody(
                             packageName = appInfo.app.packageName,
                             summaryRow = {
                                 // The same chips the app's own page shows, so a row and the page
-                                // behind it read alike. Only the patcher chip takes the brighter
-                                // tone, and the two behind it stay in its family - the primary
-                                // container pair for our own bundles, the secondary one for another
-                                // patcher's - so the row says whose patch it is without repeating
-                                // the name. A trailing mark says when its loader is worth updating.
-                                val (patcherContainer, patcherContent) = patcherTone(appInfo.patchedType)
-                                val (detailContainer, detailContent) = if (isOurs) {
-                                    MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
-                                } else {
-                                    MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
-                                }
+                                // behind it read alike. All three take the patcher's own pair - the
+                                // primary container on our bundles, the secondary one on another
+                                // patcher's - so a row says whose patch it is before its label is
+                                // read. A trailing mark says when its loader is worth updating.
+                                val (detailContainer, detailContent) = patcherTone(appInfo.patchedType)
 
                                 // One line that can be swiped, the way the app's own page shows them,
                                 // instead of wrapping onto a second line inside the row. A scrollable
@@ -366,8 +360,8 @@ fun AppManageBody(
                                     DetailChip(
                                         icon = Icons.Outlined.Build,
                                         text = appInfo.patchedType.displayName,
-                                        container = patcherContainer,
-                                        content = patcherContent,
+                                        container = detailContainer,
+                                        content = detailContent,
                                     )
                                 }
 
@@ -542,9 +536,9 @@ fun AppManageBody(
                                     // which tool produced a bundle is what a reader looks for first.
                                     val managerName = managerInfo.patcherManagerName ?: managerInfo.label
                                     val (badgeContainer, badgeContent) = if (isSelf) {
-                                        MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.onPrimary
-                                    } else {
                                         MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
+                                    } else {
+                                        MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
                                     }
                                     BaseWidget(
                                         iconContent = {

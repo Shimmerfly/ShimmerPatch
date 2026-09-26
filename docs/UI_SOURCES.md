@@ -73,7 +73,7 @@ The launcher icon is adaptive and carries the complete artwork, wordmark include
 Tapping a row in Manage -> Apps opens `ui/page/AppDetailScreen.kt` instead of the module picker, because which patcher produced a bundle decides which actions apply. It is assembled from the repository's own widgets (`SegmentedColumn`, `BaseWidget`, `ExpressiveActionDropdown`) rather than modeled on another manager's layout.
 
 - The header keeps the icon and app name on one row and puts the chips on their own row underneath, each with a leading icon, so a wide icon cannot squeeze them and every chip starts at the same left edge as the sections below.
-- Those chips name the patcher and, when the bundle is ours, the mode and the loader version. `patcherTone` paints the one naming this project with the bright `primary` pair and every other patcher with the `primaryContainer` pair below it, so our own bundles stand out in a list of otherwise similar rows; the mode and loader chips stay neutral either way.
+- Those chips name the patcher and, when the bundle is ours, the mode and the loader version. All three take the pair `patcherTone` returns for the bundle, so a row names its patcher and carries its details in one family: the primary container on our own bundles and the secondary one on another patcher's.
 - The module list is read from the archive under `assets/{shimmerpatch,npatch,lspatch}/modules/`, so a bundle another patcher produced still lists its modules; each entry is resolved against the installed apps for a label and icon.
 - Loader and scope rows only appear for our own bundles, and a foreign one gets a note naming its patcher instead.
 - Export writes the installed APK set, base plus splits, into a folder the user picks through the system document tree.
@@ -83,13 +83,13 @@ Tapping a row in Manage -> Apps opens `ui/page/AppDetailScreen.kt` instead of th
 Manage -> Apps and Manage -> Modules are one pager. Its tabs lead with an icon and carry the section's count on that icon's top corner, the arrangement KernelSU uses for its destinations, rather than widening the label with a number.
 
 - `Icons.Widgets` and `Icons.Extension`: the module icon is the one the module sections already use, and the app icon had to be changed twice - `Icons.Apps` and then `Icons.GridView` both draw the same shape in their filled and outlined variants at 24 dp, so the selected tab looked unselected. Each tab draws the filled variant while it is the current page and the outlined one otherwise, the same contract the bottom bar's destinations already use. They are 24 dp beside a 14 sp label, and take the tab's own content colour, which leaves the selected one primary and the other onSurfaceVariant.
-- The app count excludes patcher managers: they appear on the same page in their own group, because they produced patched apps rather than being patched themselves. Each of those rows leads with a badge naming the manager and follows it with the package, both in the same tone rule as the chips (`primary` for this project, `primaryContainer` for the others), because which tool produced a bundle is what a reader looks for first.
+- The app count excludes patcher managers: they appear on the same page in their own group, because they produced patched apps rather than being patched themselves. Each of those rows leads with a badge naming the manager and follows it with the package, both in the same tone rule as the chips, because which tool produced a bundle is what a reader looks for first.
 - Both tabs read the view models their bodies already read, so the page still performs one package scan.
 - Counts are decoration, so Settings -> Appearance and theme carries a switch for them; the icons stay either way, and a count of zero draws no badge at all.
 
 ## Chips and row height
 
-- The chip naming the patcher takes the brighter tone of the pair - `primary` on our own bundles, `primaryContainer` on another patcher's. The mode and loader chips behind it stay in that same family rather than turning neutral, so a row says whose patch it is without repeating the name; a bundle from another patcher takes the `secondaryContainer` pair so it does not read as ours at a glance.
+- There are two tones and no more. Everything naming this project - the patcher chip on the app rows, the mode and loader chips behind it, and both badges on our own manager row - takes the primary container pair; everything naming another tool takes the secondary one. `patcherTone` is the single place that decides, so a bundle cannot end up with its name in one family and its details in another.
 - `AppItem` keeps its blocks four dp apart and eight dp from the row's edges. Rows are the densest thing the page shows and each one already carries a name, a package and a line of chips, so the padding is what decides whether a list of them reads as a list.
 
 ## Module badges

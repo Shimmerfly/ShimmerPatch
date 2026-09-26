@@ -9,12 +9,9 @@
     <string name="screen_home">Kotiin</string>
     <string name="home_shizuku_optional_summary">Valinnainen laajennus, ei vaadi ShimmerPatch.</string>
     <string name="home_about">Tietoja ShimmerPatch:stä</string>
-    <string name="about_author_summary">ShimmerPatch ylläpitäjä</string>
     <string name="about_disclaimer_title">Vastuuvapauslauseke</string>
     <string name="about_disclaimer_body">ShimmerPatch on tarkoitettu vain oppimiseen, tutkimukseen ja lailliseen sovellusten yhteensopivuustyöhön. Noudata paikallisia lakeja, sovellusehtoja ja alkuperäisten kehittäjien oikeuksia. Olet vastuussa siitä, kuinka korjattuja sovelluksia ja moduuleja käytetään laitteessasi.</string>
     <string name="about_links_title">Linkit</string>
-    <string name="about_official_website">Verkkosivusto</string>
-    <string name="about_link_website_summary">Vieraile NkBe:n verkkosivuilla</string>
     <string name="about_link_github_summary">Katso lähdekoodia ja julkaisuja</string>
     <string name="about_link_telegram_summary">Tilaa kanavamme</string>
     <string name="about_acknowledgments_title">Erityiskiitokset (järjestämätön)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Vector:n kirjoittaja, jonka erinomainen kehysarkkitehtuuri tarjosi tärkeän perustan ja inspiraation ShimmerPatch:lle.</string>
     <string name="about_ack_lspatch_summary">Juurittomien korjausratkaisujen edelläkävijä, joka todistaa dynaamisen Xposed-ympäristön latauksen toteutettavuuden johtajapuolen toteutuksen kautta.</string>
     <string name="about_ack_libxposed_summary">Xposed API -standardoinnin liikkeellepaneva voima, joka tuo tyyppiturvallisuutta ja selkeät käytännöt moduulien kehitysmaailmaan.</string>
-    <string name="about_ack_winter_summary">Ensimmäinen taloudellinen tukijani; kiitos näin varhaisesta ja suorasta rohkaisusta.</string>
-    <string name="about_ack_m558_summary">Se, joka pitää vaihteet pyörimässä kulissien takana - kiitos hiljaisesta mutta välttämättömästä tuesta.</string>
     <string name="about_ack_community_summary">Kiitos kaikille käyttäjille, jotka osallistuvat testaamiseen, PR:n lähettämiseen ja ongelmien raportointiin, jotta projektia voidaan viedä eteenpäin yhdessä.</string>
     <string name="manage_search">Etsi</string>
     <string name="manage_no_search_results">Ei hakutuloksia</string>

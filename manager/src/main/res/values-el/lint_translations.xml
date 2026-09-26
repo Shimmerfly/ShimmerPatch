@@ -9,12 +9,9 @@
     <string name="screen_home">Σπίτι</string>
     <string name="home_shizuku_optional_summary">Προαιρετική επέκταση, δεν απαιτείται από το ShimmerPatch.</string>
     <string name="home_about">Σχετικά με το ShimmerPatch</string>
-    <string name="about_author_summary">Συντηρητής ShimmerPatch</string>
     <string name="about_disclaimer_title">Αποποίηση ευθύνης</string>
     <string name="about_disclaimer_body">Το ShimmerPatch παρέχεται μόνο για μάθηση, έρευνα και νόμιμη εργασία συμβατότητας εφαρμογών. Σεβαστείτε τους τοπικούς νόμους, τους όρους εφαρμογών και τα δικαιώματα των αρχικών προγραμματιστών. Είστε υπεύθυνοι για τον τρόπο χρήσης των επιδιορθωμένων εφαρμογών και λειτουργικών μονάδων στη συσκευή σας.</string>
     <string name="about_links_title">Σύνδεσμοι</string>
-    <string name="about_official_website">Ιστοσελίδα</string>
-    <string name="about_link_website_summary">Επισκεφθείτε την ιστοσελίδα της NkBe</string>
     <string name="about_link_github_summary">Δείτε τον πηγαίο κώδικα και τις εκδόσεις</string>
     <string name="about_link_telegram_summary">Εγγραφείτε στο κανάλι μας</string>
     <string name="about_acknowledgments_title">Ιδιαίτερες ευχαριστίες (χωρίς παραγγελία)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Συγγραφέας του Vector, του οποίου η εξαιρετική αρχιτεκτονική πλαισίου παρείχε ζωτική βάση και έμπνευση για το ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Πρωτοπόρος στις λύσεις επιδιόρθωσης χωρίς root, αποδεικνύοντας τη σκοπιμότητα της δυναμικής φόρτωσης περιβάλλοντος Xposed μέσω υλοποίησης από την πλευρά του διαχειριστή.</string>
     <string name="about_ack_libxposed_summary">Η κινητήρια δύναμη πίσω από την τυποποίηση Xposed API, φέρνοντας ασφάλεια τύπου και σαφείς συμβάσεις στον κόσμο ανάπτυξης μονάδων.</string>
-    <string name="about_ack_winter_summary">Ο πρώτος μου οικονομικός υποστηρικτής. σας ευχαριστώ για την τόσο έγκαιρη και άμεση ενθάρρυνση.</string>
-    <string name="about_ack_m558_summary">Αυτός που κρατά τα γρανάζια να στρίβουν στα παρασκήνια — σας ευχαριστώ για την αθόρυβη αλλά απαραίτητη υποστήριξη.</string>
     <string name="about_ack_community_summary">Ευχαριστούμε όλους τους χρήστες που συμμετέχουν στις δοκιμές, την υποβολή PR και την αναφορά ζητημάτων για να προωθήσουμε το έργο μαζί.</string>
     <string name="manage_search">Αναζήτηση</string>
     <string name="manage_no_search_results">Δεν υπάρχουν αποτελέσματα αναζήτησης</string>

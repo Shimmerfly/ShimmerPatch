@@ -9,12 +9,9 @@
     <string name="screen_home">בית</string>
     <string name="home_shizuku_optional_summary">הרחבה אופציונלית, לא נדרשת על ידי ShimmerPatch.</string>
     <string name="home_about">אודות ShimmerPatch</string>
-    <string name="about_author_summary">מתחזק ShimmerPatch</string>
     <string name="about_disclaimer_title">כתב ויתור</string>
     <string name="about_disclaimer_body">ShimmerPatch מסופק רק עבור למידה, מחקר ועבודה לגיטימית של תאימות אפליקציות. נא לכבד את החוקים המקומיים, את תנאי האפליקציה ואת הזכויות של המפתחים המקוריים. אתה אחראי לאופן השימוש באפליקציות ובמודולים מתוקנים במכשיר שלך.</string>
     <string name="about_links_title">קישורים</string>
-    <string name="about_official_website">אתר אינטרנט</string>
-    <string name="about_link_website_summary">בקר באתר האינטרנט של NkBe</string>
     <string name="about_link_github_summary">הצג את קוד המקור והגרסאות</string>
     <string name="about_link_telegram_summary">הירשמו לערוץ שלנו</string>
     <string name="about_acknowledgments_title">תודה מיוחדת (לא מסודר)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">מחבר Vector, שארכיטקטורת המסגרת המצטיינת שלו סיפקה בסיס והשראה חיוניים ל-ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">חלוץ בפתרונות תיקון ללא שורשים, המוכיח את היתכנות טעינת סביבת Xposed דינמית באמצעות הטמעה בצד המנהל.</string>
     <string name="about_ack_libxposed_summary">הכוח המניע מאחורי סטנדרטיזציה של Xposed API, מביא בטיחות סוג ומוסכמות ברורות לעולם פיתוח המודולים.</string>
-    <string name="about_ack_winter_summary">התומך הכספי הראשון שלי; תודה על עידוד כה מוקדם וישיר.</string>
-    <string name="about_ack_m558_summary">זה ששומר על ההילוכים מאחורי הקלעים - תודה על התמיכה השקטה אך הכרחית.</string>
     <string name="about_ack_community_summary">תודה לכל המשתמשים המעורבים בבדיקות, הגשת הודעות יחסי ציבור ודיווח על בעיות כדי להניע את הפרויקט ביחד.</string>
     <string name="manage_search">חפש</string>
     <string name="manage_no_search_results">אין תוצאות חיפוש</string>

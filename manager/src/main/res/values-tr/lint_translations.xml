@@ -9,12 +9,9 @@
     <string name="screen_home">Ana Sayfa</string>
     <string name="home_shizuku_optional_summary">İsteğe bağlı uzantı, ShimmerPatch tarafından gerekli değildir.</string>
     <string name="home_about">ShimmerPatch Hakkında</string>
-    <string name="about_author_summary">ShimmerPatch bakımcısı</string>
     <string name="about_disclaimer_title">Sorumluluk reddi beyanı</string>
     <string name="about_disclaimer_body">ShimmerPatch yalnızca öğrenme, araştırma ve meşru uygulama uyumluluğu çalışmaları için sağlanmıştır. Lütfen yerel yasalara, uygulama şartlarına ve orijinal geliştiricilerin haklarına saygı gösterin. Cihazınızda yamalı uygulamaların ve modüllerin nasıl kullanıldığı sizin sorumluluğunuzdadır.</string>
     <string name="about_links_title">Bağlantılar</string>
-    <string name="about_official_website">Web sitesi</string>
-    <string name="about_link_website_summary">NkBe\'nin web sitesini ziyaret edin</string>
     <string name="about_link_github_summary">Kaynak kodunu ve sürümleri görüntüleyin</string>
     <string name="about_link_telegram_summary">Kanalımıza abone olun</string>
     <string name="about_acknowledgments_title">Özel teşekkürler (sıralanmamış)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Olağanüstü çerçeve mimarisi ShimmerPatch için hayati bir temel ve ilham sağlayan Vector\'nin yazarı.</string>
     <string name="about_ack_lspatch_summary">Yönetici tarafı uygulaması yoluyla dinamik Xposed ortam yüklemesinin fizibilitesini kanıtlayan, köksüz yama çözümlerinde öncü.</string>
     <string name="about_ack_libxposed_summary">Xposed API standardizasyonunun arkasındaki itici güç, modül geliştirme dünyasına tip güvenliği ve net kurallar getiriyor.</string>
-    <string name="about_ack_winter_summary">İlk maddi destekçim; Bu kadar erken ve doğrudan teşvik ettiğiniz için teşekkür ederim.</string>
-    <string name="about_ack_m558_summary">Perde arkasında çarkları döndüren kişi; sessiz ama vazgeçilmez desteğiniz için teşekkür ederim.</string>
     <string name="about_ack_community_summary">Projeyi birlikte ileriye taşımak için testlerde, PR\'ların gönderilmesinde ve sorunların raporlanmasında görev alan tüm kullanıcılara teşekkür ederiz.</string>
     <string name="manage_search">Ara</string>
     <string name="manage_no_search_results">Arama sonucu yok</string>

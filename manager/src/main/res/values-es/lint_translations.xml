@@ -9,12 +9,9 @@
     <string name="screen_home">Inicio</string>
     <string name="home_shizuku_optional_summary">Extensión opcional, no requerida por ShimmerPatch.</string>
     <string name="home_about">Acerca de ShimmerPatch</string>
-    <string name="about_author_summary">Mantenedor ShimmerPatch</string>
     <string name="about_disclaimer_title">Descargo de responsabilidad</string>
     <string name="about_disclaimer_body">ShimmerPatch se proporciona únicamente para aprendizaje, investigación y trabajo legítimo de compatibilidad de aplicaciones. Respete las leyes locales, los términos de la aplicación y los derechos de los desarrolladores originales. Usted es responsable de cómo se utilizan las aplicaciones y módulos parcheados en su dispositivo.</string>
     <string name="about_links_title">Enlaces</string>
-    <string name="about_official_website">Sitio web</string>
-    <string name="about_link_website_summary">Visite el sitio web de NkBe</string>
     <string name="about_link_github_summary">Ver código fuente y lanzamientos</string>
     <string name="about_link_telegram_summary">Suscríbete a nuestro canal</string>
     <string name="about_acknowledgments_title">Agradecimiento especial (desordenado)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Autor de Vector, cuya excelente arquitectura marco proporcionó una base e inspiración vitales para ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Pionero en soluciones de parcheo sin raíz, que demuestra la viabilidad de la carga dinámica del entorno Xposed mediante la implementación del lado del administrador.</string>
     <string name="about_ack_libxposed_summary">La fuerza impulsora detrás de la estandarización Xposed API, que aporta seguridad tipográfica y convenciones claras al mundo del desarrollo de módulos.</string>
-    <string name="about_ack_winter_summary">Mi primer apoyo financiero; Gracias por el estímulo tan temprano y directo.</string>
-    <string name="about_ack_m558_summary">El que mantiene los engranajes en marcha detrás de escena: gracias por el apoyo silencioso pero indispensable.</string>
     <string name="about_ack_community_summary">Gracias a todos los usuarios involucrados en las pruebas, el envío de relaciones públicas y la notificación de problemas para impulsar el proyecto juntos.</string>
     <string name="manage_search">Buscar</string>
     <string name="manage_no_search_results">Sin resultados de búsqueda</string>

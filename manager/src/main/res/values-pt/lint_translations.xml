@@ -9,12 +9,9 @@
     <string name="screen_home">Página inicial</string>
     <string name="home_shizuku_optional_summary">Extensão opcional, não exigida por ShimmerPatch.</string>
     <string name="home_about">Sobre ShimmerPatch</string>
-    <string name="about_author_summary">Mantenedor ShimmerPatch</string>
     <string name="about_disclaimer_title">Isenção de responsabilidade</string>
     <string name="about_disclaimer_body">ShimmerPatch é fornecido apenas para aprendizado, pesquisa e trabalho legítimo de compatibilidade de aplicativos. Respeite as leis locais, os termos do aplicativo e os direitos dos desenvolvedores originais. Você é responsável pela forma como os aplicativos e módulos corrigidos são usados ​​no seu dispositivo.</string>
     <string name="about_links_title">Ligações</string>
-    <string name="about_official_website">Site</string>
-    <string name="about_link_website_summary">Visite o site da NkBe</string>
     <string name="about_link_github_summary">Ver código-fonte e versões</string>
     <string name="about_link_telegram_summary">Inscreva-se em nosso canal</string>
     <string name="about_acknowledgments_title">Agradecimentos especiais (não solicitados)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Autor de Vector, cuja excelente arquitetura de estrutura forneceu uma base vital e inspiração para ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Pioneiro em soluções de patch sem root, comprovando a viabilidade do carregamento dinâmico do ambiente Xposed por meio de implementação no lado do gerente.</string>
     <string name="about_ack_libxposed_summary">A força motriz por trás da padronização Xposed API, trazendo segurança de tipo e convenções claras para o mundo do desenvolvimento de módulos.</string>
-    <string name="about_ack_winter_summary">Meu primeiro apoiador financeiro; obrigado por esse incentivo tão precoce e direto.</string>
-    <string name="about_ack_m558_summary">Aquele que mantém as engrenagens girando nos bastidores - obrigado pelo apoio silencioso, mas indispensável.</string>
     <string name="about_ack_community_summary">Obrigado a todos os usuários envolvidos nos testes, envio de PRs e relatórios de problemas para impulsionar o projeto juntos.</string>
     <string name="manage_search">Pesquisar</string>
     <string name="manage_no_search_results">Nenhum resultado de pesquisa</string>

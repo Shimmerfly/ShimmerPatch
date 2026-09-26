@@ -10,12 +10,9 @@
     <string name="screen_home">Accueil</string>
     <string name="home_shizuku_optional_summary">Extension facultative, non requise par ShimmerPatch.</string>
     <string name="home_about">À propos de ShimmerPatch</string>
-    <string name="about_author_summary">Mainteneur ShimmerPatch</string>
     <string name="about_disclaimer_title">Avis de non-responsabilité</string>
     <string name="about_disclaimer_body">ShimmerPatch est fourni uniquement à des fins d\'apprentissage, de recherche et de travail légitime de compatibilité d\'applications. Veuillez respecter les lois locales, les conditions d\'utilisation des applications et les droits des développeurs d\'origine. Vous êtes responsable de la manière dont les applications et modules corrigés sont utilisés sur votre appareil.</string>
     <string name="about_links_title">Liens</string>
-    <string name="about_official_website">Site Web</string>
-    <string name="about_link_website_summary">Visitez le site de NkBe</string>
     <string name="about_link_github_summary">Afficher le code source et les versions</string>
     <string name="about_link_telegram_summary">Abonnez-vous à notre chaîne</string>
     <string name="about_acknowledgments_title">Remerciements particuliers (sans ordre de priorité)</string>
@@ -24,8 +21,6 @@
     <string name="about_ack_jingmatrix_summary">Auteur de Vector, dont l\'architecture-cadre exceptionnelle a fourni une base et une inspiration vitales pour ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Un pionnier des solutions de correctifs sans accès root, démontrant la faisabilité du chargement dynamique de l’environnement Xposed par le gestionnaire.</string>
     <string name="about_ack_libxposed_summary">La force motrice derrière la normalisation Xposed API, apportant la sécurité des types et des conventions claires au monde du développement de modules.</string>
-    <string name="about_ack_winter_summary">Mon tout premier bailleur de fonds ; merci pour ces encouragements précoces et directs.</string>
-    <string name="about_ack_m558_summary">Celui qui fait tourner les engrenages dans les coulisses — merci pour le soutien discret mais indispensable.</string>
     <string name="about_ack_community_summary">Merci à tous les utilisateurs impliqués dans les tests, la soumission des PR et le signalement des problèmes pour faire avancer le projet ensemble.</string>
     <string name="manage_module_scope_updated">La portée du module a été mise à jour</string>
     <string name="manage_force_stop">Forcer l\'arrêt</string>

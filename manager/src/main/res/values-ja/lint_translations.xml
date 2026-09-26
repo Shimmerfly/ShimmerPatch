@@ -10,12 +10,9 @@
     <string name="screen_home">ホーム</string>
     <string name="home_shizuku_optional_summary">任意の拡張機能です。ShimmerPatch の利用に必須ではありません。</string>
     <string name="home_about">ShimmerPatchについて</string>
-    <string name="about_author_summary">ShimmerPatch メンテナー</string>
     <string name="about_disclaimer_title">免責事項</string>
     <string name="about_disclaimer_body">ShimmerPatch は、学習、研究、および正規のアプリ互換性作業のためにのみ提供されます。現地の法律、アプリの規約、および元の開発者の権利を尊重してください。パッチを適用したアプリとモジュールがデバイス上でどのように使用されるかについては、お客様の責任となります。</string>
     <string name="about_links_title">リンク</string>
-    <string name="about_official_website">ウェブサイト</string>
-    <string name="about_link_website_summary">NkBeのウェブサイトにアクセスしてください</string>
     <string name="about_link_github_summary">ソースコードとリリースを表示する</string>
     <string name="about_link_telegram_summary">チャンネル登録してください</string>
     <string name="about_acknowledgments_title">謝辞（順不同）</string>
@@ -24,8 +21,6 @@
     <string name="about_ack_jingmatrix_summary">Vector の著者。その優れたフレームワーク アーキテクチャは、ShimmerPatch に重要な基盤とインスピレーションを提供しました。</string>
     <string name="about_ack_lspatch_summary">ルートレスパッチ適用ソリューションのパイオニアであり、マネージャー側実装による動的な Xposed 環境読み込みの実現可能性を証明しています。</string>
     <string name="about_ack_libxposed_summary">Xposed API 標準化の原動力となり、モジュール開発の世界にタイプセーフティと明確な規約をもたらします。</string>
-    <string name="about_ack_winter_summary">私の最初の経済的支援者。このような早い時期からの直接的な励ましに感謝します。</string>
-    <string name="about_ack_m558_summary">舞台裏で歯車を回し続ける人。静かだが欠かせないサポートに感謝します。</string>
     <string name="about_ack_community_summary">プロジェクトを一緒に推進するために、テスト、PR の提出、問題の報告に携わったすべてのユーザーに感謝します。</string>
     <string name="manage_search">検索</string>
     <string name="manage_no_search_results">検索結果がありません</string>

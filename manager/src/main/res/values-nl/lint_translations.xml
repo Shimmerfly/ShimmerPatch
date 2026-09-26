@@ -9,12 +9,9 @@
     <string name="screen_home">Thuis</string>
     <string name="home_shizuku_optional_summary">Optionele uitbreiding, niet vereist door ShimmerPatch.</string>
     <string name="home_about">Over ShimmerPatch</string>
-    <string name="about_author_summary">ShimmerPatch-onderhouder</string>
     <string name="about_disclaimer_title">Disclaimer</string>
     <string name="about_disclaimer_body">ShimmerPatch wordt alleen aangeboden voor leer-, onderzoeks- en legitieme app-compatibiliteitswerkzaamheden. Respecteer de lokale wetten, app-voorwaarden en de rechten van de oorspronkelijke ontwikkelaars. U bent verantwoordelijk voor de manier waarop gepatchte apps en modules op uw apparaat worden gebruikt.</string>
     <string name="about_links_title">Koppelingen</string>
-    <string name="about_official_website">Website</string>
-    <string name="about_link_website_summary">Bezoek de website van NkBe</string>
     <string name="about_link_github_summary">Bekijk de broncode en releases</string>
     <string name="about_link_telegram_summary">Abonneer je op ons kanaal</string>
     <string name="about_acknowledgments_title">Speciale dank (niet besteld)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Auteur van Vector, wiens uitstekende raamwerkarchitectuur een essentiële basis en inspiratie vormde voor ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Een pionier op het gebied van rootless patching-oplossingen, die de haalbaarheid bewijst van het dynamisch laden van de Xposed-omgeving via implementatie aan de managerzijde.</string>
     <string name="about_ack_libxposed_summary">De drijvende kracht achter de Xposed API-standaardisatie, die typeveiligheid en duidelijke conventies naar de moduleontwikkelingswereld brengt.</string>
-    <string name="about_ack_winter_summary">Mijn allereerste financiële supporter; bedankt voor deze vroege en directe aanmoediging.</string>
-    <string name="about_ack_m558_summary">Degene die achter de schermen de boel draaiende houdt – bedankt voor de stille maar onmisbare steun.</string>
     <string name="about_ack_community_summary">Dank aan alle gebruikers die betrokken zijn bij het testen, het indienen van PR\'s en het melden van problemen om samen het project vooruit te helpen.</string>
     <string name="manage_search">Zoeken</string>
     <string name="manage_no_search_results">Geen zoekresultaten</string>

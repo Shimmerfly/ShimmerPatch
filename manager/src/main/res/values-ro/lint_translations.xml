@@ -9,12 +9,9 @@
     <string name="screen_home">Acasă</string>
     <string name="home_shizuku_optional_summary">Extensie opțională, care nu este cerută de ShimmerPatch.</string>
     <string name="home_about">Despre ShimmerPatch</string>
-    <string name="about_author_summary">ShimmerPatch întreținător</string>
     <string name="about_disclaimer_title">Disclaimer</string>
     <string name="about_disclaimer_body">ShimmerPatch este oferit numai pentru învățare, cercetare și activități legitime de compatibilitate cu aplicațiile. Vă rugăm să respectați legile locale, termenii aplicației și drepturile dezvoltatorilor originali. Sunteți responsabil pentru modul în care aplicațiile și modulele corelate sunt utilizate pe dispozitiv.</string>
     <string name="about_links_title">Legături</string>
-    <string name="about_official_website">Site-ul web</string>
-    <string name="about_link_website_summary">Vizitați site-ul NkBe</string>
     <string name="about_link_github_summary">Vizualizați codul sursă și versiunile</string>
     <string name="about_link_telegram_summary">Abonați-vă la canalul nostru</string>
     <string name="about_acknowledgments_title">Mulțumiri speciale (necomandate)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Autor al cărții Vector, a cărui arhitectură cadru remarcabilă a oferit o bază vitală și o inspirație pentru ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Un pionier în soluțiile de patch-uri fără rădăcină, care demonstrează fezabilitatea încărcării dinamice a mediului Xposed prin implementarea managerului.</string>
     <string name="about_ack_libxposed_summary">Forța motrice din spatele standardizării Xposed API, aducând siguranța tipului și convențiile clare în lumea dezvoltării modulelor.</string>
-    <string name="about_ack_winter_summary">Primul meu susținător financiar; mulțumesc pentru încurajări atât de timpurii și directe.</string>
-    <string name="about_ack_m558_summary">Cel care ține vitezele în spatele scenei — vă mulțumesc pentru sprijinul liniștit, dar indispensabil.</string>
     <string name="about_ack_community_summary">Mulțumim tuturor utilizatorilor implicați în testarea, transmiterea PR-urilor și raportarea problemelor pentru a conduce proiectul împreună.</string>
     <string name="manage_search">Caută</string>
     <string name="manage_no_search_results">Niciun rezultat al căutării</string>

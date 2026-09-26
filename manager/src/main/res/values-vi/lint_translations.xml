@@ -9,12 +9,9 @@
     <string name="screen_home">Trang chủ</string>
     <string name="home_shizuku_optional_summary">Tiện ích mở rộng tùy chọn, ShimmerPatch không yêu cầu.</string>
     <string name="home_about">Giới thiệu về ShimmerPatch</string>
-    <string name="about_author_summary">Người bảo trì ShimmerPatch</string>
     <string name="about_disclaimer_title">Tuyên bố miễn trừ trách nhiệm</string>
     <string name="about_disclaimer_body">ShimmerPatch chỉ được cung cấp cho công việc học tập, nghiên cứu và tương thích ứng dụng hợp pháp. Vui lòng tôn trọng luật pháp địa phương, điều khoản ứng dụng và quyền của nhà phát triển ban đầu. Bạn chịu trách nhiệm về cách sử dụng các ứng dụng và mô-đun đã vá trên thiết bị của mình.</string>
     <string name="about_links_title">Liên kết</string>
-    <string name="about_official_website">Trang web</string>
-    <string name="about_link_website_summary">Truy cập trang web của NkBe</string>
     <string name="about_link_github_summary">Xem mã nguồn và bản phát hành</string>
     <string name="about_link_telegram_summary">Đăng ký kênh của chúng tôi</string>
     <string name="about_acknowledgments_title">Lời cảm ơn đặc biệt (không theo thứ tự)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Tác giả của Vector, người có kiến trúc khung xuất sắc đã cung cấp nền tảng và nguồn cảm hứng quan trọng cho ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Người tiên phong trong các giải pháp vá lỗi không cần root, chứng minh tính khả thi của việc tải môi trường Xposed động thông qua triển khai phía người quản lý.</string>
     <string name="about_ack_libxposed_summary">Động lực đằng sau việc tiêu chuẩn hóa Xposed API, mang lại sự an toàn về kiểu dáng và các quy ước rõ ràng cho thế giới phát triển mô-đun.</string>
-    <string name="about_ack_winter_summary">Người hỗ trợ tài chính đầu tiên của tôi; cảm ơn bạn đã khuyến khích sớm và trực tiếp như vậy.</string>
-    <string name="about_ack_m558_summary">Người giữ cho bánh răng quay phía sau hậu trường - cảm ơn vì sự hỗ trợ thầm lặng nhưng không thể thiếu.</string>
     <string name="about_ack_community_summary">Cảm ơn tất cả người dùng đã tham gia thử nghiệm, gửi PR và báo cáo các vấn đề để cùng nhau thúc đẩy dự án phát triển.</string>
     <string name="manage_search">Tìm kiếm</string>
     <string name="manage_no_search_results">Không có kết quả tìm kiếm</string>

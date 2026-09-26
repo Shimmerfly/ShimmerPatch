@@ -9,12 +9,9 @@
     <string name="screen_home">घर</string>
     <string name="home_shizuku_optional_summary">वैकल्पिक विस्तार, ShimmerPatch द्वारा आवश्यक नहीं है।</string>
     <string name="home_about">ShimmerPatch के बारे में</string>
-    <string name="about_author_summary">ShimmerPatch अनुरक्षक</string>
     <string name="about_disclaimer_title">अस्वीकरण</string>
     <string name="about_disclaimer_body">ShimmerPatch केवल सीखने, अनुसंधान और वैध ऐप संगतता कार्य के लिए प्रदान किया जाता है। कृपया स्थानीय कानूनों, ऐप की शर्तों और मूल डेवलपर्स के अधिकारों का सम्मान करें। आपके डिवाइस पर पैच किए गए ऐप्स और मॉड्यूल का उपयोग कैसे किया जाता है, इसके लिए आप जिम्मेदार हैं।</string>
     <string name="about_links_title">कड़ियाँ</string>
-    <string name="about_official_website">वेबसाइट</string>
-    <string name="about_link_website_summary">NkBe की वेबसाइट पर जाएँ</string>
     <string name="about_link_github_summary">स्रोत कोड और रिलीज़ देखें</string>
     <string name="about_link_telegram_summary">हमारे चैनल को सब्सक्राइब करें</string>
     <string name="about_acknowledgments_title">विशेष धन्यवाद (अनियंत्रित)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Vector के लेखक, जिनकी उत्कृष्ट रूपरेखा वास्तुकला ने ShimmerPatch के लिए एक महत्वपूर्ण आधार और प्रेरणा प्रदान की।</string>
     <string name="about_ack_lspatch_summary">रूटलेस पैचिंग समाधानों में अग्रणी, प्रबंधक-पक्ष कार्यान्वयन के माध्यम से गतिशील Xposed पर्यावरण लोडिंग की व्यवहार्यता साबित करता है।</string>
     <string name="about_ack_libxposed_summary">Xposed API मानकीकरण के पीछे प्रेरक शक्ति, मॉड्यूल विकास की दुनिया में प्रकार की सुरक्षा और स्पष्ट परंपराएँ लाना।</string>
-    <string name="about_ack_winter_summary">मेरा पहला वित्तीय समर्थक; इतने शीघ्र और सीधे प्रोत्साहन के लिए धन्यवाद।</string>
-    <string name="about_ack_m558_summary">वह जो परदे के पीछे गियर बदलता रहता है - शांत लेकिन अपरिहार्य समर्थन के लिए धन्यवाद।</string>
     <string name="about_ack_community_summary">परियोजना को एक साथ आगे बढ़ाने के लिए परीक्षण, पीआर सबमिट करने और मुद्दों की रिपोर्टिंग करने में शामिल सभी उपयोगकर्ताओं को धन्यवाद।</string>
     <string name="manage_search">खोजें</string>
     <string name="manage_no_search_results">कोई खोज परिणाम नहीं</string>

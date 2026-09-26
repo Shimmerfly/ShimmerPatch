@@ -9,12 +9,9 @@
     <string name="screen_home">Начало</string>
     <string name="home_shizuku_optional_summary">Незадължително разширение, не се изисква от ShimmerPatch.</string>
     <string name="home_about">Относно ShimmerPatch</string>
-    <string name="about_author_summary">ShimmerPatch поддържащ</string>
     <string name="about_disclaimer_title">Отказ от отговорност</string>
     <string name="about_disclaimer_body">ShimmerPatch се предоставя само за обучение, проучване и легитимна работа по съвместимостта на приложенията. Моля, спазвайте местните закони, условията на приложението и правата на оригиналните разработчици. Вие носите отговорност за това как приложенията и модулите с корекции се използват на вашето устройство.</string>
     <string name="about_links_title">Връзки</string>
-    <string name="about_official_website">уебсайт</string>
-    <string name="about_link_website_summary">Посетете уебсайта на NkBe</string>
     <string name="about_link_github_summary">Вижте изходния код и версиите</string>
     <string name="about_link_telegram_summary">Абонирайте се за нашия канал</string>
     <string name="about_acknowledgments_title">Специални благодарности (неподредени)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Автор на Vector, чиято изключителна архитектура на рамката осигури жизненоважна основа и вдъхновение за ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Пионер в решенията за безкорпусни корекции, доказващ осъществимостта на динамично зареждане на среда Xposed чрез внедряване от страна на мениджъра.</string>
     <string name="about_ack_libxposed_summary">Движещата сила зад стандартизацията на Xposed API, внасяща безопасност на типа и ясни конвенции в света на разработването на модули.</string>
-    <string name="about_ack_winter_summary">Първият ми финансов поддръжник; благодаря ви за толкова ранното и директно насърчение.</string>
-    <string name="about_ack_m558_summary">Този, който кара предавките да се въртят зад кулисите — благодаря ви за тихата, но незаменима подкрепа.</string>
     <string name="about_ack_community_summary">Благодаря на всички потребители, участващи в тестването, изпращането на PR и докладването на проблеми, за да управляваме проекта заедно.</string>
     <string name="manage_search">Търсене</string>
     <string name="manage_no_search_results">Няма резултати от търсенето</string>

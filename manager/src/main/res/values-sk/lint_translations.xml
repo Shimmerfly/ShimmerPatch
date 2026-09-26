@@ -9,12 +9,9 @@
     <string name="screen_home">Domov</string>
     <string name="home_shizuku_optional_summary">Voliteľné rozšírenie, ktoré ShimmerPatch nevyžaduje.</string>
     <string name="home_about">O ShimmerPatch</string>
-    <string name="about_author_summary">Správca ShimmerPatch</string>
     <string name="about_disclaimer_title">Vylúčenie zodpovednosti</string>
     <string name="about_disclaimer_body">ShimmerPatch sa poskytuje iba na učenie, výskum a prácu s legitímnou kompatibilitou aplikácií. Rešpektujte miestne zákony, podmienky aplikácie a práva pôvodných vývojárov. Zodpovedáte za to, ako sa opravené aplikácie a moduly používajú na vašom zariadení.</string>
     <string name="about_links_title">Odkazy</string>
-    <string name="about_official_website">Webová stránka</string>
-    <string name="about_link_website_summary">Navštívte webovú stránku NkBe</string>
     <string name="about_link_github_summary">Pozrite si zdrojový kód a vydania</string>
     <string name="about_link_telegram_summary">Prihláste sa na odber nášho kanála</string>
     <string name="about_acknowledgments_title">Špeciálne poďakovanie (neobjednané)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Autor Vector, ktorého vynikajúca rámcová architektúra poskytla životne dôležitý základ a inšpiráciu pre ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Priekopník v riešeniach bez koreňových patchov, ktorý dokazuje uskutočniteľnosť dynamického načítania prostredia Xposed prostredníctvom implementácie na strane manažéra.</string>
     <string name="about_ack_libxposed_summary">Hnacia sila štandardizácie Xposed API, ktorá prináša typovú bezpečnosť a jasné konvencie do sveta vývoja modulov.</string>
-    <string name="about_ack_winter_summary">Môj úplne prvý finančný podporovateľ; ďakujem za také skoré a priame povzbudenie.</string>
-    <string name="about_ack_m558_summary">Ten, kto v zákulisí necháva otáčky – ďakujem za tichú, ale nenahraditeľnú podporu.</string>
     <string name="about_ack_community_summary">Ďakujeme všetkým používateľom zapojeným do testovania, odosielania PR a nahlasovania problémov, aby sme spoločne posunuli projekt vpred.</string>
     <string name="manage_search">Hľadať</string>
     <string name="manage_no_search_results">Žiadne výsledky vyhľadávania</string>

@@ -9,12 +9,9 @@
     <string name="screen_home">додому</string>
     <string name="home_shizuku_optional_summary">Додаткове розширення, не потрібне ShimmerPatch.</string>
     <string name="home_about">Про ShimmerPatch</string>
-    <string name="about_author_summary">Супроводжувач ShimmerPatch</string>
     <string name="about_disclaimer_title">Відмова від відповідальності</string>
     <string name="about_disclaimer_body">ShimmerPatch надається лише для навчання, досліджень і законної роботи щодо сумісності програм. Поважайте місцеві закони, умови додатків і права оригінальних розробників. Ви несете відповідальність за використання виправлених програм і модулів на вашому пристрої.</string>
     <string name="about_links_title">Посилання</string>
-    <string name="about_official_website">Веб-сайт</string>
-    <string name="about_link_website_summary">Відвідайте веб-сайт NkBe</string>
     <string name="about_link_github_summary">Перегляньте вихідний код і випуски</string>
     <string name="about_link_telegram_summary">Підпишіться на наш канал</string>
     <string name="about_acknowledgments_title">Особлива подяка (без замовлення)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Автор Vector, чия видатна фреймворкова архітектура стала життєво важливою основою та джерелом натхнення для ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Піонер у безкорінних рішеннях для виправлення, що доводить можливість динамічного завантаження середовища Xposed через реалізацію на стороні менеджера.</string>
     <string name="about_ack_libxposed_summary">Рушійна сила стандартизації Xposed API, яка забезпечує безпеку типів і чіткі конвенції у світі розробки модулів.</string>
-    <string name="about_ack_winter_summary">Мій перший фінансовий прибічник; дякую за таке раннє та пряме підбадьорення.</string>
-    <string name="about_ack_m558_summary">Той, хто тримає оберти за лаштунками — дякую за тиху, але незамінну підтримку.</string>
     <string name="about_ack_community_summary">Дякуємо всім користувачам, які беруть участь у тестуванні, надсиланні PR-заявок і звітах про проблеми, щоб разом просувати проект вперед.</string>
     <string name="manage_search">Пошук</string>
     <string name="manage_no_search_results">Немає результатів пошуку</string>

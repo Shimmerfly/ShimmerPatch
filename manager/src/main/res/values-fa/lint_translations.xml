@@ -9,12 +9,9 @@
     <string name="screen_home">صفحه اصلی</string>
     <string name="home_shizuku_optional_summary">پسوند اختیاری، توسط ShimmerPatch مورد نیاز نیست.</string>
     <string name="home_about">درباره ShimmerPatch</string>
-    <string name="about_author_summary">نگهدارنده ShimmerPatch</string>
     <string name="about_disclaimer_title">سلب مسئولیت</string>
     <string name="about_disclaimer_body">ShimmerPatch فقط برای یادگیری، تحقیق و کار سازگاری برنامه قانونی ارائه شده است. لطفاً به قوانین محلی، شرایط برنامه و حقوق توسعه دهندگان اصلی احترام بگذارید. شما مسئول نحوه استفاده از برنامه ها و ماژول های اصلاح شده در دستگاه خود هستید.</string>
     <string name="about_links_title">پیوندها</string>
-    <string name="about_official_website">وب سایت</string>
-    <string name="about_link_website_summary">از وب سایت NkBe دیدن کنید</string>
     <string name="about_link_github_summary">کد منبع و نسخه ها را مشاهده کنید</string>
     <string name="about_link_telegram_summary">عضو کانال ما شوید</string>
     <string name="about_acknowledgments_title">تشکر ویژه (بدون سفارش)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">نویسنده Vector، که معماری چارچوب برجسته‌اش، پایه و اساس حیاتی و الهام‌بخشی برای ShimmerPatch ایجاد کرد.</string>
     <string name="about_ack_lspatch_summary">یک پیشگام در راه حل های وصله بدون ریشه، اثبات امکان بارگذاری محیط پویا Xposed از طریق پیاده سازی سمت مدیر.</string>
     <string name="about_ack_libxposed_summary">نیروی محرکه پشت استانداردسازی Xposed API، ایمنی نوع و قراردادهای واضح را به دنیای توسعه ماژول می آورد.</string>
-    <string name="about_ack_winter_summary">اولین حامی مالی من؛ از شما برای چنین تشویق زودهنگام و مستقیم تشکر می کنم.</string>
-    <string name="about_ack_m558_summary">کسی که چرخ دنده ها را در پشت صحنه می چرخاند - از شما برای حمایت آرام اما ضروری تشکر می کنم.</string>
     <string name="about_ack_community_summary">با تشکر از همه کاربرانی که در آزمایش، ارسال PR و گزارش مشکلات درگیر هستند تا پروژه را با هم به پیش ببرند.</string>
     <string name="manage_search">جستجو کنید</string>
     <string name="manage_no_search_results">نتایج جستجو وجود ندارد</string>

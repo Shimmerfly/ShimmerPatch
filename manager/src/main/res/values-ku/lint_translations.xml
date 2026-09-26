@@ -9,12 +9,9 @@
     <string name="screen_home">Home</string>
     <string name="home_shizuku_optional_summary">Berfirehkirina vebijarkî, ji hêla ShimmerPatch ve ne hewce ye.</string>
     <string name="home_about">Li ser ShimmerPatch</string>
-    <string name="about_author_summary">parêzgerê ShimmerPatch</string>
     <string name="about_disclaimer_title">Disclaimer</string>
     <string name="about_disclaimer_body">ShimmerPatch tenê ji bo fêrbûn, lêkolîn û xebata lihevhatina serîlêdanê ya rewa tê peyda kirin. Ji kerema xwe qanûnên herêmî, şertên sepanê, û mafên pêşdebirên orîjînal rêz bigirin. Hûn berpirsiyar in ka serîlêdan û modulên patched çawa li ser cîhaza we têne bikar anîn.</string>
     <string name="about_links_title">Girêdanên</string>
-    <string name="about_official_website">Website</string>
-    <string name="about_link_website_summary">Serdana malpera NkBe bikin</string>
     <string name="about_link_github_summary">Koda çavkaniyê û weşanên xwe bibînin</string>
     <string name="about_link_telegram_summary">bibin aboneya kanala me</string>
     <string name="about_acknowledgments_title">Spasiyên taybetî (nefermî)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Nivîskarê Vector, ku mîmariya çarçoweya wî ya berbiçav ji bo ShimmerPatch bingehek girîng û îlhamek peyda kir.</string>
     <string name="about_ack_lspatch_summary">Pêşengek di çareseriyên paçkirina bê root de, îsbatkirina barkirina jîngeha dînamîkî ya Xposed bi navgîniya bicîhkirina alîgirê rêveberê ve îsbat dike.</string>
     <string name="about_ack_libxposed_summary">Hêza ajotinê ya li pişt standardkirina Xposed API, ewlehiya celeb û peymanên zelal tîne cîhana pêşkeftina modulê.</string>
-    <string name="about_ack_winter_summary">Piştgiriya min a yekem a aborî; spas ji bo teşwîqa zû û rasterast.</string>
-    <string name="about_ack_m558_summary">Yê ku gemaran li pişt perdeyê dizivirîne - spas ji bo piştgirîya bêdeng lê domdar.</string>
     <string name="about_ack_community_summary">Spas ji hemî bikarhênerên ku beşdarî ceribandinê, şandina PR-an, û raporkirina pirsgirêkan in da ku projeyê bi hev re pêş bixin.</string>
     <string name="manage_search">Search</string>
     <string name="manage_no_search_results">Encamên lêgerînê tune</string>

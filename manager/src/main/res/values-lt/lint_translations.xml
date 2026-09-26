@@ -9,12 +9,9 @@
     <string name="screen_home">Pradžia</string>
     <string name="home_shizuku_optional_summary">Pasirenkamas plėtinys, kurio ShimmerPatch nereikia.</string>
     <string name="home_about">Apie ShimmerPatch</string>
-    <string name="about_author_summary">ShimmerPatch prižiūrėtojas</string>
     <string name="about_disclaimer_title">Atsisakymas</string>
     <string name="about_disclaimer_body">ShimmerPatch skirtas tik mokymuisi, tyrinėjimui ir teisėtam programų suderinamumo darbui. Laikykitės vietinių įstatymų, programų sąlygų ir pradinių kūrėjų teisių. Jūs esate atsakingi už tai, kaip jūsų įrenginyje naudojamos pataisytos programos ir moduliai.</string>
     <string name="about_links_title">Nuorodos</string>
-    <string name="about_official_website">Svetainė</string>
-    <string name="about_link_website_summary">Apsilankykite NkBe svetainėje</string>
     <string name="about_link_github_summary">Peržiūrėkite šaltinio kodą ir leidimus</string>
     <string name="about_link_telegram_summary">Prenumeruokite mūsų kanalą</string>
     <string name="about_acknowledgments_title">Ypatinga padėka (nesutvarkyta)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Vector autorius, kurio išskirtinė karkaso architektūra suteikė gyvybiškai svarbų pagrindą ir įkvėpė ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Bešaknių pataisų sprendimų pradininkas, įrodantis dinamiško Xposed aplinkos įkėlimo įgyvendinamumą naudojant valdytojo pusę.</string>
     <string name="about_ack_libxposed_summary">Varomoji Xposed API standartizavimo jėga, suteikianti modulių kūrimo pasauliui tipo saugumą ir aiškias taisykles.</string>
-    <string name="about_ack_winter_summary">Mano pirmasis finansinis rėmėjas; ačiū už tokį ankstyvą ir tiesioginį paskatinimą.</string>
-    <string name="about_ack_m558_summary">Tas, kuris užkulisiuose sukasi pavaras – ačiū už tylų, bet nepakeičiamą palaikymą.</string>
     <string name="about_ack_community_summary">Dėkojame visiems naudotojams, dalyvaujantiems testuojant, teikiant PR ir pranešant apie problemas, kad kartu paskatintumėte projektą.</string>
     <string name="manage_search">Ieškoti</string>
     <string name="manage_no_search_results">Nėra paieškos rezultatų</string>

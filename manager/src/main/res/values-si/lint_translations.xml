@@ -9,12 +9,9 @@
     <string name="screen_home">නිවස</string>
     <string name="home_shizuku_optional_summary">විකල්ප දිගුව, ShimmerPatch විසින් අවශ්ය නොවේ.</string>
     <string name="home_about">ShimmerPatch ගැන</string>
-    <string name="about_author_summary">ShimmerPatch නඩත්තු කරන්නා</string>
     <string name="about_disclaimer_title">වියාචනය</string>
     <string name="about_disclaimer_body">ShimmerPatch සපයනු ලබන්නේ ඉගෙනීම, පර්යේෂණ සහ නීත්‍යානුකූල යෙදුම් අනුකූලතා කටයුතු සඳහා පමණි. කරුණාකර දේශීය නීති, යෙදුම් නියම සහ මුල් සංවර්ධකයින්ගේ අයිතිවාසිකම්වලට ගරු කරන්න. ඔබගේ උපාංගයේ පැච් කරන ලද යෙදුම් සහ මොඩියුල භාවිතා කරන ආකාරය සඳහා ඔබ වගකිව යුතුය.</string>
     <string name="about_links_title">සබැඳි</string>
-    <string name="about_official_website">වෙබ් අඩවිය</string>
-    <string name="about_link_website_summary">NkBe වෙබ් අඩවියට පිවිසෙන්න</string>
     <string name="about_link_github_summary">මූලාශ්ර කේතය සහ නිකුත් කිරීම් බලන්න</string>
     <string name="about_link_telegram_summary">අපගේ නාලිකාවට දායක වන්න</string>
     <string name="about_acknowledgments_title">විශේෂ ස්තුතිය (ඇණවුම් කර නැත)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Vector හි කර්තෘ, එහි කැපී පෙනෙන රාමු ගෘහ නිර්මාණ ශිල්පය ShimmerPatch සඳහා අත්‍යවශ්‍ය පදනමක් සහ ආශ්වාදයක් සපයයි.</string>
     <string name="about_ack_lspatch_summary">කළමනාකරු පාර්ශ්ව ක්‍රියාත්මක කිරීම හරහා ගතික Xposed පරිසරය පැටවීමේ ශක්‍යතාව සනාථ කරමින් මුල් රහිත පැච් කිරීමේ විසඳුම්වල පුරෝගාමියෙකි.</string>
     <string name="about_ack_libxposed_summary">Xposed API ප්‍රමිතිකරණය පිටුපස ඇති ගාමක බලවේගය, මොඩියුල සංවර්ධන ලෝකයට වර්ගයේ ආරක්ෂාව සහ පැහැදිලි සම්මුතීන් ගෙන එයි.</string>
-    <string name="about_ack_winter_summary">මගේ පළමු මුල්‍ය ආධාරකරුවා; එවැනි ඉක්මන් සහ සෘජු දිරිගැන්වීම සඳහා ඔබට ස්තුතියි.</string>
-    <string name="about_ack_m558_summary">තිරය පිටුපස ගියර් කරකවමින් සිටින තැනැත්තා - නිහඬ නමුත් අත්‍යවශ්‍ය සහයෝගයට ස්තූතියි.</string>
     <string name="about_ack_community_summary">එක්ව ව්‍යාපෘතිය ඉදිරියට ගෙන යාම සඳහා පරීක්ෂා කිරීම, PR ඉදිරිපත් කිරීම සහ ගැටළු වාර්තා කිරීම සම්බන්ධ සියලුම පරිශීලකයින්ට ස්තුතියි.</string>
     <string name="manage_search">සොයන්න</string>
     <string name="manage_no_search_results">සෙවුම් ප්‍රතිඵල නැත</string>

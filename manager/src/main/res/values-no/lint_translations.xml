@@ -9,12 +9,9 @@
     <string name="screen_home">Hjem</string>
     <string name="home_shizuku_optional_summary">Valgfri utvidelse, ikke nødvendig av ShimmerPatch.</string>
     <string name="home_about">Om ShimmerPatch</string>
-    <string name="about_author_summary">ShimmerPatch vedlikeholder</string>
     <string name="about_disclaimer_title">Ansvarsfraskrivelse</string>
     <string name="about_disclaimer_body">ShimmerPatch leveres kun for læring, forskning og legitimt arbeid med appkompatibilitet. Vennligst respekter lokale lover, appvilkår og rettighetene til originale utviklere. Du er ansvarlig for hvordan lappede apper og moduler brukes på enheten din.</string>
     <string name="about_links_title">Lenker</string>
-    <string name="about_official_website">Nettsted</string>
-    <string name="about_link_website_summary">Besøk nettstedet til NkBe</string>
     <string name="about_link_github_summary">Se kildekode og utgivelser</string>
     <string name="about_link_telegram_summary">Abonner på vår kanal</string>
     <string name="about_acknowledgments_title">Spesiell takk (uordnet)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Forfatter av Vector, hvis enestående rammearkitektur ga et viktig grunnlag og inspirasjon for ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">En pioner innen rotløse patchløsninger, som beviser gjennomførbarheten av dynamisk Xposed-miljølasting via implementering på ledersiden.</string>
     <string name="about_ack_libxposed_summary">Drivkraften bak Xposed API standardisering, bringer typesikkerhet og klare konvensjoner til modulutviklingsverdenen.</string>
-    <string name="about_ack_winter_summary">Min aller første økonomiske støttespiller; takk for så tidlig og direkte oppmuntring.</string>
-    <string name="about_ack_m558_summary">Den som holder girene i gang bak kulissene — takk for den stille, men uunnværlige støtten.</string>
     <string name="about_ack_community_summary">Takk til alle brukere som er involvert i testing, innsending av PR-er og rapportering av problemer for å drive prosjektet videre sammen.</string>
     <string name="manage_search">Søk</string>
     <string name="manage_no_search_results">Ingen søkeresultater</string>

@@ -9,12 +9,9 @@
     <string name="screen_home">a casa</string>
     <string name="home_shizuku_optional_summary">Extensió opcional, no requerida per ShimmerPatch.</string>
     <string name="home_about">Sobre ShimmerPatch</string>
-    <string name="about_author_summary">Mantenidor ShimmerPatch</string>
     <string name="about_disclaimer_title">Exempció de responsabilitat</string>
     <string name="about_disclaimer_body">ShimmerPatch només es proporciona per a l\'aprenentatge, la investigació i el treball legítim de compatibilitat d\'aplicacions. Respecteu les lleis locals, els termes de l\'aplicació i els drets dels desenvolupadors originals. Sou responsable de com s\'utilitzen les aplicacions i els mòduls pegats al vostre dispositiu.</string>
     <string name="about_links_title">Enllaços</string>
-    <string name="about_official_website">Lloc web</string>
-    <string name="about_link_website_summary">Visiteu el lloc web de NkBe</string>
     <string name="about_link_github_summary">Veure codi font i versions</string>
     <string name="about_link_telegram_summary">Subscriu-te al nostre canal</string>
     <string name="about_acknowledgments_title">Agraïment especial (sense comanda)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Autor de Vector, l\'arquitectura de marc excepcional del qual va proporcionar una base i una inspiració vitals per a ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Un pioner en solucions de pegat sense arrels, que demostra la viabilitat de la càrrega dinàmica de l\'entorn Xposed mitjançant la implementació del gestor.</string>
     <string name="about_ack_libxposed_summary">La força impulsora de l\'estandardització Xposed API, aportant seguretat de tipus i convencions clares al món del desenvolupament de mòduls.</string>
-    <string name="about_ack_winter_summary">El meu primer suport financer; gràcies per l\'ànim tan ràpid i directe.</string>
-    <string name="about_ack_m558_summary">Aquell que manté els engranatges girant entre bastidors: gràcies pel suport silenciós però indispensable.</string>
     <string name="about_ack_community_summary">Gràcies a tots els usuaris implicats en les proves, l\'enviament de PR i els informes de problemes per impulsar el projecte junts.</string>
     <string name="manage_search">Cerca</string>
     <string name="manage_no_search_results">No hi ha resultats de cerca</string>

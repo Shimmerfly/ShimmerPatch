@@ -9,12 +9,9 @@
     <string name="screen_home">Tuis</string>
     <string name="home_shizuku_optional_summary">Opsionele uitbreiding, nie deur ShimmerPatch vereis nie.</string>
     <string name="home_about">Oor ShimmerPatch</string>
-    <string name="about_author_summary">ShimmerPatch onderhouer</string>
     <string name="about_disclaimer_title">Disclaimer</string>
     <string name="about_disclaimer_body">ShimmerPatch word slegs verskaf vir leer, navorsing en wettige programversoenbaarheidswerk. Respekteer asseblief plaaslike wette, programbepalings en die regte van oorspronklike ontwikkelaars. Jy is verantwoordelik vir hoe gelapte programme en modules op jou toestel gebruik word.</string>
     <string name="about_links_title">Skakels</string>
-    <string name="about_official_website">Webwerf</string>
-    <string name="about_link_website_summary">Besoek die webwerf van NkBe</string>
     <string name="about_link_github_summary">Bekyk bronkode en vrystellings</string>
     <string name="about_link_telegram_summary">Teken in op ons kanaal</string>
     <string name="about_acknowledgments_title">Spesiale dank (ongeorden)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Skrywer van Vector, wie se uitstaande raamwerkargitektuur \'n noodsaaklike grondslag en inspirasie vir ShimmerPatch verskaf het.</string>
     <string name="about_ack_lspatch_summary">\'n Pionier in wortellose pleisteroplossings, wat die uitvoerbaarheid van dinamiese Xposed-omgewinglaai via bestuurder-kant-implementering bewys.</string>
     <string name="about_ack_libxposed_summary">Die dryfkrag agter Xposed API-standaardisering, wat tipe veiligheid en duidelike konvensies na die module-ontwikkelingswêreld bring.</string>
-    <string name="about_ack_winter_summary">My heel eerste finansiële ondersteuner; dankie vir sulke vroeë en direkte aanmoediging.</string>
-    <string name="about_ack_m558_summary">Die een wat die ratte agter die skerms laat draai — dankie vir die stil maar onmisbare ondersteuning.</string>
     <string name="about_ack_community_summary">Dankie aan alle gebruikers wat betrokke is by die toets, die indien van PR\'s en die rapportering van kwessies om die projek saam vorentoe te dryf.</string>
     <string name="manage_search">Soek</string>
     <string name="manage_no_search_results">Geen soekresultate nie</string>

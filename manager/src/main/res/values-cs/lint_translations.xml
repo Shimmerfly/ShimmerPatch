@@ -9,12 +9,9 @@
     <string name="screen_home">Domů</string>
     <string name="home_shizuku_optional_summary">Volitelné rozšíření, které ShimmerPatch nevyžaduje.</string>
     <string name="home_about">O ShimmerPatch</string>
-    <string name="about_author_summary">Správce ShimmerPatch</string>
     <string name="about_disclaimer_title">Zřeknutí se odpovědnosti</string>
     <string name="about_disclaimer_body">ShimmerPatch je poskytován pouze za účelem učení, výzkumu a legitimní práce s kompatibilitou aplikací. Respektujte prosím místní zákony, podmínky aplikace a práva původních vývojářů. Jste odpovědní za to, jak jsou na vašem zařízení používány opravené aplikace a moduly.</string>
     <string name="about_links_title">Odkazy</string>
-    <string name="about_official_website">webové stránky</string>
-    <string name="about_link_website_summary">Navštivte webové stránky NkBe</string>
     <string name="about_link_github_summary">Zobrazit zdrojový kód a vydání</string>
     <string name="about_link_telegram_summary">Přihlaste se k odběru našeho kanálu</string>
     <string name="about_acknowledgments_title">Zvláštní poděkování (neobjednáno)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Autor Vector, jehož vynikající architektura frameworku poskytla zásadní základ a inspiraci pro ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Průkopník v řešení oprav bez kořenů, který dokazuje proveditelnost dynamického načítání prostředí Xposed prostřednictvím implementace na straně správce.</string>
     <string name="about_ack_libxposed_summary">Hnací síla standardizace Xposed API, která přináší typovou bezpečnost a jasné konvence do světa vývoje modulů.</string>
-    <string name="about_ack_winter_summary">Můj úplně první finanční podporovatel; děkuji za tak brzké a přímé povzbuzení.</string>
-    <string name="about_ack_m558_summary">Ten, kdo v zákulisí nechává otáčet soukolí — děkuji za tichou, ale nepostradatelnou podporu.</string>
     <string name="about_ack_community_summary">Děkujeme všem uživatelům, kteří se podílejí na testování, odesílání PR a hlášení problémů, aby společně posouvali projekt vpřed.</string>
     <string name="manage_search">Hledat</string>
     <string name="manage_no_search_results">Žádné výsledky vyhledávání</string>

@@ -9,12 +9,9 @@
     <string name="screen_home">বাড়ি</string>
     <string name="home_shizuku_optional_summary">ঐচ্ছিক এক্সটেনশন, ShimmerPatch এর প্রয়োজন নেই।</string>
     <string name="home_about">ShimmerPatch সম্পর্কে</string>
-    <string name="about_author_summary">ShimmerPatch রক্ষণাবেক্ষণকারী</string>
     <string name="about_disclaimer_title">দাবিত্যাগ</string>
     <string name="about_disclaimer_body">ShimmerPatch শুধুমাত্র শেখার, গবেষণা, এবং বৈধ অ্যাপ সামঞ্জস্যপূর্ণ কাজের জন্য প্রদান করা হয়। অনুগ্রহ করে স্থানীয় আইন, অ্যাপের শর্তাবলী এবং মূল বিকাশকারীদের অধিকারকে সম্মান করুন। আপনার ডিভাইসে কীভাবে প্যাচ করা অ্যাপ এবং মডিউল ব্যবহার করা হয় তার জন্য আপনি দায়ী।</string>
     <string name="about_links_title">লিঙ্ক</string>
-    <string name="about_official_website">ওয়েবসাইট</string>
-    <string name="about_link_website_summary">NkBe এর ওয়েবসাইট ভিজিট করুন</string>
     <string name="about_link_github_summary">সোর্স কোড এবং রিলিজ দেখুন</string>
     <string name="about_link_telegram_summary">আমাদের চ্যানেলটি সাবস্ক্রাইব করুন</string>
     <string name="about_acknowledgments_title">বিশেষ ধন্যবাদ (অনুযায়ী)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Vector এর লেখক, যার অসামান্য কাঠামোর স্থাপত্য ShimmerPatch এর জন্য একটি গুরুত্বপূর্ণ ভিত্তি এবং অনুপ্রেরণা প্রদান করেছে।</string>
     <string name="about_ack_lspatch_summary">ম্যানেজার-সাইড বাস্তবায়নের মাধ্যমে ডাইনামিক Xposed এনভায়রনমেন্ট লোডিংয়ের সম্ভাব্যতা প্রমাণ করে রুটহীন প্যাচিং সমাধানে অগ্রগামী।</string>
     <string name="about_ack_libxposed_summary">Xposed API স্ট্যান্ডার্ডাইজেশনের পিছনে চালিকা শক্তি, মডিউল ডেভেলপমেন্ট ওয়ার্ল্ডে টাইপ সেফটি এবং স্পষ্ট কনভেনশন নিয়ে আসে।</string>
-    <string name="about_ack_winter_summary">আমার প্রথম আর্থিক সহায়তাকারী; যেমন প্রাথমিক এবং সরাসরি উত্সাহের জন্য আপনাকে ধন্যবাদ.</string>
-    <string name="about_ack_m558_summary">যিনি গিয়ারগুলিকে পর্দার পিছনে ঘুরিয়ে রাখেন — শান্ত কিন্তু অপরিহার্য সমর্থনের জন্য আপনাকে ধন্যবাদ।</string>
     <string name="about_ack_community_summary">একসাথে প্রকল্পটি এগিয়ে নিয়ে যাওয়ার জন্য পরীক্ষা, PR জমা দেওয়া এবং রিপোর্টিং সমস্যাগুলির সাথে জড়িত সমস্ত ব্যবহারকারীদের ধন্যবাদ৷</string>
     <string name="manage_search">অনুসন্ধান করুন</string>
     <string name="manage_no_search_results">কোন অনুসন্ধান ফলাফল</string>

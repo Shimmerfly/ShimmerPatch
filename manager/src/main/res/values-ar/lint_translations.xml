@@ -9,12 +9,9 @@
     <string name="screen_home">الصفحة الرئيسية</string>
     <string name="home_shizuku_optional_summary">ملحق اختياري، غير مطلوب بواسطة ShimmerPatch.</string>
     <string name="home_about">حول ShimmerPatch</string>
-    <string name="about_author_summary">مشرف ShimmerPatch</string>
     <string name="about_disclaimer_title">إخلاء المسؤولية</string>
     <string name="about_disclaimer_body">يتم توفير ShimmerPatch فقط للتعلم والبحث وأعمال توافق التطبيقات المشروعة. يرجى احترام القوانين المحلية وشروط التطبيق وحقوق المطورين الأصليين. أنت مسؤول عن كيفية استخدام التطبيقات والوحدات المصححة على جهازك.</string>
     <string name="about_links_title">روابط</string>
-    <string name="about_official_website">موقع الكتروني</string>
-    <string name="about_link_website_summary">قم بزيارة الموقع الإلكتروني لـ NkBe</string>
     <string name="about_link_github_summary">عرض كود المصدر والإصدارات</string>
     <string name="about_link_telegram_summary">اشترك في قناتنا</string>
     <string name="about_acknowledgments_title">شكر خاص (غير مرتب)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">مؤلف Vector، الذي قدمت هندسته الهيكلية المتميزة أساسًا حيويًا وإلهامًا لـ ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">رائدة في حلول التصحيح بدون جذور، مما يثبت جدوى تحميل بيئة Xposed الديناميكية عبر التنفيذ من جانب المدير.</string>
     <string name="about_ack_libxposed_summary">القوة الدافعة وراء توحيد Xposed API، مما يوفر سلامة النوع واتفاقيات واضحة لعالم تطوير الوحدات.</string>
-    <string name="about_ack_winter_summary">أول داعم مالي لي؛ أشكركم على هذا التشجيع المبكر والمباشر.</string>
-    <string name="about_ack_m558_summary">الشخص الذي يحافظ على دوران التروس خلف الكواليس – شكرًا لك على الدعم الهادئ ولكن الذي لا غنى عنه.</string>
     <string name="about_ack_community_summary">شكرًا لجميع المستخدمين المشاركين في الاختبار، وتقديم العلاقات العامة، والإبلاغ عن المشكلات لدفع المشروع إلى الأمام معًا.</string>
     <string name="manage_search">بحث</string>
     <string name="manage_no_search_results">لا توجد نتائج بحث</string>

@@ -9,12 +9,9 @@
     <string name="screen_home">Kodu</string>
     <string name="home_shizuku_optional_summary">Valikuline laiendus, mida ShimmerPatch ei nõua.</string>
     <string name="home_about">ShimmerPatch kohta</string>
-    <string name="about_author_summary">ShimmerPatch hooldaja</string>
     <string name="about_disclaimer_title">Vastutusest loobumine</string>
     <string name="about_disclaimer_body">ShimmerPatch on ette nähtud ainult õppimiseks, uurimiseks ja seaduslikuks rakenduste ühilduvuseks. Austage kohalikke seadusi, rakenduste tingimusi ja algsete arendajate õigusi. Vastutate selle eest, kuidas teie seadmes paigatud rakendusi ja mooduleid kasutatakse.</string>
     <string name="about_links_title">Lingid</string>
-    <string name="about_official_website">Veebisait</string>
-    <string name="about_link_website_summary">Külastage NkBe veebisaiti</string>
     <string name="about_link_github_summary">Vaadake lähtekoodi ja väljalaseid</string>
     <string name="about_link_telegram_summary">Telli meie kanal</string>
     <string name="about_acknowledgments_title">Eriline tänu (järjestamata)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Vector autor, kelle silmapaistev raamistiku arhitektuur andis ShimmerPatch jaoks olulise aluse ja inspiratsiooni.</string>
     <string name="about_ack_lspatch_summary">Teerajaja juurteta paigalahenduste alal, tõestades dünaamilise Xposed keskkonna laadimise teostatavust halduripoolse juurutuse kaudu.</string>
     <string name="about_ack_libxposed_summary">Xposed API standardimise liikumapanev jõud, mis toob moodulite arendusmaailma tüübiohutuse ja selged kokkulepped.</string>
-    <string name="about_ack_winter_summary">Minu esimene rahaline toetaja; aitäh nii varajase ja otsese julgustuse eest.</string>
-    <string name="about_ack_m558_summary">See, kes hoiab kulisside taga käike käimas – aitäh vaikse, kuid hädavajaliku toe eest.</string>
     <string name="about_ack_community_summary">Täname kõiki kasutajaid, kes osalevad testimises, PR-de esitamises ja probleemidest aruandluses, et projekti üheskoos edasi viia.</string>
     <string name="manage_search">Otsi</string>
     <string name="manage_no_search_results">Otsingutulemused puuduvad</string>

@@ -9,12 +9,9 @@
     <string name="screen_home">Rumah</string>
     <string name="home_shizuku_optional_summary">Ekstensi opsional, tidak diperlukan oleh ShimmerPatch.</string>
     <string name="home_about">Tentang ShimmerPatch</string>
-    <string name="about_author_summary">Pengelola ShimmerPatch</string>
     <string name="about_disclaimer_title">Penafian</string>
     <string name="about_disclaimer_body">ShimmerPatch disediakan hanya untuk pembelajaran, penelitian, dan pekerjaan kompatibilitas aplikasi yang sah. Harap hormati hukum setempat, persyaratan aplikasi, dan hak pengembang asli. Anda bertanggung jawab atas cara aplikasi dan modul yang dipatch digunakan pada perangkat Anda.</string>
     <string name="about_links_title">Tautan</string>
-    <string name="about_official_website">Situs web</string>
-    <string name="about_link_website_summary">Kunjungi situs web NkBe</string>
     <string name="about_link_github_summary">Lihat kode sumber dan rilis</string>
     <string name="about_link_telegram_summary">Berlangganan saluran kami</string>
     <string name="about_acknowledgments_title">Terima kasih khusus (tidak dipesan)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Penulis Vector, yang arsitektur kerangka kerjanya yang luar biasa memberikan landasan dan inspirasi penting bagi ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Pelopor dalam solusi patching tanpa root, membuktikan kelayakan pemuatan lingkungan Xposed yang dinamis melalui implementasi sisi manajer.</string>
     <string name="about_ack_libxposed_summary">Kekuatan pendorong di balik standardisasi Xposed API, menghadirkan keamanan tipe dan konvensi yang jelas ke dunia pengembangan modul.</string>
-    <string name="about_ack_winter_summary">Pendukung finansial pertama saya; terima kasih atas dorongan awal dan langsung tersebut.</string>
-    <string name="about_ack_m558_summary">Orang yang terus bergerak di belakang layar — terima kasih atas dukungannya yang tenang namun sangat diperlukan.</string>
     <string name="about_ack_community_summary">Terima kasih kepada semua pengguna yang terlibat dalam pengujian, mengirimkan PR, dan melaporkan masalah untuk mendorong kemajuan proyek bersama.</string>
     <string name="manage_search">Cari</string>
     <string name="manage_no_search_results">Tidak ada hasil pencarian</string>

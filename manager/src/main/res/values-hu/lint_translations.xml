@@ -9,12 +9,9 @@
     <string name="screen_home">Otthon</string>
     <string name="home_shizuku_optional_summary">Opcionális bővítmény, a ShimmerPatch számára nem szükséges.</string>
     <string name="home_about">A ShimmerPatch-ről</string>
-    <string name="about_author_summary">ShimmerPatch karbantartó</string>
     <string name="about_disclaimer_title">Jogi nyilatkozat</string>
     <string name="about_disclaimer_body">A ShimmerPatch csak tanuláshoz, kutatáshoz és jogszerű alkalmazáskompatibilitási munkához használható. Kérjük, tartsa tiszteletben a helyi törvényeket, az alkalmazások feltételeit és az eredeti fejlesztők jogait. Ön felelős azért, hogy a javított alkalmazásokat és modulokat hogyan használják eszközén.</string>
     <string name="about_links_title">Linkek</string>
-    <string name="about_official_website">Weboldal</string>
-    <string name="about_link_website_summary">Látogassa meg az NkBe weboldalát</string>
     <string name="about_link_github_summary">Tekintse meg a forráskódot és a kiadásokat</string>
     <string name="about_link_telegram_summary">Iratkozz fel csatornánkra</string>
     <string name="about_acknowledgments_title">Külön köszönet (sorrend nélkül)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">A Vector szerzője, akinek kiemelkedő keretrendszere létfontosságú alapot és inspirációt adott a ShimmerPatch számára.</string>
     <string name="about_ack_lspatch_summary">A gyökér nélküli javítási megoldások úttörője, amely bizonyítja a dinamikus Xposed környezetbetöltés megvalósíthatóságát menedzseroldali megvalósításon keresztül.</string>
     <string name="about_ack_libxposed_summary">A Xposed API szabványosítás hajtóereje, amely típusbiztonságot és egyértelmű konvenciókat hoz a modulfejlesztő világba.</string>
-    <string name="about_ack_winter_summary">A legelső anyagi támogatóm; köszönöm ezt a korai és közvetlen biztatást.</string>
-    <string name="about_ack_m558_summary">Aki a színfalak mögött tartja a fogaskerekeket – köszönöm a csendes, de nélkülözhetetlen támogatást.</string>
     <string name="about_ack_community_summary">Köszönet minden olyan felhasználónak, aki részt vesz a tesztelésben, a PR-ek benyújtásában és a problémák jelentésében, hogy együtt mozdítsák elő a projektet.</string>
     <string name="manage_search">Keresés</string>
     <string name="manage_no_search_results">Nincsenek keresési eredmények</string>

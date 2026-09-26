@@ -9,12 +9,9 @@
     <string name="screen_home">บ้าน</string>
     <string name="home_shizuku_optional_summary">ส่วนขยายเพิ่มเติม ที่ ShimmerPatch ไม่ต้องการ</string>
     <string name="home_about">เกี่ยวกับ ShimmerPatch</string>
-    <string name="about_author_summary">ผู้ดูแล ShimmerPatch</string>
     <string name="about_disclaimer_title">ข้อสงวนสิทธิ์</string>
     <string name="about_disclaimer_body">ShimmerPatch มีไว้เพื่อการเรียนรู้ การวิจัย และความเข้ากันได้ของแอปที่ถูกต้องตามกฎหมายเท่านั้น โปรดเคารพกฎหมายท้องถิ่น ข้อกำหนดของแอป และสิทธิ์ของนักพัฒนาดั้งเดิม คุณมีหน้าที่รับผิดชอบในการใช้แอปและโมดูลที่มีแพตช์บนอุปกรณ์ของคุณ</string>
     <string name="about_links_title">ลิงค์</string>
-    <string name="about_official_website">เว็บไซต์</string>
-    <string name="about_link_website_summary">เยี่ยมชมเว็บไซต์ของ NkBe</string>
     <string name="about_link_github_summary">ดูซอร์สโค้ดและการเผยแพร่</string>
     <string name="about_link_telegram_summary">สมัครสมาชิกช่องของเรา</string>
     <string name="about_acknowledgments_title">ขอขอบคุณเป็นพิเศษ (ไม่เรียงลำดับ)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">ผู้เขียน Vector ซึ่งมีสถาปัตยกรรมเฟรมเวิร์กที่โดดเด่นเป็นรากฐานที่สำคัญและเป็นแรงบันดาลใจสำหรับ ShimmerPatch</string>
     <string name="about_ack_lspatch_summary">ผู้บุกเบิกโซลูชันการแพตช์แบบไม่ต้องรูท ซึ่งพิสูจน์ความเป็นไปได้ของการโหลดสภาพแวดล้อม Xposed แบบไดนามิกผ่านการใช้งานฝั่งผู้จัดการ</string>
     <string name="about_ack_libxposed_summary">แรงผลักดันเบื้องหลังการสร้างมาตรฐาน Xposed API นำความปลอดภัยประเภทและรูปแบบที่ชัดเจนมาสู่โลกแห่งการพัฒนาโมดูล</string>
-    <string name="about_ack_winter_summary">ผู้สนับสนุนทางการเงินคนแรกของฉัน ขอบคุณสำหรับกำลังใจตั้งแต่เนิ่นๆและโดยตรงเช่นนี้</string>
-    <string name="about_ack_m558_summary">คนที่คอยควบคุมเกียร์อยู่เบื้องหลัง — ขอบคุณสำหรับการสนับสนุนอย่างเงียบๆ แต่ขาดไม่ได้</string>
     <string name="about_ack_community_summary">ขอขอบคุณผู้ใช้ทุกคนที่เกี่ยวข้องกับการทดสอบ ส่ง PR และการรายงานปัญหาเพื่อขับเคลื่อนโครงการไปข้างหน้าด้วยกัน</string>
     <string name="manage_search">ค้นหา</string>
     <string name="manage_no_search_results">ไม่มีผลการค้นหา</string>

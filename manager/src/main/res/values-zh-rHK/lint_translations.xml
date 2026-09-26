@@ -9,12 +9,9 @@
     <string name="welcome_ui_step">第 %1$d 步，共 %2$d 步</string>
     <string name="screen_home">首頁</string>
     <string name="home_shizuku_optional_summary">可選擴展，不影響 ShimmerPatch 核心功能。</string>
-    <string name="about_author_summary">ShimmerPatch 主要開發者</string>
     <string name="about_disclaimer_title">免責聲明</string>
     <string name="about_disclaimer_body">ShimmerPatch 僅供學習、研究以及合法的應用程式相容性工作使用。請尊重當地法律、應用程式條款與原開發者權益。您需自行承擔在裝置上使用修補應用與模組的責任。</string>
     <string name="about_links_title">相關連結</string>
-    <string name="about_official_website">官方網站</string>
-    <string name="about_link_website_summary">前往 NkBe 的官方網站</string>
     <string name="about_link_github_summary">查看原始碼與發布版本</string>
     <string name="about_link_telegram_summary">訂閱我們的頻道</string>
     <string name="about_acknowledgments_title">特別鳴謝（排名不分先後）</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Vector 作者，其優秀的框架工作為 ShimmerPatch 的持續迭代提供了重要基礎與啟發。</string>
     <string name="about_ack_lspatch_summary">免 Root 修補方案的先行者，證明了在管理器側動態加載 Xposed 環境的可行性。</string>
     <string name="about_ack_libxposed_summary">現代 Xposed API 標準化推手，為模組開發帶來了型別安全與更清晰的秩序。</string>
-    <string name="about_ack_winter_summary">首位贊助我的支持者，感謝這份很早、也很直接的鼓勵。</string>
-    <string name="about_ack_m558_summary">幕後默默轉動齒輪的人，感謝這份不可或缺的支持。</string>
     <string name="about_ack_community_summary">感謝所有參與測試、提交 PR 與回報 Issue 的用戶，共同推動專案前進。</string>
     <string name="manage_module_scope_updated">模組作用域已更新</string>
     <string name="manage_force_stop">強制停止</string>

@@ -10,12 +10,9 @@
     <string name="screen_home">Startseite</string>
     <string name="home_shizuku_optional_summary">Optionale Erweiterung, die ShimmerPatch nicht voraussetzt.</string>
     <string name="home_about">Über ShimmerPatch</string>
-    <string name="about_author_summary">ShimmerPatch-Betreuer</string>
     <string name="about_disclaimer_title">Haftungsausschluss</string>
     <string name="about_disclaimer_body">ShimmerPatch wird nur für Lern-, Forschungs- und legitime App-Kompatibilitätsarbeiten bereitgestellt. Bitte respektieren Sie die örtlichen Gesetze, App-Bedingungen und die Rechte der Originalentwickler. Sie sind dafür verantwortlich, wie gepatchte Apps und Module auf Ihrem Gerät verwendet werden.</string>
     <string name="about_links_title">Links</string>
-    <string name="about_official_website">Website</string>
-    <string name="about_link_website_summary">Besuchen Sie die Website von NkBe</string>
     <string name="about_link_github_summary">Quellcode und Veröffentlichungen anzeigen</string>
     <string name="about_link_telegram_summary">Abonnieren Sie unseren Kanal</string>
     <string name="about_acknowledgments_title">Besonderer Dank (ohne Rangfolge)</string>
@@ -24,8 +21,6 @@
     <string name="about_ack_jingmatrix_summary">Autor von Vector, dessen herausragende Framework-Architektur eine wichtige Grundlage und Inspiration für ShimmerPatch darstellte.</string>
     <string name="about_ack_lspatch_summary">Ein Pionier für Rootless-Patching-Lösungen, der die Machbarkeit des dynamischen Ladens der Xposed-Umgebung über eine managerseitige Implementierung beweist.</string>
     <string name="about_ack_libxposed_summary">Die treibende Kraft hinter der Xposed API-Standardisierung bringt Typensicherheit und klare Konventionen in die Welt der Modulentwicklung.</string>
-    <string name="about_ack_winter_summary">Mein allererster finanzieller Unterstützer; Vielen Dank für diese frühe und direkte Ermutigung.</string>
-    <string name="about_ack_m558_summary">Derjenige, der hinter den Kulissen dafür sorgt, dass sich alles dreht – vielen Dank für die stille, aber unverzichtbare Unterstützung.</string>
     <string name="about_ack_community_summary">Vielen Dank an alle Benutzer, die an Tests, der Einreichung von PRs und der Meldung von Problemen beteiligt waren, um das Projekt gemeinsam voranzutreiben.</string>
     <string name="manage_search">Suchen</string>
     <string name="manage_no_search_results">Keine Suchergebnisse</string>

@@ -9,12 +9,9 @@
     <string name="screen_home">Casa</string>
     <string name="home_shizuku_optional_summary">Estensione opzionale, non richiesta da ShimmerPatch.</string>
     <string name="home_about">Informazioni su ShimmerPatch</string>
-    <string name="about_author_summary">Manutentore ShimmerPatch</string>
     <string name="about_disclaimer_title">Dichiarazione di non responsabilità</string>
     <string name="about_disclaimer_body">ShimmerPatch viene fornito solo per attività di apprendimento, ricerca e compatibilità legittima delle app. Rispetta le leggi locali, i termini dell\'app e i diritti degli sviluppatori originali. Sei responsabile del modo in cui le app e i moduli con patch vengono utilizzati sul tuo dispositivo.</string>
     <string name="about_links_title">Collegamenti</string>
-    <string name="about_official_website">Sito web</string>
-    <string name="about_link_website_summary">Visita il sito web di NkBe</string>
     <string name="about_link_github_summary">Visualizza il codice sorgente e le versioni</string>
     <string name="about_link_telegram_summary">Iscriviti al nostro canale</string>
     <string name="about_acknowledgments_title">Ringraziamenti speciali (non ordinati)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Autore di Vector, la cui eccezionale architettura strutturale ha fornito una base vitale e ispirazione per ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Un pioniere nelle soluzioni di patching senza root, che dimostra la fattibilità del caricamento dinamico dell\'ambiente Xposed tramite l\'implementazione lato manager.</string>
     <string name="about_ack_libxposed_summary">La forza trainante dietro la standardizzazione Xposed API, che porta la sicurezza del tipo e convenzioni chiare nel mondo dello sviluppo dei moduli.</string>
-    <string name="about_ack_winter_summary">Il mio primo vero sostenitore finanziario; grazie per l\'incoraggiamento così tempestivo e diretto.</string>
-    <string name="about_ack_m558_summary">Colui che fa girare gli ingranaggi dietro le quinte: grazie per il supporto silenzioso ma indispensabile.</string>
     <string name="about_ack_community_summary">Grazie a tutti gli utenti coinvolti nei test, nell\'invio di PR e nella segnalazione di problemi per portare avanti insieme il progetto.</string>
     <string name="manage_search">Cerca</string>
     <string name="manage_no_search_results">Nessun risultato di ricerca</string>

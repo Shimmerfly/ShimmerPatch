@@ -9,12 +9,9 @@
     <string name="screen_home">گھر</string>
     <string name="home_shizuku_optional_summary">اختیاری توسیع، ShimmerPatch کو درکار نہیں ہے۔</string>
     <string name="home_about">ShimmerPatch کے بارے میں</string>
-    <string name="about_author_summary">ShimmerPatch دیکھ بھال کرنے والا</string>
     <string name="about_disclaimer_title">ڈس کلیمر</string>
     <string name="about_disclaimer_body">ShimmerPatch صرف سیکھنے، تحقیق، اور جائز ایپ مطابقت کے کام کے لیے فراہم کیا جاتا ہے۔ براہ کرم مقامی قوانین، ایپ کی شرائط اور اصل ڈویلپرز کے حقوق کا احترام کریں۔ آپ اس کے ذمہ دار ہیں کہ آپ کے آلے پر پیچ شدہ ایپس اور ماڈیولز کیسے استعمال ہوتے ہیں۔</string>
     <string name="about_links_title">لنکس</string>
-    <string name="about_official_website">ویب سائٹ</string>
-    <string name="about_link_website_summary">NkBe کی ویب سائٹ وزٹ کریں۔</string>
     <string name="about_link_github_summary">سورس کوڈ اور ریلیز دیکھیں</string>
     <string name="about_link_telegram_summary">ہمارے چینل کو سبسکرائب کریں۔</string>
     <string name="about_acknowledgments_title">خصوصی شکریہ (غیر ترتیب شدہ)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Vector کے مصنف، جن کے شاندار فریم ورک فن تعمیر نے ShimmerPatch کے لیے ایک اہم بنیاد اور تحریک فراہم کی۔</string>
     <string name="about_ack_lspatch_summary">روٹ لیس پیچنگ سلوشنز کا علمبردار، مینیجر سائیڈ کے نفاذ کے ذریعے متحرک Xposed ماحول کی لوڈنگ کی فزیبلٹی کو ثابت کرتا ہے۔</string>
     <string name="about_ack_libxposed_summary">Xposed API معیار سازی کے پیچھے محرک قوت، ماڈیول کی ترقی کی دنیا میں قسم کی حفاظت اور واضح کنونشنز لاتی ہے۔</string>
-    <string name="about_ack_winter_summary">میرا پہلا مالی معاون؛ اتنی ابتدائی اور براہ راست حوصلہ افزائی کے لیے آپ کا شکریہ۔</string>
-    <string name="about_ack_m558_summary">وہ جو گیئرز کو پردے کے پیچھے موڑتا رہتا ہے — خاموش لیکن ناگزیر حمایت کے لیے آپ کا شکریہ۔</string>
     <string name="about_ack_community_summary">پراجیکٹ کو ایک ساتھ آگے بڑھانے کے لیے جانچ، PRs جمع کرانے اور مسائل کی اطلاع دینے میں شامل تمام صارفین کا شکریہ۔</string>
     <string name="manage_search">تلاش کریں۔</string>
     <string name="manage_no_search_results">تلاش کے کوئی نتائج نہیں ہیں۔</string>

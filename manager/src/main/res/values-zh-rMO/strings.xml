@@ -27,12 +27,9 @@
     <string name="home_description">ShimmerPatch 是一款免費且迭代自 LSPatch 的，基於 Vector 核心的免 Root 的 Xposed 框架。</string>
 
     <!-- About Screen -->
-    <string name="about_author_summary">ShimmerPatch大猫猫的育猫师</string>
     <string name="about_disclaimer_title">猫咪条约</string>
     <string name="about_disclaimer_body">ShimmerPatch 仅供学习、研究以及合法的应用兼容性工作使用喵。请尊重当地法律、应用条款以及原开发者的权益。在你的猫爬架上运行修补 App 和挂件的后果需由你自己承担喵，开发者不负责任何猫窝坍塌、小鱼干数据丢失或其他意外伤害喵。</string>
     <string name="about_links_title">喵星传送门</string>
-    <string name="about_official_website">猫爬架官网</string>
-    <string name="about_link_website_summary">传送到官方据点</string>
     <string name="about_link_github_summary">去 GitHub 翻找源码和罐罐</string>
     <string name="about_link_telegram_summary">订阅喵星频道，掌握第一手动向</string>
     <string name="about_acknowledgments_title">全宇宙致谢（挨个蹭蹭）</string>
@@ -41,8 +38,6 @@
     <string name="about_ack_lsposed_team_summary">感谢 LSPosed 团队，是打造现代化 Xposed 钢筋骨架的顶级猫工匠。</string>
     <string name="about_ack_lspatch_summary">免 Root 修補方案的先行者，證明了在管理器側動態加載 Xposed 環境的可行性。</string>
     <string name="about_ack_libxposed_summary">感谢 LibXposed，为开发者的猫爪带来了秩序与类型安全。</string>
-    <string name="about_ack_winter_summary">第一位给俺投喂小鱼干的恩人！感谢这份超级早、也超级暖心的肉垫鼓励喵。</string>
-    <string name="about_ack_m558_summary">提供大模型的喵主子，是俺脑袋瓜里的智慧来源喵～</string>
     <string name="about_ack_community_summary">蹭蹭所有参与测试、提交 PR 与回报 Issue 的猫友们，大家一起把窝建得更好喵！</string>
 
     <!-- Manage Screen -->

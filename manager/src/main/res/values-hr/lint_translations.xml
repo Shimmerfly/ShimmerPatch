@@ -9,12 +9,9 @@
     <string name="screen_home">Dom</string>
     <string name="home_shizuku_optional_summary">Izborno proširenje, nije potrebno za ShimmerPatch.</string>
     <string name="home_about">O ShimmerPatch</string>
-    <string name="about_author_summary">ShimmerPatch održavatelj</string>
     <string name="about_disclaimer_title">Odricanje od odgovornosti</string>
     <string name="about_disclaimer_body">ShimmerPatch pruža se samo za učenje, istraživanje i legitiman rad na kompatibilnosti aplikacija. Poštujte lokalne zakone, uvjete aplikacije i prava izvornih programera. Vi ste odgovorni za to kako se zakrpane aplikacije i moduli koriste na vašem uređaju.</string>
     <string name="about_links_title">Linkovi</string>
-    <string name="about_official_website">web stranica</string>
-    <string name="about_link_website_summary">Posjetite web stranicu NkBe</string>
     <string name="about_link_github_summary">Pogledajte izvorni kod i izdanja</string>
     <string name="about_link_telegram_summary">Pretplatite se na naš kanal</string>
     <string name="about_acknowledgments_title">Posebna zahvala (nenaručeno)</string>
@@ -23,8 +20,6 @@
     <string name="about_ack_jingmatrix_summary">Autor Vector, čija je izvanredna arhitektura okvira pružila vitalnu osnovu i inspiraciju za ShimmerPatch.</string>
     <string name="about_ack_lspatch_summary">Pionir u rješenjima za krpanje bez korijena, dokazujući izvedivost dinamičkog učitavanja okruženja Xposed putem implementacije na strani upravitelja.</string>
     <string name="about_ack_libxposed_summary">Pokretačka snaga standardizacije Xposed API, koja donosi sigurnost tipa i jasne konvencije u svijet razvoja modula.</string>
-    <string name="about_ack_winter_summary">Moj prvi financijski podupiratelj; hvala vam na tako ranom i izravnom ohrabrenju.</string>
-    <string name="about_ack_m558_summary">Onaj koji pokreće zupčanike iza scene — hvala ti na tihoj, ali neizostavnoj podršci.</string>
     <string name="about_ack_community_summary">Zahvaljujemo svim korisnicima koji su uključeni u testiranje, slanje PR-ova i prijavljivanje problema kako bismo zajedno pokrenuli projekt naprijed.</string>
     <string name="manage_search">Traži</string>
     <string name="manage_no_search_results">Nema rezultata pretraživanja</string>

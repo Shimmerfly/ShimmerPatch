@@ -456,7 +456,12 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit, onAddFromStorag
                             ),
                             DropdownOption<KeystorePreset?>(KeystorePreset.NPATCH, "NPatch"),
                             DropdownOption<KeystorePreset?>(KeystorePreset.FPA, "FPA"),
-                            DropdownOption<KeystorePreset?>(KeystorePreset.CUSTOM, customLabel),
+                            // Named for what tapping it does: this one opens the import dialog
+                            // instead of applying a preset straight away.
+                            DropdownOption<KeystorePreset?>(
+                                KeystorePreset.CUSTOM,
+                                stringResource(R.string.patch_keystore_pick_file),
+                            ),
                         ),
                         onValueChange = { viewModel.chooseKeystore(it) },
                     )

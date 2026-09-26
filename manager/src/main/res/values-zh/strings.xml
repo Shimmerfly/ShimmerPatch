@@ -297,5 +297,6 @@
     <string name="patch_keystore">签名密钥库</string>
     <string name="patch_keystore_follow_setting">跟随设置（%1$s）</string>
     <string name="patch_keystore_temp_only">本次打包使用 %1$s，设置里的默认值不会改动。</string>
+    <string name="patch_keystore_pick_file">从文件选择…</string>
     <string name="patch_keystore_custom_file">自定义（%1$s）</string>
 </resources>

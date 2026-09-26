@@ -9,6 +9,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -99,8 +100,9 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
         ) {
             Card(
                 // KernelSU's status card: a supporting tone, not the bright primary one, with the
-                // secondary line dimmed the way its list items dim theirs.
-                modifier = Modifier.fillMaxWidth(),
+                // secondary line dimmed the way its list items dim theirs. The size animates so
+                // the card's bottom edge rises as the running progress line goes away.
+                modifier = Modifier.fillMaxWidth().animateContentSize(),
                 colors = CardDefaults.cardColors(
                     containerColor = if (viewModel.patchState == PatchState.ERROR) {
                         MaterialTheme.colorScheme.errorContainer

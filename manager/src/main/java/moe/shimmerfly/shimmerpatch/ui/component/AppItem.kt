@@ -86,27 +86,32 @@ fun AppItem(
                 modifier = Modifier.weight(1f).alpha(if (isEnabled) 1f else 0.45f),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+                // The name and the package under it sit closer than the row's other blocks: a 16 sp
+                // line already keeps more room below its glyphs than an 11 sp one, so an equal gap
+                // reads as a wider one and the two lines drift apart.
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = label,
+                            modifier = Modifier.weight(1f, fill = false),
+                            style = MaterialTheme.typography.titleMediumEmphasized.copy(lineHeightStyle = tightLineHeight),
+                            color = cardColors.contentColor,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                        labelTrailingContent?.invoke(this)
+                    }
                     Text(
-                        text = label,
-                        modifier = Modifier.weight(1f, fill = false),
-                        style = MaterialTheme.typography.titleMediumEmphasized.copy(lineHeightStyle = tightLineHeight),
-                        color = cardColors.contentColor,
+                        text = packageName,
+                        style = MaterialTheme.typography.bodySmall.copy(lineHeightStyle = tightLineHeight),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                     )
-                    labelTrailingContent?.invoke(this)
                 }
-                Text(
-                    text = packageName,
-                    style = MaterialTheme.typography.bodySmall.copy(lineHeightStyle = tightLineHeight),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
                 if (summaryRow != null || topRightContent != null) {
                     FlowRow(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),

@@ -5,7 +5,6 @@ package moe.shimmerfly.shimmerpatch.ui.page
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -25,7 +24,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,8 +51,12 @@ fun AboutScreen(onBack: () -> Unit) {
     val layoutDirection = LocalLayoutDirection.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val backdrop = rememberMaterial3BlurBackdrop(LocalFloatingGlassBottomBarBlur.current)
+    // The avatars are remote. Asking for them during composition would put the network stack on
+    // the frame that opens the page; handing them over one frame later keeps the arrival smooth.
+    var avatarsReady by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { avatarsReady = true }
     val links = rememberAboutLinks()
-    val acknowledgments = rememberAcknowledgmentLinks()
+    val acknowledgments = rememberAcknowledgmentLinks(avatarsReady)
     ShimmerPatchScaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -82,7 +84,12 @@ fun AboutScreen(onBack: () -> Unit) {
                     Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Image(painterResource(R.drawable.ic_launcher_artwork), null, Modifier.size(88.dp).clip(MaterialTheme.shapes.extraLarge))
+                    // Through Coil so the 512px artwork is decoded off the main thread.
+                    AsyncImage(
+                        model = R.drawable.ic_launcher_artwork,
+                        contentDescription = null,
+                        modifier = Modifier.size(88.dp).clip(MaterialTheme.shapes.extraLarge),
+                    )
                     Spacer(Modifier.height(16.dp))
                     Text(stringResource(R.string.app_name), style = MaterialTheme.typography.displaySmall, color = MaterialTheme.colorScheme.primary)
                     Text("${LSPConfig.instance.VERSION_NAME} (${LSPConfig.instance.VERSION_CODE})", style = MaterialTheme.typography.labelLarge)
@@ -91,7 +98,17 @@ fun AboutScreen(onBack: () -> Unit) {
             }
             item {
                 SegmentedColumn {
-                    item { AboutLinkItem(AboutLink("NkBe", stringResource(R.string.about_author_summary), AUTHOR_GITHUB_URL, imageUrl = AUTHOR_AVATAR_URL), context::openUri) }
+                    item {
+                        AboutLinkItem(
+                            AboutLink(
+                                title = "NkBe",
+                                summary = stringResource(R.string.about_author_summary),
+                                url = AUTHOR_GITHUB_URL,
+                                imageUrl = if (avatarsReady) AUTHOR_AVATAR_URL else null,
+                            ),
+                            context::openUri,
+                        )
+                    }
                 }
             }
             item {
@@ -129,7 +146,7 @@ private fun AboutLinkItem(link: AboutLink, onLinkClick: (String) -> Unit) {
         trailingContent = {
             when {
                 link.imageUrl != null -> AsyncImage(link.imageUrl, null, Modifier.size(40.dp).clip(CircleShape), contentScale = ContentScale.Crop)
-                link.imageRes != null -> Image(painterResource(link.imageRes), null, Modifier.size(40.dp).clip(CircleShape), contentScale = ContentScale.Crop)
+                link.imageRes != null -> AsyncImage(link.imageRes, null, Modifier.size(40.dp).clip(CircleShape), contentScale = ContentScale.Crop)
             }
         },
     )
@@ -167,7 +184,7 @@ private fun rememberAboutLinks(): List<AboutLink> {
 }
 
 @Composable
-private fun rememberAcknowledgmentLinks(): List<AboutLink> {
+private fun rememberAcknowledgmentLinks(avatarsReady: Boolean): List<AboutLink> {
     val rovo89 = stringResource(R.string.about_ack_rovo89_summary)
     val lsposed = stringResource(R.string.about_ack_lsposed_team_summary)
     val jingMatrix = stringResource(R.string.about_ack_jingmatrix_summary)
@@ -177,37 +194,39 @@ private fun rememberAcknowledgmentLinks(): List<AboutLink> {
     val m558 = stringResource(R.string.about_ack_m558_summary)
     val community = stringResource(R.string.about_ack_community_summary)
 
-    return remember(rovo89, jingMatrix, lsposed, lspatch, libxposed, winter, m558, community) {
+    return remember(avatarsReady, rovo89, jingMatrix, lsposed, lspatch, libxposed, winter, m558, community) {
+        // An avatar URL only reaches the list once the page has arrived.
+        fun avatar(url: String) = if (avatarsReady) url else null
         listOf(
             AboutLink(
                 title = "rovo89",
                 summary = rovo89,
                 url = "https://github.com/rovo89/XposedBridge",
-                imageUrl = ROVO89_AVATAR_URL
+                imageUrl = avatar(ROVO89_AVATAR_URL)
             ),
             AboutLink(
                 title = "JingMatrix",
                 summary = jingMatrix,
                 url = "https://github.com/JingMatrix/Vector",
-                imageUrl = JING_MATRIX_AVATAR_URL
+                imageUrl = avatar(JING_MATRIX_AVATAR_URL)
             ),
             AboutLink(
                 title = "LSPosed",
                 summary = lsposed,
                 url = "https://github.com/LSPosed/LSPosed",
-                imageUrl = LSPOSED_TEAM_AVATAR_URL
+                imageUrl = avatar(LSPOSED_TEAM_AVATAR_URL)
             ),
             AboutLink(
                 title = "LSPatch",
                 summary = lspatch,
                 url = "https://github.com/LSPosed/LSPatch",
-                imageUrl = LSPATCH_AVATAR_URL
+                imageUrl = avatar(LSPATCH_AVATAR_URL)
             ),
             AboutLink(
                 title = "libxposed",
                 summary = libxposed,
                 url = "https://github.com/libxposed/api",
-                imageUrl = LIBXPOSED_AVATAR_URL
+                imageUrl = avatar(LIBXPOSED_AVATAR_URL)
             ),
             AboutLink(
                 title = "winter",

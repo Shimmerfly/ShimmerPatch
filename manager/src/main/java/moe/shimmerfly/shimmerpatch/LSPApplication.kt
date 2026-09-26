@@ -6,6 +6,10 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.LocaleList
 import androidx.core.content.edit
+import coil.Coil
+import coil.ImageLoader
+import coil.disk.DiskCache
+import coil.memory.MemoryCache
 import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -67,6 +71,21 @@ class LSPApplication : Application() {
                 ModuleScopeSyncStore.syncTrackedModuleScopes()
             }
         }
+        // Coil builds its loader on the first request, which used to be the first frame of the
+        // about page: that frame paid for OkHttp, the disk cache and the dispatchers at once and
+        // the page visibly hitched. Build it here, on a frame nobody is waiting on.
+        Coil.setImageLoader(
+            ImageLoader.Builder(this)
+                .memoryCache { MemoryCache.Builder(this).maxSizePercent(0.2).build() }
+                .diskCache {
+                    DiskCache.Builder()
+                        .directory(cacheDir.resolve("image_cache"))
+                        .maxSizePercent(0.02)
+                        .build()
+                }
+                .crossfade(true)
+                .build()
+        )
         AppBroadcastReceiver.register(this)
         if (!ShizukuApi.isReady) {
             globalScope.launch {

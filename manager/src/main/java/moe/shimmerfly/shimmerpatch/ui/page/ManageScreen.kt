@@ -21,17 +21,6 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.snapshotFlow
-import kotlin.math.max
-import androidx.compose.foundation.pager.PagerState
-import androidx.compose.runtime.remember
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.unit.Velocity
-import kotlin.math.abs
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
@@ -48,7 +37,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.channels.Channel
 import moe.shimmerfly.shimmerpatch.util.ShizukuApi
 import moe.shimmerfly.shimmerpatch.R
 import moe.shimmerfly.shimmerpatch.ui.component.ShimmerPatchScaffold
@@ -68,8 +56,6 @@ import moe.shimmerfly.shimmerpatch.ui.viewmodel.manage.ModuleManageViewModel
 fun ManageScreen(
     navigator: Navigator,
     controller: MainPagerState,
-    /** The pager the bottom bar drives, which this screen's own pager hands its swipes over to. */
-    screenPagerState: PagerState,
     modifier: Modifier = Modifier,
     selectedPage: Int = 0,
     onSelectedPageChange: (Int) -> Unit = {},
@@ -82,57 +68,6 @@ fun ManageScreen(
     var searchQuery by rememberSaveable { mutableStateOf("") }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val moduleManageViewModel = viewModel<ModuleManageViewModel>()
-    // One continuous gesture across two pagers: the inner one keeps the drag while it still has a
-    // page to reach, and the moment it is at an edge the leftover travels to the screen pager. So
-    // swiping on 应用 stops at 模块, and only a swipe that starts from 模块 carries on to 设置.
-    val snapRequests = remember { Channel<Int>(Channel.CONFLATED) }
-    LaunchedEffect(screenPagerState, snapRequests) {
-        // The move is animated from here rather than inside the gesture: a fling's own scope can
-        // end with the finger, which used to cut the animation short and leave the pager parked
-        // between two pages.
-        for (target in snapRequests) {
-            screenPagerState.animateScrollToPage(target.coerceIn(0, screenPagerState.pageCount - 1))
-        }
-    }
-    // One continuous gesture across two pagers: this screen's pager keeps the drag while it still
-    // has a page to reach, and the moment it is at an edge the leftover travels to the screen pager.
-    // A hand-off that got anything at all always lands exactly one page away from where the gesture
-    // started - short swipe or long, the page changes once.
-    val handOff = remember(pagerState, screenPagerState, snapRequests) {
-        object : NestedScrollConnection {
-            // What this gesture handed to the screen pager so far, in its own scroll direction.
-            private var handed = 0f
-            private var startPage = -1
-
-            override fun onPostScroll(
-                consumed: Offset,
-                available: Offset,
-                source: NestedScrollSource,
-            ): Offset {
-                if (source != NestedScrollSource.UserInput || available.x == 0f) return Offset.Zero
-                if (startPage < 0) startPage = screenPagerState.currentPage
-                // Nested scroll reports where the finger went; dispatchRawDelta wants the scroll
-                // that follows from it, which runs the other way. One gesture carries the screen
-                // pager at most one page over, however far the finger travelled.
-                val requested = -available.x
-                val room = screenPagerState.layoutInfo.pageSize.toFloat() - abs(handed)
-                val delta = requested.coerceIn(-max(room, 0f), max(room, 0f))
-                if (delta == 0f) return Offset.Zero
-                val taken = screenPagerState.dispatchRawDelta(delta)
-                handed += taken
-                return Offset(taken, 0f)
-            }
-
-            override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-                if (handed != 0f && startPage >= 0) {
-                    snapRequests.trySend(if (handed > 0f) startPage + 1 else startPage - 1)
-                }
-                handed = 0f
-                startPage = -1
-                return Velocity.Zero
-            }
-        }
-    }
     val backdrop = rememberMaterial3BlurBackdrop()
     val layoutDirection = LocalLayoutDirection.current
     val bottomInset = maxOf(contentPadding.calculateBottomPadding(), WindowInsets.ime.asPaddingValues().calculateBottomPadding())
@@ -150,23 +85,6 @@ fun ManageScreen(
                 }
             }
     }
-    // A fast flick can end without the hand-off's settle ever running, which leaves the screen
-    // pager parked between two pages. Once this screen's own pager has stopped moving, finish the
-    // move - the last page it asked for, or the nearest one.
-    LaunchedEffect(pagerState, screenPagerState) {
-        snapshotFlow { pagerState.isScrollInProgress }
-            .distinctUntilChanged()
-            .collect { scrolling ->
-                if (!scrolling && !controller.isNavigating &&
-                    !screenPagerState.isScrollInProgress &&
-                    abs(screenPagerState.currentPageOffsetFraction) > 0.001f
-                ) {
-                    // Nothing asked for a page, so finish on the nearest one.
-                    snapRequests.trySend(screenPagerState.currentPage)
-                }
-            }
-    }
-
     LaunchedEffect(pagerState.settledPage, ShizukuApi.isReady, moduleManageViewModel.enabledActivationPackagesKey) {
         if (pagerState.settledPage == 1) {
             moduleManageViewModel.refreshScopedActivationState()
@@ -225,7 +143,7 @@ fun ManageScreen(
     ) { innerPadding ->
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize().m3BackdropLayer(backdrop).nestedScroll(handOff),
+            modifier = Modifier.fillMaxSize().m3BackdropLayer(backdrop),
             beyondViewportPageCount = 1,
         ) { page ->
             val listPadding = PaddingValues(

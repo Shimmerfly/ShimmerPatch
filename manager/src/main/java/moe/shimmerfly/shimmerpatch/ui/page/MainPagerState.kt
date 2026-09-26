@@ -12,9 +12,6 @@ import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.snapshotFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -110,20 +107,6 @@ class MainPagerState(val pagerState: PagerState, private val coroutineScope: Cor
 }
 
 @Composable
-fun rememberMainPagerState(pagerState: PagerState, coroutineScope: CoroutineScope = rememberCoroutineScope()): MainPagerState {
-    val state = remember(pagerState, coroutineScope) { MainPagerState(pagerState, coroutineScope) }
-
-    // A drag can be handed to a nested scroller halfway through - a row's own sideways strip, for
-    // instance - and then it ends without the pager's own settle ever running, which parks the
-    // pager between two pages. Whenever it stops off-page with nobody navigating, finish the move.
-    LaunchedEffect(state) {
-        snapshotFlow { pagerState.isScrollInProgress }
-            .distinctUntilChanged()
-            .collect { scrolling ->
-                if (!scrolling && !state.isNavigating && abs(pagerState.currentPageOffsetFraction) > 0.01f) {
-                    pagerState.animateScrollToPage(pagerState.currentPage)
-                }
-            }
-    }
-    return state
+fun rememberMainPagerState(pagerState: PagerState, coroutineScope: CoroutineScope = rememberCoroutineScope()) = remember(pagerState, coroutineScope) {
+    MainPagerState(pagerState, coroutineScope)
 }

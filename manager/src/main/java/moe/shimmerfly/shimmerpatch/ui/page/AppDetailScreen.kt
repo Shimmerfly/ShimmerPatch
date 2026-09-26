@@ -59,6 +59,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -100,6 +101,7 @@ import moe.shimmerfly.shimmerpatch.ui.viewmodel.manage.AppManageViewModel
 import moe.shimmerfly.shimmerpatch.ui.viewmodel.manage.ModuleManageViewModel
 import moe.shimmerfly.shimmerpatch.ui.viewstate.ProcessingState
 import moe.shimmerfly.shimmerpatch.util.NeoPackageManager
+import moe.shimmerfly.shimmerpatch.util.NeoPackageManager.PatchedType
 import moe.shimmerfly.shimmerpatch.util.PatchConfigReader
 import moe.shimmerfly.shimmerpatch.util.ShizukuApi
 
@@ -407,15 +409,18 @@ fun AppDetailScreen(
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     // Which patcher produced the bundle, then - for our own - how the
-                                    // loader inside it compares with this manager.
+                                    // loader inside it compares with this manager. Only the patcher
+                                    // chip is toned, so the tone keeps meaning something.
+                                    val (neutralContainer, neutralContent) = patcherTone(null)
                                     if (patcherLabel != null) {
-                                        DetailChip(Icons.Outlined.Build, patcherLabel, emphasized = isLocal)
+                                        val (container, content) = patcherTone(appInfo?.patchedType)
+                                        DetailChip(Icons.Outlined.Build, patcherLabel, container, content)
                                     }
                                     if (isOurs) {
-                                        DetailChip(Icons.Outlined.Work, modeLabel)
+                                        DetailChip(Icons.Outlined.Work, modeLabel, neutralContainer, neutralContent)
                                     }
                                     if (isOurs && loaderLabel != null) {
-                                        DetailChip(Icons.Outlined.Memory, loaderLabel)
+                                        DetailChip(Icons.Outlined.Memory, loaderLabel, neutralContainer, neutralContent)
                                     }
                                 }
                             }
@@ -635,20 +640,37 @@ fun AppDetailScreen(
     }
 }
 
+/**
+ * The tonal pair a patcher's chip is painted with.
+ *
+ * All three tones come from the expressive scheme MaterialKolor derives from the seed, so a chip
+ * follows the wallpaper like the rest of the manager: this project takes the primary tone, and the
+ * patchers it can also read take the supporting ones - secondary and tertiary, because a single
+ * tone would leave them indistinguishable. A type we cannot name stays neutral.
+ */
+@Composable
+private fun patcherTone(type: PatchedType?): Pair<Color, Color> = when (type) {
+    PatchedType.SHIMMERPATCH ->
+        MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
+    PatchedType.NPATCH ->
+        MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
+    PatchedType.LSPATCH, PatchedType.FPA ->
+        MaterialTheme.colorScheme.tertiaryContainer to MaterialTheme.colorScheme.onTertiaryContainer
+    else ->
+        MaterialTheme.colorScheme.surfaceContainerHighest to MaterialTheme.colorScheme.onSurfaceVariant
+}
+
 /** A short label chip: a leading icon and a label, in the rounded language of the rows around it. */
 @Composable
-private fun DetailChip(icon: ImageVector, text: String, emphasized: Boolean = false) {
+private fun DetailChip(
+    icon: ImageVector,
+    text: String,
+    container: Color,
+    content: Color,
+) {
     Surface(
-        color = if (emphasized) {
-            MaterialTheme.colorScheme.primaryContainer
-        } else {
-            MaterialTheme.colorScheme.surfaceContainerHighest
-        },
-        contentColor = if (emphasized) {
-            MaterialTheme.colorScheme.onPrimaryContainer
-        } else {
-            MaterialTheme.colorScheme.onSurfaceVariant
-        },
+        color = container,
+        contentColor = content,
         shape = MaterialTheme.shapes.small,
     ) {
         Row(

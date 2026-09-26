@@ -25,6 +25,10 @@ android {
     defaultConfig {
         applicationId = defaultManagerPackageName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // Stated here as well as in the root, where every module picks it up: the IDE reads a
+        // module's own configuration first, and without it its analysis assumes an API floor of 1
+        // and reports APIs this app has always been able to call.
+        minSdk = rootProject.extra["androidMinSdkVersion"] as Int
     }
 
     dependenciesInfo {

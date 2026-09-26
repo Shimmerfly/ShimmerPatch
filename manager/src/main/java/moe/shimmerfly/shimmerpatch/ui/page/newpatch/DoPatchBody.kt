@@ -151,16 +151,18 @@ fun DoPatchBody(modifier: Modifier, navigator: Navigator) {
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
+                            // Under the text, so the line starts to the right of the mark rather
+                            // than under it, and fades rather than blinking out.
+                            AnimatedVisibility(
+                                visible = viewModel.patchState == PatchState.PATCHING,
+                                enter = fadeIn(animationSpec = tween(durationMillis = 180)),
+                                exit = fadeOut(animationSpec = tween(durationMillis = 220)),
+                            ) {
+                                LinearWavyProgressIndicator(
+                                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                                )
+                            }
                         }
-                    }
-                    // The line fades rather than blinking out; the card's own size animation takes
-                    // care of the height it leaves behind.
-                    AnimatedVisibility(
-                        visible = viewModel.patchState == PatchState.PATCHING,
-                        enter = fadeIn(animationSpec = tween(durationMillis = 180)),
-                        exit = fadeOut(animationSpec = tween(durationMillis = 220)),
-                    ) {
-                        LinearWavyProgressIndicator(modifier = Modifier.fillMaxWidth())
                     }
                 }
             }

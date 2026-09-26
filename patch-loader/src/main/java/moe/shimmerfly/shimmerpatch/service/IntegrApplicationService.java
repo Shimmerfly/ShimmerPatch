@@ -114,6 +114,9 @@ public class IntegrApplicationService extends IFrameworkService.Stub {
         return fallback;
     }
 
+    // A module manifest may declare xposedminversion as an int or as a string, so the
+    // type-agnostic getter stays: either typed getter would mis-read the other form.
+    @SuppressWarnings("deprecation")
     private static int readLegacyMinApiVersion(ApplicationInfo applicationInfo) {
         if (applicationInfo == null || applicationInfo.metaData == null) {
             return 0;

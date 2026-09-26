@@ -71,7 +71,7 @@ public class LSPLoader {
         XposedBridge.FRAMEWORK_VERSION = ver.startsWith("v") ? ver : "v" + ver;
         XposedBridge.FRAMEWORK_VERSION_NAME = XposedBridge.FRAMEWORK_VERSION;
         XposedBridge.FRAMEWORK_VERSION_CODE = LSPConfig.instance.VERSION_CODE;
-        XposedBridge.XPOSED_BRIDGE_VERSION = 93;
+        publishLegacyBridgeVersion();
 
         installNativeModuleServiceProxy();
         registerModuleRuntimeAppInfos();
@@ -100,6 +100,13 @@ public class LSPLoader {
                 : loadedApk.getApplicationInfo();
         lpparam.isFirstApplication = true;
         XC_LoadPackage.callAll(lpparam);
+    }
+
+    // Legacy modules read the bridge version straight off this static field, which the framework
+    // deprecated in favour of getXposedVersion(). It has to stay populated for them.
+    @SuppressWarnings("deprecation")
+    private static void publishLegacyBridgeVersion() {
+        XposedBridge.XPOSED_BRIDGE_VERSION = 93;
     }
 
     private static void registerModuleRuntimeAppInfos() {

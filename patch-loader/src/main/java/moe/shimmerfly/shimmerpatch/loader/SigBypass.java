@@ -326,6 +326,9 @@ public class SigBypass {
         }
     }
 
+    // Apps that still ask for the pre-API-28 signature field have to keep seeing the certificate
+    // the module was patched against, so the deprecated field is spoofed alongside signingInfo.
+    @SuppressWarnings("deprecation")
     private static void replaceSigningDetails(Context context, PackageInfo packageInfo) {
         if (packageInfo == null) return;
         boolean hasSignature = (packageInfo.signatures != null && packageInfo.signatures.length != 0)

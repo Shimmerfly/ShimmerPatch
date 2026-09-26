@@ -78,6 +78,9 @@ public class FallbackModuleServiceWrapper extends IModuleService.Stub {
         return localService.getFrameworkProperties();
     }
 
+    // Remote preference payloads are plain serialisables, and the type-checked overload only
+    // exists from API 33, so the older form has to stay for the versions below it.
+    @SuppressWarnings("deprecation")
     @Override
     public Bundle requestRemotePreferences(String group, IRemotePreferenceCallback callback) throws RemoteException {
         IModuleService remote = getActiveRemote();

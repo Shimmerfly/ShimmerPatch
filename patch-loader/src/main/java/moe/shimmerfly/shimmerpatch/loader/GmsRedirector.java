@@ -226,6 +226,9 @@ public class GmsRedirector {
         }
     }
 
+    // Callers still pass the legacy GET_SIGNATURES flag and then read the field it fills, so the
+    // deprecated pair is exactly what this hook exists to answer.
+    @SuppressWarnings("deprecation")
     private static void hookPackageManagerGetPackageInfo(Context context) {
         try {
             XposedHelpers.findAndHookMethod(

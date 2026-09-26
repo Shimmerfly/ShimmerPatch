@@ -37,7 +37,7 @@
     <string name="about_acknowledgments_title">特别鸣谢（排名不分先后）</string>
     <string name="about_ack_rovo89_summary">Xposed 框架创始人，一切模块化生态的起源与奠基者。</string>
     <string name="about_apart_title">除了此人……</string>
-    <string name="about_apart_nkbe_summary">除了猫猫语对本项目豪无贡献之人\n本项目之中最不会写代码之人\n最目中无人之人\n这边建议您删除您的仓库 纯纯污染 Copilot 语料库</string>
+    <string name="about_apart_nkbe_summary">除了猫猫语对本项目毫无贡献之人\n本项目之中最不会写代码之人\n最目中无人之人\n这边建议您删除您的仓库 纯纯污染 Copilot 语料库</string>
     <string name="about_ack_jingmatrix_summary">Vector 作者，其优秀的框架工作为 ShimmerPatch 的持续迭代提供了重要基础与启发。</string>
     <string name="about_ack_lsposed_team_summary">感谢 LSPosed 团队在现代化 Xposed 生态与底层注入技术上的持续贡献。</string>
     <string name="about_ack_lspatch_summary">免 Root 修补方案的先行者，证明了在管理器侧动态加载 Xposed 环境的可行性。</string>

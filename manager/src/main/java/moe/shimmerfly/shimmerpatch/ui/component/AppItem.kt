@@ -24,8 +24,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import moe.shimmerfly.shimmerpatch.ui.util.backgroundAwareCardColors
+
+/**
+ * The label and the package name read as one block, so both trim the leading their line box
+ * carries. Without it the two lines drift apart by the height of the space above and below the
+ * glyphs, which is most of the gap the row showed.
+ */
+private val tightLineHeight = LineHeightStyle(
+    alignment = LineHeightStyle.Alignment.Center,
+    trim = LineHeightStyle.Trim.Both,
+)
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -82,7 +93,7 @@ fun AppItem(
                     Text(
                         text = label,
                         modifier = Modifier.weight(1f, fill = false),
-                        style = MaterialTheme.typography.titleMediumEmphasized,
+                        style = MaterialTheme.typography.titleMediumEmphasized.copy(lineHeightStyle = tightLineHeight),
                         color = cardColors.contentColor,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
@@ -91,7 +102,7 @@ fun AppItem(
                 }
                 Text(
                     text = packageName,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall.copy(lineHeightStyle = tightLineHeight),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,

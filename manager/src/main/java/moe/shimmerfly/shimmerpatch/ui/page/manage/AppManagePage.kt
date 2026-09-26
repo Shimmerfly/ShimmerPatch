@@ -73,7 +73,10 @@ import moe.shimmerfly.shimmerpatch.ui.component.m3.ExpressiveActionDropdown
 import moe.shimmerfly.shimmerpatch.ui.component.AppItem
 import moe.shimmerfly.shimmerpatch.ui.component.m3.BaseWidget
 import moe.shimmerfly.shimmerpatch.ui.component.m3.DetailChip
+import moe.shimmerfly.shimmerpatch.ui.component.m3.patcherDetailTone
+import moe.shimmerfly.shimmerpatch.ui.component.m3.patcherDetailToneFor
 import moe.shimmerfly.shimmerpatch.ui.component.m3.patcherTone
+import moe.shimmerfly.shimmerpatch.ui.component.m3.patcherToneFor
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SegmentedColumn
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SettingsDialog
 import moe.shimmerfly.shimmerpatch.ui.component.m3.ToneBadge
@@ -335,11 +338,12 @@ fun AppManageBody(
                             packageName = appInfo.app.packageName,
                             summaryRow = {
                                 // The same chips the app's own page shows, so a row and the page
-                                // behind it read alike. All three take the patcher's own pair - the
-                                // primary container on our bundles, the secondary one on another
-                                // patcher's - so a row says whose patch it is before its label is
-                                // read. A trailing mark says when its loader is worth updating.
-                                val (detailContainer, detailContent) = patcherTone(appInfo.patchedType)
+                                // behind it read alike. The one naming the patcher keeps its tone;
+                                // the two that hold the bundle's details take the step below it, so
+                                // a row's name and what it says about itself stay apart. A trailing
+                                // mark says when its loader is worth updating.
+                                val (patcherContainer, patcherContent) = patcherTone(appInfo.patchedType)
+                                val (detailContainer, detailContent) = patcherDetailTone(appInfo.patchedType)
 
                                 // One line that can be swiped, the way the app's own page shows them,
                                 // instead of wrapping onto a second line inside the row. A scrollable
@@ -360,8 +364,8 @@ fun AppManageBody(
                                     DetailChip(
                                         icon = Icons.Outlined.Build,
                                         text = appInfo.patchedType.displayName,
-                                        container = detailContainer,
-                                        content = detailContent,
+                                        container = patcherContainer,
+                                        content = patcherContent,
                                     )
                                 }
 
@@ -535,11 +539,10 @@ fun AppManageBody(
                                     // The name of the patcher leads its package instead of trailing it:
                                     // which tool produced a bundle is what a reader looks for first.
                                     val managerName = managerInfo.patcherManagerName ?: managerInfo.label
-                                    val (badgeContainer, badgeContent) = if (isSelf) {
-                                        MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
-                                    } else {
-                                        MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
-                                    }
+                                    // The name keeps the patcher's own tone; the package, one step
+                                    // down, is a detail the row says about it.
+                                    val (nameContainer, nameContent) = patcherToneFor(isOurs = isSelf)
+                                    val (packageContainer, packageContent) = patcherDetailToneFor(isOurs = isSelf)
                                     BaseWidget(
                                         iconContent = {
                                             Image(
@@ -554,8 +557,8 @@ fun AppManageBody(
                                                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                                                 verticalAlignment = Alignment.CenterVertically,
                                             ) {
-                                                ToneBadge(managerName, badgeContainer, badgeContent)
-                                                ToneBadge(managerInfo.app.packageName, badgeContainer, badgeContent)
+                                                ToneBadge(managerName, nameContainer, nameContent)
+                                                ToneBadge(managerInfo.app.packageName, packageContainer, packageContent)
                                             }
                                         },
                                         onClick = {

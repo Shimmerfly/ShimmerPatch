@@ -17,21 +17,46 @@ import androidx.compose.ui.unit.dp
 import moe.shimmerfly.shimmerpatch.util.NeoPackageManager.PatchedType
 
 /**
- * The tonal pair a patcher's chip is painted with.
+ * The tonal pair a chip naming a patcher is painted with.
  *
  * Both tones come from the expressive scheme MaterialKolor derives from the seed, so a chip follows
- * the wallpaper like the rest of the manager. Our own bundles take the primary container pair and
- * the patchers we can also read take the secondary one below it, so a row says whose patch it is
- * before its label is read. A type we cannot name stays neutral.
+ * the wallpaper like the rest of the manager: this project takes the bright primary pair, and the
+ * patchers it can also read take the primary container pair one step below it. A type we cannot
+ * name stays neutral.
  */
 @Composable
 fun patcherTone(type: PatchedType?): Pair<Color, Color> = when (type) {
-    PatchedType.SHIMMERPATCH ->
-        MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
-    PatchedType.NPATCH, PatchedType.LSPATCH, PatchedType.FPA ->
-        MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
-    else ->
+    null, PatchedType.NONE ->
         MaterialTheme.colorScheme.surfaceContainerHighest to MaterialTheme.colorScheme.onSurfaceVariant
+    else -> patcherToneFor(isOurs = type == PatchedType.SHIMMERPATCH)
+}
+
+/** The same choice for a caller that knows whose row it is rather than which patcher it found. */
+@Composable
+fun patcherToneFor(isOurs: Boolean): Pair<Color, Color> = if (isOurs) {
+    MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.onPrimary
+} else {
+    MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
+}
+
+/**
+ * The pair a chip takes when it holds a bundle's details rather than naming its patcher. It is one
+ * step down from [patcherTone], which is what keeps a row's own name apart from what it says about
+ * itself.
+ */
+@Composable
+fun patcherDetailTone(type: PatchedType?): Pair<Color, Color> = when (type) {
+    null, PatchedType.NONE ->
+        MaterialTheme.colorScheme.surfaceContainerHighest to MaterialTheme.colorScheme.onSurfaceVariant
+    else -> patcherDetailToneFor(isOurs = type == PatchedType.SHIMMERPATCH)
+}
+
+/** The details' pair for a caller that knows whose row it is. */
+@Composable
+fun patcherDetailToneFor(isOurs: Boolean): Pair<Color, Color> = if (isOurs) {
+    MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
+} else {
+    MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
 }
 
 /** The neutral pair for a chip that says something other than who patched the bundle. */

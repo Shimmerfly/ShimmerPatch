@@ -73,7 +73,7 @@ The launcher icon is adaptive and carries the complete artwork, wordmark include
 Tapping a row in Manage -> Apps opens `ui/page/AppDetailScreen.kt` instead of the module picker, because which patcher produced a bundle decides which actions apply. It is assembled from the repository's own widgets (`SegmentedColumn`, `BaseWidget`, `ExpressiveActionDropdown`) rather than modeled on another manager's layout.
 
 - The header keeps the icon and app name on one row and puts the chips on their own row underneath, each with a leading icon, so a wide icon cannot squeeze them and every chip starts at the same left edge as the sections below.
-- Those chips name the patcher and, when the bundle is ours, the mode and the loader version. All three take the pair `patcherTone` returns for the bundle, so a row names its patcher and carries its details in one family: the primary container on our own bundles and the secondary one on another patcher's.
+- Those chips name the patcher and, when the bundle is ours, the mode and the loader version. The one naming the patcher takes `patcherTone`, and the two holding the bundle's details take `patcherDetailTone`, one step below it: our own bundles keep the primary family for both, another patcher's name keeps the primary container pair while its details drop to the secondary one.
 - The module list is read from the archive under `assets/{shimmerpatch,npatch,lspatch}/modules/`, so a bundle another patcher produced still lists its modules; each entry is resolved against the installed apps for a label and icon.
 - Loader and scope rows only appear for our own bundles, and a foreign one gets a note naming its patcher instead.
 - Export writes the installed APK set, base plus splits, into a folder the user picks through the system document tree.
@@ -89,7 +89,7 @@ Manage -> Apps and Manage -> Modules are one pager. Its tabs lead with an icon a
 
 ## Chips and row height
 
-- There are two tones and no more. Everything naming this project - the patcher chip on the app rows, the mode and loader chips behind it, and both badges on our own manager row - takes the primary container pair; everything naming another tool takes the secondary one. `patcherTone` is the single place that decides, so a bundle cannot end up with its name in one family and its details in another.
+- There are two tiers, and a chip is in one of them. The name of a patcher - the chip on an app row or the badge leading a manager row - takes `patcherTone`: the bright primary pair on this project and the primary container pair on another patcher. Everything the row says about that bundle or tool - its mode, its loader, the manager's package - takes `patcherDetailTone` one step down: the primary container pair on ours and the secondary one on another's. Both decisions live in one file, so a row cannot name itself in one family and carry its details in another.
 - `AppItem` keeps its blocks four dp apart and eight dp from the row's edges. Rows are the densest thing the page shows and each one already carries a name, a package and a line of chips, so the padding is what decides whether a list of them reads as a list.
 
 ## Module badges

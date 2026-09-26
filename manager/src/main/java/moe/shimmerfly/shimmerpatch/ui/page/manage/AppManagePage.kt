@@ -13,6 +13,8 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -97,7 +99,6 @@ import java.io.IOException
 
 private const val TAG = "AppManagePage"
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AppManageBody(
     navigator: Navigator,
@@ -341,10 +342,12 @@ fun AppManageBody(
                                 val (neutralContainer, neutralContent) = neutralTone()
                                 val (patcherContainer, patcherContent) = patcherTone(appInfo.patchedType)
 
-                                FlowRow(
-                                    modifier = Modifier.fillMaxWidth(),
+                                // One line that can be swiped, the way the app's own page shows them,
+                                // instead of wrapping onto a second line inside the row.
+                                Row(
+                                    modifier = Modifier.horizontalScroll(rememberScrollState()),
                                     horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                 if (appInfo.patchedType.displayName.isNotEmpty()) {
                                     DetailChip(

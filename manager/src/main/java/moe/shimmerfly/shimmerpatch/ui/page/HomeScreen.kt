@@ -67,7 +67,7 @@ fun HomeScreen(navigator: Navigator, onManageShortcut: (Int) -> Unit = {}, conte
         ShizukuApi.addRequestPermissionResultListener(listener)
         onDispose { ShizukuApi.removeRequestPermissionResultListener(listener) }
     }
-    val apps = viewModel<AppManageViewModel>().appList.size
+    val apps = viewModel<AppManageViewModel>().patchedAppCount
     val modules = viewModel<ModuleManageViewModel>().appList.size
     ShimmerPatchScaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

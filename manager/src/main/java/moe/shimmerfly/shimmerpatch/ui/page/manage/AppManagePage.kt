@@ -71,6 +71,8 @@ import moe.shimmerfly.shimmerpatch.share.LSPConfig
 import moe.shimmerfly.shimmerpatch.ui.component.m3.DropdownAction
 import moe.shimmerfly.shimmerpatch.ui.component.m3.ExpressiveActionDropdown
 import moe.shimmerfly.shimmerpatch.ui.component.AppItem
+import moe.shimmerfly.shimmerpatch.ui.component.m3.BaseWidget
+import moe.shimmerfly.shimmerpatch.ui.component.m3.SegmentedColumn
 import moe.shimmerfly.shimmerpatch.ui.component.m3.topShape
 import moe.shimmerfly.shimmerpatch.ui.component.m3.middleShape
 import moe.shimmerfly.shimmerpatch.ui.component.m3.bottomShape
@@ -112,6 +114,11 @@ fun AppManageBody(
                     it.first.app.packageName.contains(searchQuery, true)
         }
     }
+
+    // Patcher managers ship the patcher rather than being patched themselves, so they are listed in
+    // their own group under the apps instead of mixing into them.
+    val appRows = filteredList.filterNot { it.first.isPatcherManager }
+    val managerRows = filteredList.filter { it.first.isPatcherManager }
 
     val uninstallSuccessfully = stringResource(R.string.manage_uninstall_successfully)
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -211,7 +218,7 @@ fun AppManageBody(
             contentPadding = contentPadding,
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
-            if (filteredList.isEmpty()) {
+            if (appRows.isEmpty() && managerRows.isEmpty()) {
                 item {
                     Box(Modifier.fillParentMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -235,7 +242,7 @@ fun AppManageBody(
                 }
             } else {
                 itemsIndexed(
-                    items = filteredList,
+                    items = appRows,
                     key = { _, item -> item.first.app.packageName },
                 ) { index, (appInfo, patchConfig) ->
                     // A bundle another patcher produced carries no configuration of ours, so the row
@@ -307,9 +314,9 @@ fun AppManageBody(
                         AppItem(
                             modifier = Modifier.animateItem(),
                             shape = when {
-                                filteredList.size == 1 -> singleShape
+                                appRows.size == 1 -> singleShape
                                 index == 0 -> topShape
-                                index == filteredList.lastIndex -> bottomShape
+                                index == appRows.lastIndex -> bottomShape
                                 else -> middleShape
                             },
                             icon = {
@@ -490,6 +497,33 @@ fun AppManageBody(
                                     action.onClick()
                                 },
                             )
+                        }
+                    }
+                }
+
+                // The tools themselves, under the apps they produced. Each row opens the same detail
+                // page, which is where their version and archive live.
+                if (managerRows.isNotEmpty()) {
+                    item(key = "managers") {
+                        SegmentedColumn(title = stringResource(R.string.manage_managers)) {
+                            managerRows.forEach { (managerInfo, _) ->
+                                item(key = managerInfo.app.packageName) {
+                                    BaseWidget(
+                                        iconContent = {
+                                            Image(
+                                                bitmap = NeoPackageManager.getIcon(managerInfo),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(40.dp).clip(RoundedCornerShape(12.dp)),
+                                            )
+                                        },
+                                        title = managerInfo.label,
+                                        description = "${managerInfo.app.packageName} · ${managerInfo.patcherManagerName}",
+                                        onClick = {
+                                            navigator.navigate(Route.AppDetail(managerInfo.app.packageName))
+                                        },
+                                    )
+                                }
+                            }
                         }
                     }
                 }

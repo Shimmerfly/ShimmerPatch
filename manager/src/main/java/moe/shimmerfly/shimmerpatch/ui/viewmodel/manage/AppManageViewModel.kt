@@ -46,9 +46,14 @@ class AppManageViewModel : ViewModel() {
     // Both management tabs derive their lists from the same completed package scan.
     val appList: List<Pair<AppInfo, PatchConfig?>> by derivedStateOf {
         NeoPackageManager.appList
-            .filter { it.isPatched }
+            // Patcher managers belong on the page too, in their own group: they are not patched apps,
+            // but they are what produced the ones that are.
+            .filter { it.isPatched || it.isPatcherManager }
             .map { appInfo -> appInfo to PatchConfigReader.read(appInfo.app) }
     }
+
+    /** How many bundles are patched apps, which is what the home summary reports. */
+    val patchedAppCount: Int by derivedStateOf { NeoPackageManager.appList.count { it.isPatched } }
 
     var isRefreshing by mutableStateOf(false)
         private set

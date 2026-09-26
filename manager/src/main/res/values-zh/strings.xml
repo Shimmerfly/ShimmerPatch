@@ -276,4 +276,5 @@
     <string name="app_detail_package_name">包名</string>
     <string name="app_detail_install_path">安装路径</string>
     <string name="app_detail_missing">此应用已不再安装</string>
+    <string name="manage_managers">管理器</string>
 </resources>

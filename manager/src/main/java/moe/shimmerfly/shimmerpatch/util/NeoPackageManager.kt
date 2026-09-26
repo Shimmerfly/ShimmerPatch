@@ -52,6 +52,13 @@ object NeoPackageManager {
     const val META_DATA_LSPATCH = "lspatch"
     const val META_DATA_FPA = "fpa"
 
+    /** Patcher managers, by package: they are the tools, not the bundles they produce. */
+    private val PATCHER_MANAGERS = mapOf(
+        "moe.shimmerfly.shimmerpatch" to "ShimmerPatch",
+        "org.lsposed.lspatch" to "LSPatch",
+        "top.nkbe.npatch" to "NPatch",
+    )
+
     /** Loader packages, used when a bundle carries no metadata we can read. */
     private const val PACKAGE_SHIMMERPATCH = "moe.shimmerfly.shimmerpatch"
     private const val PACKAGE_NPATCH = "top.nkbe.npatch"
@@ -114,6 +121,18 @@ object NeoPackageManager {
 
         val isPatched: Boolean
             get() = patchedType != PatchedType.NONE
+
+        /**
+         * Whether this app is a patcher manager rather than a patched app. Managers ship their own
+         * loader assets, and their application class lives in their own package, so a marker-based
+         * test can mistake one for a bundle. Recognising them by package keeps the management list
+         * honest: they are listed apart from the apps they produce.
+         */
+        val patcherManagerName: String?
+            get() = PATCHER_MANAGERS[app.packageName]
+
+        val isPatcherManager: Boolean
+            get() = patcherManagerName != null
     }
 
     /**
@@ -131,12 +150,13 @@ object NeoPackageManager {
         if (meta?.containsKey(META_DATA_LSPATCH) == true) return PatchedType.LSPATCH
         if (meta?.containsKey(META_DATA_FPA) == true) return PatchedType.FPA
 
-        // Tier 2: AppComponentFactory and application class name.
-        if (factory.contains(PACKAGE_SHIMMERPATCH) || className.contains(PACKAGE_SHIMMERPATCH)) {
-            return PatchedType.SHIMMERPATCH
-        }
-        if (factory.contains(PACKAGE_NPATCH) || className.contains(PACKAGE_NPATCH)) return PatchedType.NPATCH
-        if (factory.contains(PACKAGE_LSPATCH) || className.contains(PACKAGE_LSPATCH)) return PatchedType.LSPATCH
+        // Tier 2: the AppComponentFactory the patcher installs, which is the marker every one of them
+        // writes. The application class name is deliberately not consulted: a patcher's own manager
+        // declares an Application class of its own package, so matching that would report every manager
+        // as a patched app. FPA is the exception - it really does replace the application class.
+        if (factory.contains(PACKAGE_SHIMMERPATCH)) return PatchedType.SHIMMERPATCH
+        if (factory.contains(PACKAGE_NPATCH)) return PatchedType.NPATCH
+        if (factory.contains(PACKAGE_LSPATCH)) return PatchedType.LSPATCH
         if (factory.startsWith("fpa.") || className.startsWith("fpa.") ||
             factory.contains("fun.fpa") || className.contains("fun.fpa")
         ) {
@@ -158,18 +178,14 @@ object NeoPackageManager {
         return runCatching {
             ZipFile(sourceFile).use { zip ->
                 when {
-                    zip.getEntry("assets/shimmerpatch/config.json") != null ||
-                        zip.getEntry("assets/shimmerpatch/loader.bin") != null ||
-                        zip.getEntry("assets/shimmerpatch/origin.apk") != null -> PatchedType.SHIMMERPATCH
+                    // Only the embedded original APK settles it. Every manager ships the loader assets
+                    // of its own patcher - this one included - so matching those would list the manager
+                    // itself as a patched app, while a patched bundle always carries what it replaced.
+                    zip.getEntry("assets/shimmerpatch/origin.apk") != null -> PatchedType.SHIMMERPATCH
                     // Pre-rename layouts of this project, and upstream NPatch and Vector.
-                    zip.getEntry("assets/npatch/config.json") != null ||
-                        zip.getEntry("assets/npatch/loader.bin") != null ||
-                        zip.getEntry("assets/npatch/origin.apk") != null -> PatchedType.NPATCH
-                    zip.getEntry("assets/lspatch/config.json") != null ||
-                        zip.getEntry("assets/lspatch/loader.dex") != null ||
-                        zip.getEntry("assets/lspatch/origin.apk") != null -> PatchedType.LSPATCH
-                    zip.getEntry("fpa/config.json") != null || zip.getEntry("extra/core.dex") != null ||
-                        zip.getEntry("fpa/source.apk") != null || zip.getEntry("fpa/o_app.apk") != null -> PatchedType.FPA
+                    zip.getEntry("assets/npatch/origin.apk") != null -> PatchedType.NPATCH
+                    zip.getEntry("assets/lspatch/origin.apk") != null -> PatchedType.LSPATCH
+                    zip.getEntry("fpa/source.apk") != null || zip.getEntry("fpa/o_app.apk") != null -> PatchedType.FPA
                     zip.getEntry("assets/origin.apk") != null -> PatchedType.EMBEDDED
                     else -> PatchedType.NONE
                 }

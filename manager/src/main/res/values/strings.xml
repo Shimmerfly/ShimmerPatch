@@ -258,6 +258,9 @@
     <string name="install_notification_title">%s installed successfully</string>
     <string name="install_notification_text">Tap to launch the application</string>
 
+    <!-- Patcher managers, listed apart from the apps they produce. -->
+    <string name="manage_managers">Managers</string>
+
     <!-- App detail: reached by tapping a patched app, rather than opening its module scope. -->
     <string name="app_detail_modules_empty">No modules are embedded in this app</string>
     <string name="app_detail_modules_embedded">Modules are embedded in this APK. Changing them needs a repatch and a reinstall of %1$s.</string>

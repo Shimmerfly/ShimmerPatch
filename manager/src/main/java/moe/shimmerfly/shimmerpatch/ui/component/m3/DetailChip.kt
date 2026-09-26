@@ -19,19 +19,18 @@ import moe.shimmerfly.shimmerpatch.util.NeoPackageManager.PatchedType
 /**
  * The tonal pair a patcher's chip is painted with.
  *
- * All three tones come from the expressive scheme MaterialKolor derives from the seed, so a chip
- * follows the wallpaper like the rest of the manager: this project takes the primary tone, and the
- * patchers it can also read take the supporting ones - secondary and tertiary, because a single
- * tone would leave them indistinguishable. A type we cannot name stays neutral.
+ * Both tones come from the expressive scheme MaterialKolor derives from the seed, so a chip follows
+ * the wallpaper like the rest of the manager. Our own bundles take the bright primary pair and the
+ * patchers we can also read take the container pair below it, which is dark on dark and light on
+ * light: the chip that names this project is the one that stands out. A type we cannot name stays
+ * neutral.
  */
 @Composable
 fun patcherTone(type: PatchedType?): Pair<Color, Color> = when (type) {
     PatchedType.SHIMMERPATCH ->
+        MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.onPrimary
+    PatchedType.NPATCH, PatchedType.LSPATCH, PatchedType.FPA ->
         MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
-    PatchedType.NPATCH ->
-        MaterialTheme.colorScheme.secondaryContainer to MaterialTheme.colorScheme.onSecondaryContainer
-    PatchedType.LSPATCH, PatchedType.FPA ->
-        MaterialTheme.colorScheme.tertiaryContainer to MaterialTheme.colorScheme.onTertiaryContainer
     else ->
         MaterialTheme.colorScheme.surfaceContainerHighest to MaterialTheme.colorScheme.onSurfaceVariant
 }

@@ -77,6 +77,7 @@ import moe.shimmerfly.shimmerpatch.ui.component.m3.neutralTone
 import moe.shimmerfly.shimmerpatch.ui.component.m3.patcherTone
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SegmentedColumn
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SettingsDialog
+import moe.shimmerfly.shimmerpatch.ui.component.m3.ToneBadge
 import moe.shimmerfly.shimmerpatch.ui.component.m3.lazySegmentedItems
 import moe.shimmerfly.shimmerpatch.ui.component.m3.topShape
 import moe.shimmerfly.shimmerpatch.ui.component.m3.middleShape
@@ -531,6 +532,14 @@ fun AppManageBody(
                             managerRows.forEach { (managerInfo, _) ->
                                 val isSelf = managerInfo.app.packageName == context.packageName
                                 item(key = managerInfo.app.packageName) {
+                                    // The name of the patcher leads its package instead of trailing it:
+                                    // which tool produced a bundle is what a reader looks for first.
+                                    val managerName = managerInfo.patcherManagerName ?: managerInfo.label
+                                    val (badgeContainer, badgeContent) = if (isSelf) {
+                                        MaterialTheme.colorScheme.primary to MaterialTheme.colorScheme.onPrimary
+                                    } else {
+                                        MaterialTheme.colorScheme.primaryContainer to MaterialTheme.colorScheme.onPrimaryContainer
+                                    }
                                     BaseWidget(
                                         iconContent = {
                                             Image(
@@ -540,7 +549,19 @@ fun AppManageBody(
                                             )
                                         },
                                         title = managerInfo.label,
-                                        description = "${managerInfo.app.packageName} · ${managerInfo.patcherManagerName}",
+                                        extraContent = {
+                                            Row(
+                                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                            ) {
+                                                ToneBadge(managerName, badgeContainer, badgeContent)
+                                                Text(
+                                                    text = managerInfo.app.packageName,
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                )
+                                            }
+                                        },
                                         onClick = {
                                             if (isSelf) {
                                                 navigator.navigate(Route.About)

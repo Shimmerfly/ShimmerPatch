@@ -36,6 +36,7 @@ import moe.shimmerfly.shimmerpatch.util.NeoPackageManager
 import moe.shimmerfly.shimmerpatch.R
 import moe.shimmerfly.shimmerpatch.ui.component.m3.DropdownAction
 import moe.shimmerfly.shimmerpatch.ui.component.m3.ExpressiveActionDropdown
+import moe.shimmerfly.shimmerpatch.ui.component.m3.ToneBadge
 import moe.shimmerfly.shimmerpatch.ui.component.AppItem
 import moe.shimmerfly.shimmerpatch.ui.component.m3.topShape
 import moe.shimmerfly.shimmerpatch.ui.component.m3.middleShape
@@ -87,17 +88,7 @@ private fun pipelineBadgeTone(isModern: Boolean): ModuleBadgeColors = if (isMode
 /** One of the two short labels a module row carries, in the tone its meaning leads with. */
 @Composable
 private fun ModuleBadge(text: String, colors: ModuleBadgeColors) {
-    Surface(
-        shape = RoundedCornerShape(6.dp),
-        color = colors.container
-    ) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.labelSmall,
-            color = colors.content,
-            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-        )
-    }
+    ToneBadge(text = text, container = colors.container, content = colors.content)
 }
 
 @Composable

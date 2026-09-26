@@ -89,7 +89,7 @@ fun AppItem(
                 // The name and the package under it sit closer than the row's other blocks: a 16 sp
                 // line already keeps more room below its glyphs than an 11 sp one, so an equal gap
                 // reads as a wider one and the two lines drift apart.
-                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(0.dp)) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalAlignment = Alignment.CenterVertically,

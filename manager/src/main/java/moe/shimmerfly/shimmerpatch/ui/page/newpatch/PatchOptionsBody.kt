@@ -48,6 +48,7 @@ import moe.shimmerfly.shimmerpatch.ui.component.m3.SegmentedColumn
 import moe.shimmerfly.shimmerpatch.ui.component.m3.SwitchWidget
 import moe.shimmerfly.shimmerpatch.ui.component.settings.CustomKeystoreDialog
 import moe.shimmerfly.shimmerpatch.ui.component.settings.SettingsEditor
+import moe.shimmerfly.shimmerpatch.ui.util.backgroundAwareCardColors
 import moe.shimmerfly.shimmerpatch.ui.viewmodel.NewPatchViewModel
 import moe.shimmerfly.shimmerpatch.ui.viewmodel.NewPatchViewModel.ViewAction
 
@@ -230,16 +231,30 @@ fun PatchOptionsBody(modifier: Modifier, onAddEmbed: () -> Unit, onAddFromStorag
         }
         if (viewModel.hasSubProcesses) {
             item(key = "subprocess") {
-                SegmentedColumn {
-                    item {
-                        BaseWidget(
-                            icon = Icons.Outlined.Info,
-                            title = stringResource(R.string.patch_inject_dex),
-                            description = pluralStringResource(
+                // A notice, not an option: the switch itself sits under the advanced options, so
+                // this reads like the Shizuku banner on the home page instead of a row to tap.
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    colors = backgroundAwareCardColors(
+                        MaterialTheme.colorScheme.tertiaryContainer,
+                        MaterialTheme.colorScheme.onTertiaryContainer,
+                    ),
+                ) {
+                    Column(Modifier.fillMaxWidth().padding(16.dp)) {
+                        Text(
+                            text = stringResource(R.string.patch_inject_dex),
+                            style = MaterialTheme.typography.titleMediumEmphasized,
+                        )
+                        Text(
+                            text = pluralStringResource(
                                 R.plurals.patch_subprocess_detected_hint,
                                 viewModel.subProcessCount,
                                 viewModel.subProcessCount,
                             ),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(top = 4.dp),
                         )
                     }
                 }

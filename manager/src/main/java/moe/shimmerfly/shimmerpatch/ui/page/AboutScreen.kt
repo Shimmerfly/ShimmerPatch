@@ -103,7 +103,7 @@ fun AboutScreen(onBack: () -> Unit) {
                             AboutLink(
                                 title = "𝘚𝘩𝘪𝘮𝘮𝘦𝘳𝘧𝘭𝘺 · 星沫",
                                 summary = stringResource(R.string.about_author_shimmerfly_summary),
-                                url = AUTHOR_BLOG_URL,
+                                url = AUTHOR_GITHUB,
                                 imageUrl = if (avatarsReady) AUTHOR_AVATAR_URL else null,
                             ),
                             context::openUri,
@@ -154,17 +154,16 @@ private fun AboutLinkItem(link: AboutLink, onLinkClick: (String) -> Unit) {
 
 @Composable
 private fun rememberAboutLinks(): List<AboutLink> {
-    val websiteTitle = stringResource(R.string.about_official_website)
-    val websiteSummary = stringResource(R.string.about_link_website_summary)
+    val blogSummary = stringResource(R.string.about_link_blog_summary)
     val githubSummary = stringResource(R.string.about_link_github_summary)
     val telegramSummary = stringResource(R.string.about_link_telegram_summary)
 
-    return remember(websiteTitle, websiteSummary, githubSummary, telegramSummary) {
+    return remember(blogSummary, githubSummary, telegramSummary) {
         listOf(
             AboutLink(
-                title = websiteTitle,
-                summary = websiteSummary,
-                url = ABOUT_WEBSITE_URL,
+                title = AUTHOR_BLOG_TITLE,
+                summary = blogSummary,
+                url = AUTHOR_BLOG_URL,
                 icon = Icons.Outlined.Public
             ),
             AboutLink(
@@ -208,7 +207,7 @@ private fun rememberAcknowledgmentLinks(avatarsReady: Boolean): List<AboutLink> 
             AboutLink(
                 title = "NkBe",
                 summary = nkbe,
-                url = AUTHOR_GITHUB_URL,
+                url = NKBE_GITHUB_URL,
                 imageUrl = avatar(NKBE_AVATAR_URL)
             ),
             AboutLink(
@@ -261,12 +260,13 @@ private fun Context.openUri(uri: String) {
     startActivity(Intent(Intent.ACTION_VIEW, uri.toUri()))
 }
 
-private const val ABOUT_WEBSITE_URL = "https://www.nkbe.top"
-private const val GITHUB_URL = "https://github.com/7723mod/NPatch"
-private const val TELEGRAM_URL = "https://t.me/NPatch"
+private const val GITHUB_URL = "https://github.com/Shimmerfly/ShimmerPatch"
+private const val TELEGRAM_URL = "https://t.me/ShimmerPatch"
+private const val AUTHOR_GITHUB = "https://github.com/Shimmerfly"
 private const val AUTHOR_BLOG_URL = "https://shimmerfly.github.io/"
+private const val AUTHOR_BLOG_TITLE = "𝘚𝘩𝘪𝘮𝘮𝘦𝘳𝘧𝘭𝘺 の 𝗕𝗹𝗼𝗴"
 private const val AUTHOR_AVATAR_URL = "https://github.com/Shimmerfly.png?size=256"
-private const val AUTHOR_GITHUB_URL = "https://github.com/HSSkyBoy"
+private const val NKBE_GITHUB_URL = "https://github.com/HSSkyBoy"
 private const val NKBE_AVATAR_URL = "https://avatars.githubusercontent.com/u/122550437?s=256"
 private const val ROVO89_AVATAR_URL = "https://avatars.githubusercontent.com/u/1573299?s=256"
 private const val JING_MATRIX_AVATAR_URL = "https://avatars.githubusercontent.com/u/24476093?s=256"

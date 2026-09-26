@@ -92,6 +92,7 @@ Manage -> Apps and Manage -> Modules are one pager. Its tabs lead with an icon a
 A module row carries two badges, and both used to be painted from the module's kind, so a modern module showed two identical green labels.
 
 - A modern module splits the primary family between its badges: the API version takes the light `primary` tone and the pipeline the darker `primaryContainer` under it. A legacy module keeps the pair it had - the version in `primaryContainer`, the pipeline in `secondaryContainer` - because there the pipeline is the constant and the version is what moves.
+- Both badges sit in the row's top corner, level with the module name, the way LSPatch shows them. `AppItem`'s `topRightContent` slot is what places them there; it had been invoked inside the left-aligned block, so the slot's name and its position disagreed. The version and the description keep the left column to themselves, unchanged.
 - The pipeline badge names the API family the module was written against - `libxposed` or `legacy` - rather than the abstract `Modern`/`Legacy`: the tone already carries the state, and the label says which side of the API split the module sits on.
 
 ## Regression checks

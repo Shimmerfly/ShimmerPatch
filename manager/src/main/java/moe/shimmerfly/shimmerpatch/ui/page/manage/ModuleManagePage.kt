@@ -84,6 +84,22 @@ private fun pipelineBadgeTone(isModern: Boolean): ModuleBadgeColors = if (isMode
     )
 }
 
+/** One of the two short labels a module row carries, in the tone its meaning leads with. */
+@Composable
+private fun ModuleBadge(text: String, colors: ModuleBadgeColors) {
+    Surface(
+        shape = RoundedCornerShape(6.dp),
+        color = colors.container
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelSmall,
+            color = colors.content,
+            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+        )
+    }
+}
+
 @Composable
 fun ModuleManageBody(
     scrollBehavior: TopAppBarScrollBehavior,
@@ -150,6 +166,16 @@ fun ModuleManageBody(
                     val settingsIntent = remember { NeoPackageManager.getSettingsIntent(item.appInfo.app.packageName) }
                     val apiBadgeColors = apiBadgeTone(isModern = item.metadata.isModern)
                     val pipelineBadgeColors = pipelineBadgeTone(isModern = item.metadata.isModern)
+                    val apiBadgeText = when {
+                        item.metadata.isModern -> stringResource(R.string.manage_module_api_version, item.metadata.targetApiVersion)
+                        item.metadata.isLegacy -> stringResource(R.string.manage_module_api_version, item.metadata.minApiVersion)
+                        else -> stringResource(R.string.manage_module_api_unsupported, item.metadata.minApiVersion)
+                    }
+                    val pipelineBadgeText = when {
+                        item.metadata.isModern -> stringResource(R.string.manage_module_pipeline_modern)
+                        item.metadata.isLegacy -> stringResource(R.string.manage_module_pipeline_legacy)
+                        else -> stringResource(R.string.manage_module_pipeline_unsupported)
+                    }
 
                     Box(modifier = Modifier.fillMaxWidth().pointerInput(Unit) {
                         awaitEachGesture {
@@ -184,21 +210,6 @@ fun ModuleManageBody(
                                 }
                             },
                             summaryRow = {
-                                Surface(
-                                    shape = RoundedCornerShape(6.dp),
-                                    color = apiBadgeColors.container
-                                ) {
-                                    Text(
-                                        text = when {
-                                            item.metadata.isModern -> stringResource(R.string.manage_module_api_version, item.metadata.targetApiVersion)
-                                            item.metadata.isLegacy -> stringResource(R.string.manage_module_api_version, item.metadata.minApiVersion)
-                                            else -> stringResource(R.string.manage_module_api_unsupported, item.metadata.minApiVersion)
-                                        },
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = apiBadgeColors.content,
-                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                                    )
-                                }
                                 if (item.metadata.version.isNotEmpty()) {
                                     Text(
                                         text = item.metadata.version,
@@ -207,22 +218,11 @@ fun ModuleManageBody(
                                     )
                                 }
                             },
+                            // Both badges sit in the row's top corner, the way LSPatch shows them,
+                            // so the version and the description keep the left column to themselves.
                             topRightContent = {
-                                Surface(
-                                    shape = RoundedCornerShape(6.dp),
-                                    color = pipelineBadgeColors.container
-                                ) {
-                                    Text(
-                                        text = when {
-                                            item.metadata.isModern -> stringResource(R.string.manage_module_pipeline_modern)
-                                            item.metadata.isLegacy -> stringResource(R.string.manage_module_pipeline_legacy)
-                                            else -> stringResource(R.string.manage_module_pipeline_unsupported)
-                                        },
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = pipelineBadgeColors.content,
-                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                                    )
-                                }
+                                ModuleBadge(apiBadgeText, apiBadgeColors)
+                                ModuleBadge(pipelineBadgeText, pipelineBadgeColors)
                             },
                             description = item.metadata.description,
                             warningText = if (item.metadata.isUnsupported) {

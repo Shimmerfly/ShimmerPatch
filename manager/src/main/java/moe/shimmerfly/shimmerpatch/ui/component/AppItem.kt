@@ -112,21 +112,28 @@ fun AppItem(
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
-                if (summaryRow != null || topRightContent != null) {
+                if (summaryRow != null) {
                     FlowRow(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
-                        summaryRow?.let { summary ->
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                content = summary,
-                            )
-                        }
-                        topRightContent?.invoke()
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            content = summaryRow,
+                        )
                     }
                 }
+            }
+            // Pinned to the row's top corner, level with the name, the way LSPatch shows a
+            // module's badges: the block is named for that corner and nothing else uses it.
+            topRightContent?.let { corner ->
+                Row(
+                    modifier = Modifier.align(Alignment.Top),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    content = { corner() },
+                )
             }
             trailingContent?.invoke()
         }

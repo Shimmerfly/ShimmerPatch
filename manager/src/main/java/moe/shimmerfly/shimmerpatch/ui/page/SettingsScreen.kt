@@ -38,7 +38,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.edit
@@ -68,9 +67,6 @@ import moe.shimmerfly.shimmerpatch.ui.util.BackgroundImageStorage
 import moe.shimmerfly.shimmerpatch.ui.util.LocalSnackbarHost
 import moe.shimmerfly.shimmerpatch.ui.util.LocalThemeSettings
 import moe.shimmerfly.shimmerpatch.ui.util.LocalFloatingGlassBottomBarBlur
-import java.io.IOException
-import java.security.GeneralSecurityException
-import java.security.KeyStore
 import kotlin.math.roundToInt
 
 private const val TAG = "SettingsScreen"

@@ -19,7 +19,6 @@ import moe.shimmerfly.shimmerpatch.config.KeystorePreset
 import moe.shimmerfly.shimmerpatch.lspApp
 import moe.shimmerfly.shimmerpatch.share.PatchConfig
 import moe.shimmerfly.shimmerpatch.patch.util.ManifestParser
-import moe.shimmerfly.shimmerpatch.util.NeoPackageManager
 import moe.shimmerfly.shimmerpatch.util.NeoPackageManager.AppInfo
 import moe.shimmerfly.shimmerpatch.patch.util.Logger
 import moe.shimmerfly.shimmerpatch.share.Constants
@@ -326,7 +325,7 @@ class NewPatchViewModel : ViewModel() {
 
             val info = lspApp.packageManager.getPackageArchiveInfo(target.absolutePath, 0)
                 ?: error("The selected file is not an APK")
-            val packageName = info.packageName ?: error("The selected APK has no package name")
+            val packageName = info.packageName
             val application = info.applicationInfo?.apply { sourceDir = target.absolutePath }
             val label = application
                 ?.let { lspApp.packageManager.getApplicationLabel(it).toString() }

@@ -34,7 +34,6 @@ import rikka.shizuku.Shizuku
 import rikka.shizuku.ShizukuBinderWrapper
 import rikka.shizuku.ShizukuProvider
 import rikka.shizuku.SystemServiceHelper
-import java.io.File
 
 object ShizukuApi {
     private const val TAG = "ShizukuApi"

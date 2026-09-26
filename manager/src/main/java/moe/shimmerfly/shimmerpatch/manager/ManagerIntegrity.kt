@@ -12,7 +12,6 @@ import android.util.Log
 import moe.shimmerfly.shimmerpatch.BuildConfig
 import java.security.MessageDigest
 import java.util.Base64
-import java.util.Locale
 
 object ManagerIntegrity {
     private const val TAG = "ShimmerPatch-Integrity"

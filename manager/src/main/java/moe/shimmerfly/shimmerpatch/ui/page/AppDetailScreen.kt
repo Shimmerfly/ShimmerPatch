@@ -19,13 +19,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -46,7 +43,6 @@ import androidx.compose.material.icons.outlined.SystemUpdate
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -59,8 +55,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -104,7 +98,6 @@ import moe.shimmerfly.shimmerpatch.ui.viewmodel.manage.AppManageViewModel
 import moe.shimmerfly.shimmerpatch.ui.viewmodel.manage.ModuleManageViewModel
 import moe.shimmerfly.shimmerpatch.ui.viewstate.ProcessingState
 import moe.shimmerfly.shimmerpatch.util.NeoPackageManager
-import moe.shimmerfly.shimmerpatch.util.NeoPackageManager.PatchedType
 import moe.shimmerfly.shimmerpatch.util.PatchConfigReader
 import moe.shimmerfly.shimmerpatch.util.ShizukuApi
 
@@ -182,9 +175,8 @@ fun AppDetailScreen(
     }
 
     val exportLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { directory ->
-        val target = appInfo
-        if (directory != null && target != null) {
-            scope.launch { detailViewModel.exportApks(directory, target) }
+        if (directory != null && appInfo != null) {
+            scope.launch { detailViewModel.exportApks(directory, appInfo) }
         }
     }
 
@@ -228,7 +220,6 @@ fun AppDetailScreen(
         else -> Unit
     }
 
-    val exportDone = stringResource(R.string.app_detail_export_apk_done)
     val exportFailed = stringResource(R.string.app_detail_export_apk_failed)
     when (val state = detailViewModel.exportState) {
         is AppDetailViewModel.ExportState.Done -> {
@@ -256,6 +247,10 @@ fun AppDetailScreen(
     }
 
     val scopeUpdatedText = stringResource(R.string.manage_module_scope_updated)
+    // Resolved here rather than through the context, which would hand back a stale string if the
+    // configuration changed under this screen.
+    val diagnosticsChooserText = stringResource(R.string.manage_export_diagnostics_chooser)
+    val diagnosticsFailedText = stringResource(R.string.manage_export_diagnostics_failed)
 
     val openScope: () -> Unit = {
         scope.launch {
@@ -299,14 +294,11 @@ fun AppDetailScreen(
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 }.let { shareIntent ->
                     context.startActivity(
-                        Intent.createChooser(
-                            shareIntent,
-                            context.getString(R.string.manage_export_diagnostics_chooser),
-                        ),
+                        Intent.createChooser(shareIntent, diagnosticsChooserText),
                     )
                 }
             }.onFailure {
-                snackbarHost.showSnackbar(context.getString(R.string.manage_export_diagnostics_failed))
+                snackbarHost.showSnackbar(diagnosticsFailedText)
             }
         }
     }
@@ -416,7 +408,7 @@ fun AppDetailScreen(
                                     // chip is toned, so the tone keeps meaning something.
                                     val (neutralContainer, neutralContent) = neutralTone()
                                     if (patcherLabel != null) {
-                                        val (container, content) = patcherTone(appInfo?.patchedType)
+                                        val (container, content) = patcherTone(appInfo.patchedType)
                                         DetailChip(Icons.Outlined.Build, patcherLabel, container, content)
                                     }
                                     if (isOurs) {
@@ -507,7 +499,7 @@ fun AppDetailScreen(
                                     description = stringResource(R.string.app_detail_update_loader_summary),
                                     onClick = {
                                         detailViewModel.appInfo(packageName)?.let { info ->
-                                            patchConfig?.let { config ->
+                                            patchConfig.let { config ->
                                                 manageViewModel.dispatch(
                                                     AppManageViewModel.ViewAction.UpdateLoader(info, config)
                                                 )

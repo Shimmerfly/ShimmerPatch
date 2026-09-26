@@ -8,7 +8,6 @@ import android.content.pm.IPackageManager
 import android.content.pm.PackageInstaller
 import android.content.pm.PackageInstallerHidden
 import android.content.pm.PackageInstallerHidden.SessionParamsHidden
-import android.content.pm.PackageManager
 import android.content.pm.PackageManagerHidden
 import android.os.Bundle
 import android.os.ParcelFileDescriptor

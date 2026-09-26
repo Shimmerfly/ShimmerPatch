@@ -235,7 +235,9 @@ public final class ShimmerPatchRemoteClient {
                 Collections.newSetFromMap(new ConcurrentHashMap<>());
         private volatile Map<String, Object> values;
 
-        @SuppressWarnings("unchecked")
+        // The payload is a plain serialisable, and the type-checked overload only exists from
+        // API 33, so the older form has to stay for the versions below it.
+        @SuppressWarnings({"unchecked", "deprecation"})
         RemotePreferences(IXposedService service, String group) {
             this.service = service;
             this.group = group;
@@ -324,6 +326,8 @@ public final class ShimmerPatchRemoteClient {
             }
         }
 
+        // Same legacy serialisable reads as the constructor above.
+        @SuppressWarnings("deprecation")
         private void applyDiff(Bundle diff) {
             Set<String> changed = new HashSet<>();
             synchronized (this) {

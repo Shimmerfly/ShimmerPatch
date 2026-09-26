@@ -13,8 +13,8 @@
     <group
             android:pivotX="53.8"
             android:pivotY="42.125"
-            android:scaleX="0.94"
-            android:scaleY="0.94"
+            android:scaleX="0.86"
+            android:scaleY="0.86"
             android:translateX="0.2"
             android:translateY="11.875">
         <path

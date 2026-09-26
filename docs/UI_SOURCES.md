@@ -60,7 +60,7 @@ The launcher icon is adaptive. A plain bitmap made launchers fall back to drawin
 
 - Colours are sampled from the supplied artwork: field `#86B752`, arc `#E7F2D7`, mark `#FFFFFF`, wordmark `#496025`.
 - `mipmap-anydpi-v26/ic_launcher.xml` and `ic_launcher_round.xml` combine `ic_launcher_background` with `ic_launcher_foreground`, and add `ic_launcher_monochrome` for Android 13+ themed icons.
-- The mark is centred in the canvas and scaled to 0.94 about its own centre, so its arm tips reach `(53.6 / 2) * sqrt(2) * 0.94 = 35.6` from the centre, inside the guaranteed-visible circle of radius 36: no mask can clip them.
+- The mark is centred in the canvas and scaled to 0.86 about its own centre, so its arm tips reach `(53.6 / 2) * sqrt(2) * 0.86 = 32.6` of the guaranteed-visible circle's 36-unit radius. The first cut used 0.94, which reached 35.6 and left the mark looking wedged against a circular launcher mask.
 - `mipmap-{m,h,xh,xxh,xxxh}dpi/ic_launcher.png` carry the complete artwork, wordmark included, for API levels without adaptive icons, generated from the source artwork at 48-192 px.
 - The splash uses `ic_launcher_artwork.png`, a 512 px raster of the same artwork. The vector it replaced still spelled NPatch in its traced wordmark, and a raster reuses the supplier's lettering instead of retracing twelve glyphs as path data.
 - `ic_notification.xml` draws the mark on its own 24 dp canvas. Notification small icons are rendered as a system-tinted silhouette, so the full artwork arrived as a single solid block.

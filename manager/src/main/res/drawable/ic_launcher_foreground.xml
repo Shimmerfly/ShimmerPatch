@@ -3,7 +3,8 @@
   Adaptive icon foreground: the white cross and its four dots, taken from the launcher artwork.
   The cross spans x 27.5-80.1 and y 15.33-68.92 in this 108x108 viewport.
   The artwork places the cross above the wordmark, so the path is moved to the centre of the
-  canvas and scaled about its own centre here.
+  canvas and scaled about its own centre here. At 0.86 the arm tips reach 32.6 of the 36-unit
+  guaranteed-visible circle, which leaves the padding a circular launcher mask needs.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
         android:width="108dp"
@@ -13,8 +14,8 @@
     <group
             android:pivotX="53.8"
             android:pivotY="42.125"
-            android:scaleX="0.94"
-            android:scaleY="0.94"
+            android:scaleX="0.86"
+            android:scaleY="0.86"
             android:translateX="0.2"
             android:translateY="11.875">
         <path

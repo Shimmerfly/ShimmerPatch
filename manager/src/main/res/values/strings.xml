@@ -51,6 +51,7 @@
     <string name="manage_no_search_results">No search results</string>
     <string name="manage_no_apps">No patched apps yet</string>
     <string name="manage_rolling">Rolling</string>
+    <string name="app_detail_mode_rolling_hint">The loader is served by the manager at run time, so it can be updated without repatching.</string>
     <string name="manage_update_loader">Update loader</string>
     <string name="manage_update_loader_successfully">Update successfully</string>
     <string name="manage_update_loader_failed">Update failed</string>

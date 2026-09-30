@@ -51,6 +51,7 @@
     <string name="manage_no_search_results">暂无搜索结果</string>
     <string name="manage_no_apps">尚无已修补的应用</string>
     <string name="manage_rolling">滚动</string>
+    <string name="app_detail_mode_rolling_hint">加载器由管理器在运行期提供，可随时更新，无需重新打包。</string>
     <string name="manage_update_loader">更新加载器</string>
     <string name="manage_update_loader_successfully">更新成功</string>
     <string name="manage_update_loader_failed">更新失败</string>

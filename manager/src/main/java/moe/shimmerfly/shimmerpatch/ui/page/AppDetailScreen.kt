@@ -603,8 +603,13 @@ fun AppDetailScreen(
                         item {
                             BaseWidget(
                                 title = stringResource(R.string.app_detail_mode),
+                                // "Rolling" names how a local patch gets its loader: the manager
+                                // serves it at run time, which is what lets it be replaced without
+                                // repatching. Say so, because the word alone does not.
                                 description = if (isLocal) {
-                                    "${stringResource(R.string.patch_local)} · ${stringResource(R.string.manage_rolling)}"
+                                    stringResource(R.string.patch_local) + " · " +
+                                        stringResource(R.string.manage_rolling) + "\n" +
+                                        stringResource(R.string.app_detail_mode_rolling_hint)
                                 } else {
                                     stringResource(R.string.patch_integrated)
                                 },

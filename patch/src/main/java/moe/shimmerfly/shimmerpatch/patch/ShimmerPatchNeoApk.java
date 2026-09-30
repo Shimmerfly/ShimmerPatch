@@ -123,6 +123,9 @@ public class ShimmerPatchNeoApk {
     @Parameter(names = {"--extract-libs"}, description = "Force android:extractNativeLibs=\"true\" in the manifest so the installer unpacks the app's native libraries")
     private boolean extractNativeLibs = false;
 
+    @Parameter(names = {"--add-permission"}, description = "Declare an extra uses-permission (repeatable). A bare name is completed to android.permission.NAME")
+    private List<String> addedPermissions = new ArrayList<>();
+
     @Parameter(names = {"-k", "--keystore"}, arity = 4, description = "Set custom signature keystore. Followed by 4 arguments: keystore path, keystore password, keystore alias, keystore alias password")
     private List<String> keystoreArgs = null;
 
@@ -704,7 +707,15 @@ public class ShimmerPatchNeoApk {
         }
 
         if (!targetPackage.equals(originPackage)) {
-            property.addManifestAttribute(new AttributeItem(NodeValue.Manifest.PACKAGE, targetPackage).setNamespace(null));
+            for (String permission : addedPermissions) {
+            String normalized = normalizePermission(permission);
+            if (!normalized.isEmpty()) {
+                logger.i("Add permission: " + normalized);
+                property.addUsesPermission(normalized);
+            }
+        }
+
+        property.addManifestAttribute(new AttributeItem(NodeValue.Manifest.PACKAGE, targetPackage).setNamespace(null));
             property.setAuthorityMapper(authority -> remapAuthority(authority, originPackage, targetPackage));
         }
 
@@ -751,6 +762,14 @@ public class ShimmerPatchNeoApk {
         } finally {
             if (is != null) is.close();
         }
+    }
+
+    static String normalizePermission(String raw) {
+        if (raw == null) return "";
+        String trimmed = raw.trim();
+        if (trimmed.isEmpty()) return "";
+        if (trimmed.indexOf('.') >= 0) return trimmed;
+        return "android.permission." + trimmed.toUpperCase(Locale.ROOT);
     }
 
     private static void addOrReplaceMetaData(ModificationProperty property, String name, String value) {

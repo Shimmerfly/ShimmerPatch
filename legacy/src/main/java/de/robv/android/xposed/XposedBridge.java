@@ -75,6 +75,15 @@ public final class XposedBridge {
         if (dummyClassLoader != null) {
             return;
         }
+        // The native side has to know the class it will mirror before anything below can ask it to
+        // build the dummy loader. XposedInit.hookResources() used to be the only caller that did
+        // this, and the modern entry point never reaches it: the loader then died while resolving
+        // xposed.dummy.XResourcesSuperClass.
+        if (!ResourcesHook.initXResourcesNative()) {
+            XposedBridge.log("Cannot initialize the resources hook");
+            XposedInit.disableResources = true;
+            return;
+        }
         try {
             Resources res = Resources.getSystem();
             Class<?> resClass = res.getClass();

@@ -126,7 +126,7 @@ public class ShimmerPatchNeoApk {
     @Parameter(names = {"-k", "--keystore"}, arity = 4, description = "Set custom signature keystore. Followed by 4 arguments: keystore path, keystore password, keystore alias, keystore alias password")
     private List<String> keystoreArgs = null;
 
-    @Parameter(names = {"-npa", "--npatch-keystore"}, description = "Use built-in ShimmerPatch keystore")
+    @Parameter(names = {"-npa", "--shimmerpatch-keystore"}, description = "Use built-in ShimmerPatch keystore")
     private boolean useNpatchKeystore = false;
 
     @Parameter(names = {"-fpa", "--fpa-keystore"}, description = "Use built-in FPA keystore")
@@ -224,7 +224,7 @@ public class ShimmerPatchNeoApk {
             outputDir.mkdirs();
 
             File outputFile = new File(outputDir, String.format(
-                    Locale.US, "%s-%d-npatched.apk",
+                    Locale.US, "%s-%d-shimmerpatched.apk",
                     FilenameUtils.getBaseName(apkFileName),
                     LSPConfig.instance.VERSION_CODE)
             ).getAbsoluteFile();
@@ -303,7 +303,7 @@ public class ShimmerPatchNeoApk {
             var keyStore = KeyStore.getInstance("BKS");
             if (useNpatchKeystore || (!useFpaKeystore && keystoreArgs == null)) {
                 logger.i("Signing apk with built-in ShimmerPatch keystore (V2+V3, minSdk " + effectiveMinSdk + ")...");
-                signatureKey = loadBuiltinKey(keyStore, "assets/npatch.key", NPATCH_KEYSTORE_PASSWORD_ENC, NPATCH_KEY_ALIAS_ENC);
+                signatureKey = loadBuiltinKey(keyStore, "assets/shimmerpatch.key", NPATCH_KEYSTORE_PASSWORD_ENC, NPATCH_KEY_ALIAS_ENC);
             } else if (useFpaKeystore) {
                 logger.i("Signing apk with built-in FPA keystore (V2+V3, minSdk " + effectiveMinSdk + ")...");
                 signatureKey = loadBuiltinKey(keyStore, "assets/fpa_app.key", FPA_KEYSTORE_PASSWORD_ENC, FPA_KEY_ALIAS_ENC);
@@ -425,10 +425,10 @@ public class ShimmerPatchNeoApk {
                 if (isInjectProvider) {
                     try (var is = getClass().getClassLoader().getResourceAsStream("assets/mtprovider.dex")) {
                         if (is != null) {
-                            zipMaker.putNextEntry("assets/npatch/mtprovider.dex");
+                            zipMaker.putNextEntry("assets/shimmerpatch/mtprovider.dex");
                             zipMaker.writeFully(is);
                             zipMaker.closeEntry();
-                            addedEntries.add("assets/npatch/mtprovider.dex");
+                            addedEntries.add("assets/shimmerpatch/mtprovider.dex");
                         }
                     } catch (Throwable e) {
                         throw new PatchError("Error when adding dex", e);
@@ -452,7 +452,7 @@ public class ShimmerPatchNeoApk {
 
                 logger.i("Adding native lib...");
                 for (String arch : ARCHES) {
-                    String entryName = "assets/npatch/so/" + arch + "/libnpatch.so";
+                    String entryName = "assets/shimmerpatch/so/" + arch + "/libshimmerpatch.so";
                     try (var is = getClass().getClassLoader().getResourceAsStream(entryName)) {
                         if (is == null) {
                             throw new PatchError("Fatal: Could not find " + entryName + " in the patcher resources!");
@@ -714,7 +714,7 @@ public class ShimmerPatchNeoApk {
             addOrReplaceMetaData(property, "xposedminversion", "93");
         }
 
-        addOrReplaceMetaData(property, "npatch", metadata);
+        addOrReplaceMetaData(property, "shimmerpatch", metadata);
 
         // 注入 MicroG 偽裝簽名與權限
         if (useMicroG && originalSignature != null && !originalSignature.isEmpty()) {

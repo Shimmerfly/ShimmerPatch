@@ -544,26 +544,6 @@ public class ShimmerPatch {
                 throw new PatchError("Error when adding metaloader dex", e);
             }
 
-            // Temporary: name the entries that would collide when the archive is written.
-            {
-                HashSet<String> seenNames = new HashSet<>();
-                for (StoredEntry probe : dstZFile.entries()) {
-                    String n = probe.getCentralDirectoryHeader().getName();
-                    if (!seenNames.add(n)) {
-                        logger.e("DUPLICATE ENTRY in dst: " + n);
-                    }
-                }
-                if (srcZFile != null) {
-                    HashSet<String> seenSrc = new HashSet<>();
-                    for (StoredEntry probe : srcZFile.entries()) {
-                        String n = probe.getCentralDirectoryHeader().getName();
-                        if (!seenSrc.add(n)) {
-                            logger.e("DUPLICATE ENTRY in src: " + n);
-                        }
-                    }
-                    logger.i("dst entries=" + seenNames.size() + " src entries=" + seenSrc.size());
-                }
-            }
 
             dstZFile.realign();
             logger.i("Writing apk...");

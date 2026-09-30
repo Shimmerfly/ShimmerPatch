@@ -490,15 +490,11 @@ public class ShimmerPatch {
             // create zip link
             logger.d("Creating nested apk link...");
 
-            int maxDexIndex = 0;
             for (StoredEntry entry : srcZFile.entries()) {
                 String name = entry.getCentralDirectoryHeader().getName();
                 if (dstZFile.get(name) != null) continue;
                 if (embedOriginal && !injectDex && name.startsWith("classes") && name.endsWith(".dex")) continue;
                 if (name.equals("AndroidManifest.xml")) continue;
-                if (isApkSignatureEntry(name))
-                    continue;
-                maxDexIndex = Math.max(maxDexIndex, getDexIndex(name));
 
                 boolean linked = false;
                 if (srcZFile instanceof NestedZip) {
@@ -524,13 +520,9 @@ public class ShimmerPatch {
 
             logger.i("Adding metaloader dex...");
             try (var is = getClass().getClassLoader().getResourceAsStream(Constants.META_LOADER_DEX_ASSET_PATH)) {
-                if (embedOriginal && !injectDex) {
-                    dstZFile.add("classes.dex", is);
-                } else {
-                    int nextIdx = getNextAvailableDexIndex(dstZFile, srcZFile, false);
-                    dstZFile.add("classes" + nextIdx + ".dex", is);
-                    logger.i("Metaloader dex injected as classes" + nextIdx + ".dex");
-                }
+                String metaDexName = resolveNextContiguousDexName(dstZFile, srcZFile, false);
+                dstZFile.add(metaDexName, is);
+                logger.i("Metaloader dex injected as " + metaDexName);
             } catch (Throwable e) {
                 throw new PatchError("Error when adding metaloader dex", e);
             }
@@ -541,19 +533,29 @@ public class ShimmerPatch {
         logger.i("Done. Output APK: " + outputFile.getAbsolutePath());
     }
 
-    private static int getNextAvailableDexIndex(ZFile dstZFile, ZFile srcZFile, boolean embedOriginal) {
-        int maxIndex = 0;
+    private static String resolveNextContiguousDexName(ZFile dstZFile, ZFile srcZFile, boolean checkSrc) {
+        HashSet<Integer> presentIndices = new HashSet<>();
         if (dstZFile != null) {
             for (StoredEntry entry : dstZFile.entries()) {
-                maxIndex = Math.max(maxIndex, getDexIndex(entry.getCentralDirectoryHeader().getName()));
+                int idx = getDexIndex(entry.getCentralDirectoryHeader().getName());
+                if (idx > 0) {
+                    presentIndices.add(idx);
+                }
             }
         }
-        if (!embedOriginal && srcZFile != null) {
+        if (checkSrc && srcZFile != null) {
             for (StoredEntry entry : srcZFile.entries()) {
-                maxIndex = Math.max(maxIndex, getDexIndex(entry.getCentralDirectoryHeader().getName()));
+                int idx = getDexIndex(entry.getCentralDirectoryHeader().getName());
+                if (idx > 0) {
+                    presentIndices.add(idx);
+                }
             }
         }
-        return Math.max(1, maxIndex) + 1;
+        int candidate = 1;
+        while (presentIndices.contains(candidate)) {
+            candidate++;
+        }
+        return candidate == 1 ? "classes.dex" : "classes" + candidate + ".dex";
     }
 
     private static int getDexIndex(String name) {

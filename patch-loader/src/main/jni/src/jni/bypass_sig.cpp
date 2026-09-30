@@ -1436,6 +1436,23 @@ namespace lspd {
         return result;
     }
 
+
+    // Temporary probe: which of the stat family does the platform's dex check actually use, and
+    // what does it see? One line per hook, so the answer does not drown in noise.
+    static void log_apk_stat_once(std::atomic<bool>* done,
+                                  const char* who,
+                                  const char* path,
+                                  unsigned long raw_mode,
+                                  unsigned raw_uid,
+                                  unsigned long mode,
+                                  unsigned uid) {
+        if (done->exchange(true)) {
+            return;
+        }
+        LOGI("SigBypass: {} {} raw(mode={:o} uid={}) -> (mode={:o} uid={})", who,
+             path == nullptr ? "-" : path, raw_mode, raw_uid, mode, uid);
+    }
+
     static int hooked_stat(const char* pathname, struct stat* st) {
         if (stat_backup == nullptr) {
             errno = ENOSYS;
@@ -1447,9 +1464,15 @@ namespace lspd {
         }
         std::string redirected_path_storage;
         const char* redirected_path = get_visible_or_redirected_path(pathname, false, &redirected_path_storage);
+        static std::atomic<bool> logged_stat{false};
+        struct stat raw = *st;
         int rc = stat_backup(redirected_path, st);
         if (rc == 0) {
             rewrite_stat_like_result(pathname, st);
+            std::string probe_storage;
+            if (get_visible_or_redirected_path(pathname, true, &probe_storage) != pathname) {
+                log_apk_stat_once(&logged_stat, "stat", pathname, raw.st_mode, raw.st_uid, st->st_mode, st->st_uid);
+            }
         }
         return rc;
     }
@@ -1465,9 +1488,14 @@ namespace lspd {
         }
         std::string redirected_path_storage;
         const char* redirected_path = get_visible_or_redirected_path(pathname, false, &redirected_path_storage);
+        static std::atomic<bool> logged_lstat{false};
+        struct stat raw = *st;
         int rc = lstat_backup(redirected_path, st);
         if (rc == 0) {
             rewrite_stat_like_result(pathname, st);
+            if (path_matches_target_locked(pathname)) {
+                log_apk_stat_once(&logged_lstat, "lstat", pathname, raw.st_mode, raw.st_uid, st->st_mode, st->st_uid);
+            }
         }
         return rc;
     }
@@ -1567,6 +1595,8 @@ namespace lspd {
             errno = ENOSYS;
             return -1;
         }
+        static std::atomic<bool> logged_fstat{false};
+        struct stat raw = *st;
         int rc = fstat_backup(fd, st);
         if (rc == 0 && fd_stat_is_redirected_apk(st->st_dev, static_cast<uint64_t>(st->st_ino))) {
             std::string visible_path;
@@ -1575,6 +1605,7 @@ namespace lspd {
                 visible_path = targetApkPath;
             }
             rewrite_stat_like_result(visible_path.c_str(), st);
+            log_apk_stat_once(&logged_fstat, "fstat", visible_path.c_str(), raw.st_mode, raw.st_uid, st->st_mode, st->st_uid);
         }
         return rc;
     }
@@ -1606,9 +1637,12 @@ namespace lspd {
         std::string redirected_path_storage;
         const char* redirected_path =
                 get_visible_or_redirected_path(pathname, false, &redirected_path_storage);
+        static std::atomic<bool> logged_fstatat{false};
+        struct stat raw = *st;
         int rc = fstatat_backup(dirfd, redirected_path, st, flags);
         if (rc == 0) {
             rewrite_stat_like_result_raw(pathname, st);
+            log_apk_stat_once(&logged_fstatat, "fstatat", pathname, raw.st_mode, raw.st_uid, st->st_mode, st->st_uid);
         }
         return rc;
     }

@@ -1,6 +1,3 @@
-# This DEX delegates to the meta loader, which is compiled separately.
--repackageclasses moe.shimmerfly.shimmerpatch.internal.loader
-
 -keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
 -allowaccessmodification
 -renamesourcefileattribute SourceFile
@@ -38,10 +35,13 @@
 # Preserve all Vector framework, IPC, bridge and implementation classes
 -keep class org.matrix.vector.** { *; }
 
-# Preserve NPatch loader, service and utility classes
+# Preserve ShimmerPatch loader, service and specific utility classes
 -keep class moe.shimmerfly.shimmerpatch.loader.** { *; }
 -keep class moe.shimmerfly.shimmerpatch.service.** { *; }
--keep class moe.shimmerfly.shimmerpatch.util.** { *; }
+-keep class moe.shimmerfly.shimmerpatch.util.LocalInjectedModuleService { *; }
+-keep class moe.shimmerfly.shimmerpatch.util.ManagerRemoteServiceBridge { *; }
+-keep class moe.shimmerfly.shimmerpatch.util.ModuleLoader { *; }
+-keep class moe.shimmerfly.shimmerpatch.util.ShimmerPatchRemoteStore { *; }
 
 -dontwarn android.content.res.Resources
 -dontwarn android.content.res.Resources$Theme

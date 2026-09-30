@@ -511,12 +511,28 @@ namespace lspd {
     // 就地清洗 stat 結果：強制以「真實查詢 visible_path（系統安裝路徑）」
     // 的結果覆蓋身份/權限/設備/節點欄位，並無條件清除所有寫入位。無論是否發生過
     // 重定向都會執行，作為上游查錯路徑時的最後防線。
+
+    // Which file's identity a stat should report. A path served from the cached copy has to answer
+    // with the installed APK's identity: the cache sits in this app's own directory, and a dex that
+    // looks like it belongs to the app is one the platform refuses to load.
+    static std::string identity_source_path(const char* queried_path) {
+        std::string result = queried_path == nullptr ? std::string() : std::string(queried_path);
+        {
+            std::scoped_lock lock(g_path_mutex);
+            if (!redirectApkPath.empty() && result == redirectApkPath && !targetApkPath.empty()) {
+                return targetApkPath;
+            }
+        }
+        return result;
+    }
+
     template <typename StatLike>
     static void enforce_read_only_system_identity(const char* visible_path, StatLike* st) {
+        const std::string identity_path = identity_source_path(visible_path);
         struct stat real_st{};
         // 用未被 hook 的原始函式直接查可見路徑，繞過重定向邏輯，取得
         // 系統安裝檔案的真實身份與設備節點。
-        if (stat_backup != nullptr && stat_backup(visible_path, &real_st) == 0) {
+        if (stat_backup != nullptr && stat_backup(identity_path.c_str(), &real_st) == 0) {
             st->st_dev = real_st.st_dev;
             st->st_uid = real_st.st_uid;
             st->st_gid = real_st.st_gid;
@@ -1565,8 +1581,9 @@ namespace lspd {
 
     template <typename StatLike>
     static void enforce_read_only_system_identity_raw(const char* visible_path, StatLike* st) {
+        const std::string identity_path = identity_source_path(visible_path);
         struct statx real_stx{};
-        if (query_visible_statx_raw(visible_path, &real_stx)) {
+        if (query_visible_statx_raw(identity_path.c_str(), &real_stx)) {
             st->st_dev = makedev(real_stx.stx_dev_major, real_stx.stx_dev_minor);
             st->st_uid = real_stx.stx_uid;
             st->st_gid = real_stx.stx_gid;

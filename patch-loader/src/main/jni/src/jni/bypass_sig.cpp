@@ -467,7 +467,18 @@ namespace lspd {
     // redirected origin.apk fd — this stays blazing fast even during SQLite WAL transactions.
     static bool fd_stat_is_redirected_apk(uint64_t dev, uint64_t ino) {
         if (!g_redirect_identity_valid.load(std::memory_order_acquire)) {
-            return false;
+            // The identity is cached when the redirect is set up, which can happen before the
+            // cache APK has been unpacked. Retry here rather than answering "not our file" for the
+            // life of the process: a stat that misses this check reports the cache file - owned by
+            // this app and writable by it - for the installed APK, and ART refuses to load a dex
+            // in that state.
+            std::unique_lock<std::mutex> lock(g_path_mutex, std::try_to_lock);
+            if (lock.owns_lock()) {
+                refresh_redirect_identity_cache_locked();
+            }
+            if (!g_redirect_identity_valid.load(std::memory_order_acquire)) {
+                return false;
+            }
         }
         return dev == g_redirect_identity_dev.load(std::memory_order_relaxed)
                && ino == g_redirect_identity_ino.load(std::memory_order_relaxed);

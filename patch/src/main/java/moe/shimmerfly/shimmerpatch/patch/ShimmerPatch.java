@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -203,7 +204,7 @@ public class ShimmerPatch {
             help = true;
         }
         if (sigbypassLevel < Constants.SIGBYPASS_NONE ||
-                sigbypassLevel > Constants.SIGBYPASS_STEALTH) {
+                sigbypassLevel > Constants.SIGBYPASS_SECCOMP) {
             logger.e("Signature bypass level must be between 0 and 5\n");
             help = true;
         }
@@ -320,15 +321,22 @@ public class ShimmerPatch {
 
             // sign apk with V1 + V2 + V3
             try {
-                var keyStore = KeyStore.getInstance("BKS");
                 if (useNpatchKeystore || (!useFpaKeystore && keystoreArgs == null)) {
                     logger.i("Register apk signer with built-in ShimmerPatch keystore (V1+V2+V3, minSdk " + effectiveMinSdk + ")...");
-                    registerBuiltinSigner(keyStore, dstZFile, "assets/shimmerpatch.key", SHIMMERPATCH_KEYSTORE_PASSWORD_ENC, SHIMMERPATCH_KEY_ALIAS_ENC, effectiveMinSdk);
+                    registerBuiltinSigner(KeyStore.getInstance("BKS"), dstZFile, "assets/shimmerpatch.key", SHIMMERPATCH_KEYSTORE_PASSWORD_ENC, SHIMMERPATCH_KEY_ALIAS_ENC, effectiveMinSdk);
                 } else if (useFpaKeystore) {
                     logger.i("Register apk signer with built-in FPA keystore (V1+V2+V3, minSdk " + effectiveMinSdk + ")...");
-                    registerBuiltinSigner(keyStore, dstZFile, "assets/fpa_app.key", FPA_KEYSTORE_PASSWORD_ENC, FPA_KEY_ALIAS_ENC, effectiveMinSdk);
+                    registerBuiltinSigner(KeyStore.getInstance("BKS"), dstZFile, "assets/fpa_app.key", FPA_KEYSTORE_PASSWORD_ENC, FPA_KEY_ALIAS_ENC, effectiveMinSdk);
                 } else if (keystoreArgs != null) {
                     logger.i("Register apk signer with custom keystore (V1+V2+V3, minSdk " + effectiveMinSdk + ")...");
+                    // A picked keystore is whatever the user has: the platform's BKS, or the JKS a
+                    // desktop keytool writes. Ask for BKS first and let the file decide otherwise.
+                    KeyStore keyStore;
+                    try {
+                        keyStore = KeyStore.getInstance("BKS");
+                    } catch (KeyStoreException unsupported) {
+                        keyStore = KeyStore.getInstance(new File(keystoreArgs.get(0)), keystoreArgs.get(1).toCharArray());
+                    }
                     try (var is = new FileInputStream(keystoreArgs.get(0))) {
                         keyStore.load(is, keystoreArgs.get(1).toCharArray());
                     }
@@ -428,7 +436,7 @@ public class ShimmerPatch {
                     useMicroG,
                     hideLibs
                             && sigbypassLevel > Constants.SIGBYPASS_NONE
-                            && sigbypassLevel != Constants.SIGBYPASS_STEALTH,
+                            && sigbypassLevel != Constants.SIGBYPASS_SECCOMP,
                     usesCleartextTraffic,
                     overrideTargetSdk,
                     overrideTargetSdkValue);
@@ -495,6 +503,9 @@ public class ShimmerPatch {
                 if (dstZFile.get(name) != null) continue;
                 if (embedOriginal && !injectDex && name.startsWith("classes") && name.endsWith(".dex")) continue;
                 if (name.equals("AndroidManifest.xml")) continue;
+                // The output is signed afresh, so the old signature must not come along: a manifest
+                // left in place collides with the one the signer writes.
+                if (isApkSignatureEntry(name)) continue;
 
                 boolean linked = false;
                 if (srcZFile instanceof NestedZip) {
@@ -520,11 +531,38 @@ public class ShimmerPatch {
 
             logger.i("Adding metaloader dex...");
             try (var is = getClass().getClassLoader().getResourceAsStream(Constants.META_LOADER_DEX_ASSET_PATH)) {
-                String metaDexName = resolveNextContiguousDexName(dstZFile, srcZFile, false);
-                dstZFile.add(metaDexName, is);
-                logger.i("Metaloader dex injected as " + metaDexName);
+                if (embedOriginal && !injectDex) {
+                    // The app's dexes live in the nested copy, so classes.dex is free here and the
+                    // meta loader is the one the platform loads first.
+                    dstZFile.add("classes.dex", is);
+                } else {
+                    String metaDexName = resolveNextContiguousDexName(dstZFile, srcZFile, false);
+                    dstZFile.add(metaDexName, is);
+                    logger.i("Metaloader dex injected as " + metaDexName);
+                }
             } catch (Throwable e) {
                 throw new PatchError("Error when adding metaloader dex", e);
+            }
+
+            // Temporary: name the entries that would collide when the archive is written.
+            {
+                HashSet<String> seenNames = new HashSet<>();
+                for (StoredEntry probe : dstZFile.entries()) {
+                    String n = probe.getCentralDirectoryHeader().getName();
+                    if (!seenNames.add(n)) {
+                        logger.e("DUPLICATE ENTRY in dst: " + n);
+                    }
+                }
+                if (srcZFile != null) {
+                    HashSet<String> seenSrc = new HashSet<>();
+                    for (StoredEntry probe : srcZFile.entries()) {
+                        String n = probe.getCentralDirectoryHeader().getName();
+                        if (!seenSrc.add(n)) {
+                            logger.e("DUPLICATE ENTRY in src: " + n);
+                        }
+                    }
+                    logger.i("dst entries=" + seenNames.size() + " src entries=" + seenSrc.size());
+                }
             }
 
             dstZFile.realign();

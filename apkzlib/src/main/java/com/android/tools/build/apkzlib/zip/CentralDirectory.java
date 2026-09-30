@@ -236,7 +236,7 @@ class CentralDirectory {
     for (StoredEntry entry : entries) {
       CentralDirectoryHeader cdr = entry.getCentralDirectoryHeader();
       Preconditions.checkArgument(
-          !directory.entries.containsKey(cdr.getName()), "Duplicate filename");
+          !directory.entries.containsKey(cdr.getName()), "Duplicate filename: %s", cdr.getName());
       directory.entries.put(cdr.getName(), entry);
     }
 

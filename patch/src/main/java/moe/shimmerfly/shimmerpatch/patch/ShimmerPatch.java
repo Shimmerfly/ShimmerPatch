@@ -677,7 +677,6 @@ public class ShimmerPatch {
             property.addUsesSdkAttribute(new AttributeItem(NodeValue.UsesSDK.MIN_SDK_VERSION, 27));
         property.addApplicationAttribute(new AttributeItem(NodeValue.Application.DEBUGGABLE, debuggableFlag));
         property.addApplicationAttribute(new AttributeItem("appComponentFactory", PROXY_APP_COMPONENT_FACTORY));
-        property.addApplicationAttribute(new AttributeItem("isSplitRequired", false));
         if (usesCleartextTraffic) {
             property.addApplicationAttribute(new AttributeItem("usesCleartextTraffic", true));
         }

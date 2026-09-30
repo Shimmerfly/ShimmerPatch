@@ -1900,12 +1900,6 @@ namespace lspd {
                                           &fstat_target, &fstat_backup, &fstat_hook_installed);
             fstat64_ok = install_plain_hook("fstat64", reinterpret_cast<void*>(hooked_fstat64),
                                             &fstat64_target, &fstat64_backup, &fstat64_hook_installed);
-            install_plain_hook("fstatat", reinterpret_cast<void*>(hooked_fstatat),
-                               &fstatat_target, &fstatat_backup, &fstatat_hook_installed);
-            install_plain_hook("newfstatat", reinterpret_cast<void*>(hooked_newfstatat),
-                               &newfstatat_target, &newfstatat_backup, &newfstatat_hook_installed);
-            install_plain_hook("__fstatat64", reinterpret_cast<void*>(hooked_fstatat),
-                               &fstatat_target, &fstatat_backup, &fstatat_hook_installed);
             statfs_ok = install_plain_hook("statfs", reinterpret_cast<void*>(hooked_statfs),
                                            &statfs_target, &statfs_backup, &statfs_hook_installed);
             statx_ok = install_plain_hook("statx", reinterpret_cast<void*>(hooked_statx),

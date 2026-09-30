@@ -173,6 +173,8 @@
     <!-- Settings Screen -->
     <string name="screen_settings">设置</string>
     <string name="settings_language">语言</string>
+    <string name="settings_patch_engine">打包引擎</string>
+    <string name="settings_patch_engine_summary">用来打包与签名补丁的引擎。apkzlib 是原有的；NeoApk 是上游较新的一版。</string>
     <string name="settings_keystore">签名密钥库</string>
     <string name="settings_keystore_custom">自定义</string>
     <string name="settings_keystore_dialog_title">自定义密钥库</string>

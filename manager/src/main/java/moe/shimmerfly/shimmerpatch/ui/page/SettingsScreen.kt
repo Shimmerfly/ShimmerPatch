@@ -111,6 +111,7 @@ fun SettingsScreen(
             SegmentedColumn(title = stringResource(R.string.settings_other_settings)) {
                 item(key = "language") { LanguagePreference() }
                 item(key = "keystore") { KeyStorePreference() }
+                item(key = "patch_engine") { PatchEnginePreference() }
                 item(key = "patch_logs") { DetailPatchLogs() }
                 item(key = "full_logs") { OutputFullLog() }
                 item(key = "welcome") { WelcomeGuide() }
@@ -694,6 +695,23 @@ private fun KeyStorePreference() {
         onConfirm = { _, _, password, alias, aliasPassword ->
             MyKeyStore.setCustom(password, alias, aliasPassword)
         },
+    )
+}
+
+@Composable
+private fun PatchEnginePreference() {
+    // Both engines are built into the manager, so this only chooses the one a patch is built
+    // with. The names are product names and stay untranslated.
+    DropDownMenuWidget(
+        title = stringResource(R.string.settings_patch_engine),
+        description = stringResource(R.string.settings_patch_engine_summary),
+        icon = Icons.Outlined.Inventory2,
+        options = listOf(
+            DropdownOption(PatchEngine.APKZLIB, "apkzlib"),
+            DropdownOption(PatchEngine.NEOAPK, "NeoApk"),
+        ),
+        value = Configs.patchEngine,
+        onValueChange = { Configs.patchEngine = it },
     )
 }
 

@@ -7,9 +7,11 @@ import kotlinx.coroutines.withContext
 import moe.shimmerfly.shimmerpatch.config.Configs
 import moe.shimmerfly.shimmerpatch.config.KeystorePreset
 import moe.shimmerfly.shimmerpatch.config.MyKeyStore
+import moe.shimmerfly.shimmerpatch.config.PatchEngine
 import moe.shimmerfly.shimmerpatch.share.Constants
 import moe.shimmerfly.shimmerpatch.share.PatchConfig
 import moe.shimmerfly.shimmerpatch.patch.ShimmerPatch
+import moe.shimmerfly.shimmerpatch.patch.ShimmerPatchNeoApk
 import moe.shimmerfly.shimmerpatch.patch.util.Logger
 import moe.shimmerfly.shimmerpatch.patch.util.ManifestParser
 import java.io.File
@@ -172,7 +174,13 @@ object Patcher {
             val inputApks = options.inputApks
             validateInputSet(inputApks)
             val outputsBeforePatch = currentPatchOutputs()
-            ShimmerPatch(logger, *options.toStringArray()).doCommandLine()
+            // Both engines are built into the manager and take the same arguments, so the choice
+            // is the whole difference between them: apkzlib as it has always been, or NeoApk.
+            val arguments = options.toStringArray()
+            when (Configs.patchEngine) {
+                PatchEngine.APKZLIB -> ShimmerPatch(logger, *arguments).doCommandLine()
+                PatchEngine.NEOAPK -> ShimmerPatchNeoApk(logger, *arguments).doCommandLine()
+            }
 
             val uri = Configs.storageDirectory?.toUri()
                 ?: throw IOException("Uri is null")

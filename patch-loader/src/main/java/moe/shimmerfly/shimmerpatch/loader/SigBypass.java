@@ -1,5 +1,6 @@
 package moe.shimmerfly.shimmerpatch.loader;
 
+import android.annotation.SuppressLint;
 import static moe.shimmerfly.shimmerpatch.share.Constants.ORIGINAL_APK_ASSET_PATH;
 
 import android.content.Context;
@@ -15,8 +16,10 @@ import android.os.Process;
 import android.util.Base64;
 import android.util.Log;
 
+import com.google.gson.JsonSyntaxException;
+
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.lsposed.lspd.nativebridge.FunPatch;
 import moe.shimmerfly.shimmerpatch.loader.util.XLog;
 import moe.shimmerfly.shimmerpatch.share.Constants;
 
@@ -30,6 +33,7 @@ import java.security.MessageDigest;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
@@ -39,13 +43,13 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
+@SuppressLint({"PrivateApi"})
 public class SigBypass {
 
     private static final String TAG = "ShimmerPatch-SigBypass";
     private static final int CERT_INPUT_RAW_X509 = 0;
     private static final int CERT_INPUT_SHA256 = 1;
     private static final Map<String, Signature[]> signatureCache = new ConcurrentHashMap<>();
-    private static final Set<String> signatureMisses = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private static final Set<String> moduleCallerPrefixes = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private static String redirectApkPath;
@@ -63,7 +67,6 @@ public class SigBypass {
     private static boolean javaIoHooked;
     private static boolean javaFilePathHooked;
     private static boolean nativeOpenatEnabled;
-    private static boolean seccompRedirectEnabled;
     private static boolean useMinimalNativeFileHook;
     private static boolean libHideEnabled;
 
@@ -103,7 +106,6 @@ public class SigBypass {
         if (packageName == null || signatureBase64 == null) return;
         try {
             signatureCache.put(packageName, new Signature[]{new Signature(signatureBase64)});
-            signatureMisses.remove(packageName);
         } catch (Throwable e) {
             Log.w(TAG, "Failed to cache original signature for " + packageName, e);
         }
@@ -120,7 +122,7 @@ public class SigBypass {
             var entries = apk.entries();
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
-                String name = entry.getName().toLowerCase(java.util.Locale.ROOT);
+                String name = entry.getName().toLowerCase(Locale.getDefault());
                 if (name.contains("qihoo")
                         || name.contains("qihu")
                         || name.contains("360")
@@ -238,7 +240,7 @@ public class SigBypass {
 
     private static void replaceModuleApplicationInfoPaths(Context context, ApplicationInfo applicationInfo) {
         // 【重要】模块调用方不能在此重新映射到 redirectApkPath。
-        // origin.apk 是供宿主签名绕过使用的干净原包副本，不包含 NPatch 注入的模块、加固壳
+        // origin.apk 是供宿主签名绕过使用的干净原包副本，不包含 ShimmerPatch 注入的模块、加固壳
         // payload 等资源。加固模块可能在 JNI_OnLoad 中取得 sourceDir/getPackageCodePath 后直接
         // 打开该路径；若返回 origin.apk，壳会因找不到资源而在模块初始化前失败。模块必须始终
         // 看到外层修补后的 base.apk；native I/O 侧必须与此保持一致，见 should_redirect_apk_contents。
@@ -324,6 +326,9 @@ public class SigBypass {
         }
     }
 
+    // Apps that still ask for the pre-API-28 signature field have to keep seeing the certificate
+    // the module was patched against, so the deprecated field is spoofed alongside signingInfo.
+    @SuppressWarnings("deprecation")
     private static void replaceSigningDetails(Context context, PackageInfo packageInfo) {
         if (packageInfo == null) return;
         boolean hasSignature = (packageInfo.signatures != null && packageInfo.signatures.length != 0)
@@ -411,9 +416,6 @@ public class SigBypass {
         if (packageName == null) return null;
         Signature[] cached = signatureCache.get(packageName);
         if (cached != null) return cached;
-        // Avoid re-running the metadata lookup + Base64/JSON parse for every PackageInfo of a
-        // package that has no NPatch signature: package enumeration would repeat it constantly.
-        if (signatureMisses.contains(packageName)) return null;
 
         String replacementStr = null;
         try {
@@ -423,11 +425,14 @@ public class SigBypass {
             String encoded = metaData == null ? null : metaData.getString("shimmerpatch");
             if (encoded != null) {
                 var json = new String(Base64.decode(encoded, Base64.DEFAULT), StandardCharsets.UTF_8);
-                var patchConfig = new JSONObject(json);
-                replacementStr = patchConfig.getString("originalSignature");
+                try {
+                    var patchConfig = new JSONObject(json);
+                    replacementStr = patchConfig.getString("originalSignature");
+                } catch (JSONException e) {
+                    Log.w(TAG, "fail to get originalSignature from metadata", e);
+                }
             }
-        } catch (Throwable ignored) {
-            // NameNotFound, malformed Base64/JSON, or a missing key: no spoof for this package.
+        } catch (PackageManager.NameNotFoundException | JsonSyntaxException ignored) {
         }
 
         if (replacementStr != null) {
@@ -439,7 +444,6 @@ public class SigBypass {
                 Log.w(TAG, "fail to construct original signature for " + packageName, e);
             }
         }
-        signatureMisses.add(packageName);
         return null;
     }
 
@@ -744,20 +748,6 @@ public class SigBypass {
         }
     }
 
-    private static boolean isSeccompRuntimeSupported() {
-        String[] runtimeAbis = Process.is64Bit() ? Build.SUPPORTED_64_BIT_ABIS : Build.SUPPORTED_32_BIT_ABIS;
-        for (String abi : runtimeAbis) {
-            if ("arm64-v8a".equals(abi)) return true;
-        }
-        return false;
-    }
-
-    private static void enforceReadOnlyCache(File targetFile) {
-        if (!targetFile.setReadOnly()) {
-            Log.w(TAG, "Failed to mark cached origin APK read-only: " + targetFile);
-        }
-    }
-
     private static String extractOriginalApk(Context context) {
         File cacheDir = new File(context.getCacheDir(), "code_cache");
         if (!cacheDir.exists() && !cacheDir.mkdirs()) return null;
@@ -768,7 +758,6 @@ public class SigBypass {
 
             File targetFile = new File(cacheDir, entry.getCrc() + ".apk");
             if (targetFile.exists() && targetFile.length() == entry.getSize()) {
-                enforceReadOnlyCache(targetFile);
                 redirectApkPath = targetFile.getAbsolutePath();
                 return redirectApkPath;
             }
@@ -781,8 +770,6 @@ public class SigBypass {
                     fos.write(buffer, 0, length);
                 }
             }
-            // base.apk 的 stat() 清洗邏輯，這裡只防止本進程自己誤寫快取檔。
-            enforceReadOnlyCache(targetFile);
             redirectApkPath = targetFile.getAbsolutePath();
             return redirectApkPath;
         } catch (IOException e) {
@@ -805,7 +792,7 @@ public class SigBypass {
                 }
                 if (!isPatchedApkPath) return;
                 // 必须与 replaceModuleApplicationInfoPaths 保持一致：模块的 ZIP/File 读取需要
-                // 外层 APK 内的 NPatch/加固资源，不能被重定向到 origin.apk。
+                // 外层 APK 内的 ShimmerPatch/加固资源，不能被重定向到 origin.apk。
                 if (isModuleCaller()) return;
 
                 if (arg0 instanceof String) {
@@ -822,20 +809,12 @@ public class SigBypass {
         javaIoHooked = true;
     }
 
-    private static int effectiveHookLevel(int sigBypassLevel) {
-        if (sigBypassLevel >= Constants.SIGBYPASS_SECCOMP) {
-            return Constants.SIGBYPASS_EXTREME;
-        }
-        return sigBypassLevel;
-    }
-
     static void doSigBypass(Context context, int sigBypassLevel, boolean hideLibs) throws IOException {
         activeSigBypassLevel = Math.max(activeSigBypassLevel, sigBypassLevel);
-        int hookLevel = effectiveHookLevel(sigBypassLevel);
+        int hookLevel = sigBypassLevel;
         String currentApkPath = visibleApkPath != null ? visibleApkPath : context.getPackageResourcePath();
 
         hideLibs = hideLibs && hookLevel >= Constants.SIGBYPASS_BASIC;
-
         if (hookLevel >= Constants.SIGBYPASS_BASIC && redirectApkPath == null) {
             redirectApkPath = extractOriginalApk(context);
         }
@@ -881,25 +860,6 @@ public class SigBypass {
             hookPackageParserGeneratePackageInfo(context);
             hookApplicationInfoConstructor(context);
             hookGetPackageInfo(context);
-        }
-
-        boolean useSeccompRedirect = redirectApkPath != null
-                && sigBypassLevel == Constants.SIGBYPASS_SECCOMP;
-        if (useSeccompRedirect) {
-            if (!isSeccompRuntimeSupported()) {
-                XLog.w(TAG, "Seccomp skipped on non-arm64 runtime ABI");
-            } else if (FunPatch.enableSeccompV2Redirect(
-                        currentApkPath,
-                        redirectApkPath,
-                        context.getPackageName()
-                )) {
-                if (!seccompRedirectEnabled) XLog.i(TAG, "Seccomp enabled");
-                seccompRedirectEnabled = true;
-            } else {
-                XLog.w(TAG, "Seccomp failed to init");
-            }
-        } else if (hookLevel >= Constants.SIGBYPASS_BASIC && redirectApkPath == null) {
-            XLog.w(TAG, "Original APK unavailable, native signature bypass disabled");
         }
     }
 }

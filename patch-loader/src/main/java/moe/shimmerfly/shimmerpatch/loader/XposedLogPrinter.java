@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Writes structured NPatch framework, Legacy API, Modern API, and Java crash events to Media asynchronously.
+ * Writes structured ShimmerPatch framework, Legacy API, Modern API, and Java crash events to Media asynchronously.
  * Direct module calls to {@code android.util.Log}, native fatal signals, and system tombstones are
  * deliberately outside this pipeline.
  */
@@ -61,12 +61,10 @@ public class XposedLogPrinter extends LogPrinter {
         log(priority, tag, x, null);
     }
 
-    // SimpleDateFormat is not thread-safe and log() runs on arbitrary threads; give each thread
-    // its own formatter.
-    private static final ThreadLocal<SimpleDateFormat> FILE_DATE_FORMAT =
-            ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyyMMdd", Locale.ROOT));
-    private static final ThreadLocal<SimpleDateFormat> LOG_TIME_FORMAT =
-            ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ROOT));
+    private static final SimpleDateFormat FILE_DATE_FORMAT =
+            new SimpleDateFormat("yyyyMMdd", Locale.ROOT);
+    private static final SimpleDateFormat LOG_TIME_FORMAT =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.ROOT);
 
     public static void log(
             int priority,
@@ -98,7 +96,7 @@ public class XposedLogPrinter extends LogPrinter {
                 break;
         }
         StringBuilder line = new StringBuilder()
-                .append('[').append(LOG_TIME_FORMAT.get().format(new Date())).append(']')
+                .append('[').append(LOG_TIME_FORMAT.format(new Date())).append(']')
                 .append('[').append(ActivityThread.currentProcessName())
                 .append(':').append(Process.myPid())
                 .append(';').append(Thread.currentThread().getName())
@@ -138,7 +136,7 @@ public class XposedLogPrinter extends LogPrinter {
                 }
 
                 if (!batch.isEmpty()) {
-                    String currentDate = FILE_DATE_FORMAT.get().format(new Date());
+                    String currentDate = FILE_DATE_FORMAT.format(new Date());
                     if (writer == null || !currentDate.equals(openedDate)) {
                         if (writer != null) {
                             try {
@@ -151,7 +149,7 @@ public class XposedLogPrinter extends LogPrinter {
 
                         String pkgName = ActivityThread.currentPackageName();
                         if (pkgName != null && !pkgName.isEmpty()) {
-                            File f = new File(Environment.getExternalStorageDirectory() + "/Android/media/" + pkgName + "/npatch/log/");
+                            File f = new File(Environment.getExternalStorageDirectory() + "/Android/media/" + pkgName + "/shimmerpatch/log/");
                             if (f.isDirectory() || f.mkdirs()) {
                                 File logFile = new File(f, currentDate + ".log");
                                 writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(logFile, true), StandardCharsets.UTF_8), 8192);

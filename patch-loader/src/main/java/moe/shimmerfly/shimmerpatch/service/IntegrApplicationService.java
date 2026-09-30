@@ -1,5 +1,6 @@
 package moe.shimmerfly.shimmerpatch.service;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+@SuppressLint({"SdCardPath"})
 public class IntegrApplicationService extends IFrameworkService.Stub {
 
     private static final String TAG = "ShimmerPatch";
@@ -58,7 +60,7 @@ public class IntegrApplicationService extends IFrameworkService.Stub {
                     Log.i(TAG, "Extracting embedded LoadedModule: " + packageName);
                     FileUtils.deleteFolderIfExists(Paths.get(modulePath));
                     Files.createDirectories(Paths.get(modulePath));
-                    try (var is = context.getAssets().open("npatch/modules/" + name)) {
+                    try (var is = context.getAssets().open("shimmerpatch/modules/" + name)) {
                         Files.copy(is, Paths.get(cacheApkPath));
                     }
                 }
@@ -112,6 +114,9 @@ public class IntegrApplicationService extends IFrameworkService.Stub {
         return fallback;
     }
 
+    // A module manifest may declare xposedminversion as an int or as a string, so the
+    // type-agnostic getter stays: either typed getter would mis-read the other form.
+    @SuppressWarnings("deprecation")
     private static int readLegacyMinApiVersion(ApplicationInfo applicationInfo) {
         if (applicationInfo == null || applicationInfo.metaData == null) {
             return 0;

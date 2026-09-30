@@ -10,9 +10,6 @@ import android.content.pm.Signature;
 import android.net.Uri;
 import android.util.Log;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import moe.shimmerfly.shimmerpatch.share.Constants;
 
 import de.robv.android.xposed.XC_MethodHook;
@@ -42,14 +39,10 @@ public class GmsRedirector {
         }
 
         Log.i(TAG, "Activating GMS redirect: " + REAL_GMS + " -> " + targetGms);
-        setupC2dmRedirects();
 
         hookIntentSetPackage();
-        hookIntentSetAction();
-        hookIntentGetAction();
         hookIntentSetComponent();
         hookIntentResolve();
-        hookActivityStart();
         hookContentResolverAcquire();
         hookPackageManagerGetPackageInfo(context);
 
@@ -67,25 +60,15 @@ public class GmsRedirector {
         return null;
     }
 
-    static void setTargetGmsForTest(String target) {
-        targetGms = target;
-        setupC2dmRedirects();
-    }
-
-    static String redirectPackage(String pkg) {
+    private static String redirectPackage(String pkg) {
         if (REAL_GMS.equals(pkg) || "com.google.android.gsf".equals(pkg)) {
             return targetGms;
         }
         return null;
     }
 
-    // MicroG does not provide Dynamite/Chimera modules. Redirecting chimera causes
-    // provider Authority mismatch and Uri disagreements. Left untouched, real GMS answers it.
-    private static final String CHIMERA_AUTHORITY = REAL_GMS + ".chimera";
-
-    static String redirectAuthority(String authority) {
+    private static String redirectAuthority(String authority) {
         if (authority == null) return null;
-        if (CHIMERA_AUTHORITY.equals(authority)) return null;
         if (authority.startsWith(REAL_GMS + ".")) {
             return targetGms + authority.substring(REAL_GMS.length());
         }
@@ -98,143 +81,18 @@ public class GmsRedirector {
         return null;
     }
 
-    private static final String CHOOSE_ACCOUNT_ACTION =
-            "com.google.android.gms.common.account.CHOOSE_ACCOUNT";
-    private static final ComponentName SYSTEM_ACCOUNT_PICKER;
-    static {
-        ComponentName picker = null;
-        try {
-            picker = ComponentName.unflattenFromString("android/.accounts.ChooseTypeAndAccountActivity");
-        } catch (Throwable ignored) {}
-        SYSTEM_ACCOUNT_PICKER = picker;
-    }
-
-    // Standard Google C2DM actions that need vendor redirection if targetGms has a custom namespace.
-    private static final Map<String, String> c2dmRedirectMap = new HashMap<>();
-    private static final String[] C2DM_STANDARD_ACTIONS = {
-            "com.google.android.c2dm.intent.REGISTER",
-            "com.google.android.c2dm.intent.RECEIVE",
-            "com.google.android.c2dm.intent.UNREGISTER",
-            "com.google.android.c2dm.intent.REGISTRATION",
-    };
-    private static final String GMS_ACTION_PREFIX = "com.google.android.gms.";
-
-    private static void setupC2dmRedirects() {
-        c2dmRedirectMap.clear();
-        if (targetGms != null && targetGms.endsWith(".android.gms")) {
-            String vendorC2dmPrefix = targetGms.substring(0, targetGms.length() - ".android.gms".length()) + ".android.c2dm";
-            for (String standard : C2DM_STANDARD_ACTIONS) {
-                c2dmRedirectMap.put(standard, vendorC2dmPrefix + standard.substring("com.google.android.c2dm".length()));
-            }
-            Log.i(TAG, "C2DM redirect prefix derived: " + vendorC2dmPrefix);
-        } else {
-            Log.i(TAG, "C2DM redirect disabled for targetGms: " + targetGms);
-        }
-    }
-
-    static boolean isChooseAccountAction(String action) {
-        return CHOOSE_ACCOUNT_ACTION.equals(action)
-                || (targetGms != null && (targetGms + ".common.account.CHOOSE_ACCOUNT").equals(action));
-    }
-
-    private static void routeChooseAccountToSystem(Intent intent) {
-        if (intent == null || SYSTEM_ACCOUNT_PICKER == null || !isChooseAccountAction(intent.getAction())) {
-            return;
-        }
-        if (!SYSTEM_ACCOUNT_PICKER.equals(intent.getComponent()) || intent.getPackage() != null) {
-            Log.d(TAG, "Routing CHOOSE_ACCOUNT directly to the system account picker");
-            intent.setComponent(SYSTEM_ACCOUNT_PICKER);
-            intent.setPackage(null);
-        }
-    }
-
-    static String redirectAction(String action) {
-        if (action == null) return null;
-        if (isChooseAccountAction(action)) return null;
-        String redirected = c2dmRedirectMap.get(action);
-        if (redirected != null) return redirected;
-        if (targetGms != null && !REAL_GMS.equals(targetGms) && targetGms.endsWith(".android.gms")) {
-            if (action.startsWith(GMS_ACTION_PREFIX)) {
-                // Clear and semantic string concatenation: e.g. "com.google.android.gms.auth.LOGIN" -> "<targetGms>.auth.LOGIN"
-                String suffix = action.substring(GMS_ACTION_PREFIX.length());
-                String vendorAction = targetGms + "." + suffix;
-                Log.d(TAG, "Redirecting GMS action: " + action + " -> " + vendorAction);
-                return vendorAction;
-            }
-        }
-        return null;
-    }
-
     private static void hookIntentSetPackage() {
         try {
             XposedBridge.hookAllMethods(Intent.class, "setPackage", new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) {
-                    Intent intent = (Intent) param.thisObject;
-                    // Defense for the specific ordering of "setAction(CHOOSE_ACCOUNT)" before "setPackage(...)".
-                    // The reverse sequence ("setPackage" before "setAction") is guarded by hookIntentSetAction's
-                    // afterHookedMethod and final egress in hookActivityStart.
-                    if (isChooseAccountAction(intent.getAction())) {
-                        param.args[0] = null;
-                        return;
-                    }
                     String pkg = (String) param.args[0];
                     String redirected = redirectPackage(pkg);
                     if (redirected != null) param.args[0] = redirected;
                 }
-
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) {
-                    routeChooseAccountToSystem((Intent) param.thisObject);
-                }
             });
         } catch (Throwable t) {
             Log.e(TAG, "Failed to hook Intent.setPackage", t);
-        }
-    }
-
-    private static void hookIntentSetAction() {
-        try {
-            XposedBridge.hookAllMethods(Intent.class, "setAction", new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) {
-                    String action = (String) param.args[0];
-                    String redirected = redirectAction(action);
-                    if (redirected != null) {
-                        Log.d(TAG, "Redirecting action in setAction: " + action + " -> " + redirected);
-                        param.args[0] = redirected;
-                    }
-                }
-
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) {
-                    routeChooseAccountToSystem((Intent) param.thisObject);
-                }
-            });
-        } catch (Throwable t) {
-            Log.e(TAG, "Failed to hook Intent.setAction", t);
-        }
-    }
-
-    private static void hookIntentGetAction() {
-        try {
-            XposedBridge.hookAllMethods(Intent.class, "getAction", new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) {
-                    String action = (String) param.getResult();
-                    if (action != null && targetGms != null) {
-                        for (Map.Entry<String, String> entry : c2dmRedirectMap.entrySet()) {
-                            if (entry.getValue().equals(action)) {
-                                Log.d(TAG, "Restoring original action for getAction: " + action + " -> " + entry.getKey());
-                                param.setResult(entry.getKey());
-                                return;
-                            }
-                        }
-                    }
-                }
-            });
-        } catch (Throwable t) {
-            Log.e(TAG, "Failed to hook Intent.getAction", t);
         }
     }
 
@@ -250,11 +108,6 @@ public class GmsRedirector {
                             param.args[0] = new ComponentName(redirected, cn.getClassName());
                         }
                     }
-                }
-
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) {
-                    routeChooseAccountToSystem((Intent) param.thisObject);
                 }
             });
         } catch (Throwable t) {
@@ -282,44 +135,10 @@ public class GmsRedirector {
                             intent.setPackage(redirected);
                         }
                     }
-                    String action = intent.getAction();
-                    if (action != null) {
-                        String redirectedAction = redirectAction(action);
-                        if (redirectedAction != null) {
-                            intent.setAction(redirectedAction);
-                        }
-                    }
-                    routeChooseAccountToSystem(intent);
                 }
             });
         } catch (Throwable t) {
             Log.e(TAG, "Failed to hook Intent constructors", t);
-        }
-    }
-
-    /**
-     * Egress interceptor for direct startActivity / startActivityForResult invocations.
-     * Note: Only covers direct caller invocations; indirect deliveries (e.g. wrapped in PendingIntent)
-     * are not in this scope and rely on Intent constructor / setter hooks.
-     */
-    private static void hookActivityStart() {
-        try {
-            XC_MethodHook egressHook = new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) {
-                    if (param.args == null) return;
-                    for (Object arg : param.args) {
-                        if (arg instanceof Intent) {
-                            routeChooseAccountToSystem((Intent) arg);
-                            break;
-                        }
-                    }
-                }
-            };
-            XposedBridge.hookAllMethods(android.content.ContextWrapper.class, "startActivity", egressHook);
-            XposedBridge.hookAllMethods(android.app.Activity.class, "startActivityForResult", egressHook);
-        } catch (Throwable t) {
-            Log.e(TAG, "Failed to hook startActivity/startActivityForResult", t);
         }
     }
 
@@ -407,6 +226,9 @@ public class GmsRedirector {
         }
     }
 
+    // Callers still pass the legacy GET_SIGNATURES flag and then read the field it fills, so the
+    // deprecated pair is exactly what this hook exists to answer.
+    @SuppressWarnings("deprecation")
     private static void hookPackageManagerGetPackageInfo(Context context) {
         try {
             XposedHelpers.findAndHookMethod(

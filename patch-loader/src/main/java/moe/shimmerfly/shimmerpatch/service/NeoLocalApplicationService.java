@@ -1,5 +1,6 @@
 package moe.shimmerfly.shimmerpatch.service;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -31,6 +32,7 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+@SuppressLint({"SdCardPath"})
 public class NeoLocalApplicationService extends IFrameworkService.Stub {
     private static final String TAG = "ShimmerPatch";
     private static final String AUTHORITY = "moe.shimmerfly.shimmerpatch.manager.provider.config";
@@ -299,6 +301,9 @@ public class NeoLocalApplicationService extends IFrameworkService.Stub {
         return fallback;
     }
 
+    // A module manifest may declare xposedminversion as an int or as a string, so the
+    // type-agnostic getter stays: either typed getter would mis-read the other form.
+    @SuppressWarnings("deprecation")
     private static int readLegacyMinApiVersion(ApplicationInfo applicationInfo) {
         if (applicationInfo == null || applicationInfo.metaData == null) {
             return 0;

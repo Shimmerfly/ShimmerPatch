@@ -533,8 +533,15 @@ namespace lspd {
     // Which file's identity a stat should report. A path served from the cached copy has to answer
     // with the installed APK's identity: the cache sits in this app's own directory, and a dex that
     // looks like it belongs to the app is one the platform refuses to load.
-    static std::string identity_source_path(const char* queried_path) {
+    static std::string describe_fd_path(int fd);
+
+    static std::string identity_source_path(const char* queried_path, int dirfd = AT_FDCWD) {
         std::string result = queried_path == nullptr ? std::string() : std::string(queried_path);
+        if (result.empty() && dirfd != AT_FDCWD) {
+            // A descriptor-relative call (fstatat/statx with AT_EMPTY_PATH) names its file only
+            // through the descriptor, so ask the descriptor where it points.
+            result = describe_fd_path(dirfd);
+        }
         {
             std::scoped_lock lock(g_path_mutex);
             if (!redirectApkPath.empty() && !targetApkPath.empty()
@@ -589,10 +596,14 @@ namespace lspd {
         return has_redirect;
     }
 
-    static bool rewrite_statx_result(const char* visible_path, struct statx* stx) {
-        if (visible_path == nullptr || stx == nullptr) {
+    static bool rewrite_statx_result(const char* visible_path, struct statx* stx,
+                                    int dirfd = AT_FDCWD) {
+        if (stx == nullptr) {
             return false;
         }
+        // The identity has to come from the installed APK, exactly as the stat path does: a statx
+        // for the cached copy used to report that copy's own owner, which is this app.
+        const std::string identity_path = identity_source_path(visible_path, dirfd);
         struct statx redirected = {};
         bool has_redirect = query_redirected_statx(visible_path, &redirected);
         if (has_redirect) {
@@ -608,7 +619,10 @@ namespace lspd {
         // 直接 syscall 能天然避開 libc hook 遞迴，且可直接獲取 statx 原生的
         // major/minor 設備編號。
         struct statx real_stx{};
-        long rc = syscall(__NR_statx, AT_FDCWD, visible_path, 0, STATX_BASIC_STATS, &real_stx);
+        long rc = identity_path.empty()
+                          ? -1
+                          : syscall(__NR_statx, AT_FDCWD, identity_path.c_str(), 0,
+                                    STATX_BASIC_STATS, &real_stx);
         if (rc == 0) {
             stx->stx_dev_major = real_stx.stx_dev_major;
             stx->stx_dev_minor = real_stx.stx_dev_minor;
@@ -621,7 +635,7 @@ namespace lspd {
             // 備援分支（核心不支援 statx 或系統呼叫失敗）：退回使用原始 libc stat_backup 查詢，
             // 並透過 major/minor 巨集同步拆解 st_dev，確保即使在 fallback 路徑下設備屬性亦完全對齊。
             struct stat real_st{};
-            if (stat_backup != nullptr && stat_backup(visible_path, &real_st) == 0) {
+            if (stat_backup != nullptr && stat_backup(identity_path.c_str(), &real_st) == 0) {
                 stx->stx_dev_major = major(real_st.st_dev);
                 stx->stx_dev_minor = minor(real_st.st_dev);
                 stx->stx_uid = real_st.st_uid;
@@ -1768,7 +1782,7 @@ namespace lspd {
         const char* redirected_path = get_visible_or_redirected_path(pathname, false, &redirected_path_storage);
         int rc = statx_backup(dirfd, redirected_path, flags, mask, stx);
         if (rc == 0) {
-            rewrite_statx_result(pathname, stx);
+            rewrite_statx_result(pathname, stx, dirfd);
         }
         return rc;
     }

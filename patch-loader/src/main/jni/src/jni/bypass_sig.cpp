@@ -310,28 +310,46 @@ namespace lspd {
 
 
 
+
+    // /data/data/<pkg> and /data/user/0/<pkg> name the same directory, and the same file reaches
+    // these hooks under either spelling: the platform asks with one, the loader recorded the other.
+    // Comparing raw strings therefore let the unrecorded spelling through untouched - and that is
+    // the cached copy, whose own identity is this app's, which is what the dex check refuses.
+    static std::string normalize_app_data_path(const char* path) {
+        std::string result = path == nullptr ? std::string() : std::string(path);
+        static constexpr const char* kDataData = "/data/data/";
+        if (result.rfind(kDataData, 0) == 0) {
+            result.replace(0, std::strlen(kDataData), "/data/user/0/");
+        }
+        return result;
+    }
+
     static bool path_matches_target_locked(const char* pathname) {
         if (pathname == nullptr || targetApkPath.empty()) {
             return false;
         }
-        if (strcmp(pathname, targetApkPath.c_str()) == 0) {
+        const std::string candidate = normalize_app_data_path(pathname);
+        const std::string target = normalize_app_data_path(targetApkPath.c_str());
+        if (candidate == target) {
             return true;
         }
-        size_t target_len = targetApkPath.size();
-        return strncmp(pathname, targetApkPath.c_str(), target_len) == 0
-               && strcmp(pathname + target_len, " (deleted)") == 0;
+        return candidate.size() == target.size() + 10
+               && candidate.compare(0, target.size(), target) == 0
+               && candidate.compare(target.size(), 10, " (deleted)") == 0;
     }
 
     static bool path_matches_redirect_locked(const char* pathname) {
         if (pathname == nullptr || redirectApkPath.empty()) {
             return false;
         }
-        if (strcmp(pathname, redirectApkPath.c_str()) == 0) {
+        const std::string candidate = normalize_app_data_path(pathname);
+        const std::string redirect = normalize_app_data_path(redirectApkPath.c_str());
+        if (candidate == redirect) {
             return true;
         }
-        size_t redirect_len = redirectApkPath.size();
-        return strncmp(pathname, redirectApkPath.c_str(), redirect_len) == 0
-               && strcmp(pathname + redirect_len, " (deleted)") == 0;
+        return candidate.size() == redirect.size() + 10
+               && candidate.compare(0, redirect.size(), redirect) == 0
+               && candidate.compare(redirect.size(), 10, " (deleted)") == 0;
     }
 
 
@@ -519,7 +537,9 @@ namespace lspd {
         std::string result = queried_path == nullptr ? std::string() : std::string(queried_path);
         {
             std::scoped_lock lock(g_path_mutex);
-            if (!redirectApkPath.empty() && result == redirectApkPath && !targetApkPath.empty()) {
+            if (!redirectApkPath.empty() && !targetApkPath.empty()
+                && normalize_app_data_path(result.c_str())
+                           == normalize_app_data_path(redirectApkPath.c_str())) {
                 return targetApkPath;
             }
         }

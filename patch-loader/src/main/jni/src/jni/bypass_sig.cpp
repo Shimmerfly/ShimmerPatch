@@ -72,6 +72,11 @@ namespace lspd {
     static FstatatFn newfstatat_backup = nullptr;
     static bool fstatat_hook_installed = false;
     static bool newfstatat_hook_installed = false;
+
+    // bionic implements stat() and lstat() on top of fstatat(), so the rewrite below re-enters the
+    // fstatat hook through their backups. A nested call must be answered as the kernel answered it:
+    // rewriting it again recursed until the stack ran out.
+    static thread_local bool g_in_fstatat_hook = false;
     using MmapFn = void*(*)(void*, size_t, int, int, int, off_t);
     using DlIteratePhdrFn = int(*)(int (*)(struct dl_phdr_info*, size_t, void*), void*);
 
@@ -1560,16 +1565,19 @@ namespace lspd {
             errno = ENOSYS;
             return -1;
         }
-        if (pathname == nullptr) {
+        if (pathname == nullptr || g_in_fstatat_hook) {
             return fstatat_backup(dirfd, pathname, st, flags);
         }
         std::string redirected_path_storage;
         const char* redirected_path =
                 get_visible_or_redirected_path(pathname, false, &redirected_path_storage);
+        const bool previous = g_in_fstatat_hook;
+        g_in_fstatat_hook = true;
         int rc = fstatat_backup(dirfd, redirected_path, st, flags);
         if (rc == 0) {
             rewrite_stat_like_result(pathname, st);
         }
+        g_in_fstatat_hook = previous;
         return rc;
     }
 
@@ -1578,16 +1586,19 @@ namespace lspd {
             errno = ENOSYS;
             return -1;
         }
-        if (pathname == nullptr) {
+        if (pathname == nullptr || g_in_fstatat_hook) {
             return newfstatat_backup(dirfd, pathname, st, flags);
         }
         std::string redirected_path_storage;
         const char* redirected_path =
                 get_visible_or_redirected_path(pathname, false, &redirected_path_storage);
+        const bool previous = g_in_fstatat_hook;
+        g_in_fstatat_hook = true;
         int rc = newfstatat_backup(dirfd, redirected_path, st, flags);
         if (rc == 0) {
             rewrite_stat_like_result(pathname, st);
         }
+        g_in_fstatat_hook = previous;
         return rc;
     }
 

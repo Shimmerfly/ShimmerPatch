@@ -114,7 +114,7 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
         }
 
         File nativeFile = createTempSoFile(Process.myUid() / 100000);
-        String nativeAsset = "assets/npatch/so/" + abi + "/libnpatch.so";
+        String nativeAsset = "assets/shimmerpatch/so/" + abi + "/libshimmerpatch.so";
         try (InputStream input = requireResource(loader, nativeAsset);
              FileOutputStream output = new FileOutputStream(nativeFile)) {
             transfer(input, output);

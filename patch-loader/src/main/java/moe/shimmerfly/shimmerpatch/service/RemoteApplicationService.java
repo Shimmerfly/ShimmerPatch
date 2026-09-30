@@ -275,7 +275,7 @@ public class RemoteApplicationService implements IFrameworkService {
 
     private void recordFallbackEvent(String reason) {
         try {
-            SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
+            SharedPreferences shared = context.getSharedPreferences("shimmerpatch", Context.MODE_PRIVATE);
             shared.edit()
                     .putLong("last_fallback_ts", System.currentTimeMillis())
                     .putString("last_fallback_reason", reason)
@@ -306,7 +306,7 @@ public class RemoteApplicationService implements IFrameworkService {
                 moduleObj.put("packageName", entry.getKey());
                 moduleArr.put(moduleObj);
             }
-            SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
+            SharedPreferences shared = context.getSharedPreferences("shimmerpatch", Context.MODE_PRIVATE);
             shared.edit().putString("modules", moduleArr.toString()).apply();
             XLog.i(TAG, "Updated local module scope cache: " + moduleArr);
         } catch (Throwable e) {
@@ -320,7 +320,7 @@ public class RemoteApplicationService implements IFrameworkService {
             List<LoadedModule> modernTarget
     ) {
         try {
-            SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
+            SharedPreferences shared = context.getSharedPreferences("shimmerpatch", Context.MODE_PRIVATE);
             String jsonStr = shared.getString("modules", "[]");
             JSONArray jsonArray = new JSONArray(jsonStr);
             PackageManager pm = context.getPackageManager();

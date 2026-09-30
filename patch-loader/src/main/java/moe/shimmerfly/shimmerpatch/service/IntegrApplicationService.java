@@ -34,7 +34,7 @@ public class IntegrApplicationService extends IFrameworkService.Stub {
 
     public IntegrApplicationService(Context context) {
         try {
-            String[] assetsList = context.getAssets().list("npatch/modules");
+            String[] assetsList = context.getAssets().list("shimmerpatch/modules");
             if (assetsList == null || assetsList.length == 0) {
                 return;
             }

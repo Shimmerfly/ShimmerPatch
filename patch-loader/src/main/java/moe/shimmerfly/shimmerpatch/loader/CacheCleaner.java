@@ -90,7 +90,7 @@ public class CacheCleaner {
                 .filter(f -> now - f.lastModified() > LIB_NPATCH_GRACE_MS)
                 .forEach(f -> {
                     if (!f.delete()) {
-                        Log.w(TAG, "Failed to delete stale libnpatch: " + f);
+                        Log.w(TAG, "Failed to delete stale libshimmerpatch: " + f);
                     }
                 });
     }
@@ -186,7 +186,7 @@ public class CacheCleaner {
         // cache/shimmerpatch is not wiped wholesale: a concurrently starting process may have written
         // its libshimmerpatch-*.so there but not yet System.load()ed it. Sweep it per-file, keeping the
         // newest and anything within the grace window.
-        File[] libs = new File(cacheRoot, "npatch").listFiles((dir, name) ->
+        File[] libs = new File(cacheRoot, "shimmerpatch").listFiles((dir, name) ->
                 name.startsWith("libshimmerpatch-") && name.endsWith(".so"));
         if (libs != null && libs.length > 1) {
             File newest = libs[0];

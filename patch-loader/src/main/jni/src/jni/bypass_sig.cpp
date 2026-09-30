@@ -173,7 +173,7 @@ namespace lspd {
             "edxposed",
             "xposed",
             "riru",
-            "npatch",
+            "shimmerpatch",
             "vector",
             "/data/local/tmp",
             "/data/adb/",
@@ -967,7 +967,7 @@ namespace lspd {
         }
 
         const char* fname = info.dli_fname;
-        if (strstr(fname, "libnpatch.so") != nullptr) {
+        if (strstr(fname, "libshimmerpatch.so") != nullptr) {
             return true;
         }
 
@@ -987,7 +987,7 @@ namespace lspd {
         return path.size() == root.size() || path[root.size()] == '/';
     }
 
-    static bool is_npatch_module_native_caller(const void* caller_pc) {
+    static bool is_shimmerpatch_module_native_caller(const void* caller_pc) {
         if (caller_pc == nullptr) return false;
         Dl_info info = {};
         if (dladdr(caller_pc, &info) == 0 || info.dli_fname == nullptr || info.dli_fname[0] == '\0') {
@@ -1012,7 +1012,7 @@ namespace lspd {
         // （origin.apk）不含 NPatch 注入的模块/加固资源。若把加固模块 JNI_OnLoad 对 APK 的
         // 读取重定向到 origin.apk，会导致 JNI_OnLoad/UnsatisfiedLinkError、模块无法加载。
         // 禁止将这里简化为无条件返回 true。
-        return !is_npatch_module_native_caller(caller_pc);
+        return !is_shimmerpatch_module_native_caller(caller_pc);
     }
 
     int open_sanitized_proc_file(const char* pathname, const void* caller_pc) {

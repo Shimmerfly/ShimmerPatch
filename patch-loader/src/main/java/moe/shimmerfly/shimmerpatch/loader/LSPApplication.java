@@ -164,7 +164,7 @@ public class LSPApplication {
 
     private static boolean hasEmbeddedModules(Context context) {
         try {
-            String[] list = context.getAssets().list("npatch/modules");
+            String[] list = context.getAssets().list("shimmerpatch/modules");
             return list != null && list.length > 0;
         } catch (IOException e) {
             return false;
@@ -184,7 +184,7 @@ public class LSPApplication {
             var metaData = packageManager
                     .getApplicationInfo(appInfo.packageName, PackageManager.GET_META_DATA)
                     .metaData;
-            String encoded = metaData == null ? null : metaData.getString("npatch");
+            String encoded = metaData == null ? null : metaData.getString("shimmerpatch");
             if (encoded == null) {
                 return fallbackLevel;
             }
@@ -300,7 +300,7 @@ public class LSPApplication {
                     moduleObj.put("packageName", entry.getKey());
                     moduleArr.put(moduleObj);
                 }
-                SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
+                SharedPreferences shared = context.getSharedPreferences("shimmerpatch", Context.MODE_PRIVATE);
                 shared.edit().putString("modules", moduleArr.toString()).apply();
                 logInfo("Success update LoadedModule scope from Manager");
             } catch (Throwable e) {

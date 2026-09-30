@@ -420,7 +420,7 @@ public class SigBypass {
             var metaData = context.getPackageManager()
                     .getApplicationInfo(packageName, PackageManager.GET_META_DATA)
                     .metaData;
-            String encoded = metaData == null ? null : metaData.getString("npatch");
+            String encoded = metaData == null ? null : metaData.getString("shimmerpatch");
             if (encoded != null) {
                 var json = new String(Base64.decode(encoded, Base64.DEFAULT), StandardCharsets.UTF_8);
                 var patchConfig = new JSONObject(json);

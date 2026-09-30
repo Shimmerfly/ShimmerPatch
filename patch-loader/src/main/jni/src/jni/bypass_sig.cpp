@@ -61,6 +61,17 @@ namespace lspd {
     using LseekFn = off_t(*)(int, off_t, int);
     using FstatFn = int(*)(int, struct stat*);
     using Fstat64Fn = int(*)(int, struct stat64*);
+
+    // ART stats a dex with fstatat(dirfd, path, ...) - often before it opens anything - so leaving
+    // this one unhooked hands it the cached copy's own identity: owned by this app, and writable by
+    // it. ART then refuses to load the file.
+    using FstatatFn = int(*)(int, const char*, struct stat*, int);
+    static void *fstatat_target = nullptr;
+    static void *newfstatat_target = nullptr;
+    static FstatatFn fstatat_backup = nullptr;
+    static FstatatFn newfstatat_backup = nullptr;
+    static bool fstatat_hook_installed = false;
+    static bool newfstatat_hook_installed = false;
     using MmapFn = void*(*)(void*, size_t, int, int, int, off_t);
     using DlIteratePhdrFn = int(*)(int (*)(struct dl_phdr_info*, size_t, void*), void*);
 
@@ -1544,6 +1555,42 @@ namespace lspd {
         }
         return rc;
     }
+    static int hooked_fstatat(int dirfd, const char* pathname, struct stat* st, int flags) {
+        if (fstatat_backup == nullptr) {
+            errno = ENOSYS;
+            return -1;
+        }
+        if (pathname == nullptr) {
+            return fstatat_backup(dirfd, pathname, st, flags);
+        }
+        std::string redirected_path_storage;
+        const char* redirected_path =
+                get_visible_or_redirected_path(pathname, false, &redirected_path_storage);
+        int rc = fstatat_backup(dirfd, redirected_path, st, flags);
+        if (rc == 0) {
+            rewrite_stat_like_result(pathname, st);
+        }
+        return rc;
+    }
+
+    static int hooked_newfstatat(int dirfd, const char* pathname, struct stat* st, int flags) {
+        if (newfstatat_backup == nullptr) {
+            errno = ENOSYS;
+            return -1;
+        }
+        if (pathname == nullptr) {
+            return newfstatat_backup(dirfd, pathname, st, flags);
+        }
+        std::string redirected_path_storage;
+        const char* redirected_path =
+                get_visible_or_redirected_path(pathname, false, &redirected_path_storage);
+        int rc = newfstatat_backup(dirfd, redirected_path, st, flags);
+        if (rc == 0) {
+            rewrite_stat_like_result(pathname, st);
+        }
+        return rc;
+    }
+
     static int hooked_statfs(const char* pathname, struct statfs* st) {
         if (statfs_backup == nullptr) {
             errno = ENOSYS;
@@ -1842,6 +1889,12 @@ namespace lspd {
                                           &fstat_target, &fstat_backup, &fstat_hook_installed);
             fstat64_ok = install_plain_hook("fstat64", reinterpret_cast<void*>(hooked_fstat64),
                                             &fstat64_target, &fstat64_backup, &fstat64_hook_installed);
+            install_plain_hook("fstatat", reinterpret_cast<void*>(hooked_fstatat),
+                               &fstatat_target, &fstatat_backup, &fstatat_hook_installed);
+            install_plain_hook("newfstatat", reinterpret_cast<void*>(hooked_newfstatat),
+                               &newfstatat_target, &newfstatat_backup, &newfstatat_hook_installed);
+            install_plain_hook("__fstatat64", reinterpret_cast<void*>(hooked_fstatat),
+                               &fstatat_target, &fstatat_backup, &fstatat_hook_installed);
             statfs_ok = install_plain_hook("statfs", reinterpret_cast<void*>(hooked_statfs),
                                            &statfs_target, &statfs_backup, &statfs_hook_installed);
             statx_ok = install_plain_hook("statx", reinterpret_cast<void*>(hooked_statx),

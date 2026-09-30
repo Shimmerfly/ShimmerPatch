@@ -1458,6 +1458,21 @@ namespace lspd {
     }
 
 
+
+    // Temporary probe: the descriptor calls only told us a file was the app's own, not which file
+    // it was. Read the link by raw syscall so the probe itself is not redirected.
+    static std::string describe_fd_path(int fd) {
+        char link_path[64];
+        snprintf(link_path, sizeof(link_path), "/proc/self/fd/%d", fd);
+        char target[512];
+        long n = syscall(__NR_readlinkat, AT_FDCWD, link_path, target, sizeof(target) - 1);
+        if (n <= 0) {
+            return std::string("?");
+        }
+        target[n] = '\0';
+        return std::string(target);
+    }
+
     // Temporary probe: every stat call the patched APK is involved in, in order, until the log has
     // enough to show which of them the platform's dex check actually reads.
     static void log_apk_stat_probe(const char* who,
@@ -1617,9 +1632,8 @@ namespace lspd {
         if (rc == 0 && redirect_apk_configured()) {
             const bool is_ours = static_cast<uid_t>(st->st_uid) == getuid();
             if (fd_stat_is_redirected_apk(st->st_dev, static_cast<uint64_t>(st->st_ino)) || is_ours) {
-                char fd_label[32];
-                snprintf(fd_label, sizeof(fd_label), "fd=%d", fd);
-                log_apk_stat_probe("fstat", fd_label, is_ours, st->st_mode, st->st_uid);
+                const std::string fd_path = describe_fd_path(fd);
+                log_apk_stat_probe("fstat", fd_path.c_str(), is_ours, st->st_mode, st->st_uid);
             }
         }
         if (rc == 0 && fd_stat_is_redirected_apk(st->st_dev, static_cast<uint64_t>(st->st_ino))) {

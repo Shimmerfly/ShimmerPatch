@@ -24,6 +24,8 @@ google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 rikka-tools-refine = { id = "dev.rikka.tools.refine", version.ref = "hiddenapi" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+# The NeoApk engine is a plain JVM library, so its sources need the JVM flavour of Kotlin.
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 
 [libraries]
 vector-daemon-service = { module = "vector:daemon-service" }

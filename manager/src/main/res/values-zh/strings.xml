@@ -260,6 +260,7 @@
     <string name="install_notification_text">点击启动应用程序</string>
     <string name="app_detail_modules_empty">此应用没有内嵌模块</string>
     <string name="app_detail_modules_empty_local">本地模式不内嵌模块，请在「模块作用域」里选择。</string>
+    <string name="app_detail_modules_go_scope">去选择模块</string>
     <string name="app_detail_modules_embedded">模块已内嵌在此 APK 中，更改模块需要重新修补并重新安装 %1$s。</string>
     <string name="app_detail_foreign_bundle">此安装包由 %1$s 生成，其加载器与模块不在此处管理。</string>
     <string name="app_detail_deep_scan_failed">无法读取此应用的安装包</string>

@@ -449,6 +449,18 @@ fun AppDetailScreen(
                                 enabled = false,
                             )
                         }
+                        // Local mode embeds nothing: the modules an app activates are picked
+                        // under Module scope, so offer the way there instead of a dead end.
+                        if (isLocal) {
+                            item(key = "modules_scope") {
+                                BaseWidget(
+                                    icon = Icons.Outlined.Extension,
+                                    title = stringResource(R.string.app_detail_modules_go_scope),
+                                    description = stringResource(R.string.app_detail_module_scope_summary),
+                                    onClick = openScope,
+                                )
+                            }
+                        }
                     } else {
                         modules.forEach { module ->
                             item(key = module.packageName) {

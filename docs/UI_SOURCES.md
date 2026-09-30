@@ -70,6 +70,8 @@ The launcher icon is adaptive and carries the complete artwork, wordmark include
 
 ## Patched-app page
 
+- On an app's page, the module card says only that nothing is embedded. A local-mode app embeds no modules at all - it activates them under Module scope - so that case names the scope row and offers a row that opens it.
+
 Tapping a row in Manage -> Apps opens `ui/page/AppDetailScreen.kt` instead of the module picker, because which patcher produced a bundle decides which actions apply. It is assembled from the repository's own widgets (`SegmentedColumn`, `BaseWidget`, `ExpressiveActionDropdown`) rather than modeled on another manager's layout.
 
 - The header keeps the icon and app name on one row and puts the chips on their own row underneath, each with a leading icon, so a wide icon cannot squeeze them and every chip starts at the same left edge as the sections below.

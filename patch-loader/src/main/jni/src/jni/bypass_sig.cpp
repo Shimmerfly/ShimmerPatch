@@ -439,6 +439,7 @@ namespace lspd {
     static void refresh_redirect_identity_cache_locked() {
         g_redirect_identity_valid.store(false, std::memory_order_release);
         if (redirectApkPath.empty()) {
+            LOGW("SigBypass: identity refresh with no cache apk configured");
             return;
         }
         uint64_t dev = 0;
@@ -454,17 +455,21 @@ namespace lspd {
                 dev = st.st_dev;
                 ino = static_cast<uint64_t>(st.st_ino);
             } else {
+                LOGW("SigBypass: cannot stat cache apk {}", redirectApkPath);
                 return;
             }
         }
         g_redirect_identity_dev.store(dev, std::memory_order_relaxed);
         g_redirect_identity_ino.store(ino, std::memory_order_relaxed);
         g_redirect_identity_valid.store(true, std::memory_order_release);
+        LOGI("SigBypass: identity dev={} ino={} for {}", dev, ino, redirectApkPath);
     }
 
     // Lock-free (atomic flag + two integer compares, zero mutex locks and zero syscalls)
     // fd-identity check used by hooked_fstat/hooked_fstat64 to skip everything but the
     // redirected origin.apk fd — this stays blazing fast even during SQLite WAL transactions.
+    static std::atomic<bool> g_identity_miss_logged{false};
+
     static bool fd_stat_is_redirected_apk(uint64_t dev, uint64_t ino) {
         if (!g_redirect_identity_valid.load(std::memory_order_acquire)) {
             // The identity is cached when the redirect is set up, which can happen before the
@@ -477,6 +482,9 @@ namespace lspd {
                 refresh_redirect_identity_cache_locked();
             }
             if (!g_redirect_identity_valid.load(std::memory_order_acquire)) {
+                if (!g_identity_miss_logged.exchange(true)) {
+                    LOGW("SigBypass: fd identity check has no identity; cache={}", redirectApkPath);
+                }
                 return false;
             }
         }
@@ -1763,6 +1771,9 @@ namespace lspd {
             targetApkPath = strOrig.get();
             redirectApkPath = strRedirect.get();
             refresh_redirect_identity_cache_locked();
+            LOGI("SigBypass: redirect armed target={} cache={} identity_valid={} minimal={}",
+                 targetApkPath, redirectApkPath,
+                 g_redirect_identity_valid.load(std::memory_order_acquire), minimal);
 
             if (jPkgName != nullptr) {
                 lsplant::JUTFString strPkg(env, jPkgName);

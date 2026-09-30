@@ -1598,9 +1598,12 @@ namespace lspd {
         }
         int rc = fstat_backup(fd, st);
         if (rc == 0 && redirect_apk_configured()) {
-            log_apk_stat_probe("fstat?", nullptr,
-                               fd_stat_is_redirected_apk(st->st_dev, static_cast<uint64_t>(st->st_ino)),
-                               st->st_mode, st->st_uid);
+            const bool is_ours = static_cast<uid_t>(st->st_uid) == getuid();
+            if (fd_stat_is_redirected_apk(st->st_dev, static_cast<uint64_t>(st->st_ino)) || is_ours) {
+                char fd_label[32];
+                snprintf(fd_label, sizeof(fd_label), "fd=%d", fd);
+                log_apk_stat_probe("fstat", fd_label, is_ours, st->st_mode, st->st_uid);
+            }
         }
         if (rc == 0 && fd_stat_is_redirected_apk(st->st_dev, static_cast<uint64_t>(st->st_ino))) {
             std::string visible_path;
@@ -1644,7 +1647,10 @@ namespace lspd {
         int rc = fstatat_backup(dirfd, redirected_path, st, flags);
         if (rc == 0) {
             rewrite_stat_like_result_raw(pathname, st);
-            log_apk_stat_probe("fstatat", pathname, true, st->st_mode, st->st_uid);
+            std::string probe_storage;
+            if (get_visible_or_redirected_path(pathname, true, &probe_storage) != pathname) {
+                log_apk_stat_probe("fstatat", pathname, true, st->st_mode, st->st_uid);
+            }
         }
         return rc;
     }

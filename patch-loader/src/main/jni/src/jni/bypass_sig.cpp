@@ -72,11 +72,6 @@ namespace lspd {
     static FstatatFn newfstatat_backup = nullptr;
     static bool fstatat_hook_installed = false;
     static bool newfstatat_hook_installed = false;
-
-    // bionic implements stat() and lstat() on top of fstatat(), so the rewrite below re-enters the
-    // fstatat hook through their backups. A nested call must be answered as the kernel answered it:
-    // rewriting it again recursed until the stack ran out.
-    static thread_local bool g_in_fstatat_hook = false;
     using MmapFn = void*(*)(void*, size_t, int, int, int, off_t);
     using DlIteratePhdrFn = int(*)(int (*)(struct dl_phdr_info*, size_t, void*), void*);
 
@@ -1527,6 +1522,46 @@ namespace lspd {
     // DB/socket/pipe 同樣成立，會把它們的寫入位一併清空。因此只用 fstat 已經
     // 回傳的 st_dev/st_ino 與快取的 redirectApkPath 身份做整數比對，未命中就
     // 直接返回，不做任何額外系統呼叫。
+    // The stat rewrite reads the installed file through stat_backup(), and bionic builds stat() on
+    // top of fstatat(). A hook on fstatat would therefore re-enter itself through that read until
+    // the stack ran out - so this path asks the kernel directly instead, where stat_backup() is not
+    // involved at all.
+    static bool query_visible_statx_raw(const char* visible_path, struct statx* stx) {
+        if (visible_path == nullptr || stx == nullptr) {
+            return false;
+        }
+        memset(stx, 0, sizeof(*stx));
+        return syscall(__NR_statx, AT_FDCWD, visible_path, 0, STATX_BASIC_STATS, stx) == 0;
+    }
+
+    template <typename StatLike>
+    static void enforce_read_only_system_identity_raw(const char* visible_path, StatLike* st) {
+        struct statx real_stx{};
+        if (query_visible_statx_raw(visible_path, &real_stx)) {
+            st->st_dev = makedev(real_stx.stx_dev_major, real_stx.stx_dev_minor);
+            st->st_uid = real_stx.stx_uid;
+            st->st_gid = real_stx.stx_gid;
+            st->st_mode = static_cast<decltype(st->st_mode)>(real_stx.stx_mode);
+            st->st_nlink = real_stx.stx_nlink;
+            st->st_ino = real_stx.stx_ino;
+        } else if (static_cast<uid_t>(st->st_uid) == getuid()) {
+            st->st_uid = 1000;
+            st->st_gid = 1000;
+        }
+        st->st_mode &= ~static_cast<decltype(st->st_mode)>(0222);
+    }
+
+    template <typename StatLike>
+    static void rewrite_stat_like_result_raw(const char* visible_path, StatLike* st) {
+        struct statx stx = {};
+        if (query_redirected_statx(visible_path, &stx)) {
+            st->st_size = stx.stx_size;
+            st->st_blocks = stx.stx_blocks;
+            st->st_blksize = static_cast<decltype(st->st_blksize)>(stx.stx_blksize);
+        }
+        enforce_read_only_system_identity_raw(visible_path, st);
+    }
+
     static int hooked_fstat(int fd, struct stat* st) {
         if (fstat_backup == nullptr) {
             errno = ENOSYS;
@@ -1565,19 +1600,16 @@ namespace lspd {
             errno = ENOSYS;
             return -1;
         }
-        if (pathname == nullptr || g_in_fstatat_hook) {
+        if (pathname == nullptr) {
             return fstatat_backup(dirfd, pathname, st, flags);
         }
         std::string redirected_path_storage;
         const char* redirected_path =
                 get_visible_or_redirected_path(pathname, false, &redirected_path_storage);
-        const bool previous = g_in_fstatat_hook;
-        g_in_fstatat_hook = true;
         int rc = fstatat_backup(dirfd, redirected_path, st, flags);
         if (rc == 0) {
-            rewrite_stat_like_result(pathname, st);
+            rewrite_stat_like_result_raw(pathname, st);
         }
-        g_in_fstatat_hook = previous;
         return rc;
     }
 
@@ -1586,19 +1618,16 @@ namespace lspd {
             errno = ENOSYS;
             return -1;
         }
-        if (pathname == nullptr || g_in_fstatat_hook) {
+        if (pathname == nullptr) {
             return newfstatat_backup(dirfd, pathname, st, flags);
         }
         std::string redirected_path_storage;
         const char* redirected_path =
                 get_visible_or_redirected_path(pathname, false, &redirected_path_storage);
-        const bool previous = g_in_fstatat_hook;
-        g_in_fstatat_hook = true;
         int rc = newfstatat_backup(dirfd, redirected_path, st, flags);
         if (rc == 0) {
-            rewrite_stat_like_result(pathname, st);
+            rewrite_stat_like_result_raw(pathname, st);
         }
-        g_in_fstatat_hook = previous;
         return rc;
     }
 
@@ -1900,6 +1929,12 @@ namespace lspd {
                                           &fstat_target, &fstat_backup, &fstat_hook_installed);
             fstat64_ok = install_plain_hook("fstat64", reinterpret_cast<void*>(hooked_fstat64),
                                             &fstat64_target, &fstat64_backup, &fstat64_hook_installed);
+            install_plain_hook("fstatat", reinterpret_cast<void*>(hooked_fstatat),
+                               &fstatat_target, &fstatat_backup, &fstatat_hook_installed);
+            install_plain_hook("newfstatat", reinterpret_cast<void*>(hooked_newfstatat),
+                               &newfstatat_target, &newfstatat_backup, &newfstatat_hook_installed);
+            install_plain_hook("__fstatat64", reinterpret_cast<void*>(hooked_fstatat),
+                               &fstatat_target, &fstatat_backup, &fstatat_hook_installed);
             statfs_ok = install_plain_hook("statfs", reinterpret_cast<void*>(hooked_statfs),
                                            &statfs_target, &statfs_backup, &statfs_hook_installed);
             statx_ok = install_plain_hook("statx", reinterpret_cast<void*>(hooked_statx),

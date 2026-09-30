@@ -10,3 +10,7 @@
 	path = remote-api
 	url = https://github.com/Shimmerfly/ShimmerPatch.git
 	branch = remote-api
+[submodule "NeoApk"]
+	path = NeoApk
+	url = https://github.com/Shimmerfly/ShimmerPatch.git
+	branch = neoapk

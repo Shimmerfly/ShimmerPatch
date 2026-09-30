@@ -238,7 +238,7 @@ public class SigBypass {
 
     private static void replaceModuleApplicationInfoPaths(Context context, ApplicationInfo applicationInfo) {
         // 【重要】模块调用方不能在此重新映射到 redirectApkPath。
-        // origin.apk 是供宿主签名绕过使用的干净原包副本，不包含 NPatch 注入的模块、加固壳
+        // origin.apk 是供宿主签名绕过使用的干净原包副本，不包含 ShimmerPatch 注入的模块、加固壳
         // payload 等资源。加固模块可能在 JNI_OnLoad 中取得 sourceDir/getPackageCodePath 后直接
         // 打开该路径；若返回 origin.apk，壳会因找不到资源而在模块初始化前失败。模块必须始终
         // 看到外层修补后的 base.apk；native I/O 侧必须与此保持一致，见 should_redirect_apk_contents。
@@ -412,7 +412,7 @@ public class SigBypass {
         Signature[] cached = signatureCache.get(packageName);
         if (cached != null) return cached;
         // Avoid re-running the metadata lookup + Base64/JSON parse for every PackageInfo of a
-        // package that has no NPatch signature: package enumeration would repeat it constantly.
+        // package that has no ShimmerPatch signature: package enumeration would repeat it constantly.
         if (signatureMisses.contains(packageName)) return null;
 
         String replacementStr = null;
@@ -805,7 +805,7 @@ public class SigBypass {
                 }
                 if (!isPatchedApkPath) return;
                 // 必须与 replaceModuleApplicationInfoPaths 保持一致：模块的 ZIP/File 读取需要
-                // 外层 APK 内的 NPatch/加固资源，不能被重定向到 origin.apk。
+                // 外层 APK 内的 ShimmerPatch/加固资源，不能被重定向到 origin.apk。
                 if (isModuleCaller()) return;
 
                 if (arg0 instanceof String) {

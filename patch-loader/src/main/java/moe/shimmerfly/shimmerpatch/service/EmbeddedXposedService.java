@@ -67,7 +67,7 @@ public class EmbeddedXposedService extends IXposedService.Stub {
     public void requestScope(List<String> packages, IXposedScopeCallback callback) {
         try {
             if (callback != null) {
-                callback.onScopeRequestFailed("scope is set by patching in NPatch; it cannot be granted at runtime");
+                callback.onScopeRequestFailed("scope is set by patching in ShimmerPatch; it cannot be granted at runtime");
             }
         } catch (Throwable t) {
             Log.w(TAG, "onScopeRequestFailed error", t);

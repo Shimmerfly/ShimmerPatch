@@ -41,7 +41,7 @@ import java.util.Objects;
  * that cannot even see it, which is what the removed delegation layer kept getting wrong.
  *
  * <p>The error path follows from that: if bootstrap fails this class does nothing further, because
- * the framework's default factory is a strictly better answer than a half-initialised NPatch.
+ * the framework's default factory is a strictly better answer than a half-initialised ShimmerPatch.
  */
 @SuppressLint("UnsafeDynamicallyLoadedCode")
 public class LSPAppComponentFactoryStub extends AppComponentFactory {
@@ -74,7 +74,7 @@ public class LSPAppComponentFactoryStub extends AppComponentFactory {
      * <p>Failure is not fatal to the app: the exception is caught here rather than propagated, since
      * a throw out of a static initializer would poison this class's initialization state for the
      * process and take component instantiation down with it. The framework falls back to its default
-     * factory, which starts the app without NPatch rather than not at all.
+     * factory, which starts the app without ShimmerPatch rather than not at all.
      */
     private static void bootstrap() {
         try {

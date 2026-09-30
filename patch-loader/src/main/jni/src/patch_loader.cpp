@@ -47,7 +47,7 @@ namespace lspd {
         std::mt19937 gen(rd());
         std::uniform_int_distribution<size_t> pick(0, sizeof(kAlphabet) - 2);
 
-        std::string name = "npatch-cache-";
+        std::string name = "shimmerpatch-cache-";
         for (int i = 0; i < 12; ++i) {
             name += kAlphabet[pick(gen)];
         }
@@ -150,7 +150,7 @@ namespace lspd {
                 [](auto symbol) { return GetArt()->getSymbPrefixFirstAddress(symbol); },
         };
 
-        auto stub = JNI_FindClass(env, "moe.shimmerfly.shimmerpatch/metaloader/LSPAppComponentFactoryStub");
+        auto stub = JNI_FindClass(env, "moe/shimmerfly/shimmerpatch/metaloader/LSPAppComponentFactoryStub");
         auto hide_libs_field = JNI_GetStaticFieldID(env, stub, "hideLibs", "Z");
         hide_libs_ = hide_libs_field != nullptr && JNI_GetStaticBooleanField(env, stub, hide_libs_field);
         if (hide_libs_) {

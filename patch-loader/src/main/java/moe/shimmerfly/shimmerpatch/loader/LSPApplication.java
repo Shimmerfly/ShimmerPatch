@@ -374,7 +374,7 @@ public class LSPApplication {
         switchAllClassLoader();
 
         if (config.useMicroG) {
-            logInfo("Activating MicroG redirect via NPatch");
+            logInfo("Activating MicroG redirect via ShimmerPatch");
             GmsRedirector.activate(context, config.originalSignature);
         }
 

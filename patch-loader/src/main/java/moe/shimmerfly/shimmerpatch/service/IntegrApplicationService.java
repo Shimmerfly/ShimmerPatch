@@ -58,7 +58,7 @@ public class IntegrApplicationService extends IFrameworkService.Stub {
                     Log.i(TAG, "Extracting embedded LoadedModule: " + packageName);
                     FileUtils.deleteFolderIfExists(Paths.get(modulePath));
                     Files.createDirectories(Paths.get(modulePath));
-                    try (var is = context.getAssets().open("npatch/modules/" + name)) {
+                    try (var is = context.getAssets().open("shimmerpatch/modules/" + name)) {
                         Files.copy(is, Paths.get(cacheApkPath));
                     }
                 }

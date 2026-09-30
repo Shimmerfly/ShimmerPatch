@@ -122,7 +122,9 @@ public class SigBypass {
             var entries = apk.entries();
             while (entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
-                String name = entry.getName().toLowerCase(Locale.getDefault());
+                // A zip entry name is not text in the device's language: a Turkish default locale
+                // lowercases "I" to a dotless "ı" and the lookup silently misses.
+                String name = entry.getName().toLowerCase(Locale.ROOT);
                 if (name.contains("qihoo")
                         || name.contains("qihu")
                         || name.contains("360")

@@ -444,7 +444,7 @@ fun AppDetailScreen(
                                 title = if (detailViewModel.modulesUnreadable) {
                                     stringResource(R.string.app_detail_deep_scan_failed)
                                 } else {
-                                    stringResource(R.string.app_detail_modules_empty)
+                                    stringResource(if (isLocal) R.string.app_detail_modules_empty_local else R.string.app_detail_modules_empty)
                                 },
                                 enabled = false,
                             )

@@ -1,6 +1,5 @@
 package moe.shimmerfly.shimmerpatch.loader;
 
-import android.annotation.SuppressLint;
 import static moe.shimmerfly.shimmerpatch.share.Constants.CONFIG_ASSET_PATH;
 import static moe.shimmerfly.shimmerpatch.share.Constants.PROVIDER_DEX_ASSET_PATH;
 
@@ -47,7 +46,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,6 @@ import hidden.HiddenApiBridge;
  * Updated by NkBe
  */
 @SuppressWarnings("unused")
-@SuppressLint({"ObsoleteSdkInt"})
 public class LSPApplication {
 
     private static final String TAG = "ShimmerPatch";
@@ -83,6 +83,7 @@ public class LSPApplication {
     private static volatile Throwable lastCoreCapturedCrash;
 
     private static PatchConfig config;
+    private static Path pendingProviderPath;
 
     private static void logInfo(String msg) {
         XLog.i(TAG, msg);
@@ -220,14 +221,38 @@ public class LSPApplication {
         }
     }
 
-    public static void onLoad() throws RemoteException, IOException {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+    private static void exemptHiddenApi() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            return;
+        }
+        boolean exempted = false;
+        try {
+            Class<?> vmRuntimeClass = Class.forName("dalvik.system.VMRuntime");
+            Method getRuntime = vmRuntimeClass.getDeclaredMethod("getRuntime");
+            getRuntime.setAccessible(true);
+            Object vmRuntime = getRuntime.invoke(null);
+            Method setExemptions = vmRuntimeClass.getDeclaredMethod("setHiddenApiExemptions", String[].class);
+            setExemptions.setAccessible(true);
+            setExemptions.invoke(vmRuntime, (Object) new String[]{"L"});
+            exempted = true;
+        } catch (Throwable ignored) {
+        }
+
+        if (!exempted) {
             try {
-                org.lsposed.hiddenapibypass.HiddenApiBypass.addHiddenApiExemptions("");
+                org.lsposed.hiddenapibypass.HiddenApiBypass.addHiddenApiExemptions("L");
             } catch (Throwable t) {
-                Log.w(TAG, "Failed to exempt hidden API in onLoad", t);
+                try {
+                    org.lsposed.hiddenapibypass.HiddenApiBypass.addHiddenApiExemptions("");
+                } catch (Throwable t2) {
+                    Log.w(TAG, "Hidden API exemption in onLoad failed", t2);
+                }
             }
         }
+    }
+
+    public static void onLoad() throws RemoteException, IOException {
+        exemptHiddenApi();
 
         if (isIsolated()) {
             XLog.d(TAG, "Skip isolated process");
@@ -239,7 +264,7 @@ public class LSPApplication {
             XLog.e(TAG, "Error when creating context");
             return;
         }
-
+        String installedApkPath = context.getPackageCodePath();
         logInfo("Initialize service client");
         IFrameworkService service = null;
 
@@ -294,20 +319,31 @@ public class LSPApplication {
             }
         }
 
+        ClassLoader frameworkLoader = XposedBridge.class.getClassLoader();
+        if (frameworkLoader != null && frameworkLoader.getParent() != null) {
+            XposedBridge.dummyClassLoader = frameworkLoader.getParent();
+        }
+
+        Startup.initXposed(false, ActivityThread.currentProcessName(), context.getApplicationInfo().dataDir, service);
+        Startup.bootstrapXposed(false);
+
+        // Track appLoadedApk so its modern + legacy package lifecycle is driven
+        // exactly once when realizeLoadedApk() builds the class loader below.
+        Startup.trackLoadedApk(appLoadedApk);
+
+        logInfo("Load modules");
+        LSPLoader.initModules(appLoadedApk);
+        logInfo("Modules initialized");
+
         registerModuleCallerPrefixes(service);
         SigBypass.registerModuleNativeLibraryRoots(context);
         SigBypass.doSigBypass(context, config.lspConfig.sigBypassLevel, config.hideLibs);
         disableProfile(context);
 
-        Startup.initXposed(false, ActivityThread.currentProcessName(), context.getApplicationInfo().dataDir, service);
-        Startup.bootstrapXposed(false);
-
-        // WARN: Since it uses `XResource`, the following class should not be initialized
-        // before forkPostCommon is invoke. Otherwise, you will get failure of XResources
-
-        logInfo("Load modules");
-        LSPLoader.initModules(appLoadedApk);
-        logInfo("Modules initialized");
+        // Realize the target's class loader now that hooks, modules and signature bypass are all armed.
+        // getClassLoader() -> createOrUpdateClassLoaderLocked -> createAppFactory triggers
+        // onPackageLoaded (pre-<clinit>) then, on return, onPackageReady and legacy handleLoadPackage.
+        realizeLoadedApk(installedApkPath);
 
         if (!config.useManager) {
             for (String modulePkg : VectorModuleManager.INSTANCE.loadedModulePackages()) {
@@ -338,7 +374,7 @@ public class LSPApplication {
         switchAllClassLoader();
 
         if (config.useMicroG) {
-            logInfo("Activating MicroG redirect via ShimmerPatch");
+            logInfo("Activating MicroG redirect via NPatch");
             GmsRedirector.activate(context, config.originalSignature);
         }
 
@@ -396,8 +432,15 @@ public class LSPApplication {
                 compatInfo = (CompatibilityInfo) XposedHelpers.getObjectField(mBoundApplication, "compatInfo");
             } catch (Throwable ignored) {
             }
+            if (compatInfo == null) {
+                try {
+                    compatInfo = (CompatibilityInfo) XposedHelpers.getStaticObjectField(
+                            CompatibilityInfo.class, "DEFAULT_COMPATIBILITY_INFO");
+                } catch (Throwable ignored) {
+                }
+            }
             var baseClassLoader = stubLoadedApk.getClassLoader();
-            String patchedApkPath = appInfo.sourceDir;
+            String installedApkPath = appInfo.sourceDir;
 
             try (var is = baseClassLoader.getResourceAsStream(CONFIG_ASSET_PATH)) {
                 if (is == null) throw new IOException("Config file not found in assets");
@@ -414,43 +457,47 @@ public class LSPApplication {
             Log.i(TAG, "Use manager: " + config.useManager);
             Log.i(TAG, "Signature bypass level: " + config.lspConfig.sigBypassLevel);
 
-            CacheCleaner.handlePatchUpgrade(appInfo, patchedApkPath);
-            CacheCleaner.sweepLibNpatchCache(appInfo);
-            CacheCleaner.sweepLegacyNpatchCache(appInfo);
+            CacheCleaner.handlePatchUpgrade(appInfo, installedApkPath);
+            final ApplicationInfo appInfoRef = appInfo;
+            Thread sweepThread = new Thread(() -> {
+                CacheCleaner.sweepLibNpatchCache(appInfoRef);
+                CacheCleaner.sweepLegacyNpatchCache(appInfoRef);
+                CacheCleaner.sweepLegacyHostNativeCache(appInfoRef);
+            }, "ShimmerPatch-Sweep");
+            sweepThread.setDaemon(true);
+            sweepThread.start();
 
-            String loadedApkSourceDir = patchedApkPath;
+            String loadedApkSourceDir = installedApkPath;
             boolean loadedApkUsesOriginCache = false;
             if (config.lspConfig.sigBypassLevel >= Constants.SIGBYPASS_BASIC) {
                 Path cacheApkPath = OriginApkHelper.prepareOriginApk(appInfo, baseClassLoader);
-                Path nativeLibraryDir = OriginApkHelper.prepareNativeLibraryDir(appInfo, cacheApkPath, patchedApkPath);
-                SigBypass.setPaths(cacheApkPath.toString(), patchedApkPath);
+                SigBypass.setPaths(cacheApkPath.toString(), installedApkPath);
                 SigBypass.setOriginalSignature(config.newPackage, config.originalSignature);
                 loadedApkSourceDir = cacheApkPath.toString();
                 loadedApkUsesOriginCache = true;
                 XLog.i(TAG, "LoadedApk source mode=cache"
-                        + ", patchedApkPath=" + patchedApkPath
+                        + ", installedApkPath=" + installedApkPath
                         + ", cacheApkPath=" + cacheApkPath
                         + ", selected=" + loadedApkSourceDir);
-                if (nativeLibraryDir != null) {
-                    appInfo.nativeLibraryDir = nativeLibraryDir.toString();
-                }
                 try {
-                    CacheCleaner.sweepOriginApkCache(appInfo, OriginApkHelper.getOriginalApkCrc(patchedApkPath));
+                    long originCrc = OriginApkHelper.getOriginalApkCrc(installedApkPath);
+                    if (originCrc > 0) {
+                        CacheCleaner.sweepOriginApkCache(appInfo, originCrc);
+                    }
                 } catch (IOException e) {
                     Log.w(TAG, "Failed to sweep origin apk cache", e);
                 }
             }
-            if (config.lspConfig.sigBypassLevel >= Constants.SIGBYPASS_HIGH) {
-                appInfo.appComponentFactory = config.appComponentFactory;
-            } else {
-                appInfo.appComponentFactory = null;
-            }
+            // The patched manifest points appComponentFactory at the metaloader stub. appInfo has to
+            // be handed back whatever the ORIGINAL apk declared, and appLoadedApk is built from it a
+            // few lines below, so that decision has to be made here -- before the app's own class
+            // loader exists and before its factory's <clinit> can run.
+            appInfo.appComponentFactory = resolveOriginalAppComponentFactory(loadedApkSourceDir);
 
-            Path providerPath = null;
             if (config.injectProvider) {
                 Path providerDir = Paths.get(appInfo.dataDir, "cache/code_cache/");
                 if (!Files.exists(providerDir)) Files.createDirectories(providerDir);
-                providerPath = providerDir.resolve("provider.dex");
+                Path providerPath = providerDir.resolve("provider.dex");
                 try {
                     Files.deleteIfExists(providerPath);
                     try (InputStream is = baseClassLoader.getResourceAsStream(PROVIDER_DEX_ASSET_PATH)) {
@@ -458,12 +505,13 @@ public class LSPApplication {
                     }
                     if (Files.exists(providerPath)) {
                         providerPath.toFile().setWritable(false);
+                        pendingProviderPath = providerPath;
                     } else {
-                        providerPath = null;
+                        pendingProviderPath = null;
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Failed to inject provider:" + Log.getStackTraceString(e));
-                    providerPath = null;
+                    pendingProviderPath = null;
                 }
             }
 
@@ -472,69 +520,24 @@ public class LSPApplication {
             appInfo.sourceDir = loadedApkSourceDir;
             appInfo.publicSourceDir = loadedApkSourceDir;
             appLoadedApk = activityThread.getPackageInfoNoCheck(appInfo, compatInfo);
-            appLoadedApk.getClassLoader();
+
             // LoadedApk resources must remain paired with the APK used to create it.  In
             // signature-bypass mode that APK is the cached original APK; replacing mResDir
             // with the patched APK mixes its resource table with the original app's IDs and
             // causes Resources$NotFoundException while inflating layouts.
             if (!loadedApkUsesOriginCache) {
-                restoreVisibleLoadedApkResources(appLoadedApk, patchedApkPath);
+                restoreVisibleLoadedApkResources(appLoadedApk, installedApkPath);
+                restoreVisibleApplicationInfo(mBoundApplication, appInfo, installedApkPath);
             }
-
-            if (config.injectProvider && providerPath != null) {
-                try {
-                    ClassLoader loader = appLoadedApk.getClassLoader();
-                    Object dexPathList = XposedHelpers.getObjectField(loader, "pathList");
-                    Object dexElements = XposedHelpers.getObjectField(dexPathList, "dexElements");
-                    int length = Array.getLength(dexElements);
-                    Object newElements = Array.newInstance(dexElements.getClass().getComponentType(), length + 1);
-                    System.arraycopy(dexElements, 0, newElements, 0, length);
-
-                    // Use reflection for DexFile to handle deprecation on Android 14+
-                    Class<?> dexFileClass = Class.forName("dalvik.system.DexFile");
-                    Object dexFile = dexFileClass.getConstructor(String.class).newInstance(providerPath.toString());
-                    Class<?> elementClass = Class.forName("dalvik.system.DexPathList$Element");
-                    Object element = elementClass.getConstructor(dexFileClass).newInstance(dexFile);
-                    Array.set(newElements, length, element);
-                    XposedHelpers.setObjectField(dexPathList, "dexElements", newElements);
-                } catch (Throwable e) {
-                    Log.e(TAG, "Failed to inject provider dex: " + e.getMessage(), e);
-                }
-            }
-
-            restoreVisibleApplicationInfo(mBoundApplication, appInfo, patchedApkPath);
             XposedHelpers.setObjectField(mBoundApplication, "info", appLoadedApk);
 
-            var activityClientRecordClass = XposedHelpers.findClass("android.app.ActivityThread$ActivityClientRecord", ActivityThread.class.getClassLoader());
-            var fixActivityClientRecord = (BiConsumer<Object, Object>) (k, v) -> {
-                if (activityClientRecordClass.isInstance(v)) {
-                    var pkgInfo = XposedHelpers.getObjectField(v, "packageInfo");
-                    if (pkgInfo == stubLoadedApk) {
-                        Log.d(TAG, "fix loadedapk from ActivityClientRecord");
-                        XposedHelpers.setObjectField(v, "packageInfo", appLoadedApk);
-                    }
-                }
-            };
-            var mActivities = (Map<?, ?>) XposedHelpers.getObjectField(activityThread, "mActivities");
-            mActivities.forEach(fixActivityClientRecord);
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    var mLaunchingActivities = (Map<?, ?>) XposedHelpers.getObjectField(activityThread, "mLaunchingActivities");
-                    mLaunchingActivities.forEach(fixActivityClientRecord);
-                }
-            } catch (Throwable ignored) {
-            }
+            // The class loader is deliberately NOT built here. Building it runs the app's
+            // AppComponentFactory <clinit>, which a packed app can turn into a native anti-tamper gate;
+            // it must not run until the LoadedApk hooks, modules and signature bypass are armed. onLoad
+            // arms them and then calls realizeLoadedApk().
             Log.i(TAG, "hooked app initialized: " + appLoadedApk);
 
             var context = (Context) XposedHelpers.callStaticMethod(Class.forName("android.app.ContextImpl"), "createAppContext", activityThread, stubLoadedApk);
-            if (config.appComponentFactory != null) {
-                try {
-                    appLoadedApk.getClassLoader().loadClass(config.appComponentFactory);
-                } catch (Throwable e) {
-                    Log.w(TAG, "Original AppComponentFactory not found: " + config.appComponentFactory, e);
-                    appInfo.appComponentFactory = null;
-                }
-            }
             Log.i(TAG, "createLoadedApkWithContext cost: " + (System.currentTimeMillis() - timeStart) + "ms");
             return context;
         } catch (Throwable e) {
@@ -544,41 +547,246 @@ public class LSPApplication {
         }
     }
 
-    public static void disableProfile(Context context) {
-        var appInfo = context.getApplicationInfo();
-        if (appInfo == null) return;
+    /**
+     * Builds the target app's class loader, now that the LoadedApk hooks, modules and signature bypass
+     * are armed. This is the point where the app's AppComponentFactory is instantiated and its
+     * <clinit> runs; the createAppFactory hook fires onPackageLoaded immediately before that, and
+     * the createOrUpdateClassLoaderLocked hook fires onPackageReady and the legacy handleLoadPackage
+     * on return. It then repoints any ActivityClientRecord still holding the stub LoadedApk at the real one.
+     */
+    private static void realizeLoadedApk(String installedApkPath) {
+        ClassLoader loader = appLoadedApk.getClassLoader();
 
-        var codePaths = new ArrayList<String>();
-        if ((appInfo.flags & ApplicationInfo.FLAG_HAS_CODE) != 0) codePaths.add(appInfo.sourceDir);
-        if (appInfo.splitSourceDirs != null) Collections.addAll(codePaths, appInfo.splitSourceDirs);
-        if (codePaths.isEmpty()) return;
+        appendHostNativeLibraryPaths(loader, installedApkPath);
 
-        File profileDir = null;
-        try {
-            profileDir = (File) XposedHelpers.callStaticMethod(
-                    android.os.Environment.class, "getDataProfilesDePackageDirectory",
-                    appInfo.uid / PER_USER_RANGE, context.getPackageName());
-        } catch (Throwable e) {
-            Log.w(TAG, "Failed to get profile dir", e);
-            return;
+        if (config.injectProvider && pendingProviderPath != null) {
+            try {
+                Object dexPathList = XposedHelpers.getObjectField(loader, "pathList");
+                Object dexElements = XposedHelpers.getObjectField(dexPathList, "dexElements");
+                int length = Array.getLength(dexElements);
+                Object newElements = Array.newInstance(dexElements.getClass().getComponentType(), length + 1);
+                System.arraycopy(dexElements, 0, newElements, 0, length);
+
+                Class<?> dexFileClass = Class.forName("dalvik.system.DexFile");
+                Object dexFile = dexFileClass.getConstructor(String.class).newInstance(pendingProviderPath.toString());
+                Class<?> elementClass = Class.forName("dalvik.system.DexPathList$Element");
+                Object element = elementClass.getConstructor(dexFileClass).newInstance(dexFile);
+                Array.set(newElements, length, element);
+                XposedHelpers.setObjectField(dexPathList, "dexElements", newElements);
+            } catch (Throwable e) {
+                Log.e(TAG, "Failed to inject provider dex: " + e.getMessage(), e);
+            }
         }
 
-        for (int i = codePaths.size() - 1; i >= 0; i--) {
-            String splitName = i == 0 ? null : appInfo.splitNames[i - 1];
-            File profile = new File(profileDir, splitName == null ? "primary.prof" : splitName + ".split.prof");
-
-            try {
-                // 如果已是 0 字節且唯讀，直接跳過
-                if (profile.exists() && profile.length() == 0 && !profile.canWrite()) continue;
-                // 自動將已存在的檔案內容清空或建立新檔
-                try (var ignored = new FileOutputStream(profile)) {
+        var activityClientRecordClass = XposedHelpers.findClass("android.app.ActivityThread$ActivityClientRecord", ActivityThread.class.getClassLoader());
+        var fixActivityClientRecord = (BiConsumer<Object, Object>) (k, v) -> {
+            if (activityClientRecordClass.isInstance(v)) {
+                var pkgInfo = XposedHelpers.getObjectField(v, "packageInfo");
+                if (pkgInfo == stubLoadedApk) {
+                    Log.d(TAG, "fix loadedapk from ActivityClientRecord");
+                    XposedHelpers.setObjectField(v, "packageInfo", appLoadedApk);
                 }
-                // 設定檔案只讀
-                Os.chmod(profile.getAbsolutePath(), 00444);
-
-            } catch (Throwable e) {
-                Log.e(TAG, "Failed to disable profile: " + profile.getName(), e);
             }
+        };
+        var mActivities = (Map<?, ?>) XposedHelpers.getObjectField(activityThread, "mActivities");
+        mActivities.forEach(fixActivityClientRecord);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                var mLaunchingActivities = (Map<?, ?>) XposedHelpers.getObjectField(activityThread, "mLaunchingActivities");
+                mLaunchingActivities.forEach(fixActivityClientRecord);
+            }
+        } catch (Throwable ignored) {
+        }
+    }
+
+
+    /**
+     * Decides what {@code ApplicationInfo.appComponentFactory} must be for the app's own class loader.
+     *
+     * <p>The patched manifest replaces the app's factory with the metaloader stub, so this has to put
+     * back whatever the original declared. Two things make that less obvious than it looks:
+     *
+     * <ul>
+     *   <li>The declaration must be <b>probed in the apk that actually holds the app's code</b>. The
+     *       stub's own class loader can never resolve a class belonging to the app, so probing there
+     *       reported every declaration as missing and silently stripped the factory from every app
+     *       that declared one -- the framework then fell back to its default factory.
+     *   <li>The probe must not build the app's class loader. A throwaway loader is used, and
+     *       {@code loadClass} resolves a class <i>without</i> running its static initializer, so a
+     *       factory whose {@code <clinit>} is an anti-tamper gate still waits for
+     *       {@link #realizeLoadedApk()}.
+     * </ul>
+     *
+     * @param apkPath the apk the app's class loader will be built from: the cached original in
+     *     signature-bypass mode, otherwise the patched apk itself.
+     * @return the original factory's name, or {@code null} when the app declared none -- or declared
+     *     one it does not ship, which is dropped the same way so the manifest's stub is never left in
+     *     place.
+     */
+    private static String resolveOriginalAppComponentFactory(String apkPath) {
+        String declared = config.appComponentFactory;
+        if (declared == null || declared.isEmpty()) {
+            Log.i(TAG, "Original app declared no AppComponentFactory; clearing the stub");
+            return null;
+        }
+        if (appApkHasClass(apkPath, declared)) {
+            Log.i(TAG, "Restored original AppComponentFactory: " + declared);
+            return declared;
+        }
+        Log.w(TAG, "Original AppComponentFactory not found in " + apkPath + ": " + declared);
+        return null;
+    }
+
+    /**
+     * Whether {@code apkPath} ships {@code className}, without building the app's class loader.
+     *
+     * <p>The check reads the apk's dex headers directly instead of building a class loader over it.
+     * On Android 16 a {@code PathClassLoader} over an apk in app-private storage is refused outright
+     * -- ART answers "Writable dex file ... is not allowed" -- so a loader-based probe could never
+     * answer on that platform and every declaration would take the conservative branch below.
+     *
+     * <p>A throwaway loader also had to be avoided for a second reason: it resolves real classes,
+     * which would drag in whatever the factory references. Reading the dex string pool touches no
+     * class at all, so a factory whose {@code <clinit>} is an anti-tamper gate still waits for
+     * {@link #realizeLoadedApk()}.
+     *
+     * <p>A probe that cannot answer reports {@code true}, keeping the declaration and leaving the
+     * decision to the framework, which falls back to its default factory by itself when the class
+     * proves unusable.
+     */
+    private static boolean appApkHasClass(String apkPath, String className) {
+        if (apkPath == null || apkPath.isEmpty()) {
+            return false;
+        }
+        // ART resolves a class through its type descriptor, so that is what the pool holds.
+        String descriptor = "L" + className.replace('.', '/') + ";";
+        try (java.util.zip.ZipFile zip = new java.util.zip.ZipFile(apkPath)) {
+            Enumeration<? extends java.util.zip.ZipEntry> entries = zip.entries();
+            while (entries.hasMoreElements()) {
+                java.util.zip.ZipEntry entry = entries.nextElement();
+                String name = entry.getName();
+                if (!name.endsWith(".dex")) {
+                    continue;
+                }
+                try (InputStream is = zip.getInputStream(entry)) {
+                    if (streamContainsBytes(is, descriptor.getBytes(StandardCharsets.UTF_8))) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } catch (Throwable t) {
+            Log.w(TAG, "AppComponentFactory probe failed: " + className, t);
+            return true;
+        }
+    }
+
+    /**
+     * Whether {@code pattern} appears in the stream, scanning with a sliding window so a large dex
+     * is never held in memory in full.
+     */
+    private static boolean streamContainsBytes(InputStream is, byte[] pattern) throws IOException {
+        int patternLen = pattern.length;
+        if (patternLen == 0) {
+            return false;
+        }
+        byte[] buffer = new byte[64 * 1024];
+        int carry = 0;
+        int read;
+        while ((read = is.read(buffer, carry, buffer.length - carry)) != -1) {
+            int available = carry + read;
+            int limit = available - patternLen;
+            for (int i = 0; i <= limit; i++) {
+                int j = 0;
+                while (j < patternLen && buffer[i + j] == pattern[j]) {
+                    j++;
+                }
+                if (j == patternLen) {
+                    return true;
+                }
+            }
+            // Keep the last patternLen-1 bytes so a match straddling reads is not missed.
+            carry = Math.min(patternLen - 1, available);
+            if (carry > 0) {
+                System.arraycopy(buffer, available - carry, buffer, 0, carry);
+            }
+        }
+        return false;
+    }
+
+    private static void appendHostNativeLibraryPaths(ClassLoader loader, String installedApkPath) {
+        if (loader == null || installedApkPath == null || installedApkPath.isEmpty()) return;
+        List<String> libPaths = new ArrayList<>();
+        try {
+            String[] abis = Process.is64Bit() ? Build.SUPPORTED_64_BIT_ABIS : Build.SUPPORTED_32_BIT_ABIS;
+            for (String abi : abis) {
+                libPaths.add(installedApkPath + "!/lib/" + abi);
+            }
+
+            // Method 1: PathClassLoader/BaseDexClassLoader.addNativePath(Collection<String>)
+            try {
+                Method method = loader.getClass().getMethod("addNativePath", Collection.class);
+                method.setAccessible(true);
+                method.invoke(loader, libPaths);
+                Log.i(TAG, "Appended host native library paths via ClassLoader.addNativePath: " + libPaths);
+                return;
+            } catch (Throwable ignored) {
+            }
+
+            // Method 2: DexPathList.addNativePath(Collection<String>) (AOSP 7.0+)
+            Object dexPathList = XposedHelpers.getObjectField(loader, "pathList");
+            if (dexPathList != null) {
+                Method addNativePathMethod = dexPathList.getClass().getDeclaredMethod("addNativePath", Collection.class);
+                addNativePathMethod.setAccessible(true);
+                addNativePathMethod.invoke(dexPathList, libPaths);
+                Log.i(TAG, "Appended host native library paths via DexPathList.addNativePath: " + libPaths);
+            }
+        } catch (Throwable e) {
+            Log.e(TAG, "Failed to append host native library paths: " + libPaths, e);
+        }
+    }
+
+    public static void disableProfile(Context context) {
+        try {
+            var appInfo = context.getApplicationInfo();
+            if (appInfo == null) return;
+
+            var codePaths = new ArrayList<String>();
+            if ((appInfo.flags & ApplicationInfo.FLAG_HAS_CODE) != 0) codePaths.add(appInfo.sourceDir);
+            if (appInfo.splitSourceDirs != null) Collections.addAll(codePaths, appInfo.splitSourceDirs);
+            if (codePaths.isEmpty()) return;
+
+            File profileDir = null;
+            try {
+                profileDir = (File) XposedHelpers.callStaticMethod(
+                        android.os.Environment.class, "getDataProfilesDePackageDirectory",
+                        appInfo.uid / PER_USER_RANGE, context.getPackageName());
+            } catch (Throwable e) {
+                Log.w(TAG, "Failed to get profile dir", e);
+                return;
+            }
+
+            for (int i = codePaths.size() - 1; i >= 0; i--) {
+                String splitName = (i == 0 || appInfo.splitNames == null || i - 1 >= appInfo.splitNames.length)
+                        ? null
+                        : appInfo.splitNames[i - 1];
+                File profile = new File(profileDir, splitName == null ? "primary.prof" : splitName + ".split.prof");
+
+                try {
+                    // ������� 0 �ֹ���Ψ�x��ֱ�����^
+                    if (profile.exists() && profile.length() == 0 && !profile.canWrite()) continue;
+                    // �Ԅӌ��Ѵ��ڵęn��������ջ����n
+                    try (var ignored = new FileOutputStream(profile)) {
+                    }
+                    // �O���n��ֻ�x
+                    Os.chmod(profile.getAbsolutePath(), 00444);
+
+                } catch (Throwable e) {
+                    Log.e(TAG, "Failed to disable profile: " + profile.getName(), e);
+                }
+            }
+        } catch (Throwable e) {
+            Log.w(TAG, "Failed to disable profile completely", e);
         }
     }
 

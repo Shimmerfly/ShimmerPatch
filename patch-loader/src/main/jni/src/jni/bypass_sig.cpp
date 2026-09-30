@@ -1479,8 +1479,8 @@ namespace lspd {
 
 
 
-    // Temporary probe: the descriptor calls only told us a file was the app's own, not which file
-    // it was. Read the link by raw syscall so the probe itself is not redirected.
+    // Where a descriptor points, read by raw syscall so the answer cannot be redirected by the
+    // hooks that ask for it.
     static std::string describe_fd_path(int fd) {
         char link_path[64];
         snprintf(link_path, sizeof(link_path), "/proc/self/fd/%d", fd);
@@ -1643,6 +1643,21 @@ namespace lspd {
         enforce_read_only_system_identity_raw(visible_path, st);
     }
 
+
+    // Whether a descriptor is the cached copy. Device and inode are not enough on their own: the
+    // cache is reachable as /data/user/0/<pkg>/... and as /data/data/<pkg>/..., and those spellings
+    // can be different mounts with the same inode but different device numbers. Comparing the
+    // normalised destination covers both.
+    static bool fd_points_at_redirect_apk(int fd) {
+        if (!redirect_apk_configured()) {
+            return false;
+        }
+        const std::string fd_path = normalize_app_data_path(describe_fd_path(fd).c_str());
+        std::scoped_lock lock(g_path_mutex);
+        return !redirectApkPath.empty()
+               && fd_path == normalize_app_data_path(redirectApkPath.c_str());
+    }
+
     static int hooked_fstat(int fd, struct stat* st) {
         if (fstat_backup == nullptr) {
             errno = ENOSYS;
@@ -1656,7 +1671,8 @@ namespace lspd {
                 log_apk_stat_probe("fstat", fd_path.c_str(), is_ours, st->st_mode, st->st_uid);
             }
         }
-        if (rc == 0 && fd_stat_is_redirected_apk(st->st_dev, static_cast<uint64_t>(st->st_ino))) {
+        if (rc == 0 && (fd_points_at_redirect_apk(fd)
+                        || fd_stat_is_redirected_apk(st->st_dev, static_cast<uint64_t>(st->st_ino)))) {
             std::string visible_path;
             {
                 std::scoped_lock lock(g_path_mutex);
@@ -1674,7 +1690,8 @@ namespace lspd {
             return -1;
         }
         int rc = fstat64_backup(fd, st);
-        if (rc == 0 && fd_stat_is_redirected_apk(st->st_dev, static_cast<uint64_t>(st->st_ino))) {
+        if (rc == 0 && (fd_points_at_redirect_apk(fd)
+                        || fd_stat_is_redirected_apk(st->st_dev, static_cast<uint64_t>(st->st_ino)))) {
             std::string visible_path;
             {
                 std::scoped_lock lock(g_path_mutex);

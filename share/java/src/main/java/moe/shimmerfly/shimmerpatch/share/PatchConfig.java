@@ -118,7 +118,9 @@ public class PatchConfig {
                 newPackage,
                 useMicroG,
                 hideLibs,
-                false
+                false,
+                false,
+                0
         );
     }
 }

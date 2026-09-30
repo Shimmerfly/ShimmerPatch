@@ -1,6 +1,5 @@
 package moe.shimmerfly.shimmerpatch.loader;
 
-import android.annotation.SuppressLint;
 import static moe.shimmerfly.shimmerpatch.share.Constants.ORIGINAL_APK_ASSET_PATH;
 
 import android.content.pm.ApplicationInfo;
@@ -30,7 +29,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-@SuppressLint({"SetWorldReadable"})
 public class OriginApkHelper {
 
     private static final String TAG = "ShimmerPatch-ApkHelper";
@@ -93,9 +91,12 @@ public class OriginApkHelper {
                 }
 
                 Log.i(TAG, "Extracting origin.apk from assets.");
-                cleanupOrphanTempFiles(internalOriginDir, sourceCrc);
-                Files.deleteIfExists(internalCacheApk);
-                Files.deleteIfExists(getVerifiedSidecarPath(internalCacheApk));
+                // Without the lock another process may be extracting concurrently; do not touch its
+                // temp files or the shared target. ATOMIC_MOVE below replaces the target safely.
+                if (lock != null) {
+                    cleanupOrphanTempFiles(internalOriginDir, sourceCrc);
+                    Files.deleteIfExists(getVerifiedSidecarPath(internalCacheApk));
+                }
 
                 Path tempFile = internalOriginDir.resolve(sourceCrc + ".tmp." + Process.myPid() + "." + System.currentTimeMillis());
                 try {
@@ -217,10 +218,15 @@ public class OriginApkHelper {
 
     private static void cleanupOrphanTempFiles(Path dir, long sourceCrc) {
         String prefix = sourceCrc + ".tmp.";
+        // Another process (possibly in lockless degraded mode) may be writing a temp right now.
+        // Only reap temps old enough that no in-flight extraction could still own them.
+        long staleBefore = System.currentTimeMillis() - LOCK_TIMEOUT_MS;
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir, prefix + "*")) {
             for (Path orphan : stream) {
                 try {
-                    Files.deleteIfExists(orphan);
+                    if (Files.getLastModifiedTime(orphan).toMillis() < staleBefore) {
+                        Files.deleteIfExists(orphan);
+                    }
                 } catch (IOException ignored) {
                 }
             }

@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Canonical SQLite-backed storage and validation backend for ShimmerPatch remote preferences and files.
+ * Canonical SQLite-backed storage and validation backend for NPatch remote preferences and files.
  *
  * <p>Preserves full object type fidelity (including {@code Set<String>} and arbitrary Serializables)
  * across IPC boundaries, mirroring the Vector daemon's schema while operating in rootless user mode.</p>
@@ -41,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class ShimmerPatchRemoteStore {
     public static final long CAP_REMOTE = 1L << 1;
     private static final String TAG = "ShimmerPatchRemoteStore";
-    private static final String DB_NAME = "shimmerpatch-xposed-remote.db";
+    private static final String DB_NAME = "npatch-xposed-remote.db";
     private static final int DB_VERSION = 1;
     private static final String TABLE = "configs";
     private static final int PER_USER_RANGE = 100000;
@@ -305,7 +305,7 @@ public final class ShimmerPatchRemoteStore {
     }
 
     private File remoteFilesDir() {
-        return new File(context.getFilesDir(), "shimmerpatch/remote/" + modulePackageName);
+        return new File(context.getFilesDir(), "npatch/remote/" + modulePackageName);
     }
 
     private File resolveRemoteFile(String name) {

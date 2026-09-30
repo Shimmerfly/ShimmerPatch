@@ -1,6 +1,5 @@
 package moe.shimmerfly.shimmerpatch.service;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -32,7 +31,6 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-@SuppressLint({"SdCardPath"})
 public class NeoLocalApplicationService extends IFrameworkService.Stub {
     private static final String TAG = "ShimmerPatch";
     private static final String AUTHORITY = "moe.shimmerfly.shimmerpatch.manager.provider.config";
@@ -75,7 +73,7 @@ public class NeoLocalApplicationService extends IFrameworkService.Stub {
 
     private void loadModulesFromCache(Context context) {
         try {
-            SharedPreferences shared = context.getSharedPreferences("shimmerpatch", Context.MODE_PRIVATE);
+            SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
             String jsonStr = shared.getString("modules", "[]");
             JSONArray jsonArray = new JSONArray(jsonStr);
             PackageManager pm = context.getPackageManager();
@@ -269,7 +267,7 @@ public class NeoLocalApplicationService extends IFrameworkService.Stub {
 
     private void updateModulesCache(Context context, JSONArray modules) {
         try {
-            SharedPreferences shared = context.getSharedPreferences("shimmerpatch", Context.MODE_PRIVATE);
+            SharedPreferences shared = context.getSharedPreferences("npatch", Context.MODE_PRIVATE);
             shared.edit().putString("modules", modules.toString()).apply();
             XLog.i(TAG, "NeoLocal: Updated local modules cache: " + modules);
         } catch (Throwable e) {
@@ -301,9 +299,6 @@ public class NeoLocalApplicationService extends IFrameworkService.Stub {
         return fallback;
     }
 
-    // A module manifest may declare xposedminversion as an int or as a string, so the
-    // type-agnostic getter stays: either typed getter would mis-read the other form.
-    @SuppressWarnings("deprecation")
     private static int readLegacyMinApiVersion(ApplicationInfo applicationInfo) {
         if (applicationInfo == null || applicationInfo.metaData == null) {
             return 0;

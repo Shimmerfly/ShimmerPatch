@@ -18,7 +18,9 @@ java {
 
 dependencies {
     testImplementation("junit:junit:4.13.2")
+    // Both zip and signing engines ship in the manager, which picks one when it patches.
     implementation(projects.apkzlib)
+    implementation(projects.zipengines.neoapk)
     implementation(projects.share.java)
     implementation("vector:axml")
 

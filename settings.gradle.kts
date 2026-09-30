@@ -27,6 +27,7 @@ include(
     ":remote-api",
     ":share:android",
     ":share:java",
+    ":zipengines:neoapk",
 )
 
 includeBuild("core") {
@@ -39,3 +40,10 @@ includeBuild("core") {
         substitute(module("vector:stubs")).using(project(":hiddenapi:stubs"))
     }
 }
+
+// NeoApk is the zip and signing engine the upstream patcher moved to. It is kept beside the
+// in-tree apkzlib rather than replacing it, because the manager offers either engine at run time.
+// Its sources are compiled by the :zipengines:neoapk project from the submodule, instead of being
+// built as its own Gradle build or fetched from the coordinate upstream names - that coordinate
+// has never been published, and the build it would come from needs a plugin version this
+// checkout cannot download.

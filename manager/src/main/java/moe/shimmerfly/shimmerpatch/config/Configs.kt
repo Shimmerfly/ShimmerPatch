@@ -10,6 +10,7 @@ import java.io.File
 object Configs {
 
     private const val PREFS_KEYSTORE_PRESET = "keystore_preset"
+    private const val PREFS_PATCH_ENGINE = "patch_engine"
     private const val PREFS_KEYSTORE_PASSWORD = "keystore_password"
     private const val PREFS_KEYSTORE_ALIAS = "keystore_alias"
     private const val PREFS_KEYSTORE_ALIAS_PASSWORD = "keystore_alias_password"
@@ -33,6 +34,13 @@ object Configs {
         )
     ) {
         lspApp.prefs.edit { putString(PREFS_KEYSTORE_PRESET, it.prefValue) }
+    }
+
+    /** Which engine builds and signs a patch. Both are compiled in; this only picks one. */
+    var patchEngine by delegateStateOf(
+        PatchEngine.fromPrefValue(lspApp.prefs.getString(PREFS_PATCH_ENGINE, null))
+    ) {
+        lspApp.prefs.edit { putString(PREFS_PATCH_ENGINE, it.prefValue) }
     }
 
     var language by delegateStateOf(lspApp.prefs.getString(PREFS_LANGUAGE, "")!!) {

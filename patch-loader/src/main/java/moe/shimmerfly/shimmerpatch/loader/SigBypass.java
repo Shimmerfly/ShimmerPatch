@@ -748,6 +748,14 @@ public class SigBypass {
         }
     }
 
+    // The cached original APK is read by the platform as if it were the installed one, so this
+    // process must not own a writable copy of it: ART refuses to load a dex it can write.
+    private static void enforceReadOnlyCache(File targetFile) {
+        if (!targetFile.setReadOnly()) {
+            Log.w(TAG, "Failed to mark cached origin APK read-only: " + targetFile);
+        }
+    }
+
     private static String extractOriginalApk(Context context) {
         File cacheDir = new File(context.getCacheDir(), "code_cache");
         if (!cacheDir.exists() && !cacheDir.mkdirs()) return null;
@@ -758,6 +766,7 @@ public class SigBypass {
 
             File targetFile = new File(cacheDir, entry.getCrc() + ".apk");
             if (targetFile.exists() && targetFile.length() == entry.getSize()) {
+                enforceReadOnlyCache(targetFile);
                 redirectApkPath = targetFile.getAbsolutePath();
                 return redirectApkPath;
             }
@@ -770,6 +779,8 @@ public class SigBypass {
                     fos.write(buffer, 0, length);
                 }
             }
+            // base.apk 的 stat() 清洗邏輯，這裡只防止本進程自己誤寫快取檔。
+            enforceReadOnlyCache(targetFile);
             redirectApkPath = targetFile.getAbsolutePath();
             return redirectApkPath;
         } catch (IOException e) {

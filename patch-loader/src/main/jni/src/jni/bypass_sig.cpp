@@ -465,12 +465,56 @@ namespace lspd {
     // Lock-free (atomic flag + two integer compares, zero mutex locks and zero syscalls)
     // fd-identity check used by hooked_fstat/hooked_fstat64 to skip everything but the
     // redirected origin.apk fd — this stays blazing fast even during SQLite WAL transactions.
+    // Where a descriptor points. Read by raw syscall so the answer cannot be redirected by the
+    // hooks that ask for it.
+    static std::string describe_fd_path(int fd) {
+        char link_path[64];
+        snprintf(link_path, sizeof(link_path), "/proc/self/fd/%d", fd);
+        char target[512];
+        long n = syscall(__NR_readlinkat, AT_FDCWD, link_path, target, sizeof(target) - 1);
+        if (n <= 0) {
+            return std::string();
+        }
+        target[n] = '\0';
+        return std::string(target);
+    }
+
+    // /data/data/<pkg> and /data/user/0/<pkg> name the same directory, and the same file reaches
+    // these hooks under either spelling: the platform asks with one, the loader recorded the other.
+    static std::string normalize_app_data_path(const std::string& path) {
+        static constexpr const char* kDataData = "/data/data/";
+        if (path.rfind(kDataData, 0) == 0) {
+            return "/data/user/0/" + path.substr(std::strlen(kDataData));
+        }
+        return path;
+    }
+
+    // Whether a descriptor is the cached copy. Device numbers are not usable here: the cached copy
+    // is reached under two spellings that can be different mounts, and makedev() of the major/minor
+    // that statx reports does not always equal the st_dev the kernel puts in a stat. The destination
+    // is what identifies it; the inode is kept as a cheap second opinion.
+    static bool fd_is_redirect_apk(int fd, uint64_t ino) {
+        std::string redirect;
+        {
+            std::scoped_lock lock(g_path_mutex);
+            redirect = redirectApkPath;
+        }
+        if (redirect.empty()) {
+            return false;
+        }
+        const std::string fd_path = describe_fd_path(fd);
+        if (!fd_path.empty() && normalize_app_data_path(fd_path) == normalize_app_data_path(redirect)) {
+            return true;
+        }
+        return g_redirect_identity_valid.load(std::memory_order_acquire)
+               && ino == g_redirect_identity_ino.load(std::memory_order_relaxed);
+    }
+
     static bool fd_stat_is_redirected_apk(uint64_t dev, uint64_t ino) {
         if (!g_redirect_identity_valid.load(std::memory_order_acquire)) {
             return false;
         }
-        return dev == g_redirect_identity_dev.load(std::memory_order_relaxed)
-               && ino == g_redirect_identity_ino.load(std::memory_order_relaxed);
+        return ino == g_redirect_identity_ino.load(std::memory_order_relaxed);
     }
 
     // 就地清洗 stat 結果：強制以「真實查詢 visible_path（系統安裝路徑）」
@@ -1498,7 +1542,8 @@ namespace lspd {
             return -1;
         }
         int rc = fstat_backup(fd, st);
-        if (rc == 0 && fd_stat_is_redirected_apk(st->st_dev, static_cast<uint64_t>(st->st_ino))) {
+        if (rc == 0 && (fd_is_redirect_apk(fd, static_cast<uint64_t>(st->st_ino))
+                        || fd_stat_is_redirected_apk(st->st_dev, static_cast<uint64_t>(st->st_ino)))) {
             std::string visible_path;
             {
                 std::scoped_lock lock(g_path_mutex);
@@ -1515,7 +1560,8 @@ namespace lspd {
             return -1;
         }
         int rc = fstat64_backup(fd, st);
-        if (rc == 0 && fd_stat_is_redirected_apk(st->st_dev, static_cast<uint64_t>(st->st_ino))) {
+        if (rc == 0 && (fd_is_redirect_apk(fd, static_cast<uint64_t>(st->st_ino))
+                        || fd_stat_is_redirected_apk(st->st_dev, static_cast<uint64_t>(st->st_ino)))) {
             std::string visible_path;
             {
                 std::scoped_lock lock(g_path_mutex);

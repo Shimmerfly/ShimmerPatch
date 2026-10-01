@@ -441,25 +441,20 @@ namespace lspd {
         if (redirectApkPath.empty()) {
             return;
         }
-        uint64_t dev = 0;
-        uint64_t ino = 0;
-        struct statx stx = {};
-        long rc = syscall(__NR_statx, AT_FDCWD, redirectApkPath.c_str(), 0, STATX_BASIC_STATS, &stx);
-        if (rc == 0) {
-            dev = makedev(stx.stx_dev_major, stx.stx_dev_minor);
-            ino = stx.stx_ino;
-        } else {
-            struct stat st{};
-            if (::stat(redirectApkPath.c_str(), &st) == 0) {
-                dev = st.st_dev;
-                ino = static_cast<uint64_t>(st.st_ino);
-            } else {
-                return;
-            }
+        // Read the cached copy's identity with stat, never with statx. statx reports a device as
+        // separate major and minor numbers, and rebuilding a device number from them with makedev()
+        // does not always produce the st_dev the kernel puts in a stat - so a comparison against the
+        // descriptor's st_dev never matched, the cached copy was never recognised, and its own
+        // identity (this app, writable) was what the platform saw.
+        struct stat st{};
+        if (stat_backup == nullptr || stat_backup(redirectApkPath.c_str(), &st) != 0) {
+            return;
         }
-        g_redirect_identity_dev.store(dev, std::memory_order_relaxed);
-        g_redirect_identity_ino.store(ino, std::memory_order_relaxed);
+        g_redirect_identity_dev.store(st.st_dev, std::memory_order_relaxed);
+        g_redirect_identity_ino.store(static_cast<uint64_t>(st.st_ino), std::memory_order_relaxed);
         g_redirect_identity_valid.store(true, std::memory_order_release);
+        LOGI("SigBypass: cached copy identity dev={} ino={} (via stat)", st.st_dev,
+             static_cast<uint64_t>(st.st_ino));
     }
 
     // Lock-free (atomic flag + two integer compares, zero mutex locks and zero syscalls)
@@ -514,7 +509,8 @@ namespace lspd {
         if (!g_redirect_identity_valid.load(std::memory_order_acquire)) {
             return false;
         }
-        return ino == g_redirect_identity_ino.load(std::memory_order_relaxed);
+        return dev == g_redirect_identity_dev.load(std::memory_order_relaxed)
+               && ino == g_redirect_identity_ino.load(std::memory_order_relaxed);
     }
 
     // 就地清洗 stat 結果：強制以「真實查詢 visible_path（系統安裝路徑）」
